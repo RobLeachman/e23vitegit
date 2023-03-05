@@ -14,7 +14,7 @@
  */
 
 import 'phaser';
-
+//import InputTextPlugin from 'plugins/rexcanvasinputplugin.min'
 
 
 import Slots from "./objects/slots"
@@ -22,7 +22,7 @@ import Recorder from "./objects/recorder"
 
 let debugUpdateOnce = false;
 
-var viewWall = 0;
+var viewWall = 4;
 
 const walls = new Array();
 const icons = new Array();
@@ -30,6 +30,7 @@ const obj = new Array();
 const altObj = new Array();
 const tableView = new Array();
 const closeView = new Array();
+const i = new Array();
 var currentWall = -1;
 var previousWall = -1;
 
@@ -60,8 +61,10 @@ var didBonus = false;
 var slots: Slots;
 
 var showXtime = -1;
+var style: string;
 
 var recorder: Recorder;
+var myViewport;
 var viewportText: any;                                     //??
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
@@ -69,31 +72,31 @@ var pointer: Phaser.Input.Pointer;
 
 let lastKeyDebouncer = ""; //
 let recorderMode = "?";
+let foo = 1;
 let recording = "";
 let actions: [string, number, number, number][] = [["BOJ", 0, 0, 0]];
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
 let debugging = false;
 
-// TODO not using this test crap...................
+
 var content = [
     "The sky above the port was the color of television, tuned to a dead channel.",
     "'It's not like I'm using,' Case heard someone say, as he shouldered his way ",
     "through the crowd around the door of the Chat. 'It's like my body's developed ",
     "this massive drug deficiency.' It was a Sprawl voice and a Sprawl joke."
 ];
-/*
 var contentString =
     "The sky above the port was the color of television, tuned to a dead channel." +
     "'It's not like I'm using,' Case heard someone say, as he shouldered his way " +
     "through the crowd around the door of the Chat. 'It's like my body's developed " +
     "this massive drug deficiency.' It was a Sprawl voice and a Sprawl joke."
-*/    
 
 
 
 class PlayGame extends Phaser.Scene {
     update() {
+        return;
 
         this.input.keyboard.on('keydown', this.handleKey);
         //console.log("rightright");
@@ -101,15 +104,20 @@ class PlayGame extends Phaser.Scene {
             this.showRecording();
         }
 
-        
+
         if (debugUpdateOnce) {
             debugUpdateOnce = false;
-            //var txt = this.add.rexCanvasInput(50, 150, 100, 200, config);
-            this.showRecording();
+            //@ts-ignore 
+            var txt = this.add.rexCanvasInput(50, 150, 100, 200, config);
+            //var txt = new CanvasInput(textGameObject, x, y, width, height, config);
+            this.add.existing(txt);
+            //this.showRecording();
+            //@ts-ignore
+            var txt0 = CreateCanvasInput(this, 'Phaser').setPosition(400, 200)
             return;
 
         }
-        
+
 
         if (debugging || recorderMode == "record" || recorderMode == "replay") {
             let debugAction = "RECORDING";
@@ -303,7 +311,8 @@ class PlayGame extends Phaser.Scene {
                 updateWall = false;
                 var sentence = "Nice job slugger!\nTry it again for the bonus?\nJust reload the page";
                 if (didBonus) {
-                    this.add.image(360, 800, "winnerDonut")
+                    var bonus = this.add.image(360, 800, "winnerDonut")
+                    //bonus.setScale(3);
                     sentence = "You did it :)\nThanks for testing!";
                 } else {
                     failed.setVisible(true);
@@ -389,6 +398,8 @@ class PlayGame extends Phaser.Scene {
             } else {
                 takeItemMask.setVisible(false);
             }
+            // remember this trick
+            //@ts-ignore 
             objectMask.setVisible(false);
         }
     }
@@ -398,9 +409,66 @@ class PlayGame extends Phaser.Scene {
     }
 
     create() {
+        var text = this.add.text(10, 10, 'Please login to play', { color: 'white', fontFamily: 'Arial', fontSize: '32px ' });
+
+        var element = this.add.dom(400, 600).createFromCache('nameform');
+
+        element.setPerspective(800);
+        element.on('click', () => {
+            console.log("submit")
+
+            var inputUsername = element.getChildByName('username');
+            var inputPassword = element.getChildByName('password');
+
+            //  Have they entered anything?
+            console.log(inputUsername)
+
+        });
+
+
+        /*        
+                var printText = this.add.text(400, 200, '', {
+                    fontSize: '12px',
+                }).setOrigin(0.5).setFixedSize(100, 100);
+                var inputText = this.add.rexInputText(400, 400, 10, 10, {
+                    type: 'textarea',
+                    text: 'hello world',
+                    fontSize: '12px',
+                })
+                    .resize(100, 100)
+                    .setOrigin(0.5)
+                    .on('textchange', function (inputText) {
+                        printText.text = inputText.text;
+                    })
+                    .on('focus', function (inputText) {
+                        console.log('On focus');
+                    })
+                    .on('blur', function (inputText) {
+                        console.log('On blur');
+                    })
+                    .on('click', function (inputText) {
+                        console.log('On click');
+                    })
+                    .on('dblclick', function (inputText) {
+                        console.log('On dblclick');
+                    })
+        
+                this.input.on('pointerdown', function () {
+                    inputText.setBlur();
+                    console.log('pointerdown outside');
+                })
+              
+                printText.text = inputText.text;
+        
+                this.add.text(0, 580, 'Click below text to edit it'); 
+        */
+
 
         let scene = this;
-        // @ts-ignore   not using pointer but don't want to break right now while trying for build
+        //@ts-ignore 
+        //var txt = scene.add.rexCanvasInput(100, 100, 100, 100, config);
+
+
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, scene);
         });
@@ -438,7 +506,7 @@ class PlayGame extends Phaser.Scene {
         */
 
 
-        this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
+        myViewport = this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
@@ -630,7 +698,7 @@ class PlayGame extends Phaser.Scene {
             console.log("REPLAY");
 
             const actionString = recording.split(":");
-            actionString.forEach((action) => {
+            actionString.forEach((action, idx) => {
                 //console.log(action.length);
                 if (action.length > 0) {
                     let splitAction = action.split(',');
@@ -699,18 +767,18 @@ class PlayGame extends Phaser.Scene {
         text = this.add.text(32, 22, beg, { fontSize: '25px', fontFamily: 'Lucida Console', color: "#00ff00" });
         text.setDepth(9000); // use bringToTop if in a container
 
-/*
-        var graphics = this.add.graphics().setPosition(20, 0);
-        
-        graphics.fillRect(80, 300, 600, 250);
-        graphics.fillStyle(0xFF0000) // My test text is RED
-        graphics.setDepth(3000)
-        var mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
-        var text = this.add.text(150, 460, beg,
-            { fontFamily: 'Lucida Console', color: '#00ff00', fontSize: '25px', wordWrap: { width: 700 } }).setOrigin(0,0);
-        text.setMask(mask);
-        text.setDepth(5000); 
-*/               
+        /*
+                var graphics = this.add.graphics().setPosition(20, 0);
+                
+                graphics.fillRect(80, 300, 600, 250);
+                graphics.fillStyle(0xFF0000) // My test text is RED
+                graphics.setDepth(3000)
+                var mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
+                var text = this.add.text(150, 460, beg,
+                    { fontFamily: 'Lucida Console', color: '#00ff00', fontSize: '25px', wordWrap: { width: 700 } }).setOrigin(0,0);
+                text.setMask(mask);
+                text.setDepth(5000); 
+        */
 
         var black = this.add.graphics({
             x: 0,
@@ -744,7 +812,8 @@ class PlayGame extends Phaser.Scene {
 
 
     preload() {
-        //this.load.plugin('rexcanvasinputplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasinputplugin.min.js', true);
+        //this.load.plugin('rexcanvasinputplugin', 'plugins/rexcanvasinputplugin.min.js', true);
+        this.load.html('nameform', 'assets/text/example_loginform.html');
 
         this.load.image('myViewport', 'assets/backgrounds/viewport.png');
         this.load.image('clckrLoc', 'assets/sprites/pointer.png');
@@ -860,12 +929,16 @@ class PlayGame extends Phaser.Scene {
         this.load.image('doorMask', 'assets/sprites/doorMask.png');
         this.load.image('hintMask', 'assets/sprites/hintMask.png');
 
-        //this.load.image('testplateShown', 'src/assets/sprites/closePlate.png'); 
-        //this.load.image('testplateIcon', 'src/assets/sprites/icon - plate.png');
+        this.load.image('testplateShown', 'assets/sprites/closePlate.png');
+        this.load.image('testplateIcon', 'assets/sprites/icon - plate.png');
     }
 }
 
-
+//import CanvasInputPlugin from '../node-modules/phaser3-rex-plugins/plugins/canvasinput-plugin.js'
+//import './plugins';
+//import CanvasInputPlugin from '../node_modules/phaser3-rex-plugins/plugins/canvasinput-plugin.js';
+// import * as yourModuleName from 'module-name';
+//const CanvasInputPlugin = require('canvasinput-plugin.js');
 let config = {
     type: Phaser.WEBGL,
     //type: Phaser.CANVAS,
@@ -879,7 +952,18 @@ let config = {
     dom: {
         createContainer: true
     },
-    disableContextMenu: true, // ready for right-click if needed
+    /*
+    plugins: {
+        global: [{
+            key: 'rexCanvasInputPlugin',
+            plugin: CanvasInputPlugin,
+            start: true
+        },
+        // ...
+        ]
+    },   
+    */
+    disableContextMenu: true, // right-click is a debugging thing
     autoCenter: Phaser.Scale.CENTER_BOTH,
     scene: PlayGame
 };
