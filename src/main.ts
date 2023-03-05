@@ -1,23 +1,54 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
+import { Scene, Game, WEBGL, GameObjects } from 'phaser';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const canvas = document.getElementById('game') as HTMLCanvasElement;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+class GameScene extends Scene {
+  private textbox: GameObjects.Text | undefined;
+
+  constructor() {
+    super('scene-game');
+  }
+
+  create() {
+    this.textbox = this.add.text(
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      'Welcome to Phaser x Vite!',
+      {
+        color: '#FFF',
+        fontFamily: 'monospace',
+        fontSize: '26px'
+      }
+    );
+
+    this.textbox.setOrigin(0.5, 0.5);
+  }
+
+  update(time: number, delta: number) {
+    if (!this.textbox) {
+      return;
+    }
+
+    this.textbox.rotation += 0.0005 * delta;
+  }
+}
+
+const config = {
+  type: WEBGL,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  canvas,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 },
+      // debug: true
+    }
+  },
+  scene: [
+    GameScene
+  ]
+}
+
+new Game(config);
