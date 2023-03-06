@@ -20,7 +20,7 @@ import Recorder from "./objects/recorder"
 
 let debugUpdateOnce = false;
 
-var viewWall = 0;
+var viewWall = 2;
 
 const walls = new Array();
 const icons = new Array();
@@ -48,6 +48,8 @@ var viewDoorMask: Phaser.GameObjects.Sprite;
 var objectMask: Phaser.GameObjects.Sprite;
 var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
+var melonMask: Phaser.GameObjects.Sprite;
+var knifeMask: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
 var updateWall = false;
@@ -60,6 +62,8 @@ var egress = false;
 var didBonus = false;
 var hasSearched = false;
 var hasCombined = false;
+var haveKnife = false;
+var haveMelon = false;
 
 var slots: Slots;
 
@@ -131,27 +135,41 @@ class PlayGame extends Phaser.Scene {
             hasCombined = true;
             combineClue.setDepth(-1);
             //console.log("clear out " + slots.combining.split(':')[1])
-            slots.clearItem(this, slots.combining.split(':')[1]);
+            if (slots.combining.split(':')[1] != "objKnife")
+                slots.clearItem(this, slots.combining.split(':')[1]);
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
             //console.log("replacing " + slotRepl)
             //slots.replaceItem(this, slots.combining.split(':')[2]);
             slots.clearItem(this, slots.combining.split(':')[2]);
             if (slots.combining.split(':')[3] == "objDonutPlated") {
-                slots.addIcon(this, icons[5].toString(), obj[5], altObj[5], slotRepl);
+                slots.inventoryViewObj = obj[5];
+                slots.inventoryViewAlt = altObj[5];
+                slots.addIcon(this, icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
                 // switch view to new goodly combined object
                 this.add.image(0, 0, obj[5]).setOrigin(0, 0);
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
-                slots.addIcon(this, icons[4].toString(), obj[4], altObj[4], slotRepl);
+                slots.inventoryViewObj = obj[4];
+                slots.inventoryViewAlt = altObj[4];
+                slots.addIcon(this, icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.add.image(0, 0, obj[4]).setOrigin(0, 0);
+            } else if (slots.combining.split(':')[3] == "objMelonHalf") {
+                slots.inventoryViewObj = obj[8];
+                slots.inventoryViewAlt = altObj[8];
+                slots.addIcon(this, icons[9].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+
+                slots.selectItem(slots.combining.split(':')[3]);
+                this.add.image(0, 0, obj[8]).setOrigin(0, 0);
             } else {
                 slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
             slots.combining = "";
             plusModeButton.setVisible(false);
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            //updateWall = true;
         }
 
         if (debugging || recorderMode == "record" || recorderMode == "replay" || recorderMode == "replayOnce") {
@@ -227,6 +245,14 @@ class PlayGame extends Phaser.Scene {
                                 hintMask.emit('pointerdown');
                                 break;
                             }
+                            case "melonMask": {
+                                melonMask.emit('pointerdown');
+                                break;
+                            }
+                            case "knifeMask": {
+                                knifeMask.emit('pointerdown');
+                                break;
+                            }
                             case "plusButton": {
                                 plusButton.emit('pointerdown');
                                 break;
@@ -272,7 +298,7 @@ class PlayGame extends Phaser.Scene {
             viewportPointer.setX(1000);
         }
         if (slots.fakeClicks == 3) {
-            console.log("BRING THE ROACH");
+            //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
             slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 5); // roach
@@ -280,12 +306,12 @@ class PlayGame extends Phaser.Scene {
         if (slots.fakeClicks == 10) {
             recorder.setMode("replayOnce");
             slots.fakeClicks = -1;
-            console.log("roach replay " + slots.getSelected());
+            //console.log("roach replay " + slots.getSelected());
             if (slots.getSelected() == "objRoach")
                 recorder.setReplaySpeed("fast")
             else
                 recorder.setReplaySpeed("perfect")
-            window.location.reload();            
+            window.location.reload();
         }
 
         if (showXtime > 0) {
@@ -348,7 +374,6 @@ class PlayGame extends Phaser.Scene {
             leftButton.setVisible(false);
             rightButton.setVisible(false);
             backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
-            console.log(slots.inventoryViewObj)
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
             if (!hasSearched) {
@@ -365,10 +390,11 @@ class PlayGame extends Phaser.Scene {
                 combineClue.setDepth(-1)
             }
 
-
             takeItemMask.setVisible(false);
             viewTableMask.setVisible(false);
             viewDoorMask.setVisible(false);
+            melonMask.setVisible(false);
+            knifeMask.setVisible(false);
 
             objectMask.setVisible(true);
             objectMask.setDepth(100);
@@ -409,11 +435,12 @@ class PlayGame extends Phaser.Scene {
                 takeItemMask.setVisible(false);
                 viewTableMask.setVisible(false);
                 viewDoorMask.setVisible(false);
+                melonMask.setVisible(false);
+                knifeMask.setVisible(false);
 
                 updateWall = false;
                 viewWall = currentWall;
 
-                console.log("egress EOJ " + recorder.getMode())
                 if (recorderMode == "replayOnce") {
                     recorder.setMode("idle")
                     recorderMode = "idle";
@@ -443,6 +470,13 @@ class PlayGame extends Phaser.Scene {
 
             if (viewWall == 0)
                 this.add.sprite(540, 650, tableView[tableState]).setOrigin(0, 0);
+            if (viewWall == 2) {
+                if (!haveKnife)
+                    this.add.sprite(312, 980, "knifeShown").setOrigin(0, 0);
+                if (!haveMelon)
+                    this.add.sprite(487, 786, "melonShown").setOrigin(0, 0);
+            }
+
             if (viewWall == 4)
                 this.add.sprite(176, 532, closeView[tableState]).setOrigin(0, 0);
 
@@ -475,11 +509,26 @@ class PlayGame extends Phaser.Scene {
             } else {
                 hintMask.setVisible(false);
             }
+            if (viewWall == 2 && !haveMelon) {
+                melonMask.setVisible(true); melonMask.setDepth(100); melonMask.setInteractive({ cursor: 'pointer' });
+            } else
+                melonMask.setVisible(false);
+
+            if (viewWall == 2 && !haveKnife) {
+                knifeMask.setVisible(true); knifeMask.setDepth(100); knifeMask.setInteractive({ cursor: 'pointer' });
+            } else
+                knifeMask.setVisible(false);
 
             if (viewWall == 4) { // the table
                 //takeItemMask.setVisible(true); takeItemMask.setDepth(100); takeItemMask.setInteractive();
                 //takeItemMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-                takeItemMask.setVisible(true); takeItemMask.setDepth(100); takeItemMask.setInteractive({ cursor: 'pointer' });
+                takeItemMask.setVisible(true); takeItemMask.setDepth(100);
+                // pointer cursor if stuff remains on table, else default, is how this is done
+                takeItemMask.setInteractive();
+                if (tableState > 2)
+                    takeItemMask.input.cursor = 'default';
+                else
+                    takeItemMask.input.cursor = 'pointer';
             } else {
                 takeItemMask.setVisible(false);
             }
@@ -596,12 +645,11 @@ class PlayGame extends Phaser.Scene {
                 text.setDepth(5000);
         */
 
-        
         this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
-        console.log("Recorder mode=" + recorder.getMode())
+        //console.log("Recorder mode=" + recorder.getMode())
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
@@ -667,7 +715,9 @@ class PlayGame extends Phaser.Scene {
                 slots.addIcon(this, icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 tableState++;
-
+                if (tableState > 2) {
+                    this.input.setDefaultCursor('default');
+                }
                 updateWall = true;
             }
         });
@@ -678,6 +728,23 @@ class PlayGame extends Phaser.Scene {
             if (viewWall == 0)
                 viewWall = 4;
 
+        });
+
+        melonMask = this.add.sprite(487, 786, 'melonMask').setOrigin(0, 0);
+        melonMask.on('pointerdown', () => {
+            haveMelon = true;
+
+            slots.addIcon(this, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite
+            this.add.sprite(487, 786, "melonPicked").setOrigin(0, 0); // TODO this would be better done in create()
+            updateWall = true;
+        });
+        knifeMask = this.add.sprite(312, 980, 'knifeMask').setOrigin(0, 0);
+        knifeMask.on('pointerdown', () => {
+            haveKnife = true;
+
+            slots.addIcon(this, icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
+            this.add.sprite(312, 980, "knifePicked").setOrigin(0, 0); // TODO this would be better done in create()
+            updateWall = true;
         });
 
         viewDoorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
@@ -729,7 +796,6 @@ class PlayGame extends Phaser.Scene {
         });
 
         slots.addIcon(this, icons[7].toString(), "fake", "fake", 4); // TODO: get name from sprite?!
-        //slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 5); // TODO: get name from sprite?!
 
         // Debug recorder debugger
         viewportText = this.add.text(10, 10, '');
@@ -742,11 +808,10 @@ class PlayGame extends Phaser.Scene {
             if (recorder.getReplaySpeed() == "fast") {
                 recording = recorder.makeFast(recording);
             }
-            console.log("REPLAY " + recorderMode);
+            //console.log("REPLAY " + recorderMode);
 
             const actionString = recording.split(":");
             actionString.forEach((action) => {
-                //console.log(action.length);
                 if (action.length > 0) {
                     let splitAction = action.split(',');
                     actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10)]);
@@ -754,11 +819,6 @@ class PlayGame extends Phaser.Scene {
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3];
-            if (recorder.getReplaySpeed() == "perfect")
-                console.log("playperfect-mode: first action at " + nextActionTime);
-            else
-                console.log("FAST");
-            //console.log(actions);
         }
 
         // What is typescript type for this?!
@@ -795,11 +855,11 @@ class PlayGame extends Phaser.Scene {
                 window.location.reload();
                 break;
             case "1":
-                console.log("fast replay")
+                //console.log("fast replay")
                 recorder.setReplaySpeed("fast")
                 break;
             case "2":
-                console.log("perfect replay")
+                //console.log("perfect replay")
                 recorder.setReplaySpeed("perfect")
                 break;
             case "`":
@@ -808,7 +868,7 @@ class PlayGame extends Phaser.Scene {
                 window.location.reload();
                 break;
             case "Escape":
-                console.log("quit recorder");
+                //;console.log("quit recorder");
                 recorder.setMode("idle")
                 recorderMode = "idle";
                 viewportText.setDepth(-1);
@@ -909,8 +969,6 @@ class PlayGame extends Phaser.Scene {
         walls[8] = "wallWinner";
         walls[9] = "wallHint";
 
-        this.load.image('table', 'assets/backgrounds/invroom - table - empty.png');
-
         this.load.image('right', 'assets/sprites/arrowRight.png');
         this.load.image('left', 'assets/sprites/arrowLeft.png');
         this.load.image('down', 'assets/sprites/arrowDown.png');
@@ -934,6 +992,10 @@ class PlayGame extends Phaser.Scene {
         this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
         this.load.image('iconFake', 'assets/sprites/icon - empty.png');
 
+        this.load.image('iconMelonWhole', 'assets/sprites/icon - melonWhole.png');
+        this.load.image('iconMelonHalf', 'assets/sprites/icon - melonHalf.png');
+        this.load.image('iconKnife', 'assets/sprites/icon - knife.png');
+
         icons[0] = "iconDonut";
         icons[1] = "iconPlate";
         icons[2] = "iconKeyB";
@@ -942,6 +1004,9 @@ class PlayGame extends Phaser.Scene {
         icons[5] = "iconDonutPlated";
         icons[6] = "iconRoach";
         icons[7] = "iconFake";
+        icons[8] = "iconMelonWhole";
+        icons[9] = "iconMelonHalf";
+        icons[10] = "iconKnife";
 
         this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.png');
         this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.png');
@@ -951,6 +1016,10 @@ class PlayGame extends Phaser.Scene {
         this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.png');
         this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.png');
 
+        this.load.image('objMelonWhole', 'assets/backgrounds/invroom - obj - melonwhole.png');
+        this.load.image('objMelonHalf', 'assets/backgrounds/invroom - obj - melonhalf.png');
+        this.load.image('objKnife', 'assets/backgrounds/invroom - obj - knife.png');
+
         obj[0] = "objDonut";
         obj[1] = "objPlate";
         obj[2] = "objKeyB";
@@ -958,6 +1027,9 @@ class PlayGame extends Phaser.Scene {
         obj[4] = "objKeyWhole";
         obj[5] = "objDonutPlated";
         obj[6] = "objRoach";
+        obj[7] = "objMelonWhole";
+        obj[8] = "objMelonHalf";
+        obj[9] = "objKnife";
 
         this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.png');
         this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.png');
@@ -966,8 +1038,12 @@ class PlayGame extends Phaser.Scene {
         this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.png');
         this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.png');
         this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.png');
-
         this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.png');
+
+        this.load.image('altobjMelonWhole', 'assets/backgrounds/invroom - altobj - melonwhole.png');
+        this.load.image('altobjMelonHalf', 'assets/backgrounds/invroom - altobj - melonhalf.png');
+        this.load.image('altobjKnife', 'assets/backgrounds/invroom - altobj - knife.png');
+
         altObj[0] = "altobjDonut";
         altObj[1] = "altobjPlateKey";
         altObj[2] = "altobjKeyB";
@@ -975,10 +1051,14 @@ class PlayGame extends Phaser.Scene {
         altObj[4] = "altobjKeyWhole";
         altObj[5] = "altobjDonutPlated";
         altObj[6] = "altobjRoach";
+        altObj[7] = "altobjMelonWhole";
+        altObj[8] = "altobjMelonHalf";
+        altObj[9] = "altobjKnife";
 
         this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.png');
         this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.png');
 
+        this.load.image('table', 'assets/backgrounds/invroom - table - empty.png');
         this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
         this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
         this.load.image('tableKey', 'assets/sprites/tableKey.png');
@@ -987,6 +1067,11 @@ class PlayGame extends Phaser.Scene {
         tableView[1] = "tablePlate";
         tableView[2] = "tableKey";
         tableView[3] = "tableEmpty";
+
+        this.load.image('melonShown', 'assets/sprites/southMelon.png');
+        this.load.image('melonPicked', 'assets/sprites/southMelonPicked.png');
+        this.load.image('knifeShown', 'assets/sprites/southKnife.png');
+        this.load.image('knifePicked', 'assets/sprites/southKnifePicked.png');
 
         this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
         this.load.image('closePlate', 'assets/sprites/closePlate.png');
@@ -1003,6 +1088,9 @@ class PlayGame extends Phaser.Scene {
         this.load.image('keyMask', 'assets/sprites/keyMask.png');
         this.load.image('doorMask', 'assets/sprites/doorMask.png');
         this.load.image('hintMask', 'assets/sprites/hintMask.png');
+
+        this.load.image('melonMask', 'assets/sprites/melonMask.png');
+        this.load.image('knifeMask', 'assets/sprites/knifeMask.png');
 
         //this.load.image('testplateShown', 'src/assets/sprites/closePlate.png'); 
         //this.load.image('testplateIcon', 'src/assets/sprites/icon - plate.png');

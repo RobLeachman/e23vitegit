@@ -64,13 +64,19 @@ class InvItem {
                 //console.log("replace " + secondItem + " with " + goodNew)
                 this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
             }
-            if (this.allSlots.combining == "bad combine:") {
+            if (this.allSlots.combining == "bad combine:") { // if the above combinations aren't the thing
                 var good1 = "objKeyA"; var good2 = "objKeyB"; var goodNew = "objKeyWhole";
                 if ((firstItem == good1 && secondItem == good2) ||
                     (firstItem == good2 && secondItem == good1)) {
                     this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
                 }
-            }                            
+            }  
+            if (this.allSlots.combining == "bad combine:") { // if the above combinations aren't the thing
+                var good1 = "objKnife"; var good2 = "objMelonWhole"; var goodNew = "objMelonHalf";
+                if ((firstItem == good1 && secondItem == good2)) {
+                    this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
+                }
+            }                                         
             if (this.allSlots.combining == "bad combine:") {
                 //console.log("failed combine")
                 // reselect the item since we turned it off above
@@ -83,7 +89,6 @@ class InvItem {
             // mark this selected icon
             this.allSlots.selectedIcon.x = 95 + this.index * 90;
             this.allSlots.selectedIcon.setDepth(1); // ??
-
 
             // When selected icon is clicked again we need to switch view modes from room to item.
             // When in item view mode if another icon is clicked switch to that item
@@ -164,8 +169,9 @@ export default class Slots {
         //console.log("ADD AT " + spot)
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
+            console.log(`${idx} ${icon.iconSprite.name.length} ${icon.iconSprite.name}`)
             // why check empty? clear just destroys the sprite and i couldn't replace it properly TODO FIX
-            if (i == -1 && (icon.iconSprite.name == "empty" || icon.iconSprite.name == "")) {
+            if (i == -1 && (icon.iconSprite.name.length == 0)) {
                 i = idx;
                 //break;
             }
@@ -247,6 +253,7 @@ export default class Slots {
             this.slotArray[clearSlot].iconSprite.destroy();
             var clearedSprite = scene.add.sprite(1000, 1075, this.emptySprite);
             clearedSprite.name == "empty"; // TODO ends up to be blank string?!
+            this.slotArray[clearSlot].iconSprite = clearedSprite;
         } else {
             throw new Error('Clear item not found ' + objName); //TODO untested
         }
