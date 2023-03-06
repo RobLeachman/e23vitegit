@@ -31,7 +31,7 @@ export default class Recorder {
     }
 
     setMode(mode: string) {
-        console.log("MODE: " + mode);
+        //console.log("MODE: " + mode);
         this.recorderMode = mode;
         setCookie("escapeRecorderMode", mode, 7); // bake for a week
     };
@@ -150,8 +150,7 @@ export default class Recorder {
         if (recInCheck == this.checksum(recIn)) {
             //console.log("Good recording " + recIn);
         } else {
-            console.log("ERROR bad recording!");
-            recIn = "ERROR";
+            throw new Error('recording cksum error');
         }
         return recIn;
     }
@@ -274,35 +273,6 @@ export default class Recorder {
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
         //console.log("OUT " + recOut);
         this.saveCookies(recOut);
-
-        //const stringified = stringify(recOut);
-        //console.log(stringified)
-        //console.log("base " + recOut.length);
-        //console.log("str  " + stringified.length);
-
-
-        /*
-                //let recOutString = JSON.stringify(recOut);
-                //console.log(recOutString);
-                //console.log("json string length " + recOutString.length)
-                let recInCheck = recOut.split('?')[0];
-                let recIn = recOut.split('?')[1];
-                let recInVersion = recOut.split('?')[2];
-                re = /#/g; recIn = recIn.replace(re, "mousemove,");
-                re = /!/g; recIn = recIn.replace(re, "mouseclick,");
-                re = /=/g; recIn = recIn.replace(re, "object=");
-                re = /\-/g; recIn = recIn.replace(re, "icon=");
-                //console.log(recording);        
-                //console.log(recIn);
-                //console.log(this.checksum(recording))
-                //console.log(this.checksum(recIn));
-                //console.log(recInCheck);
-                if (recInCheck == this.checksum(recIn)) {
-                    console.log("Good recording " + recInVersion);
-                } else {
-                    console.log("ERROR");
-                }
-        */
     }
 
     saveCookies(data: string) {

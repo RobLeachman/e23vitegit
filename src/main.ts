@@ -15,8 +15,6 @@
 
 import 'phaser';
 
-
-
 import Slots from "./objects/slots"
 import Recorder from "./objects/recorder"
 
@@ -38,7 +36,11 @@ var leftButton: Phaser.GameObjects.Sprite;
 var rightButton: Phaser.GameObjects.Sprite;
 var backButton: Phaser.GameObjects.Sprite;
 var plusButton: Phaser.GameObjects.Sprite;
+var plusModeButton: Phaser.GameObjects.Sprite;
 var failed: Phaser.GameObjects.Sprite;
+
+var fullClue: Phaser.GameObjects.Image;
+var combineClue: Phaser.GameObjects.Image;
 
 var takeItemMask: Phaser.GameObjects.Sprite;
 var viewTableMask: Phaser.GameObjects.Sprite;
@@ -56,6 +58,8 @@ var haveHalfKey = false; // don't show key part on plate back if already taken
 var doorUnlocked = false;
 var egress = false;
 var didBonus = false;
+var hasSearched = false;
+var hasCombined = false;
 
 var slots: Slots;
 
@@ -75,7 +79,6 @@ let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
 let debugging = false;
 
-// TODO not using this test crap...................
 var content = [
     "The sky above the port was the color of television, tuned to a dead channel.",
     "'It's not like I'm using,' Case heard someone say, as he shouldered his way ",
@@ -88,7 +91,7 @@ var contentString =
     "'It's not like I'm using,' Case heard someone say, as he shouldered his way " +
     "through the crowd around the door of the Chat. 'It's like my body's developed " +
     "this massive drug deficiency.' It was a Sprawl voice and a Sprawl joke."
-*/    
+*/
 
 
 
@@ -101,7 +104,6 @@ class PlayGame extends Phaser.Scene {
             this.showRecording();
         }
 
-        
         if (debugUpdateOnce) {
             debugUpdateOnce = false;
             //var txt = this.add.rexCanvasInput(50, 150, 100, 200, config);
@@ -109,7 +111,46 @@ class PlayGame extends Phaser.Scene {
             return;
 
         }
-        
+
+        // Can't combine the plate and donut if door is locked
+       if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
+           slots.combining = "bad combine:"
+       }
+        if (slots.combining.split(':')[0] == "bad combine") {
+            hasCombined = true;
+            combineClue.setDepth(-1);            
+            //console.log("BAD COMBINE")
+            slots.combining = "";
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+
+            failed.setDepth(200);
+            showXtime = this.time.now;
+        }
+        if (slots.combining.split(':')[0] == "good combine") {
+            hasCombined = true;
+            combineClue.setDepth(-1);            
+            //console.log("clear out " + slots.combining.split(':')[1])
+            slots.clearItem(this, slots.combining.split(':')[1]);
+            const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
+            //console.log("replacing " + slotRepl)
+            //slots.replaceItem(this, slots.combining.split(':')[2]);
+            slots.clearItem(this, slots.combining.split(':')[2]);
+            if (slots.combining.split(':')[3] == "objDonutPlated") {
+                slots.addIcon(this, icons[5].toString(), obj[5], altObj[5], slotRepl);
+                slots.selectItem(slots.combining.split(':')[3]);
+                didBonus = true;
+                // switch view to new goodly combined object
+                this.add.image(0, 0, obj[5]).setOrigin(0, 0);
+            } else if (slots.combining.split(':')[3] == "objKeyWhole") {
+                slots.addIcon(this, icons[4].toString(), obj[4], altObj[4], slotRepl);
+                slots.selectItem(slots.combining.split(':')[3]);
+                this.add.image(0, 0, obj[4]).setOrigin(0, 0);
+            } else {
+                slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
+            }
+            slots.combining = "";
+        }
 
         if (debugging || recorderMode == "record" || recorderMode == "replay") {
             let debugAction = "RECORDING";
@@ -184,15 +225,21 @@ class PlayGame extends Phaser.Scene {
                                 hintMask.emit('pointerdown');
                                 break;
                             }
-
-
+                            case "plusButton": {
+                                plusButton.emit('pointerdown');
+                                break;
+                            }
+                            case "plusModeButton": {
+                                plusModeButton.emit('pointerdown');
+                                break;
+                            }
                             default: {
-                                console.log("WHAT IS? " + targetObject);
+                                throw new Error('Unmapped replay action ' + targetObject);
                             }
                         }
 
                     } else if (targetType == "icon") {
-                        console.log("do icon " + targetObject);
+                        //console.log("do icon " + targetObject);
                         slots.recordedClickIt(targetObject);   // here's how we click an icon!
                     }
                 }
@@ -218,7 +265,7 @@ class PlayGame extends Phaser.Scene {
             viewportPointer.setX(1000);
         }
         if (slots.fakeClicks == 3) {
-            console.log("BRING THE ROACH");
+            //console.log("BRING THE ROACH");
             slots.clearItem(this, "fake");
             slots.fakeClicks = -1;
             slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 5); // roach
@@ -232,7 +279,7 @@ class PlayGame extends Phaser.Scene {
         }
 
         if (slots.inventoryView) {
-            slots.currentMode = "item"; // so slots object knows what is happening - needed?!
+            slots.currentMode = "item"; // so slots object knows what is happening
             if (viewWall < 5)
                 previousWall = viewWall;
             keyMask.setVisible(false);
@@ -245,6 +292,7 @@ class PlayGame extends Phaser.Scene {
                 slots.inventoryViewAlt = "altobjPlateEmpty";
             }
             if (currentWall == 5 && flipIt) {
+                hasSearched = true;
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
                 viewWall = 6; currentWall = 6;
                 // only make the piece available if seen...
@@ -284,6 +332,18 @@ class PlayGame extends Phaser.Scene {
                             plusButton.setVisible(false);
                         }
             */
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+
+            //fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
+            if (!hasSearched) {
+                fullClue.setDepth(10);
+                combineClue.setDepth(-1)
+            } else {
+                if (!hasCombined) {
+                    combineClue.setDepth(10)
+                    fullClue.setDepth(-1)
+                }
+            };
 
             takeItemMask.setVisible(false);
             viewTableMask.setVisible(false);
@@ -295,6 +355,8 @@ class PlayGame extends Phaser.Scene {
             //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
 
         } else if ((viewWall != currentWall || updateWall)) {
+            fullClue.setDepth(-1);
+            combineClue.setDepth(-1)
             if (egress) {
                 this.add.image(0, 0, walls[8]).setOrigin(0, 0);
                 leftButton.setVisible(false);
@@ -304,7 +366,7 @@ class PlayGame extends Phaser.Scene {
                 var sentence = "Nice job slugger!\nTry it again for the bonus?\nJust reload the page";
                 if (didBonus) {
                     this.add.image(360, 800, "winnerDonut")
-                    sentence = "You did it :)\nThanks for testing!";
+                    sentence = "You did it :)\n\nThanks for testing!";
                 } else {
                     failed.setVisible(true);
                     failed.setDepth(400);
@@ -364,6 +426,7 @@ class PlayGame extends Phaser.Scene {
             }
 
             plusButton.setVisible(false);
+            plusModeButton.setVisible(false);
 
             if (viewWall == 0) {
                 viewTableMask.setVisible(true); viewTableMask.setDepth(100); viewTableMask.setInteractive({ cursor: 'pointer' });
@@ -404,6 +467,9 @@ class PlayGame extends Phaser.Scene {
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, scene);
         });
+
+        fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
+        combineClue = this.add.image(0, 0, 'interfaceCombine').setOrigin(0, 0);
 
         /*
                 // So weird and frustrating. Uncomment this, observe the fillstyles go in backward
@@ -454,11 +520,11 @@ class PlayGame extends Phaser.Scene {
         leftButton = this.add.sprite(80, 950, 'left');
         rightButton = this.add.sprite(640, 950, 'right');
         backButton = this.add.sprite(300, 875, 'down').setOrigin(0, 0);
-        plusButton = this.add.sprite(80, 950, 'plus');
-        failed = this.add.sprite(80, 950, 'fail');
+        plusButton = this.add.sprite(80, 950, 'plusButton');
+        plusModeButton = this.add.sprite(80, 950, 'plusModeButton');
+        failed = this.add.sprite(640, 950, 'fail');
 
         rightButton.on('pointerdown', () => {
-            console.log("RIGHT")
             viewWall++;
             if (viewWall > 3)
                 viewWall = 0;
@@ -468,21 +534,6 @@ class PlayGame extends Phaser.Scene {
             if (viewWall < 0)
                 viewWall = 3;
         });
-        /*
-                //elsewhere
-                switch(recordedAction) { 
-                    case "rightButton": { 
-                        rightButton.emit('pointerdown');
-                       break; 
-                    } 
-                    case "leftButton": { 
-                        leftButton.emit('pointerdown'); 
-                       break; 
-                    } 
-                 } 
-        */
-
-
         backButton.on('pointerdown', () => {
             //console.log("back to " + previousWall)
             if (viewWall == 4)
@@ -494,55 +545,23 @@ class PlayGame extends Phaser.Scene {
             slots.currentMode = "room";
         });
 
+        plusModeButton.on('pointerdown', () => {
+            //console.log("combine mode cancelled");
+            slots.combining = ""; // so slots object knows what is happening
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+        });
+
 
         plusButton.on('pointerdown', () => {
-            console.log("plus button TS");
             plusButton.setVisible(false);
-            /*            
-            
-                        var combineFailed = true;
-            
-                        // could sort the names and skip the duplicate code...
-                        var good1 = "objKeyA"; var good2 = "objKeyB"; var goodNew = 4;
-                        if ((slots.inventoryViewObj == good1 && slots.otherViewObj == good2) ||
-                            (slots.inventoryViewObj == good2 && slots.otherViewObj == good1)) {
-                            
-                            slots.combiningItems(this, good1, good2);
-                            slots.addIcon(this, icons[goodNew].toString(), obj[goodNew], altObj[goodNew]); // TODO: get name from texture key
-                            slots.selectItem(this, obj[goodNew], altObj[goodNew]);
-                            combineFailed = false;
-                        } else {
-                            var good1 = "objDonut"; var good2 = "objPlate"; var goodNew = 5;
-                            if (!doorUnlocked)
-                                good1 = "no bonus combine until door is unlocked!";
-                            if ((slots.inventoryViewObj == good1 && slots.otherViewObj == good2) ||
-                                (slots.inventoryViewObj == good2 && slots.otherViewObj == good1)) {
-                                
-                                didBonus = true;
-                                slots.combiningItems(this, good1, good2);
-                                slots.addIcon(this, icons[goodNew].toString(), obj[goodNew], altObj[goodNew]); // TODO: get name from sprite
-                                slots.selectItem(this, obj[goodNew], altObj[goodNew]);
-                                combineFailed = false;
-                            }
-                        }
-            
-                        if (combineFailed) {
-                            slots.combineFail(this);
-                            failed.setDepth(200);
-                            showXtime = this.time.now;
-                        } else {
-                            slots.inventoryView = true;
-                            slots.inventoryViewObj = obj[goodNew];
-                            slots.inventoryViewAlt = altObj[goodNew];
-                            slots.otherViewObj = "";
-                        }
-            */
+            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();
+            slots.combining = "trying"; // so slots object knows what is happening
         });
 
 
         hintMask = this.add.sprite(110, 446, 'hintMask').setOrigin(0, 0);
         hintMask.on('pointerdown', () => {
-            console.log("HINT");
             viewWall = 9;
         });
 
@@ -573,12 +592,11 @@ class PlayGame extends Phaser.Scene {
             if (doorUnlocked) {
                 egress = true; // TODO doorUnlocked needs multiple states... then drop this flag
                 updateWall = true;
-                //} else if (slots.getSelected() == "objKeyWhole") {
-            } else if (slots.getSelected() == "objDonut") {
+            } else if (slots.getSelected() == "objKeyWhole") {
                 doorUnlocked = true;
                 updateWall = true;
                 //slots.clearItem(this, "objKeyWhole");
-                slots.clearItem(this, "objDonut");
+                slots.clearItem(this, "objKeyWhole");
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
             }
         });
@@ -597,7 +615,7 @@ class PlayGame extends Phaser.Scene {
                     recorder.setMode("idle")
                     recorderMode = "idle";
                 } else {
-                    console.log("RECORD IT! mode was " + recorderMode);
+                    //console.log("RECORD IT! mode was " + recorderMode);
                     recorder.setMode("record")
                     window.location.reload();
                 }
@@ -627,7 +645,7 @@ class PlayGame extends Phaser.Scene {
         //console.log("Recordermode: " + recorderMode);
         if (recorderMode == "replay") {
             recording = recorder.getRecording();
-            console.log("REPLAY");
+            //console.log("REPLAY");
 
             const actionString = recording.split(":");
             actionString.forEach((action) => {
@@ -639,7 +657,7 @@ class PlayGame extends Phaser.Scene {
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3];
-            console.log("first action at " + nextActionTime);
+            console.log("playperfect-mode: first action at " + nextActionTime);
             //console.log(actions);
         }
 
@@ -667,17 +685,17 @@ class PlayGame extends Phaser.Scene {
 
         switch (event.key) {
             case "F1":
-                console.log("new recording");
+                //console.log("new recording");
                 recorder.setMode("record")
                 window.location.reload();
                 break;
             case "`":
-                console.log("play recording");
+                //console.log("play recording");
                 recorder.setMode("replay")
                 window.location.reload();
                 break;
             case "Escape":
-                console.log("quit recorder");
+                //console.log("quit recorder");
                 recorder.setMode("idle")
                 recorderMode = "idle";
                 viewportText.setDepth(-1);
@@ -699,18 +717,18 @@ class PlayGame extends Phaser.Scene {
         text = this.add.text(32, 22, beg, { fontSize: '25px', fontFamily: 'Lucida Console', color: "#00ff00" });
         text.setDepth(9000); // use bringToTop if in a container
 
-/*
-        var graphics = this.add.graphics().setPosition(20, 0);
-        
-        graphics.fillRect(80, 300, 600, 250);
-        graphics.fillStyle(0xFF0000) // My test text is RED
-        graphics.setDepth(3000)
-        var mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
-        var text = this.add.text(150, 460, beg,
-            { fontFamily: 'Lucida Console', color: '#00ff00', fontSize: '25px', wordWrap: { width: 700 } }).setOrigin(0,0);
-        text.setMask(mask);
-        text.setDepth(5000); 
-*/               
+        /*
+                var graphics = this.add.graphics().setPosition(20, 0);
+                
+                graphics.fillRect(80, 300, 600, 250);
+                graphics.fillStyle(0xFF0000) // My test text is RED
+                graphics.setDepth(3000)
+                var mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
+                var text = this.add.text(150, 460, beg,
+                    { fontFamily: 'Lucida Console', color: '#00ff00', fontSize: '25px', wordWrap: { width: 700 } }).setOrigin(0,0);
+                text.setMask(mask);
+                text.setDepth(5000); 
+        */
 
         var black = this.add.graphics({
             x: 0,
@@ -774,7 +792,8 @@ class PlayGame extends Phaser.Scene {
         this.load.image('right', 'assets/sprites/arrowRight.png');
         this.load.image('left', 'assets/sprites/arrowLeft.png');
         this.load.image('down', 'assets/sprites/arrowDown.png');
-        this.load.image('plus', 'assets/sprites/plus.png');
+        this.load.image('plusButton', 'assets/sprites/plus - unselected.png');
+        this.load.image('plusModeButton', 'assets/sprites/plus - selected.png');
         this.load.image('fail', 'assets/sprites/fail.png');
         this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
 
@@ -835,6 +854,9 @@ class PlayGame extends Phaser.Scene {
         altObj[5] = "altobjDonutPlated";
         altObj[6] = "altobjRoach";
 
+        this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.png');
+        this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.png');
+
         this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
         this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
         this.load.image('tableKey', 'assets/sprites/tableKey.png');
@@ -855,7 +877,7 @@ class PlayGame extends Phaser.Scene {
 
         this.load.image('tableMask', 'assets/sprites/tableMask.png');
         this.load.image('takeMask', 'assets/sprites/takeMask.png');
-        this.load.image('objectMask', 'assets/sprites/object maskB00.png');
+        this.load.image('objectMask', 'assets/sprites/object-maskB.png');
         this.load.image('keyMask', 'assets/sprites/keyMask.png');
         this.load.image('doorMask', 'assets/sprites/doorMask.png');
         this.load.image('hintMask', 'assets/sprites/hintMask.png');
@@ -880,7 +902,7 @@ let config = {
         createContainer: true
     },
     disableContextMenu: true, // ready for right-click if needed
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
     scene: PlayGame
 };
 
