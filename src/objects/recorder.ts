@@ -45,6 +45,16 @@ export default class Recorder {
         return mode;
     }
 
+    setReplaySpeed(mode: string) {
+        setCookie("escapeRecorderSpeed", mode, 7); // bake for a week
+    };
+
+    getReplaySpeed() {
+        return getCookie("escapeRecorderSpeed");
+    };
+
+
+
     getSize() {
         let size = -1;
         if (this.recordingSize)
@@ -153,6 +163,17 @@ export default class Recorder {
             throw new Error('recording cksum error');
         }
         return recIn;
+    }
+
+    makeFast(recordingSlow: string) {
+        let fast = "";
+        const actionString = recordingSlow.split(":");
+        actionString.forEach((action) => {
+            let thisAction = action.split(',');
+            //fast = fast.concat(`${action[0]},${action[1]},${action[2]},${fastTime}:`);
+            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},50:`);
+        });
+        return fast;
     }
 
     getFormattedRecording(maxLineLength: number) {

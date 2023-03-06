@@ -152,23 +152,23 @@ class PlayGame extends Phaser.Scene {
             slots.combining = "";
         }
 
-        if (debugging || recorderMode == "record" || recorderMode == "replay") {
-            let debugAction = "RECORDING";
-            if (recorderMode == "replay")
-                debugAction = "REPLAY"
+        if (debugging || recorderMode == "record" || recorderMode == "replay" || recorderMode == "replayOnce") {
+            let displayDebugMode = "RECORDING";
+            if (recorderMode == "replay" || recorderMode == "replayOnce")
+                displayDebugMode = "REPLAY"
             viewportText.setText([
                 'x: ' + pointer.worldX,
                 'y: ' + pointer.worldY,
                 'rightButtonDown: ' + pointer.rightButtonDown(),
                 'isDown: ' + pointer.isDown,
                 '',
-                debugAction + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize()
+                displayDebugMode + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize()
             ]);
         }
         if (recorderMode == "record") {
             recorder.fixPointer(this.input.activePointer)
             recorder.checkPointer(this);
-        } else if (recorderMode == "replay") {
+        } else if (recorderMode == "replay" || recorderMode == "replayOnce") {
             //console.log("action " + nextActionTime + "now " + this.time.now)
             //console.log("replay " + actions[0]);
             //console.log(" at " + actions[0][3]);
@@ -248,7 +248,12 @@ class PlayGame extends Phaser.Scene {
                 //console.log(actions.length);
                 if (actions.length == 0) {
                     console.log("recorder EOJ")
+                    if (recorderMode == "replayOnce") {
+                        console.log("did once")
+                        recorder.setMode("idle");
+                    }
                     recorderMode = "idle";
+
                     viewportText.setDepth(-1);
                     recordingEndedFadeClicks = 20;
                 } else {
@@ -265,10 +270,20 @@ class PlayGame extends Phaser.Scene {
             viewportPointer.setX(1000);
         }
         if (slots.fakeClicks == 3) {
-            //console.log("BRING THE ROACH");
-            slots.clearItem(this, "fake");
-            slots.fakeClicks = -1;
+            console.log("BRING THE ROACH");
+            //slots.clearItem(this, "fake");
+            slots.fakeClicks = 4;
             slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 5); // roach
+        }
+        if (slots.fakeClicks == 10) {
+            recorder.setMode("replayOnce");
+            slots.fakeClicks = -1;
+            console.log("roach replay " + slots.getSelected());
+            if (slots.getSelected() == "objRoach")
+                recorder.setReplaySpeed("fast")
+            else
+                recorder.setReplaySpeed("perfect")
+            window.location.reload();            
         }
 
         if (showXtime > 0) {
@@ -308,8 +323,12 @@ class PlayGame extends Phaser.Scene {
                 //console.log("IDLE IT? OR REPLAY");
                 if (slots.inventoryViewObj == "objRoach") {
                     if (recorderMode == "record") {
-                        recorder.setMode("replay");
-                        window.location.reload();
+                        recorder.setMode("idle")
+                        recorderMode = "idle";
+                        this.showRecording()
+
+                        //recorder.setMode("replay");
+                        //window.location.reload();
                     } else {
                         // TODO write proper exit function, called twice and did it here wrongly
                         recorder.setMode("idle")
@@ -340,7 +359,6 @@ class PlayGame extends Phaser.Scene {
                 }
             };
             if (slots.inventoryViewObj == "objRoach") {
-                console.log("ROACH OFF")
                 fullClue.setDepth(-1);
                 combineClue.setDepth(-1)
             }
@@ -362,6 +380,13 @@ class PlayGame extends Phaser.Scene {
                 this.add.image(0, 0, walls[8]).setOrigin(0, 0);
                 leftButton.setVisible(false);
                 rightButton.setVisible(false);
+                viewportPointer.setDepth(-1);
+                viewportPointerClick.setDepth(-1);
+                let fadeClicks = 10;
+                while (fadeClicks-- > 0) {
+                    recorder.fadeClick(this);
+                }
+
                 currentWall = viewWall;
                 updateWall = false;
                 var sentence = "Nice job slugger!\nTry it again for the bonus?\nJust reload the page";
@@ -386,8 +411,11 @@ class PlayGame extends Phaser.Scene {
                 updateWall = false;
                 viewWall = currentWall;
 
-                recorder.setMode("idle")
-                recorderMode = "idle";
+                console.log("egress EOJ " + recorder.getMode())
+                if (recorderMode == "replayOnce") {
+                    recorder.setMode("idle")
+                    recorderMode = "idle";
+                }
                 viewportText.setDepth(-1);
 
                 return;
@@ -462,6 +490,68 @@ class PlayGame extends Phaser.Scene {
     }
 
     create() {
+        /*        
+                var text = this.add.text(10, 10, 'Please login to play', { color: 'white', fontFamily: 'Arial', fontSize: '32px ' });
+        
+                var element = this.add.dom(400, 600).createFromCache('nameform');
+        
+        
+                element.addListener('click');
+        
+                element.on('click', function (event:MouseEvent) {
+        
+                    if (event.target.name === 'loginButton')
+                    {
+                        var inputUsername = element.getChildByName('username');
+            
+                        //  Have they entered anything?
+                        if (inputUsername.value !== '' && inputPassword.value !== '')
+        
+                        //console.log("FORM CLICK");
+                        //console.log(element)
+                        console.log("USER")
+                        
+                        var user = element.getChildByName('username');
+                        console.dir(user.value);
+                });
+        */
+
+        /*
+        element.addListener('click');
+
+        element.on('click', function (event) {
+            if (event.target.name === 'loginButton')
+                console.log("FOO");
+        }
+        */
+
+        /*
+                console.log("FORM");
+                console.log(element.getChildByName('loginButton'))
+                
+                var user = element.getChildByName('username');
+                user.addEventListener("change", function(event) {
+                    const text = user.value;
+                    
+                  });
+        */
+
+
+        //element.setPerspective(800);
+        /*        
+                element.on('click', () => {
+                    console.log("submit")
+        
+                    var inputUsername = element.getChildByName('username');
+                    var inputPassword = element.getChildByName('password');
+        
+                    //  Have they entered anything?
+                    console.log("INPUT " + inputUsername)
+        
+                });
+        */
+
+
 
         let scene = this;
         // @ts-ignore   not using pointer but don't want to break right now while trying for build
@@ -504,11 +594,12 @@ class PlayGame extends Phaser.Scene {
                 text.setDepth(5000);
         */
 
-
+        
         this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
+        console.log("Recorder mode=" + recorder.getMode())
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
@@ -644,9 +735,12 @@ class PlayGame extends Phaser.Scene {
 
         recorderMode = recorder.getMode();
         //console.log("Recordermode: " + recorderMode);
-        if (recorderMode == "replay") {
+        if (recorderMode == "replay" || recorderMode == "replayOnce") {
             recording = recorder.getRecording();
-            //console.log("REPLAY");
+            if (recorder.getReplaySpeed() == "fast") {
+                recording = recorder.makeFast(recording);
+            }
+            console.log("REPLAY " + recorderMode);
 
             const actionString = recording.split(":");
             actionString.forEach((action) => {
@@ -658,7 +752,10 @@ class PlayGame extends Phaser.Scene {
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3];
-            console.log("playperfect-mode: first action at " + nextActionTime);
+            if (recorder.getReplaySpeed() == "perfect")
+                console.log("playperfect-mode: first action at " + nextActionTime);
+            else
+                console.log("FAST");
             //console.log(actions);
         }
 
@@ -690,13 +787,26 @@ class PlayGame extends Phaser.Scene {
                 recorder.setMode("record")
                 window.location.reload();
                 break;
+            case "F2":
+                //console.log("new recording");
+                recorder.setMode("replayOnce")
+                window.location.reload();
+                break;
+            case "1":
+                console.log("fast replay")
+                recorder.setReplaySpeed("fast")
+                break;
+            case "2":
+                console.log("perfect replay")
+                recorder.setReplaySpeed("perfect")
+                break;
             case "`":
                 //console.log("play recording");
                 recorder.setMode("replay")
                 window.location.reload();
                 break;
             case "Escape":
-                //console.log("quit recorder");
+                console.log("quit recorder");
                 recorder.setMode("idle")
                 recorderMode = "idle";
                 viewportText.setDepth(-1);
@@ -706,7 +816,14 @@ class PlayGame extends Phaser.Scene {
     }
 
     showRecording() {
-        let style = 'background-color: #000000; color:white; width: 570px; height: 300px; font: 8px Monaco; font-family: "Lucida Console", "Courier New", monospace;';
+        recorder.setMode("idle")
+        recorderMode = "idle";
+        viewportText.setDepth(-1);
+        viewportPointer.setDepth(-1);
+        viewportPointerClick.setDepth(-1);
+
+
+        let style = 'background-color: #000000; color:white; width: 570px; height: 150px; font: 8px Monaco; font-family: "Lucida Console", "Courier New", monospace;';
         this.add.dom(300, 250, 'div', style, recorder.getFormattedRecording(110));
         //style = 'background-color: #000000; color:yellow; width: 570px; height: 90px; font: 20px Monaco; font-family: "Lucida Console", "Courier New", monospace;';
         //this.add.dom(300, 50, 'div', style, "Please send this to Quazar. Copy and paste into email or whatevs... thank you!\n\ncallmerob@gmail.com");
@@ -735,14 +852,13 @@ class PlayGame extends Phaser.Scene {
             x: 0,
             y: 0
         });
-        black.fillStyle(0x0f0000);
+        black.fillStyle(0x000000);
         black.fillRect(0, 0, 720, 1280);
         black.setDepth(3000);
 
         invBar.setDepth(0);
         slots.clearAll(this);
     }
-
 
     // https://codereview.stackexchange.com/questions/171832/text-wrapping-function-in-javascript
     formatTextWrap(text: string, maxLineLength: number) {
@@ -764,6 +880,9 @@ class PlayGame extends Phaser.Scene {
 
     preload() {
         //this.load.plugin('rexcanvasinputplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasinputplugin.min.js', true);
+        this.load.html('nameform', 'assets/text/example_loginform.html');
+
+
 
         this.load.image('myViewport', 'assets/backgrounds/viewport.png');
         this.load.image('clckrLoc', 'assets/sprites/pointer.png');
