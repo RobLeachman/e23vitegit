@@ -113,12 +113,12 @@ class PlayGame extends Phaser.Scene {
         }
 
         // Can't combine the plate and donut if door is locked
-       if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
-           slots.combining = "bad combine:"
-       }
+        if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
+            slots.combining = "bad combine:"
+        }
         if (slots.combining.split(':')[0] == "bad combine") {
             hasCombined = true;
-            combineClue.setDepth(-1);            
+            combineClue.setDepth(-1);
             //console.log("BAD COMBINE")
             slots.combining = "";
             plusModeButton.setVisible(false);
@@ -129,7 +129,7 @@ class PlayGame extends Phaser.Scene {
         }
         if (slots.combining.split(':')[0] == "good combine") {
             hasCombined = true;
-            combineClue.setDepth(-1);            
+            combineClue.setDepth(-1);
             //console.log("clear out " + slots.combining.split(':')[1])
             slots.clearItem(this, slots.combining.split(':')[1]);
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
@@ -278,10 +278,13 @@ class PlayGame extends Phaser.Scene {
             }
         }
 
+        // VIEW INVENTORY OR ROOM
         if (slots.inventoryView) {
+
             slots.currentMode = "item"; // so slots object knows what is happening
             if (viewWall < 5)
                 previousWall = viewWall;
+            // only show key when looking at back of plate
             keyMask.setVisible(false);
             if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
                 slots.inventoryViewAlt = "altobjPlateEmpty";
@@ -324,17 +327,9 @@ class PlayGame extends Phaser.Scene {
             leftButton.setVisible(false);
             rightButton.setVisible(false);
             backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
-
-            /* Will fix combinations, after recorder...
-                        if (slots.otherViewObj.length > 0) {
-                            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
-                        } else {
-                            plusButton.setVisible(false);
-                        }
-            */
+            console.log(slots.inventoryViewObj)
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
-            //fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
             if (!hasSearched) {
                 fullClue.setDepth(10);
                 combineClue.setDepth(-1)
@@ -344,6 +339,12 @@ class PlayGame extends Phaser.Scene {
                     fullClue.setDepth(-1)
                 }
             };
+            if (slots.inventoryViewObj == "objRoach") {
+                console.log("ROACH OFF")
+                fullClue.setDepth(-1);
+                combineClue.setDepth(-1)
+            }
+
 
             takeItemMask.setVisible(false);
             viewTableMask.setVisible(false);
