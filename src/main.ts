@@ -150,6 +150,8 @@ class PlayGame extends Phaser.Scene {
                 slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
             slots.combining = "";
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
         }
 
         if (debugging || recorderMode == "record" || recorderMode == "replay" || recorderMode == "replayOnce") {

@@ -15,7 +15,7 @@ https://saricden.com/how-to-setup-a-phaser-3-project-with-vite
 
 Init dev environment:
 
-npm install phaser
+npm install phaser (or try just npm install?)
 
 
 OLD
