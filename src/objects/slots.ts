@@ -20,7 +20,11 @@ class InvItem {
         recorder: Recorder) {
 
         this.scene = scene;
-        this.iconSprite = this.scene.add.sprite(95 + index * 90, 1075, iconSpriteImage).setOrigin(0, 0);
+        this.iconSprite = this.scene.add.sprite(112 + index * 83, 1078, iconSpriteImage).setOrigin(0, 0);
+        if (index > 5) {
+            this.iconSprite.setX(112 + (index - 6) * 83)
+            this.iconSprite.setY(1161)
+        }
         this.iconSprite.on('pointerdown', this.clickIt, this);
 
         this.index = index;
@@ -70,13 +74,13 @@ class InvItem {
                     (firstItem == good2 && secondItem == good1)) {
                     this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
                 }
-            }  
+            }
             if (this.allSlots.combining == "bad combine:") { // if the above combinations aren't the thing
                 var good1 = "objKnife"; var good2 = "objMelonWhole"; var goodNew = "objMelonHalf";
                 if ((firstItem == good1 && secondItem == good2)) {
                     this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
                 }
-            }                                         
+            }
             if (this.allSlots.combining == "bad combine:") {
                 //console.log("failed combine")
                 // reselect the item since we turned it off above
@@ -87,8 +91,13 @@ class InvItem {
         } else {
             this.selected = true;
             // mark this selected icon
-            this.allSlots.selectedIcon.x = 95 + this.index * 90;
+            this.allSlots.selectedIcon.x = 112 + this.index * 83;
+            this.allSlots.selectedIcon.setY(1078)
             this.allSlots.selectedIcon.setDepth(1); // ??
+            if (this.index > 5) {
+                this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83)
+                this.allSlots.selectedIcon.setY(1161)
+            }            
 
             // When selected icon is clicked again we need to switch view modes from room to item.
             // When in item view mode if another icon is clicked switch to that item
@@ -129,11 +138,11 @@ export default class Slots {
         recorder: Recorder) {
 
         this.emptySprite = slotIconSprite;
-        this.selectedIcon = scene.add.sprite(1000, 1075, selectSprite).setOrigin(0, 0);
-        this.selectedSecondIcon = scene.add.sprite(1000, 1075, selectSecond).setOrigin(0, 0);
+        this.selectedIcon = scene.add.sprite(1000, 1078, selectSprite).setOrigin(0, 0); //??
+        this.selectedSecondIcon = scene.add.sprite(1000, 1078, selectSecond).setOrigin(0, 0); //TODO remove second, it is stupid
         this.recorder = recorder;
 
-        for (var i = 0; i < 6; i++) {
+        for (var i = 0; i < 12; i++) {
             let slotItem = new InvItem(scene, i, slotIconSprite, this, this.recorder); // empty sprite image, or select
             this.slotArray.push(slotItem);
 
@@ -169,8 +178,6 @@ export default class Slots {
         //console.log("ADD AT " + spot)
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
-            console.log(`${idx} ${icon.iconSprite.name.length} ${icon.iconSprite.name}`)
-            // why check empty? clear just destroys the sprite and i couldn't replace it properly TODO FIX
             if (i == -1 && (icon.iconSprite.name.length == 0)) {
                 i = idx;
                 //break;
@@ -184,7 +191,11 @@ export default class Slots {
 
         this.slotArray[i].iconSprite.destroy();
         this.slotArray[i].iconSprite =
-            scene.add.sprite(95 + i * 90, 1075, iconSpriteName).setOrigin(0, 0);
+            scene.add.sprite(112 + i * 83, 1078, iconSpriteName).setOrigin(0, 0);
+        if (i > 5) {
+            this.slotArray[i].iconSprite.setX(112 + (i - 6) * 83)
+            this.slotArray[i].iconSprite.setY(1161)
+        }
         this.slotArray[i].iconSprite.name = objectView;
         this.slotArray[i].index = i;
         this.slotArray[i].name = objectView;
@@ -219,12 +230,16 @@ export default class Slots {
     selectItem(objName: string) {
         // Find the selected item
         var k = -1;
-        for (k = 0; k < 6; k++) {
+        for (k = 0; k < 12; k++) {
             if (this.slotArray[k].iconSprite.name == objName) {
                 break;
             }
         }
-        this.selectedIcon.setX(95 + k * 90);
+        this.selectedIcon.setX(112 + k * 83);
+        if (k > 5) {
+            this.selectedIcon.setX(112 + (k - 6) * 83)
+            this.selectedIcon.setY(1161)
+        }
         this.slotArray[k].selected = true;
         //console.log("selected item=" + k)
         return k;
@@ -251,7 +266,11 @@ export default class Slots {
 
         if (clearSlot > -1) {
             this.slotArray[clearSlot].iconSprite.destroy();
-            var clearedSprite = scene.add.sprite(1000, 1075, this.emptySprite);
+            var clearedSprite = scene.add.sprite(1000, 1078, this.emptySprite);
+            if (clearSlot > 5) {
+                clearedSprite.setX(112 + (clearSlot-6) * 83)
+                clearedSprite.setY(1161)
+            }
             clearedSprite.name == "empty"; // TODO ends up to be blank string?!
             this.slotArray[clearSlot].iconSprite = clearedSprite;
         } else {

@@ -169,6 +169,7 @@ class PlayGame extends Phaser.Scene {
             slots.combining = "";
             plusModeButton.setVisible(false);
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            viewWall = 5; currentWall = 5;
             //updateWall = true;
         }
 
@@ -301,7 +302,7 @@ class PlayGame extends Phaser.Scene {
             //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
-            slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 5); // roach
+            slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 11); // roach
         }
         if (slots.fakeClicks == 10) {
             recorder.setMode("replayOnce");
@@ -323,7 +324,6 @@ class PlayGame extends Phaser.Scene {
 
         // VIEW INVENTORY OR ROOM
         if (slots.inventoryView) {
-
             slots.currentMode = "item"; // so slots object knows what is happening
             if (viewWall < 5)
                 previousWall = viewWall;
@@ -464,7 +464,7 @@ class PlayGame extends Phaser.Scene {
                 previousWall = 2;
 
             slots.displaySlots(); // TODO: is this really required every time the wall changes?
-            invBar.setDepth(100); // TODO: surely no.
+            invBar.setDepth(100); 
             currentWall = viewWall;
             updateWall = false;
 
@@ -658,7 +658,7 @@ class PlayGame extends Phaser.Scene {
         slots.displaySlots();
         slots.currentMode = "room";
 
-        invBar = this.add.sprite(0, 1040, 'inventory').setOrigin(0, 0);
+        invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
         leftButton = this.add.sprite(80, 950, 'left');
         rightButton = this.add.sprite(640, 950, 'right');
         backButton = this.add.sprite(300, 875, 'down').setOrigin(0, 0);
@@ -795,7 +795,7 @@ class PlayGame extends Phaser.Scene {
             slots.addIcon(this, icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
         });
 
-        slots.addIcon(this, icons[7].toString(), "fake", "fake", 4); // TODO: get name from sprite?!
+        slots.addIcon(this, icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
 
         // Debug recorder debugger
         viewportText = this.add.text(10, 10, '');
