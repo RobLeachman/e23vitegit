@@ -19,7 +19,7 @@ import Recorder from "./objects/recorder"
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let debugInput = false;
+let debugInput = true;
 let debugUpdateOnce = false;
 
 var viewWall = 2;
@@ -502,6 +502,13 @@ class PlayGame extends Phaser.Scene {
                     recorder.setMode("idle")
                     recorderMode = "idle";
                 }
+
+                if (recorderMode == "record") {
+                    recorder.setMode("idle")
+                    recorderMode = "idle";
+                    this.showRecording()
+                }
+
                 viewportText.setDepth(-1);
 
                 return;
