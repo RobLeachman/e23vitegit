@@ -19,7 +19,7 @@ import Recorder from "./objects/recorder"
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let debugInput = false;
+let debugInput = true;
 let debugUpdateOnce = false;
 
 var viewWall = 2;
@@ -127,11 +127,12 @@ class PlayGame extends Phaser.Scene {
         // with luck will need version checking later
         let recInVersion = output.split('?')[2];
         let recIn = output.split('?')[1];
-        console.log("REC IN " + recIn)
+        console.log("REC IN parsing" + recIn);
         if (recIn === undefined) {
-            inputText.text = "ERROR";
+            inputText.text = "error";
             return;
         }
+
         re = /mousemove,/g; recIn = recIn.replace(re, "#");
         re = /#/g; recIn = recIn.replace(re, "mousemove,");
         re = /!/g; recIn = recIn.replace(re, "mouseclick,");
@@ -595,6 +596,22 @@ class PlayGame extends Phaser.Scene {
 
     create() {
 
+        if (debugInput) {
+            inputText = new InputText(this, 200, 200, 100, 100, {
+                type: 'textarea',
+                text: 'init',
+                fontSize: '20px',
+            });
+        } else {
+            /*
+            inputText = new InputText(this, 0, 0, 0, 0, {
+                type: 'textarea',
+                text: '',
+                fontSize: '1px',
+            });            
+            */
+        }
+
 
 
 
@@ -706,25 +723,7 @@ class PlayGame extends Phaser.Scene {
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
-        console.log("Recorder mode=" + recorder.getMode());
-
-        if (debugInput && recorder.getMode() != "replay") {
-            inputText = new InputText(this, 100, 100, 100, 100, {
-                type: 'textarea',
-                text: 'init',
-                fontSize: '24px',
-            });
-        } else {
-            inputText = new InputText(this, 0, 0, 0, 0, {
-                type: 'textarea',
-                text: 'init',
-                fontSize: '24px',
-            });
-        }
-        this.add.existing(inputText);
-
-
-
+        //console.log("Recorder mode=" + recorder.getMode())
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;

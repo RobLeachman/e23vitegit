@@ -145,7 +145,8 @@ export default class Recorder {
             recordingIn += cookie.split('|')[0];;
             eof = cookie.split('|')[1];
         }
-        //console.log(recordingIn);
+        console.log("COOKIE RECORDING IN");
+        console.log(recordingIn);
         let recInCheck = recordingIn.split('?')[0];
         // @ts-ignore
         // with luck will need version checking later
@@ -191,14 +192,17 @@ export default class Recorder {
         while (inStr.length > 0) {
             if (inStr.length == recOut.length) {
                 out = out + inStr.substring(0, maxLineLength - 9) + "\n";
-                inStr = inStr.substring(maxLineLength - 15,);
+                inStr = inStr.substring(maxLineLength - 9,);
             } else {
                 out = out + inStr.substring(0, maxLineLength) + "\n";
                 inStr = inStr.substring(maxLineLength,);
             }
         }
 
-        recOut = "\n\n\n\n\n\n____________\n" + this.checksum(recIn) + "?" + out + "?v1\n___________";
+        recOut = "\n\n\n\n\n\n____________\n____________\n____________\n" + this.checksum(recIn) + "?" + out + "?v1\n___________";
+
+        console.log("RECORDED")
+        console.log(recIn)
 
         return recOut;
     }
@@ -292,7 +296,7 @@ export default class Recorder {
         re = /object=/g; recOut = recOut.replace(re, "=");
         re = /icon=/g; recOut = recOut.replace(re, "\-");
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
-        //console.log("OUT " + recOut);
+        console.log("RECORDING OUT " + recOut);
         this.saveCookies(recOut);
     }
 
