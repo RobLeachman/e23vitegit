@@ -553,9 +553,9 @@ export class PlayGame extends Phaser.Scene {
                 this.add.sprite(540, 650, tableView[tableState]).setOrigin(0, 0);
             if (viewWall == 2) {
                 if (!haveKnife)
-                    this.add.sprite(312, 980, "knifeShown").setOrigin(0, 0);
+                    this.add.sprite(493, 555, "knifeShown").setOrigin(0, 0);
                 if (!haveMelon)
-                    this.add.sprite(487, 786, "melonShown").setOrigin(0, 0);
+                    this.add.sprite(349, 602, "melonShown").setOrigin(0, 0);
                     
             }
 
@@ -758,7 +758,7 @@ export class PlayGame extends Phaser.Scene {
 
         });
 
-        melonMask = this.add.sprite(487, 786, 'melonMask').setOrigin(0, 0);
+        melonMask = this.add.sprite(339, 590, 'melonMask').setOrigin(0, 0);
         melonMask.on('pointerdown', () => {
             haveMelon = true;
 
@@ -766,7 +766,7 @@ export class PlayGame extends Phaser.Scene {
             this.add.sprite(487, 786, "melonPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
-        knifeMask = this.add.sprite(312, 980, 'knifeMask').setOrigin(0, 0);
+        knifeMask = this.add.sprite(493, 555, 'knifeMask').setOrigin(0, 0);
         knifeMask.on('pointerdown', () => {
             haveKnife = true;
 
