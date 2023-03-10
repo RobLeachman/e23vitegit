@@ -556,6 +556,7 @@ export class PlayGame extends Phaser.Scene {
                     this.add.sprite(312, 980, "knifeShown").setOrigin(0, 0);
                 if (!haveMelon)
                     this.add.sprite(487, 786, "melonShown").setOrigin(0, 0);
+                    
             }
 
             if (viewWall == 4)
@@ -968,22 +969,6 @@ export class PlayGame extends Phaser.Scene {
 
 
     preload() {
-        //this.load.plugin('rexcanvasinputplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasinputplugin.min.js', true);
-        this.load.html('nameform', 'assets/text/example_loginform.html');
-
-
-
-        this.load.image('myViewport', 'assets/backgrounds/viewport.png');
-        this.load.image('clckrLoc', 'assets/sprites/pointer.png');
-        this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
-
-        this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.png');
-        this.load.image('wall2', 'assets/backgrounds/invroom - room - west.png');
-        this.load.image('wall3', 'assets/backgrounds/invroom - room - south.png');
-        this.load.image('wall4', 'assets/backgrounds/invroom - room - east.png');
-        this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.png');
-        this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.png');
-        this.load.image('wallHint', 'assets/backgrounds/invroom - help1 - background.png');
 
         walls[0] = "wall1";
         walls[1] = "wall2";
@@ -996,32 +981,6 @@ export class PlayGame extends Phaser.Scene {
         walls[8] = "wallWinner";
         walls[9] = "wallHint";
 
-        this.load.image('right', 'assets/sprites/arrowRight.png');
-        this.load.image('left', 'assets/sprites/arrowLeft.png');
-        this.load.image('down', 'assets/sprites/arrowDown.png');
-        this.load.image('plusButton', 'assets/sprites/plus - unselected.png');
-        this.load.image('plusModeButton', 'assets/sprites/plus - selected.png');
-        this.load.image('fail', 'assets/sprites/fail.png');
-        this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
-
-        this.load.image('inventory', 'assets/sprites/inventory cells.png');
-
-        this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
-        this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
-        this.load.image('iconSelectedSecond', 'assets/sprites/icon - selectedSecond.png');
-
-        this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
-        this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
-        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
-        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.png');
-        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.png');
-        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
-        this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
-        this.load.image('iconFake', 'assets/sprites/icon - empty.png');
-
-        this.load.image('iconMelonWhole', 'assets/sprites/icon - melonWhole.png');
-        this.load.image('iconMelonHalf', 'assets/sprites/icon - melonHalf.png');
-        this.load.image('iconKnife', 'assets/sprites/icon - knife.png');
 
         icons[0] = "iconDonut";
         icons[1] = "iconPlate";
@@ -1035,17 +994,6 @@ export class PlayGame extends Phaser.Scene {
         icons[9] = "iconMelonHalf";
         icons[10] = "iconKnife";
 
-        this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.png');
-        this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.png');
-        this.load.image('objKeyA', 'assets/backgrounds/invroom - obj - keyA.png');
-        this.load.image('objKeyB', 'assets/backgrounds/invroom - obj - keyB.png');
-        this.load.image('objKeyWhole', 'assets/backgrounds/invroom - obj - keyWhole.png');
-        this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.png');
-        this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.png');
-
-        this.load.image('objMelonWhole', 'assets/backgrounds/invroom - obj - melonwhole.png');
-        this.load.image('objMelonHalf', 'assets/backgrounds/invroom - obj - melonhalf.png');
-        this.load.image('objKnife', 'assets/backgrounds/invroom - obj - knife.png');
 
         obj[0] = "objDonut";
         obj[1] = "objPlate";
@@ -1058,18 +1006,6 @@ export class PlayGame extends Phaser.Scene {
         obj[8] = "objMelonHalf";
         obj[9] = "objKnife";
 
-        this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.png');
-        this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.png');
-        this.load.image('altobjKeyA', 'assets/backgrounds/invroom - altobj - keyA.png');
-        this.load.image('altobjKeyB', 'assets/backgrounds/invroom - altobj - keyB.png');
-        this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.png');
-        this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.png');
-        this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.png');
-        this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.png');
-
-        this.load.image('altobjMelonWhole', 'assets/backgrounds/invroom - altobj - melonwhole.png');
-        this.load.image('altobjMelonHalf', 'assets/backgrounds/invroom - altobj - melonhalf.png');
-        this.load.image('altobjKnife', 'assets/backgrounds/invroom - altobj - knife.png');
 
         altObj[0] = "altobjDonut";
         altObj[1] = "altobjPlateKey";
@@ -1082,74 +1018,18 @@ export class PlayGame extends Phaser.Scene {
         altObj[8] = "altobjMelonHalf";
         altObj[9] = "altobjKnife";
 
-        this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.png');
-        this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.png');
-
-        this.load.image('table', 'assets/backgrounds/invroom - table - empty.png');
-        this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
-        this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
-        this.load.image('tableKey', 'assets/sprites/tableKey.png');
-        this.load.image('tableEmpty', 'assets/sprites/tableEmpty.png');
         tableView[0] = "tableDonut";
         tableView[1] = "tablePlate";
         tableView[2] = "tableKey";
         tableView[3] = "tableEmpty";
 
-        this.load.image('melonShown', 'assets/sprites/southMelon.png');
-        this.load.image('melonPicked', 'assets/sprites/southMelonPicked.png');
-        this.load.image('knifeShown', 'assets/sprites/southKnife.png');
-        this.load.image('knifePicked', 'assets/sprites/southKnifePicked.png');
-
-        this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
-        this.load.image('closePlate', 'assets/sprites/closePlate.png');
-        this.load.image('closeKey', 'assets/sprites/closeKey.png');
-        this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
         closeView[0] = "closeDonut"
         closeView[1] = "closePlate"
         closeView[2] = "closeKey"
         closeView[3] = "closeEmpty"
 
-        this.load.image('tableMask', 'assets/sprites/tableMask.png');
-        this.load.image('takeMask', 'assets/sprites/takeMask.png');
-        this.load.image('objectMask', 'assets/sprites/object-maskB.png');
-        this.load.image('keyMask', 'assets/sprites/keyMask.png');
-        this.load.image('doorMask', 'assets/sprites/doorMask.png');
-        this.load.image('hintMask', 'assets/sprites/hintMask.png');
-
-        this.load.image('melonMask', 'assets/sprites/melonMask.png');
-        this.load.image('knifeMask', 'assets/sprites/knifeMask.png');
 
         //this.load.image('testplateShown', 'src/assets/sprites/closePlate.png'); 
         //this.load.image('testplateIcon', 'src/assets/sprites/icon - plate.png');
     }
 }
-
-//let w = window.innerWidth;
-//let h = window.innerHeight;
-
-let config = {
-    type: Phaser.WEBGL,
-    //type: Phaser.CANVAS,
-    backgroundColor: '#222222',
-    scale: {
-        mode: Phaser.Scale.FIT,
-        width: 720,
-        height: 1280,
-        parent: 'thegame',
-    },
-    dom: {
-        createContainer: true
-    },
-    disableContextMenu: true, // ready for right-click if needed
-    autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
-    plugins: {
-        scene: [{
-            key: 'rexInputText',
-            plugin: InputText,
-            mapping: 'rexText'
-        }]
-    },
-    scene: PlayGame
-};
-
-new Phaser.Game(config);

@@ -15,8 +15,6 @@ import { PlayGame } from './scenes/main';
  *
 */
 
-
-
 // TODO had to fudge this for TS
 /* yannick's https://github.com/yandeu/phaser3-optimal-resolution */
 //const roundHalf = num => Math.round(num * 2) / 2;
@@ -45,10 +43,12 @@ export const HEIGHT = 480 * DPR;
 //TODO test this, had to fudge for TS
 export const assetsDPR =  Math.round((Math.min(Math.max(HEIGHT / 480, 1), 4) * 2) / 2);
 
+/*
 console.log('DPR = ', DPR);
 console.log('assetsDPR = ', assetsDPR);
 console.log('WIDTH = ', WIDTH);
 console.log('HEIGHT = ', HEIGHT);
+*/
 
 let gameConfig = {
     type: Phaser.WEBGL,
