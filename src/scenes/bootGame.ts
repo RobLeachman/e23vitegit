@@ -70,9 +70,9 @@ export class BootGame extends Phaser.Scene{
         this.load.image('clckrLoc', 'assets/sprites/pointer.webp');
         this.load.image('clckrClk', 'assets/sprites/pointerClicked.webp');
 
-        this.load.image('right', 'assets/sprites/arrowRight.webp');
-        this.load.image('left', 'assets/sprites/arrowLeft.webp');
-        this.load.image('down', 'assets/sprites/arrowDown.webp');
+        this.load.image('rightButton', 'assets/sprites/arrowRight.webp');
+        this.load.image('leftButton', 'assets/sprites/arrowLeft.webp');
+        this.load.image('backButton', 'assets/sprites/arrowDown.webp');
         this.load.image('plusButton', 'assets/sprites/plus - unselected.webp');
         this.load.image('plusModeButton', 'assets/sprites/plus - selected.webp');
         this.load.image('fail', 'assets/sprites/fail.webp');

@@ -33,6 +33,8 @@ const closeView = new Array();
 var currentWall = -1;
 var previousWall = -1;
 
+const dictionary = new Map<string, Phaser.GameObjects.Sprite>();
+
 var invBar: Phaser.GameObjects.Sprite;
 var leftButton: Phaser.GameObjects.Sprite;
 var rightButton: Phaser.GameObjects.Sprite;
@@ -44,9 +46,9 @@ var failed: Phaser.GameObjects.Sprite;
 var fullClue: Phaser.GameObjects.Image;
 var combineClue: Phaser.GameObjects.Image;
 
-var takeItemMask: Phaser.GameObjects.Sprite;
-var viewTableMask: Phaser.GameObjects.Sprite;
-var viewDoorMask: Phaser.GameObjects.Sprite;
+var takeMask: Phaser.GameObjects.Sprite;
+var tableMask: Phaser.GameObjects.Sprite;
+var doorMask: Phaser.GameObjects.Sprite;
 var objectMask: Phaser.GameObjects.Sprite;
 var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
@@ -177,7 +179,6 @@ export class PlayGame extends Phaser.Scene {
         }
 
         this.input.keyboard.on('keydown', this.handleKey);
-        //console.log("rightright");
         if (this.input.activePointer.rightButtonDown()) {
             this.showRecording();
         }
@@ -274,66 +275,9 @@ export class PlayGame extends Phaser.Scene {
                     let targetType = target.split('=')[0];
                     let targetObject = target.split('=')[1];
                     if (targetType == "object") {
-                        //console.log("do object " + targetObject);
-                        //elsewhere
-                        switch (targetObject) {
-                            case "right": {
-                                rightButton.emit('pointerdown');
-                                break;
-                            }
-                            case "left": {
-                                leftButton.emit('pointerdown');
-                                break;
-                            }
-                            case "down": {
-                                backButton.emit('pointerdown');
-                                break;
-                            }
-                            case "tableMask": {
-                                viewTableMask.emit('pointerdown');
-                                break;
-                            }
-                            case "takeMask": {
-                                takeItemMask.emit('pointerdown');
-                                break;
-                            }
-                            case "objectMask": {
-                                objectMask.emit('pointerdown');
-                                break;
-                            }
-                            case "keyMask": {
-                                keyMask.emit('pointerdown');
-                                break;
-                            }
-                            case "doorMask": {
-                                viewDoorMask.emit('pointerdown');
-                                break;
-                            }
-                            case "hintMask": {
-                                hintMask.emit('pointerdown');
-                                break;
-                            }
-                            case "battMask": {
-                                battMask.emit('pointerdown');
-                                break;
-                            }
-                            case "zotMask": {
-                                zotMask.emit('pointerdown');
-                                break;
-                            }
-                            case "plusButton": {
-                                plusButton.emit('pointerdown');
-                                break;
-                            }
-                            case "plusModeButton": {
-                                plusModeButton.emit('pointerdown');
-                                break;
-                            }
-                            default: {
-                                throw new Error('Unmapped replay action ' + targetObject);
-                            }
-                        }
-
+                        // TODO much blood was spilt here. Check unmapped object.
+                        let object = dictionary.get(targetObject);
+                        object?.emit('pointerdown')     
                     } else if (targetType == "icon") {
                         //console.log("do icon " + targetObject);
                         slots.recordedClickIt(targetObject);   // here's how we click an icon!
@@ -457,9 +401,9 @@ export class PlayGame extends Phaser.Scene {
                 combineClue.setDepth(-1)
             }
 
-            takeItemMask.setVisible(false);
-            viewTableMask.setVisible(false);
-            viewDoorMask.setVisible(false);
+            takeMask.setVisible(false);
+            tableMask.setVisible(false);
+            doorMask.setVisible(false);
             battMask.setVisible(false);
             zotMask.setVisible(false);
 
@@ -499,9 +443,9 @@ export class PlayGame extends Phaser.Scene {
 
                 invBar.setDepth(0);
                 slots.clearAll(this);
-                takeItemMask.setVisible(false);
-                viewTableMask.setVisible(false);
-                viewDoorMask.setVisible(false);
+                takeMask.setVisible(false);
+                tableMask.setVisible(false);
+                doorMask.setVisible(false);
                 battMask.setVisible(false);
                 zotMask.setVisible(false);
 
@@ -569,14 +513,14 @@ export class PlayGame extends Phaser.Scene {
             plusModeButton.setVisible(false);
 
             if (viewWall == 0) {
-                viewTableMask.setVisible(true); viewTableMask.setDepth(100); viewTableMask.setInteractive({ cursor: 'pointer' });
-                viewDoorMask.setVisible(true); viewDoorMask.setDepth(100); viewDoorMask.setInteractive({ cursor: 'pointer' });
+                tableMask.setVisible(true); tableMask.setDepth(100); tableMask.setInteractive({ cursor: 'pointer' });
+                doorMask.setVisible(true); doorMask.setDepth(100); doorMask.setInteractive({ cursor: 'pointer' });
 
-                //viewDoorMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-                viewDoorMask.input.cursor = 'pointer';
+                //doorMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
+                doorMask.input.cursor = 'pointer';
             } else {
-                viewTableMask.setVisible(false);
-                viewDoorMask.setVisible(false);
+                tableMask.setVisible(false);
+                doorMask.setVisible(false);
             }
 
             if (viewWall == 2) {
@@ -595,17 +539,17 @@ export class PlayGame extends Phaser.Scene {
                 zotMask.setVisible(false);
 
             if (viewWall == 4) { // the table
-                //takeItemMask.setVisible(true); takeItemMask.setDepth(100); takeItemMask.setInteractive();
-                //takeItemMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-                takeItemMask.setVisible(true); takeItemMask.setDepth(100);
+                //takeMask.setVisible(true); takeMask.setDepth(100); takeMask.setInteractive();
+                //takeMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
+                takeMask.setVisible(true); takeMask.setDepth(100);
                 // pointer cursor if stuff remains on table, else default, is how this is done
-                takeItemMask.setInteractive();
+                takeMask.setInteractive();
                 if (tableState > 2)
-                    takeItemMask.input.cursor = 'default';
+                    takeMask.input.cursor = 'default';
                 else
-                    takeItemMask.input.cursor = 'pointer';
+                    takeMask.input.cursor = 'pointer';
             } else {
-                takeItemMask.setVisible(false);
+                takeMask.setVisible(false);
             }
             objectMask.setVisible(false);
         }
@@ -682,11 +626,16 @@ export class PlayGame extends Phaser.Scene {
         slots.currentMode = "room";
 
         invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
-        leftButton = this.add.sprite(80, 950, 'left');
-        rightButton = this.add.sprite(640, 950, 'right');
-        backButton = this.add.sprite(300, 875, 'down').setOrigin(0, 0);
+        leftButton = this.add.sprite(80, 950, 'leftButton');
+        dictionary.set('leftButton', leftButton);
+        rightButton = this.add.sprite(640, 950, 'rightButton');
+        dictionary.set('rightButton', rightButton);
+        backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
+        dictionary.set('backButton', backButton);
         plusButton = this.add.sprite(80, 950, 'plusButton');
+        dictionary.set('plusButton', plusButton);
         plusModeButton = this.add.sprite(80, 950, 'plusModeButton');
+        dictionary.set('plusModeButtonButton', plusModeButton);
         failed = this.add.sprite(640, 950, 'fail');
 
         rightButton.on('pointerdown', () => {
@@ -730,8 +679,9 @@ export class PlayGame extends Phaser.Scene {
 
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
-        takeItemMask = this.add.sprite(155, 530, 'takeMask').setOrigin(0, 0);
-        takeItemMask.on('pointerdown', () => {
+        takeMask = this.add.sprite(155, 530, 'takeMask').setOrigin(0, 0);
+        dictionary.set('takeMask', takeMask);
+        takeMask.on('pointerdown', () => {
             if (tableState < 3) {
                 slots.addIcon(this, icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
@@ -743,8 +693,9 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        viewTableMask = this.add.sprite(440, 615, 'tableMask').setOrigin(0, 0);
-        viewTableMask.on('pointerdown', () => {
+        tableMask = this.add.sprite(440, 615, 'tableMask').setOrigin(0, 0);
+        dictionary.set('tableMask', tableMask);
+        tableMask.on('pointerdown', () => {
             //console.log("view table!")
             if (viewWall == 0)
                 viewWall = 4;
@@ -752,6 +703,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         battMask = this.add.sprite(339, 590, 'battMask').setOrigin(0, 0);
+        dictionary.set('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
 
@@ -760,6 +712,7 @@ export class PlayGame extends Phaser.Scene {
             updateWall = true;
         });
         zotMask = this.add.sprite(493, 555, 'zotMask').setOrigin(0, 0);
+        dictionary.set('zotMask', zotMask);
         zotMask.on('pointerdown', () => {
             haveZot = true;
 
@@ -768,9 +721,9 @@ export class PlayGame extends Phaser.Scene {
             updateWall = true;
         });
 
-        viewDoorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
-
-        viewDoorMask.on('pointerdown', () => {
+        doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
+        dictionary.set('doorMask', doorMask);
+        doorMask.on('pointerdown', () => {
             if (doorUnlocked) {
                 egress = true; // TODO doorUnlocked needs multiple states... then drop this flag
                 updateWall = true;
@@ -784,6 +737,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         objectMask = this.add.sprite(87, 423, 'objectMask').setOrigin(0, 0);
+        dictionary.set('objectMask', objectMask);
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         objectMask.on('pointerdown', () => {
             flipIt = true;
@@ -807,6 +761,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
+        dictionary.set('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
             slots.inventoryView = true;
             flipIt = false;
