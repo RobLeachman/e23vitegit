@@ -29,17 +29,48 @@ export class BootGame extends Phaser.Scene{
 */        
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
 
-        this.load.image('myViewport', 'assets/backgrounds/viewport.png');
+        // used XnConvert to switch to webp, nice
+        this.load.image('myViewport', 'assets/backgrounds/wp/viewport.webp');
+
+        this.load.image('wall1', 'assets/backgrounds/wp/invroom - room - empty.webp');
+        this.load.image('wall2', 'assets/backgrounds/wp/invroom - room - west.webp');
+        this.load.image('wall3', 'assets/backgrounds/wp/invroom - room - south.webp');
+        this.load.image('wall4', 'assets/backgrounds/wp/invroom - room - east.webp');
+        this.load.image('wallUnlocked', 'assets/backgrounds/wp/invroom - room - unlocked.webp');
+        this.load.image('wallWinner', 'assets/backgrounds/wp/invroom - room - winner.webp');
+        this.load.image('wallHint', 'assets/backgrounds/wp/invroom - help1 - background.webp');
+
+        this.load.image('objDonut', 'assets/backgrounds/wp/invroom - obj - donut.webp');
+        this.load.image('objPlate', 'assets/backgrounds/wp/invroom - obj - plate.webp');
+        this.load.image('objKeyA', 'assets/backgrounds/wp/invroom - obj - keyA.webp');
+        this.load.image('objKeyB', 'assets/backgrounds/wp/invroom - obj - keyB.webp');
+        this.load.image('objKeyWhole', 'assets/backgrounds/wp/invroom - obj - keyWhole.webp');
+        this.load.image('objDonutPlated', 'assets/backgrounds/wp/invroom - obj - donutPlated.webp');
+        this.load.image('objRoach', 'assets/backgrounds/wp/invroom - obj - roach.webp');
+
+        this.load.image('objMelonWhole', 'assets/backgrounds/wp/invroom - obj - melonwhole.webp');
+        this.load.image('objMelonHalf', 'assets/backgrounds/wp/invroom - obj - melonhalf.webp');
+        this.load.image('objKnife', 'assets/backgrounds/wp/invroom - obj - knife.webp');
+
+        this.load.image('altobjDonut', 'assets/backgrounds/wp/invroom - altobj - donut.webp');
+        this.load.image('altobjPlateKey', 'assets/backgrounds/wp/invroom - altobj - plate key.webp');
+        this.load.image('altobjKeyA', 'assets/backgrounds/wp/invroom - altobj - keyA.webp');
+        this.load.image('altobjKeyB', 'assets/backgrounds/wp/invroom - altobj - keyB.webp');
+        this.load.image('altobjKeyWhole', 'assets/backgrounds/wp/invroom - altobj - keyWhole.webp');
+        this.load.image('altobjDonutPlated', 'assets/backgrounds/wp/invroom - altobj - donutPlated.webp');
+        this.load.image('altobjRoach', 'assets/backgrounds/wp/invroom - altobj - roach.webp');
+        this.load.image('altobjPlateEmpty', 'assets/backgrounds/wp/invroom - altobj - plate empty.webp');
+
+        this.load.image('altobjMelonWhole', 'assets/backgrounds/wp/invroom - altobj - melonwhole.webp');
+        this.load.image('altobjMelonHalf', 'assets/backgrounds/wp/invroom - altobj - melonhalf.webp');
+        this.load.image('altobjKnife', 'assets/backgrounds/wp/invroom - altobj - knife.webp');
+
+        this.load.image('interfaceClue', 'assets/backgrounds/wp/invroom - interface.webp');
+        this.load.image('interfaceCombine', 'assets/backgrounds/wp/invroom - interface - combine.webp');
+        this.load.image('table', 'assets/backgrounds/wp/invroom - table - empty.webp');
+    
         this.load.image('clckrLoc', 'assets/sprites/pointer.png');
         this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
-
-        this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.png');
-        this.load.image('wall2', 'assets/backgrounds/invroom - room - west.png');
-        this.load.image('wall3', 'assets/backgrounds/invroom - room - south.png');
-        this.load.image('wall4', 'assets/backgrounds/invroom - room - east.png');
-        this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.png');
-        this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.png');
-        this.load.image('wallHint', 'assets/backgrounds/invroom - help1 - background.png');
 
         this.load.image('right', 'assets/sprites/arrowRight.png');
         this.load.image('left', 'assets/sprites/arrowLeft.png');
@@ -68,35 +99,6 @@ export class BootGame extends Phaser.Scene{
         this.load.image('iconMelonHalf', 'assets/sprites/icon - melonHalf.png');
         this.load.image('iconKnife', 'assets/sprites/icon - knife.png');
 
-        this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.png');
-        this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.png');
-        this.load.image('objKeyA', 'assets/backgrounds/invroom - obj - keyA.png');
-        this.load.image('objKeyB', 'assets/backgrounds/invroom - obj - keyB.png');
-        this.load.image('objKeyWhole', 'assets/backgrounds/invroom - obj - keyWhole.png');
-        this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.png');
-        this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.png');
-
-        this.load.image('objMelonWhole', 'assets/backgrounds/invroom - obj - melonwhole.png');
-        this.load.image('objMelonHalf', 'assets/backgrounds/invroom - obj - melonhalf.png');
-        this.load.image('objKnife', 'assets/backgrounds/invroom - obj - knife.png');
-
-        this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.png');
-        this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.png');
-        this.load.image('altobjKeyA', 'assets/backgrounds/invroom - altobj - keyA.png');
-        this.load.image('altobjKeyB', 'assets/backgrounds/invroom - altobj - keyB.png');
-        this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.png');
-        this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.png');
-        this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.png');
-        this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.png');
-
-        this.load.image('altobjMelonWhole', 'assets/backgrounds/invroom - altobj - melonwhole.png');
-        this.load.image('altobjMelonHalf', 'assets/backgrounds/invroom - altobj - melonhalf.png');
-        this.load.image('altobjKnife', 'assets/backgrounds/invroom - altobj - knife.png');
-
-        this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.png');
-        this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.png');
-
-        this.load.image('table', 'assets/backgrounds/invroom - table - empty.png');
         this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
         this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
         this.load.image('tableKey', 'assets/sprites/tableKey.png');
