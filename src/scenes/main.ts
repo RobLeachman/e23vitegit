@@ -50,8 +50,8 @@ var viewDoorMask: Phaser.GameObjects.Sprite;
 var objectMask: Phaser.GameObjects.Sprite;
 var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
-var melonMask: Phaser.GameObjects.Sprite;
-var knifeMask: Phaser.GameObjects.Sprite;
+var battMask: Phaser.GameObjects.Sprite;
+var zotMask: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
 var updateWall = false;
@@ -64,8 +64,8 @@ var egress = false;
 var didBonus = false;
 var hasSearched = false;
 var hasCombined = false;
-var haveKnife = false;
-var haveMelon = false;
+var haveZot = false;
+var haveBatt = false;
 
 var slots: Slots;
 
@@ -209,7 +209,7 @@ export class PlayGame extends Phaser.Scene {
             hasCombined = true;
             combineClue.setDepth(-1);
             //console.log("clear out " + slots.combining.split(':')[1])
-            if (slots.combining.split(':')[1] != "objKnife")
+            if (slots.combining.split(':')[1] != "objZot")
                 slots.clearItem(this, slots.combining.split(':')[1]);
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
             //console.log("replacing " + slotRepl)
@@ -230,13 +230,6 @@ export class PlayGame extends Phaser.Scene {
                 slots.addIcon(this, icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.add.image(0, 0, obj[4]).setOrigin(0, 0);
-            } else if (slots.combining.split(':')[3] == "objMelonHalf") {
-                slots.inventoryViewObj = obj[8];
-                slots.inventoryViewAlt = altObj[8];
-                slots.addIcon(this, icons[9].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
-
-                slots.selectItem(slots.combining.split(':')[3]);
-                this.add.image(0, 0, obj[8]).setOrigin(0, 0);
             } else {
                 slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
@@ -320,12 +313,12 @@ export class PlayGame extends Phaser.Scene {
                                 hintMask.emit('pointerdown');
                                 break;
                             }
-                            case "melonMask": {
-                                melonMask.emit('pointerdown');
+                            case "battMask": {
+                                battMask.emit('pointerdown');
                                 break;
                             }
-                            case "knifeMask": {
-                                knifeMask.emit('pointerdown');
+                            case "zotMask": {
+                                zotMask.emit('pointerdown');
                                 break;
                             }
                             case "plusButton": {
@@ -467,8 +460,8 @@ export class PlayGame extends Phaser.Scene {
             takeItemMask.setVisible(false);
             viewTableMask.setVisible(false);
             viewDoorMask.setVisible(false);
-            melonMask.setVisible(false);
-            knifeMask.setVisible(false);
+            battMask.setVisible(false);
+            zotMask.setVisible(false);
 
             objectMask.setVisible(true);
             objectMask.setDepth(100);
@@ -509,8 +502,8 @@ export class PlayGame extends Phaser.Scene {
                 takeItemMask.setVisible(false);
                 viewTableMask.setVisible(false);
                 viewDoorMask.setVisible(false);
-                melonMask.setVisible(false);
-                knifeMask.setVisible(false);
+                battMask.setVisible(false);
+                zotMask.setVisible(false);
 
                 updateWall = false;
                 viewWall = currentWall;
@@ -552,10 +545,10 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 0)
                 this.add.sprite(540, 650, tableView[tableState]).setOrigin(0, 0);
             if (viewWall == 2) {
-                if (!haveKnife)
-                    this.add.sprite(493, 555, "knifeShown").setOrigin(0, 0);
-                if (!haveMelon)
-                    this.add.sprite(349, 602, "melonShown").setOrigin(0, 0);
+                if (!haveZot)
+                    this.add.sprite(493, 555, "zotShown").setOrigin(0, 0);
+                if (!haveBatt)
+                    this.add.sprite(349, 602, "battShown").setOrigin(0, 0);
                     
             }
 
@@ -591,15 +584,15 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 hintMask.setVisible(false);
             }
-            if (viewWall == 2 && !haveMelon) {
-                melonMask.setVisible(true); melonMask.setDepth(100); melonMask.setInteractive({ cursor: 'pointer' });
+            if (viewWall == 2 && !haveBatt) {
+                battMask.setVisible(true); battMask.setDepth(100); battMask.setInteractive({ cursor: 'pointer' });
             } else
-                melonMask.setVisible(false);
+                battMask.setVisible(false);
 
-            if (viewWall == 2 && !haveKnife) {
-                knifeMask.setVisible(true); knifeMask.setDepth(100); knifeMask.setInteractive({ cursor: 'pointer' });
+            if (viewWall == 2 && !haveZot) {
+                zotMask.setVisible(true); zotMask.setDepth(100); zotMask.setInteractive({ cursor: 'pointer' });
             } else
-                knifeMask.setVisible(false);
+                zotMask.setVisible(false);
 
             if (viewWall == 4) { // the table
                 //takeItemMask.setVisible(true); takeItemMask.setDepth(100); takeItemMask.setInteractive();
@@ -758,20 +751,20 @@ export class PlayGame extends Phaser.Scene {
 
         });
 
-        melonMask = this.add.sprite(339, 590, 'melonMask').setOrigin(0, 0);
-        melonMask.on('pointerdown', () => {
-            haveMelon = true;
+        battMask = this.add.sprite(339, 590, 'battMask').setOrigin(0, 0);
+        battMask.on('pointerdown', () => {
+            haveBatt = true;
 
-            slots.addIcon(this, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite
-            this.add.sprite(487, 786, "melonPicked").setOrigin(0, 0); // TODO this would be better done in create()
+            slots.addIcon(this, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
+            this.add.sprite(487, 786, "battPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
-        knifeMask = this.add.sprite(493, 555, 'knifeMask').setOrigin(0, 0);
-        knifeMask.on('pointerdown', () => {
-            haveKnife = true;
+        zotMask = this.add.sprite(493, 555, 'zotMask').setOrigin(0, 0);
+        zotMask.on('pointerdown', () => {
+            haveZot = true;
 
             slots.addIcon(this, icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
-            this.add.sprite(312, 980, "knifePicked").setOrigin(0, 0); // TODO this would be better done in create()
+            this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
 
@@ -990,9 +983,9 @@ export class PlayGame extends Phaser.Scene {
         icons[5] = "iconDonutPlated";
         icons[6] = "iconRoach";
         icons[7] = "iconFake";
-        icons[8] = "iconMelonWhole";
-        icons[9] = "iconMelonHalf";
-        icons[10] = "iconKnife";
+        icons[8] = "iconBatt";
+        icons[9] = "DELETED";
+        icons[10] = "iconZot";
 
 
         obj[0] = "objDonut";
@@ -1002,9 +995,9 @@ export class PlayGame extends Phaser.Scene {
         obj[4] = "objKeyWhole";
         obj[5] = "objDonutPlated";
         obj[6] = "objRoach";
-        obj[7] = "objMelonWhole";
-        obj[8] = "objMelonHalf";
-        obj[9] = "objKnife";
+        obj[7] = "objBatt";
+        obj[8] = "DELETED";
+        obj[9] = "objZot";
 
 
         altObj[0] = "altobjDonut";
@@ -1014,9 +1007,9 @@ export class PlayGame extends Phaser.Scene {
         altObj[4] = "altobjKeyWhole";
         altObj[5] = "altobjDonutPlated";
         altObj[6] = "altobjRoach";
-        altObj[7] = "altobjMelonWhole";
-        altObj[8] = "altobjMelonHalf";
-        altObj[9] = "altobjKnife";
+        altObj[7] = "altobjBatt";
+        altObj[8] = "DELETED";
+        altObj[9] = "altobjZot";
 
         tableView[0] = "tableDonut";
         tableView[1] = "tablePlate";

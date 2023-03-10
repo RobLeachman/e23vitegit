@@ -48,9 +48,8 @@ export class BootGame extends Phaser.Scene{
         this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.webp');
         this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.webp');
 
-        this.load.image('objMelonWhole', 'assets/backgrounds/invroom - obj - battery.webp');
-        this.load.image('objMelonHalf', 'assets/backgrounds/invroom - obj - melonhalf.webp');
-        this.load.image('objKnife', 'assets/backgrounds/invroom - obj - zot.webp');
+        this.load.image('objBatt', 'assets/backgrounds/invroom - obj - battery.webp');
+        this.load.image('objZot', 'assets/backgrounds/invroom - obj - zot.webp');
 
         this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.webp');
         this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.webp');
@@ -61,9 +60,8 @@ export class BootGame extends Phaser.Scene{
         this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.webp');
         this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.webp');
 
-        this.load.image('altobjMelonWhole', 'assets/backgrounds/invroom - altobj - battery.webp');
-        this.load.image('altobjMelonHalf', 'assets/backgrounds/invroom - altobj - melonhalf.webp');
-        this.load.image('altobjKnife', 'assets/backgrounds/invroom - altobj - zot.webp');
+        this.load.image('altobjBatt', 'assets/backgrounds/invroom - altobj - battery.webp');
+        this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
         this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.webp');
         this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.webp');
@@ -95,19 +93,18 @@ export class BootGame extends Phaser.Scene{
         this.load.image('iconRoach', 'assets/sprites/icon - roach.webp');
         this.load.image('iconFake', 'assets/sprites/icon - empty.webp');
 
-        this.load.image('iconMelonWhole', 'assets/sprites/iconBattery.webp');
-        this.load.image('iconMelonHalf', 'assets/sprites/icon - melonHalf.webp');
-        this.load.image('iconKnife', 'assets/sprites/iconZot.webp');
+        this.load.image('iconBatt', 'assets/sprites/iconBattery.webp');
+        this.load.image('iconZot', 'assets/sprites/iconZot.webp');
 
         this.load.image('tableDonut', 'assets/sprites/tableDonut.webp');
         this.load.image('tablePlate', 'assets/sprites/tablePlate.webp');
         this.load.image('tableKey', 'assets/sprites/tableKey.webp');
         this.load.image('tableEmpty', 'assets/sprites/tableEmpty.webp');
 
-        this.load.image('melonShown', 'assets/sprites/southMelon.webp');
-        this.load.image('melonPicked', 'assets/sprites/southMelonPicked.webp');
-        this.load.image('knifeShown', 'assets/sprites/southKnife.webp');
-        this.load.image('knifePicked', 'assets/sprites/southKnifePicked.webp');
+        this.load.image('battShown', 'assets/sprites/southMelon.webp');
+        this.load.image('battPicked', 'assets/sprites/southMelonPicked.webp');
+        this.load.image('zotShown', 'assets/sprites/southZot.webp');
+        this.load.image('zotPicked', 'assets/sprites/southZotPicked.webp');
 
         this.load.image('closeDonut', 'assets/sprites/closeDonut.webp');
         this.load.image('closePlate', 'assets/sprites/closePlate.webp');
@@ -121,8 +118,8 @@ export class BootGame extends Phaser.Scene{
         this.load.image('doorMask', 'assets/sprites/doorMask.webp');
         this.load.image('hintMask', 'assets/sprites/hintMask.webp');
 
-        this.load.image('melonMask', 'assets/sprites/melonMask.webp');
-        this.load.image('knifeMask', 'assets/sprites/knifeMask.webp');
+        this.load.image('battMask', 'assets/sprites/battMask.webp');
+        this.load.image('zotMask', 'assets/sprites/zotMask.webp');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
