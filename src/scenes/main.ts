@@ -13,8 +13,8 @@
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
  */
 import 'phaser';
-import Slots from "./objects/slots"
-import Recorder from "./objects/recorder"
+import Slots from "../objects/slots"
+import Recorder from "../objects/recorder"
 
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
@@ -86,6 +86,7 @@ let recordingEndedFadeClicks = 0;
 let debugging = false;
 
 let inputText: InputText;
+let theText: InputText;
 
 var content = [
     "The sky above the port was the color of television, tuned to a dead channel.",
@@ -103,7 +104,7 @@ var contentString =
 
 
 
-class PlayGame extends Phaser.Scene {
+export class PlayGame extends Phaser.Scene {
     //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
     rexInputText: InputText; // Declare scene property 'rexInputText' as InputText type
 
@@ -153,9 +154,25 @@ class PlayGame extends Phaser.Scene {
     }
 
     update() {
-        //inputText.text = "_________\ncommands\nwith\nlinebreaks_______";
+        if (inputText.text == "init") {
+            if (debugInput && recorder.getMode() != "replay") {
+                console.log("let's rock")
+                inputText.text = "pastebox";
+                //theText.resize(100, 200);
+            } else {
+                console.log("no text");
+                inputText.text = "off";
+                theText.resize(0, 0);
+            }
+        }
 
-        if (inputText.text != "init" && inputText.text != "error" && inputText.text != "success") {
+
+
+        if (inputText.text != "init" &&
+            inputText.text != "off" &&
+            inputText.text != "error" &&
+            inputText.text != "success" &&
+            inputText.text != "pastebox") {
             this.parseRecording(inputText.text)
         }
 
@@ -601,81 +618,17 @@ class PlayGame extends Phaser.Scene {
     }
 
     create() {
-
-
-
-
-        /*        
-                var text = this.add.text(10, 10, 'Please login to play', { color: 'white', fontFamily: 'Arial', fontSize: '32px ' });
-        
-                var element = this.add.dom(400, 600).createFromCache('nameform');
-        
-        
-                element.addListener('click');
-        
-                element.on('click', function (event:MouseEvent) {
-        
-                    if (event.target.name === 'loginButton')
-                    {
-                        var inputUsername = element.getChildByName('username');
-            
-                        //  Have they entered anything?
-                        if (inputUsername.value !== '' && inputPassword.value !== '')
-        
-                        //console.log("FORM CLICK");
-                        //console.log(element)
-                        console.log("USER")
-                        
-                        var user = element.getChildByName('username');
-                        console.dir(user.value);
-                });
-        */
-
-        /*
-        element.addListener('click');
-
-        element.on('click', function (event) {
-            if (event.target.name === 'loginButton')
-                console.log("FOO");
-        }
-        */
-
-        /*
-                console.log("FORM");
-                console.log(element.getChildByName('loginButton'))
-                
-                var user = element.getChildByName('username');
-                user.addEventListener("change", function(event) {
-                    const text = user.value;
-                    
-                  });
-        */
-
-
-        //element.setPerspective(800);
-        /*        
-                element.on('click', () => {
-                    console.log("submit")
-        
-                    var inputUsername = element.getChildByName('username');
-                    var inputPassword = element.getChildByName('password');
-        
-                    //  Have they entered anything?
-                    console.log("INPUT " + inputUsername)
-        
-                });
-        */
-
-
-
+        console.log("main create")
         let scene = this;
-        // @ts-ignore   not using pointer but don't want to break right now while trying for build
+        // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, scene);
         });
 
         fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
+        fullClue.setDepth(-1);
         combineClue = this.add.image(0, 0, 'interfaceCombine').setOrigin(0, 0);
+        combineClue.setDepth(-1);
 
         /*
                 // So weird and frustrating. Uncomment this, observe the fillstyles go in backward
@@ -713,23 +666,17 @@ class PlayGame extends Phaser.Scene {
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
+
+
         console.log("Recorder mode=" + recorder.getMode());
 
-        if (debugInput && recorder.getMode() != "replay") {
-            inputText = new InputText(this, 100, 100, 100, 100, {
-                type: 'textarea',
-                text: 'init',
-                fontSize: '24px',
-            });
-        } else {
-            inputText = new InputText(this, 0, 0, 0, 0, {
-                type: 'textarea',
-                text: 'init',
-                fontSize: '24px',
-            });
-        }
-        this.add.existing(inputText);
-
+        inputText = new InputText(this, 300, 100, 300, 100, {
+            type: 'textarea',
+            text: 'init',
+            fontSize: '24px',
+        });
+        theText = this.add.existing(inputText);
+        
 
 
         viewportPointer.setDepth(3001);
@@ -776,13 +723,11 @@ class PlayGame extends Phaser.Scene {
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
         });
 
-
         plusButton.on('pointerdown', () => {
             plusButton.setVisible(false);
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();
             slots.combining = "trying"; // so slots object knows what is happening
         });
-
 
         hintMask = this.add.sprite(110, 446, 'hintMask').setOrigin(0, 0);
         hintMask.on('pointerdown', () => {
@@ -1179,6 +1124,8 @@ class PlayGame extends Phaser.Scene {
     }
 }
 
+//let w = window.innerWidth;
+//let h = window.innerHeight;
 
 let config = {
     type: Phaser.WEBGL,

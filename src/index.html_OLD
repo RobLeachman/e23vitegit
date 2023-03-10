@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     
     <!-- <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script> -->
-    <script src="main.js"></script>
+    <script src="index.ts"></script>
     
     <style type="text/css">
         body {
