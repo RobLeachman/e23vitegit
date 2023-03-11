@@ -97,12 +97,12 @@ class InvItem {
             if (this.index > 5) {
                 this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83)
                 this.allSlots.selectedIcon.setY(1161)
-            }            
+            }
 
             // When selected icon is clicked again we need to switch view modes from room to item.
             // When in item view mode if another icon is clicked switch to that item
             if (prevItem == this.index || this.allSlots.currentMode == "item") {
-                this.allSlots.inventoryView = true;
+                this.allSlots.inventoryViewSwitch = true;
                 this.allSlots.inventoryViewObj = this.objView;
                 this.allSlots.inventoryViewAlt = this.altObjView;
             }
@@ -115,7 +115,7 @@ export default class Slots {
     slotArray: InvItem[] = [];
 
     emptySprite: string;
-    inventoryView: boolean;
+    inventoryViewSwitch: boolean;
     inventoryViewObj: string;
     inventoryViewAlt: string;
     otherViewObj: string;
@@ -129,18 +129,21 @@ export default class Slots {
     recorder: Recorder;
     fakeClicks: number = 0;
     combining: string = "";
+    invBar: Phaser.GameObjects.Sprite;
 
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
     constructor(scene: Phaser.Scene,
         slotIconSprite: string,
         selectSprite: string,
         selectSecond: string,
-        recorder: Recorder) {
+        recorder: Recorder,
+        invBar: Phaser.GameObjects.Sprite) {
 
         this.emptySprite = slotIconSprite;
         this.selectedIcon = scene.add.sprite(1000, 1078, selectSprite).setOrigin(0, 0); //??
         this.selectedSecondIcon = scene.add.sprite(1000, 1078, selectSecond).setOrigin(0, 0); //TODO remove second, it is stupid
         this.recorder = recorder;
+        this.invBar = invBar;
 
         for (var i = 0; i < 12; i++) {
             let slotItem = new InvItem(scene, i, slotIconSprite, this, this.recorder); // empty sprite image, or select
@@ -151,11 +154,19 @@ export default class Slots {
         this.currentMode = "room"; // TODO is this even needed? 
     }
 
-    displaySlots() {
-        this.slotArray.forEach((icon) => {
-            icon.iconSprite.setDepth(1);
-        });
+    displayInventoryBar(showBar: boolean) {
+        if (showBar)
+            this.invBar.setVisible(true)
+        else
+            this.invBar.setVisible(false)
+    }
 
+    displaySlots(depth: number) {
+        this.slotArray.forEach((icon) => {
+            //console.log(icon.iconSprite.name)
+            icon.iconSprite.setDepth(depth);
+            icon.iconSprite.setVisible(true);
+        });
     }
     //recorder will use this:
     recordedClickIt(iconName: string) {
@@ -175,7 +186,6 @@ export default class Slots {
     }
 
     addIcon(scene: Phaser.Scene, iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
-        //console.log("ADD AT " + spot)
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
             if (i == -1 && (icon.iconSprite.name.length == 0)) {
@@ -184,12 +194,14 @@ export default class Slots {
             }
         });
         if (spot !== undefined) {
-            //console.log("ADDING AT " + spot)
+            //console.log(`Adding icon ${iconSpriteName} to slot ${spot}`)
             i = spot;
-        }
-        // TODO: throw an exception if not found
+        } else
+            //console.log(`Adding icon ${iconSpriteName} to free slot`)
 
-        this.slotArray[i].iconSprite.destroy();
+            // TODO: throw an exception if not found
+
+            this.slotArray[i].iconSprite.destroy();
         this.slotArray[i].iconSprite =
             scene.add.sprite(112 + i * 83, 1078, iconSpriteName).setOrigin(0, 0);
         if (i > 5) {
@@ -212,21 +224,6 @@ export default class Slots {
         this.selectedIcon.setX(1000);
     }
 
-    /* rework combine after recorder
-        combineFail(scene:Phaser.Scene) {
-            this.selectedSecondIcon.setX(1000);
-        }
-    
-        clearSecondSelect() {
-            this.selectedSecondIcon.setX(1000);        
-        }
-        
-        combiningItems(scene:Phaser.Scene, obj1: string, obj2: string) {
-            this.selectedSecondIcon.setX(1000);
-            this.clearItem(scene, obj1);
-            this.clearItem(scene, obj2);
-        }
-    */
     selectItem(objName: string) {
         // Find the selected item
         var k = -1;
@@ -268,7 +265,7 @@ export default class Slots {
             this.slotArray[clearSlot].iconSprite.destroy();
             var clearedSprite = scene.add.sprite(1000, 1078, this.emptySprite);
             if (clearSlot > 5) {
-                clearedSprite.setX(112 + (clearSlot-6) * 83)
+                clearedSprite.setX(112 + (clearSlot - 6) * 83)
                 clearedSprite.setY(1161)
             }
             clearedSprite.name == "empty"; // TODO ends up to be blank string?!

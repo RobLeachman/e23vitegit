@@ -22,7 +22,10 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 let debugInput = true;
 let debugUpdateOnce = false;
 
-var viewWall = 2;
+var viewWall = 1;
+var currentWall = -1;
+var previousWall = -1;
+var updateWall = false;
 
 const walls = new Array();
 const icons = new Array();
@@ -30,12 +33,9 @@ const obj = new Array();
 const altObj = new Array();
 const tableView = new Array();
 const closeView = new Array();
-var currentWall = -1;
-var previousWall = -1;
-
 const dictionary = new Map<string, Phaser.GameObjects.Sprite>();
 
-var invBar: Phaser.GameObjects.Sprite;
+
 var leftButton: Phaser.GameObjects.Sprite;
 var rightButton: Phaser.GameObjects.Sprite;
 var backButton: Phaser.GameObjects.Sprite;
@@ -54,9 +54,10 @@ var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
 var battMask: Phaser.GameObjects.Sprite;
 var zotMask: Phaser.GameObjects.Sprite;
+var zotTableMask: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
-var updateWall = false;
+
 var flipIt = false;
 var foundHalfKey = false; // enable the key mask when key part is visible
 var snagged = false;
@@ -68,8 +69,11 @@ var hasSearched = false;
 var hasCombined = false;
 var haveZot = false;
 var haveBatt = false;
+var zotTableInit = true;
 
 var slots: Slots;
+var bootGameScene: Phaser.Scene;
+
 
 var showXtime = -1;
 
@@ -157,8 +161,15 @@ export class PlayGame extends Phaser.Scene {
 
     update() {
         if (inputText.text == "init") {
+
+            console.log("BONUS TEST ZOT")
+            slots.addIcon(bootGameScene, "iconZot", "objZot", "altobjZot", 0); // it is the zot
+
+            //this.scene.swapPosition("PlayGame", "BootGame");            
+            this.scene.bringToTop("BootGame"); //TODO: do this in create?
+
             if (debugInput && recorder.getMode() != "replay") {
-                console.log("let's rock")
+                //console.log("let's rock")
                 inputText.text = "pastebox";
                 //theText.resize(100, 200);
             } else {
@@ -167,7 +178,6 @@ export class PlayGame extends Phaser.Scene {
                 theText.resize(0, 0);
             }
         }
-
 
 
         if (inputText.text != "init" &&
@@ -191,27 +201,41 @@ export class PlayGame extends Phaser.Scene {
 
         }
 
+        ////////////// INVENTORY VIEW COMBINE //////////////
+        if (slots.combining.length > 0) {
+            console.log(`COMBINE IT`)
+            console.dir(slots.combining)
+        }
+
+        // FIRST ROOM ...
         // Can't combine the plate and donut if door is locked
         if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
             slots.combining = "bad combine:"
         }
+
+
         if (slots.combining.split(':')[0] == "bad combine") {
             hasCombined = true;
             combineClue.setDepth(-1);
             //console.log("BAD COMBINE")
             slots.combining = "";
             plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
 
             failed.setDepth(200);
             showXtime = this.time.now;
         }
+
         if (slots.combining.split(':')[0] == "good combine") {
             hasCombined = true;
             combineClue.setDepth(-1);
             //console.log("clear out " + slots.combining.split(':')[1])
-            if (slots.combining.split(':')[1] != "objZot")
-                slots.clearItem(this, slots.combining.split(':')[1]);
+            // Clear the first object...
+            // ... unless it's a knife
+            // if (slots.combining.split(':')[1] != "objKnife") // keep some items when affecting others, save the knife
+            //     slots.clearItem(this, slots.combining.split(':')[1]);
+            slots.clearItem(this, slots.combining.split(':')[1]);
+
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
             //console.log("replacing " + slotRepl)
             //slots.replaceItem(this, slots.combining.split(':')[2]);
@@ -219,7 +243,7 @@ export class PlayGame extends Phaser.Scene {
             if (slots.combining.split(':')[3] == "objDonutPlated") {
                 slots.inventoryViewObj = obj[5];
                 slots.inventoryViewAlt = altObj[5];
-                slots.addIcon(this, icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(bootGameScene, icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
 
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
@@ -228,18 +252,22 @@ export class PlayGame extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
                 slots.inventoryViewObj = obj[4];
                 slots.inventoryViewAlt = altObj[4];
-                slots.addIcon(this, icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(bootGameScene, icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.add.image(0, 0, obj[4]).setOrigin(0, 0);
             } else {
-                slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
+                slots.addIcon(bootGameScene, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
             slots.combining = "";
+
+
             plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
             viewWall = 5; currentWall = 5;
             //updateWall = true;
         }
+
+        ////////////// RECORDER SHIT //////////////
 
         if (debugging || recorderMode == "record" || recorderMode == "replay" || recorderMode == "replayOnce") {
             let displayDebugMode = "RECORDING";
@@ -277,7 +305,7 @@ export class PlayGame extends Phaser.Scene {
                     if (targetType == "object") {
                         // TODO much blood was spilt here. Check unmapped object.
                         let object = dictionary.get(targetObject);
-                        object?.emit('pointerdown')     
+                        object?.emit('pointerdown')
                     } else if (targetType == "icon") {
                         //console.log("do icon " + targetObject);
                         slots.recordedClickIt(targetObject);   // here's how we click an icon!
@@ -287,7 +315,7 @@ export class PlayGame extends Phaser.Scene {
                 actions = actions.slice(1);
                 //console.log(actions.length);
                 if (actions.length == 0) {
-                    console.log("recorder EOJ")
+                    //console.log("recorder EOJ")
                     if (recorderMode == "replayOnce") {
                         console.log("did once")
                         recorder.setMode("idle");
@@ -313,7 +341,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
-            slots.addIcon(this, icons[6].toString(), obj[6], altObj[6], 11); // roach
+            slots.addIcon(bootGameScene, icons[6].toString(), obj[6], altObj[6], 11); // roach
         }
         if (slots.fakeClicks == 10) {
             recorder.setMode("replayOnce");
@@ -326,6 +354,9 @@ export class PlayGame extends Phaser.Scene {
             window.location.reload();
         }
 
+
+        ////////////// BAD COMBINE BIG RED X //////////////
+
         if (showXtime > 0) {
             if ((this.time.now - showXtime) > 500) {
                 showXtime = -1;
@@ -333,13 +364,22 @@ export class PlayGame extends Phaser.Scene {
             }
         }
 
-        // VIEW INVENTORY OR ROOM
-        if (slots.inventoryView) {
-            slots.currentMode = "item"; // so slots object knows what is happening
+        ////////////// VIEW INVENTORY OR ROOM //////////////
+
+        // If an icon is clicked, slots will tell us we need to switch to inventory view mode.
+        if (slots.inventoryViewSwitch) {
+            slots.currentMode = "item"; // so slots object knows we did indeed switch
+
+            // Turn off room navigation
+            leftButton.setVisible(false);
+            rightButton.setVisible(false);
+
+            // If viewing the room, return to the same wall
             if (viewWall < 5)
                 previousWall = viewWall;
-            // only show key when looking at back of plate
-            keyMask.setVisible(false);
+
+
+            // FIRST ROOM IMPLEMENTATION //   
             if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
                 slots.inventoryViewAlt = "altobjPlateEmpty";
             }
@@ -348,17 +388,24 @@ export class PlayGame extends Phaser.Scene {
                 snagged = false;
                 slots.inventoryViewAlt = "altobjPlateEmpty";
             }
-            if (currentWall == 5 && flipIt) {
+            // only show key when looking at back of plate
+            keyMask.setVisible(false);
+            // only make the piece available if seen...
+            if (currentWall == 5 && foundHalfKey && !haveHalfKey) {
+                keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
+            }
+
+
+
+            if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
                 hasSearched = true;
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
                 viewWall = 6; currentWall = 6;
-                // only make the piece available if seen...
-                if (foundHalfKey && !haveHalfKey) {
-                    keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
-                }
             } else {
                 this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
                 viewWall = 5; currentWall = 5;
+
+
                 //console.log("IDLE IT? OR REPLAY");
                 if (slots.inventoryViewObj == "objRoach") {
                     if (recorderMode == "record") {
@@ -379,11 +426,10 @@ export class PlayGame extends Phaser.Scene {
             }
             flipIt = false;
 
-            invBar.setDepth(100);
-            slots.inventoryView = false;
+            //invBar.setDepth(100);
+            slots.displayInventoryBar(true);
+            slots.inventoryViewSwitch = false;
 
-            leftButton.setVisible(false);
-            rightButton.setVisible(false);
             backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
@@ -401,8 +447,10 @@ export class PlayGame extends Phaser.Scene {
                 combineClue.setDepth(-1)
             }
 
+            // turn off all scene masks, and turn on the object alternate view mask
             takeMask.setVisible(false);
             tableMask.setVisible(false);
+            zotTableMask.setVisible(false);
             doorMask.setVisible(false);
             battMask.setVisible(false);
             zotMask.setVisible(false);
@@ -441,10 +489,12 @@ export class PlayGame extends Phaser.Scene {
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
                 this.add.dom(350, 1100, 'div', style, sentence);
 
-                invBar.setDepth(0);
+                //invBar.setVisible(false);
+                slots.displayInventoryBar(false);
                 slots.clearAll(this);
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
+                zotTableMask.setVisible(false);
                 doorMask.setVisible(false);
                 battMask.setVisible(false);
                 zotMask.setVisible(false);
@@ -481,8 +531,8 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 9)
                 previousWall = 2;
 
-            slots.displaySlots(); // TODO: is this really required every time the wall changes?
-            invBar.setDepth(100);
+            //invBar.setDepth(100);
+            slots.displayInventoryBar(true);
             currentWall = viewWall;
             updateWall = false;
 
@@ -493,7 +543,6 @@ export class PlayGame extends Phaser.Scene {
                     this.add.sprite(493, 555, "zotShown").setOrigin(0, 0);
                 if (!haveBatt)
                     this.add.sprite(349, 602, "battShown").setOrigin(0, 0);
-                    
             }
 
             if (viewWall == 4)
@@ -515,12 +564,17 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 0) {
                 tableMask.setVisible(true); tableMask.setDepth(100); tableMask.setInteractive({ cursor: 'pointer' });
                 doorMask.setVisible(true); doorMask.setDepth(100); doorMask.setInteractive({ cursor: 'pointer' });
-
                 //doorMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
                 doorMask.input.cursor = 'pointer';
             } else {
                 tableMask.setVisible(false);
                 doorMask.setVisible(false);
+            }
+
+            if (viewWall == 1) {
+                zotTableMask.setVisible(true); zotTableMask.setDepth(100); zotTableMask.setInteractive({ cursor: 'pointer' });
+            } else {
+                zotTableMask.setVisible(false);
             }
 
             if (viewWall == 2) {
@@ -555,8 +609,21 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
-    create() {
-        console.log("main create")
+    create(data: { slots: Slots }) {
+        slots = data.slots;
+
+        bootGameScene = this.scene.get("BootGame");
+        //console.log("BOOT SCENE IS")
+        //console.dir(bootGameScene)
+        //this.scene.setVisible(true, "BootGame");
+
+        //console.log("main slots")
+        //console.dir(slots)
+
+
+
+
+        //console.log("main create")
         let scene = this;
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -605,7 +672,6 @@ export class PlayGame extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
 
-
         console.log("Recorder mode=" + recorder.getMode());
 
         inputText = new InputText(this, 300, 100, 300, 100, {
@@ -614,18 +680,16 @@ export class PlayGame extends Phaser.Scene {
             fontSize: '24px',
         });
         theText = this.add.existing(inputText);
-        
-
 
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
 
-        slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder);
-        slots.displaySlots();
+        //slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder);
+        slots.displaySlots(1);
         slots.currentMode = "room";
 
-        invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
+
         leftButton = this.add.sprite(80, 950, 'leftButton');
         dictionary.set('leftButton', leftButton);
         rightButton = this.add.sprite(640, 950, 'rightButton');
@@ -654,8 +718,6 @@ export class PlayGame extends Phaser.Scene {
                 viewWall = 0;
             else
                 viewWall = previousWall;
-            // after recorder fix this!                
-            //            slots.clearSecondSelect();
             slots.currentMode = "room";
         });
 
@@ -683,7 +745,7 @@ export class PlayGame extends Phaser.Scene {
         dictionary.set('takeMask', takeMask);
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
-                slots.addIcon(this, icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
+                slots.addIcon(bootGameScene, icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 tableState++;
                 if (tableState > 2) {
@@ -702,12 +764,28 @@ export class PlayGame extends Phaser.Scene {
 
         });
 
+        zotTableMask = this.add.sprite(340, 634, 'zotTableMask').setOrigin(0, 0);
+        dictionary.set('zotTableMask', zotTableMask);
+        zotTableMask.on('pointerdown', () => {
+            console.log("zot table!")
+            leftButton.setVisible(false);
+            rightButton.setVisible(false);
+            if (zotTableInit) {
+                this.scene.run("ZotTable", { fade: true, slots: slots })
+                this.scene.sleep();
+                zotTableInit = false
+            } else {
+                this.scene.wake("ZotTable");
+                this.scene.moveUp("ZotTable");
+            }
+        });
+
         battMask = this.add.sprite(339, 590, 'battMask').setOrigin(0, 0);
         dictionary.set('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
 
-            slots.addIcon(this, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
+            slots.addIcon(bootGameScene, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
             this.add.sprite(487, 786, "battPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
@@ -716,7 +794,7 @@ export class PlayGame extends Phaser.Scene {
         zotMask.on('pointerdown', () => {
             haveZot = true;
 
-            slots.addIcon(this, icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
+            slots.addIcon(bootGameScene, icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
             this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
@@ -757,21 +835,24 @@ export class PlayGame extends Phaser.Scene {
                 }
             }
 
-            slots.inventoryView = true;
+            slots.inventoryViewSwitch = true;
         });
 
+        // Found the key and clicked it. We need to update the inventory view with empty plate.
         keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
         dictionary.set('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
-            slots.inventoryView = true;
+            //console.log("KEYMASK")
+            slots.inventoryViewSwitch = true; // force inventory view update.
             flipIt = false;
-            snagged = true;
+            snagged = true; // swap out plate with key for the empty plate
             haveHalfKey = true;
 
-            slots.addIcon(this, icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
+            slots.addIcon(bootGameScene, icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
         });
 
-        slots.addIcon(this, icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
+        // Fakey test debug icon
+        slots.addIcon(bootGameScene, icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
 
         // Debug recorder debugger
         viewportText = this.add.text(10, 10, '');
@@ -796,6 +877,11 @@ export class PlayGame extends Phaser.Scene {
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3];
         }
+
+        this.events.on('wake', () => {
+            rightButton.setVisible(true); rightButton.setDepth(100); rightButton.setInteractive({ cursor: 'pointer' });
+            leftButton.setVisible(true); leftButton.setDepth(100); leftButton.setInteractive({ cursor: 'pointer' });
+        });
 
         // What is typescript type for this?!
         /*
@@ -894,7 +980,8 @@ export class PlayGame extends Phaser.Scene {
         black.fillRect(0, 0, 720, 1280);
         black.setDepth(3000);
 
-        invBar.setDepth(0);
+        //invBar.setVisible(false);
+        slots.displayInventoryBar(false);
         slots.clearAll(this);
     }
 

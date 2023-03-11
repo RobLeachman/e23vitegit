@@ -145,8 +145,8 @@ export default class Recorder {
             recordingIn += cookie.split('|')[0];;
             eof = cookie.split('|')[1];
         }
-        console.log("COOKIE RECORDING IN");
-        console.log(recordingIn);
+        //console.log("COOKIE RECORDING IN");
+        //console.log(recordingIn);
         let recInCheck = recordingIn.split('?')[0];
         // @ts-ignore
         // with luck will need version checking later

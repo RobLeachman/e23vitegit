@@ -1,11 +1,26 @@
 /* global Phaser */
 //import { assetsDPR } from '../index';
 
-export class BootGame extends Phaser.Scene{
-    constructor(){
+import Slots from "../objects/slots"
+import Recorder from "../objects/recorder"
+
+let running = false;
+var slots: Slots;
+var recorder: Recorder;
+
+let loadDone: Phaser.GameObjects.Text;
+
+var viewportPointer: Phaser.GameObjects.Sprite;
+var viewportPointerClick: Phaser.GameObjects.Sprite;
+
+// UI stuff
+var invBar: Phaser.GameObjects.Sprite;
+
+export class BootGame extends Phaser.Scene {
+    constructor() {
         super("BootGame");
     }
-    preload(){
+    preload() {
         //console.log("BOOT")
 
 
@@ -16,17 +31,17 @@ export class BootGame extends Phaser.Scene{
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`});
 
-/* Will need sprite atlas at some point        
-        this.load.multiatlas("bigBackground", `assets/graphics/pdw1A@${assetsDPR}.json`, "assets/graphics");
-
-        this.load.bitmapFont('gameplay-black', 'assets/fonts/gameplay-1987-black.png', 'assets/fonts/gameplay-1987-bw.fnt');
-        this.load.bitmapFont('gameplay-white', 'assets/fonts/gameplay-1987-white.png', 'assets/fonts/gameplay-1987-bw.fnt');
-
-        this.load.bitmapFont('xolonium-black', 'assets/fonts/Xolonium-Regular-Black-72.png', 'assets/fonts/Xolonium-Regular-Black-72.fnt');
-        this.load.bitmapFont('xolonium-white', 'assets/fonts/Xolonium-Regular-White-72.png', 'assets/fonts/Xolonium-Regular-White-72.fnt');
-
-        this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
-*/        
+        /* Will need sprite atlas at some point        
+                this.load.multiatlas("bigBackground", `assets/graphics/pdw1A@${assetsDPR}.json`, "assets/graphics");
+        
+                this.load.bitmapFont('gameplay-black', 'assets/fonts/gameplay-1987-black.png', 'assets/fonts/gameplay-1987-bw.fnt');
+                this.load.bitmapFont('gameplay-white', 'assets/fonts/gameplay-1987-white.png', 'assets/fonts/gameplay-1987-bw.fnt');
+        
+                this.load.bitmapFont('xolonium-black', 'assets/fonts/Xolonium-Regular-Black-72.png', 'assets/fonts/Xolonium-Regular-Black-72.fnt');
+                this.load.bitmapFont('xolonium-white', 'assets/fonts/Xolonium-Regular-White-72.png', 'assets/fonts/Xolonium-Regular-White-72.fnt');
+        
+                this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
+        */
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
 
         // used XnConvert to switch to webp, nice!
@@ -66,7 +81,7 @@ export class BootGame extends Phaser.Scene{
         this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.webp');
         this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.webp');
         this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
-    
+
         this.load.image('clckrLoc', 'assets/sprites/pointer.webp');
         this.load.image('clckrClk', 'assets/sprites/pointerClicked.webp');
 
@@ -112,6 +127,7 @@ export class BootGame extends Phaser.Scene{
         this.load.image('closeEmpty', 'assets/sprites/closeEmpty.webp');
 
         this.load.image('tableMask', 'assets/sprites/tableMask.webp');
+        this.load.image('zotTableMask', 'assets/sprites/zotTableMask.webp');
         this.load.image('takeMask', 'assets/sprites/takeMask.webp');
         this.load.image('objectMask', 'assets/sprites/object-maskB.webp');
         this.load.image('keyMask', 'assets/sprites/keyMask.webp');
@@ -121,6 +137,30 @@ export class BootGame extends Phaser.Scene{
         this.load.image('battMask', 'assets/sprites/battMask.webp');
         this.load.image('zotMask', 'assets/sprites/zotMask.webp');
 
+        this.load.image('zotTableOff', 'assets/backgrounds/zot - off.webp');
+        this.load.image('zotTableBack', 'assets/backgrounds/zot - back.webp');
+        this.load.image('zotTableOffFlipped', 'assets/backgrounds/zot - flip - off.webp');
+        this.load.image('zotTableBackFlipped', 'assets/backgrounds/zot - flip - back.webp');
+
+        this.load.image('backFrontButton', 'assets/sprites/backFrontButton.webp');
+        this.load.image('topBottomButton', 'assets/sprites/topBottomButton.webp');
+        this.load.image('zotPlaced', 'assets/sprites/zotPlaced.webp');
+        this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.webp');
+    
+        this.load.image('zotStateOff', 'assets/sprites/zotState-off.webp');
+        this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.webp');
+        this.load.image('zotStateGreen', 'assets/sprites/zotState-green.webp');
+        this.load.image('zotStateKey', 'assets/sprites/zotState-key.webp');
+        this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.webp');
+        this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.webp');
+        this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.webp');
+        this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.webp');
+        this.load.image('zotTopMask', 'assets/sprites/zotTopMask.webp');
+        this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
+        this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
+        this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
+        this.load.image('zotBatteryMask', 'assets/sprites/zotBatteryMask.webp');
+
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;
@@ -128,7 +168,7 @@ export class BootGame extends Phaser.Scene{
         var progressBar = this.add.graphics();
         var progressBox = this.add.graphics();
         progressBox.fillStyle(0x333333, 0.8);
-        progressBox.fillRect(width/2-10-160, height / 2 - 60, 320, 50);        
+        progressBox.fillRect(width / 2 - 10 - 160, height / 2 - 60, 320, 50);
 
         var loadingText = this.make.text({
             x: width / 2,
@@ -142,17 +182,17 @@ export class BootGame extends Phaser.Scene{
         loadingText.setOrigin(0.5, 0.5);
         var percentText = this.make.text({
             x: width / 2,
-            y: height / 2-36,
+            y: height / 2 - 36,
             text: '0%',
             style: {
                 font: '18px monospace',
                 //fill: '#ffffff'
             }
         });
-        percentText.setOrigin(0.5, 0.5);        
+        percentText.setOrigin(0.5, 0.5);
 
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`});
-        var loadDone = this.make.text({
+        loadDone = this.make.text({
             x: 50,
             y: 50,
             text: 'Click to start',
@@ -162,19 +202,17 @@ export class BootGame extends Phaser.Scene{
             }
         });
         loadDone.setX(1000);
-        
 
-        this.load.on('progress', function (value:number) {
-            
+        this.load.on('progress', function (value: number) {
             var myParseIntValue;
             // @ts-ignore
-            myParseIntValue = parseInt(value*100,10)
+            myParseIntValue = parseInt(value * 100, 10)
             percentText.setText(myParseIntValue + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(width/2-160, height / 2 - 50, 300 * value, 30);
+            progressBar.fillRect(width / 2 - 160, height / 2 - 50, 300 * value, 30);
         });
-                    
+
         this.load.on('fileprogress', function () {
             //console.log(file.src);
         });
@@ -182,22 +220,34 @@ export class BootGame extends Phaser.Scene{
             //console.log('complete');
             progressBar.destroy();
             progressBox.destroy();
-            loadingText.destroy(); 
-            percentText.destroy(); 
+            loadingText.destroy();
+            percentText.destroy();
             loadDone.setX(50);
-            
-            
-            
         });
-
-        
     }
 
     create() {
+        //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
+        viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
+        viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
+
+        invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
+        recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
+        slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar);
+
+        
+
+        //FINALLY
+        //slots.addIcon(this, "iconZot", "objZot", "altobjZot", 2); // it is the zot
+
+        //        var {slots} : {slots:any}
         //console.log("boot create")
-        if (true)
-            this.scene.start("PlayGame");
-        else {
+        if (true) {
+            //this.scene.run("ZotTable", { fade: true, inv: slots })
+            loadDone.destroy()            
+            this.scene.run("PlayGame", { slots: slots });
+            //this.scene.run("ZotTable", { slots: slots });
+        } else {
             if (true) {
                 this.input.on("pointerup", this.handleClick, this);
             } else {
@@ -208,16 +258,25 @@ export class BootGame extends Phaser.Scene{
         }
     }
 
+    update() {
+        //console.log("BOOT LIVES")
+    }
+
     handleClick() {
-        console.log("click to start!!!!!!")
-        var pointer = this.input.activePointer;
-        if (pointer.wasTouch) {
-           console.log("TOUCH")
-           this.scene.start("PlayGame", { mobile: true })
-        }
-        else {
-           console.log("CLICK");
-           this.scene.start("PlayGame", { mobile: false })
+        //console.log("click to start!!!!!!")
+        if (!running) {
+            running = true;
+
+            var pointer = this.input.activePointer;
+            if (pointer.wasTouch) {
+                console.log("TOUCH")
+                //this.scene.start("PlayGame", { mobile: true }) // don't forget slots...
+                this.scene.run("PlayGame", { slots: slots }) // don't forget slots...
+            }
+            else {
+                console.log("CLICK");
+                this.scene.run("PlayGame", { slots: slots })
+            }
         }
         /*
         if (0)
