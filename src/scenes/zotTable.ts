@@ -25,12 +25,14 @@ zotState[3] = "zotStateKey";
 zotState[4] = "zotStateEmpty";
 
 const zotStateFlipped = new Array();
-zotStateFlipped[0] = "zotStateFlippedGreen";
+zotStateFlipped[0] = "zotStateFlippedGreen"; // impossible, upside down green is red
 zotStateFlipped[1] = "zotStateFlippedYellow";
 zotStateFlipped[2] = "zotStateFlippedRed";
 
 let zotDrawerState = 0;
 let batteryPlaced = false;
+let drawerOpen = 0;
+let keyTaken = false;
 
 let backButton: Phaser.GameObjects.Sprite;
 let backFrontButton: Phaser.GameObjects.Sprite;
@@ -39,40 +41,35 @@ let batteryMask: Phaser.GameObjects.Sprite;
 
 let zotPlaced: Phaser.GameObjects.Sprite;
 let zotPlacedFlipped: Phaser.GameObjects.Sprite;
+let zotBottomMask: Phaser.GameObjects.Sprite;
 let zotTopMask: Phaser.GameObjects.Sprite;
+let zotDrawerMask: Phaser.GameObjects.Sprite;
 
 let zot_objectMask: Phaser.GameObjects.Sprite;
 var zot_flipIt = false;
 
-
 let haveZot = false;
-
-
-
-
-let lastKeyDebouncer = "";
 
 var slots: Slots;
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
 
+let lastKeyDebouncer = "";
+
 export class ZotTable extends Phaser.Scene {
     constructor() {
         super("ZotTable");
     }
-    create(data: { fadeIn: boolean, slots: Slots, plusButton: Phaser.GameObjects.Sprite, plusModeButton: Phaser.GameObjects.Sprite }) {
+    create(data: {
+        slots: Slots,
+        plusButton: Phaser.GameObjects.Sprite,
+        plusModeButton: Phaser.GameObjects.Sprite
+    }) {
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
 
-        if (data.fadeIn) {
-            console.log("ON")
-        }
-        console.log("zt create")
-        //slots.currentMode = "room";        
-
         backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
-        //backButton.setDepth(20001); // TODO here is better!
         backButton.setVisible(true);
 
         backButton.on('pointerdown', () => {
@@ -80,13 +77,9 @@ export class ZotTable extends Phaser.Scene {
             slots.currentMode = "room";
             zot_objectMask.setVisible(false);
             if (previousWall == -1) {
-                console.log("back to main")
-                //this.scene.sendToBack()
                 backButton.setVisible(false);
-
-                //this.scene.switch("PlayGame");  // should work!
-                //backButton.input.cursor = 'default';
                 backButton.removeInteractive(); // fix up the cursor displayed on main scene
+
                 this.scene.moveUp("PlayGame");
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
@@ -101,14 +94,10 @@ export class ZotTable extends Phaser.Scene {
             }
         });
 
-
         backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
         //dictionary.set('backFrontButton', backFrontButton);
 
-
         backFrontButton.on('pointerdown', () => {
-            console.log("backfront")
-            //console.log("view table!")
             if (viewWall == 0)
                 viewWall = 1;
             else if (viewWall == 1)
@@ -132,53 +121,80 @@ export class ZotTable extends Phaser.Scene {
                 viewWall = 3;
             else if (viewWall == 3)
                 viewWall = 1;
-
         });
 
         zotPlaced = this.add.sprite(302, 483, 'zotPlaced').setOrigin(0, 0);
         zotPlacedFlipped = this.add.sprite(293, 478, 'zotPlacedFlipped').setOrigin(0, 0);
         batteryMask = this.add.sprite(90, 507, 'zotBatteryMask').setOrigin(0, 0);
 
-        zotTopMask = this.add.sprite(298, 450, 'zotTopMask').setOrigin(0, 0);
+        zotTopMask = this.add.sprite(294, 466, 'zotTopMask').setOrigin(0, 0);
         zotTopMask.on('pointerdown', () => {
-            //console.log("Top mask... well actually it is on the bottom...")
+            if (slots.getSelected() == "objZot") {
+                //console.log("ADD IT")
+                slots.clearItem("objZot")
+                slots.clearSelect();
+                haveZot = true;
+                updateWall = true;
+            }
+            //previousWall = viewWall;
+            //viewWall = 4;
+        });
+
+        zotBottomMask = this.add.sprite(298, 450, 'zotBottomMask').setOrigin(0, 0);
+        zotBottomMask.on('pointerdown', () => {
             previousWall = viewWall;
             viewWall = 4;
         });
 
+        zotDrawerMask = this.add.sprite(134, 659, 'zotDrawerMask').setOrigin(0, 0);
+        zotDrawerMask.on('pointerdown', () => {
+            //console.log("open the drawer!")
+            if (drawerOpen == 1) {
+                keyTaken = true;
+                drawerOpen = 2;
+                slots.addIcon("iconKeyA", "objKeyA", "altobjKeyA", 0); // it is the zot
+            }
+            if (!keyTaken) {
+                //console.log("can take it")
+                drawerOpen = 1;
+            }
+            updateWall = true;
+        });
+
         batteryMask = this.add.sprite(90, 507, 'zotBatteryMask').setOrigin(0, 0);
         batteryMask.on('pointerdown', () => {
-            viewWall++;
-            if (viewWall > 6)
+            if (viewWall == 6) { // cover open, battery placed
                 viewWall = 4;
-            if (viewWall == 6)
-                batteryPlaced = true;
-            if (viewWall == 5 && batteryPlaced)
-                viewWall = 6;
+            } else if (viewWall == 5) { // cover open, empty
+                if (slots.getSelected() == "objBattery") {
+                    slots.clearItem("objBattery")
+                    slots.clearSelect();
+                    batteryPlaced = true;
+                    viewWall = 6;
+                    updateWall = true;
+                }
+            } else if (viewWall == 4) { // cover closed
+                viewWall = 5;
+                if (batteryPlaced)
+                    viewWall = 6;
+            }
         });
 
 
         zot_objectMask = this.add.sprite(87, 423, 'objectMask').setOrigin(0, 0);
-
-
         //dictionary.set('objectMask', objectMask);
-
-
 
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         zot_objectMask.on('pointerdown', () => {
+            console.log("hacked objectMask into zot, why?")
             zot_flipIt = true;
             slots.inventoryViewSwitch = true;
         });
 
-
         this.events.on('wake', () => {
-            //console.log("zot table awakes!")
             viewWall = 0;
             updateWall = true;
-            //backButton.setVisible(true); backButton.setDepth(20001); backButton.setInteractive({ cursor: 'pointer' });
         });
-
 
         this.input.keyboard.on('keydown', (event: KeyboardEvent) => {
             if (event.key == lastKeyDebouncer)
@@ -202,47 +218,30 @@ export class ZotTable extends Phaser.Scene {
 
     }
 
-    preload() {
-
-        //walls[0] = "wall1";
-        //walls[1] = "wall2";
-    }
-
     update() {
         if (slots.inventoryViewSwitch) {
             //console.log("Zot Item View")
             slots.currentMode = "item"; // so slots object knows we switched
 
-
             // Turn off room navigation. If viewing a wall, return to the same wall
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
-
             if (viewWall < 5) {
-                //console.log("will return to " + viewWall)
                 previousWall = viewWall;
             }
 
-            // FIRST ROOM IMPLEMENTATION //   
-            // put second-specific logic here
-
-
-
-
-
-
+            // ZOT ROOM IMPLEMENTATION //   
+            // zot specific stuff
 
             if (currentWall == 5 && zot_flipIt) { // they just clicked the object, show alt view
 
                 // just run without fixing the inteface hints FOR NOW
                 //hasSearched = true;
 
-
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
                 viewWall = 6; currentWall = 6;
             } else {
-                //console.log("displaying " + slots.inventoryViewObj)
                 this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
                 viewWall = 5; currentWall = 5;
             }
@@ -254,10 +253,11 @@ export class ZotTable extends Phaser.Scene {
             backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
-
             // turn off all scene masks, and turn on the object alternate view mask
             batteryMask.setVisible(false);
             zotTopMask.setVisible(false);
+            zotBottomMask.setVisible(false);
+            zotDrawerMask.setVisible(false);
             zotPlaced.setDepth(-1);
             zotPlacedFlipped.setDepth(-1);
 
@@ -265,76 +265,53 @@ export class ZotTable extends Phaser.Scene {
             zot_objectMask.setDepth(1);
             zot_objectMask.setInteractive({ cursor: 'pointer' });
 
-            //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //            if (viewWall < 5)
-            //                previousWall = viewWall; // don't return to alternate view
-
-            /*            
-                        if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
-                            hasSearched = true;
-                            this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
-                            viewWall = 6; currentWall = 6;
-                            // only make the piece available if seen...
-                            if (foundHalfKey && !haveHalfKey) {
-                                keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
-                            }
-                        } else {
-                            this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
-                            viewWall = 5; currentWall = 5;
-                            //console.log("IDLE IT? OR REPLAY");
-                            if (slots.inventoryViewObj == "objRoach") {
-                                if (recorderMode == "record") {
-                                    recorder.setMode("idle")
-                                    recorderMode = "idle";
-                                    this.showRecording()
-            
-                                    //recorder.setMode("replay");
-                                    //window.location.reload();
-                                } else {
-                                    // TODO write proper exit function, called twice and did it here wrongly
-                                    recorder.setMode("idle")
-                                    recorderMode = "idle";
-                                    viewportText.setDepth(-1);
-                                    recordingEndedFadeClicks = 20;
-                                }
-                            }
-                        }
-                        flipIt = false;
-            */
             slots.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
-
-
         } else if ((viewWall != currentWall || updateWall)) {
-            console.log('view ' + viewWall)
+            //console.log("zot view wall=" + viewWall)
             this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
-            
 
             zotPlacedFlipped.setDepth(-1);
             zotPlaced.setDepth(-1);
-            if (viewWall == 0) {
-                //zotReflectionShim.setDepth(20002); TODO TRASH THIS DID NOT NEED IT
-                if (haveZot)
-                    zotPlaced.setDepth(1);
+            // looking at the front, normal
 
-                this.add.image(134, 659, zotState[zotDrawerState]).setOrigin(0, 0);
-                
+            if (viewWall == 0 || viewWall == 2) {
+                zotDrawerState = 0;
+                if (haveZot)
+                    zotDrawerState++;
+                if (batteryPlaced)
+                    zotDrawerState++;
             }
+            zotDrawerMask.setVisible(false);
+            if (viewWall == 0) {
+                if (drawerOpen == 1) {
+                    this.add.image(134, 659, zotState[3]).setOrigin(0, 0);
+                    zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });
+                } else if (drawerOpen == 2) {
+                    this.add.image(134, 659, zotState[4]).setOrigin(0, 0);
+                } else {
+                    this.add.image(134, 659, zotState[zotDrawerState]).setOrigin(0, 0);
+                    if (haveZot)
+                        zotPlaced.setDepth(1);
+                    if (zotDrawerState == 2) { // green, now let it be opened
+                        zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });
+                    }
+                }
+
+            }
+            if (viewWall == 2) {
+                if (zotDrawerState > 0)
+                    this.add.image(153, 664, zotStateFlipped[zotDrawerState]).setOrigin(0, 0);
+            }
+
+
+
+
+
+
+
+
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
@@ -344,19 +321,19 @@ export class ZotTable extends Phaser.Scene {
             }
             backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
 
-
             if (viewWall == 1) {
                 if (haveZot)
                     zotPlacedFlipped.setDepth(2);
             }
 
-            if (viewWall == 2) {
-                this.add.image(153, 664, zotStateFlipped[zotDrawerState]).setOrigin(0, 0);
-            }
-            // When looking at the bottom of the box...
             zotTopMask.setVisible(false);
-            if (viewWall == 2 || viewWall == 3) {
+            if ((!haveZot) && (viewWall == 0 || viewWall == 1)) {
                 zotTopMask.setVisible(true); zotTopMask.setDepth(1); zotTopMask.setInteractive({ cursor: 'pointer' });
+            }
+
+            zotBottomMask.setVisible(false);
+            if (viewWall == 2 || viewWall == 3) {
+                zotBottomMask.setVisible(true); zotBottomMask.setDepth(1); zotBottomMask.setInteractive({ cursor: 'pointer' });
             }
             batteryMask.setVisible(false);
             if (viewWall > 3)
@@ -364,20 +341,12 @@ export class ZotTable extends Phaser.Scene {
 
             plusButton.setVisible(false);
             plusModeButton.setVisible(false);
-
-
-
         }
-
-
 
         this.scene.setVisible(true, "BootGame");
         slots.displaySlots(30005);
 
         currentWall = viewWall;
         updateWall = false;
-
-
-
     }
 }

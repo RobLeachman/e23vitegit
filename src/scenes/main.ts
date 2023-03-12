@@ -73,7 +73,7 @@ var zotTableInit = true;
 var zotIsRunning = false;
 
 var slots: Slots;
-var bootGameScene: Phaser.Scene;
+//var bootGameScene: Phaser.Scene;
 
 
 var showXtime = -1;
@@ -164,11 +164,9 @@ export class PlayGame extends Phaser.Scene {
         //console.log("main update")
         if (inputText.text == "init") {
 
-            console.log("BONUS TEST ZOT")
-            slots.addIcon(bootGameScene, "iconZot", "objZot", "altobjZot", 0); // it is the zot
-            slots.addIcon(bootGameScene, "iconBattery", "objBattery", "altobjBattery");
-            slots.addIcon(bootGameScene, "iconKeyA", "objKeyA", "altobjKeyA");
-            slots.addIcon(bootGameScene, "iconKeyB", "objKeyB", "altobjKeyB");
+            //console.log("BONUS TEST ZOTS")
+            //slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
+            //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
 
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
@@ -243,16 +241,16 @@ export class PlayGame extends Phaser.Scene {
             // ... unless it's a knife
             // if (slots.combining.split(':')[1] != "objKnife") // keep some items when affecting others, save the knife
             //     slots.clearItem(this, slots.combining.split(':')[1]);
-            slots.clearItem(this, slots.combining.split(':')[1]);
+            slots.clearItem(slots.combining.split(':')[1]);
 
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
             //console.log("replacing " + slotRepl)
             //slots.replaceItem(this, slots.combining.split(':')[2]);
-            slots.clearItem(this, slots.combining.split(':')[2]);
+            slots.clearItem(slots.combining.split(':')[2]);
             if (slots.combining.split(':')[3] == "objDonutPlated") {
                 slots.inventoryViewObj = obj[5];
                 slots.inventoryViewAlt = altObj[5];
-                slots.addIcon(bootGameScene, icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
 
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
@@ -264,11 +262,11 @@ export class PlayGame extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
                 slots.inventoryViewObj = obj[4];
                 slots.inventoryViewAlt = altObj[4];
-                slots.addIcon(bootGameScene, icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.add.image(0, 0, obj[4]).setOrigin(0, 0);
             } else {
-                slots.addIcon(bootGameScene, icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
+                slots.addIcon(icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
             slots.combining = "";
 
@@ -352,7 +350,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
-            slots.addIcon(bootGameScene, icons[6].toString(), obj[6], altObj[6], 11); // roach
+            slots.addIcon(icons[6].toString(), obj[6], altObj[6], 11); // roach
         }
         if (slots.fakeClicks == 10) {
             recorder.setMode("replayOnce");
@@ -492,7 +490,7 @@ export class PlayGame extends Phaser.Scene {
                 this.add.dom(350, 1100, 'div', style, sentence);
 
                 slots.displayInventoryBar(false);
-                slots.clearAll(this);
+                slots.clearAll();
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
                 zotTableMask.setVisible(false);
@@ -604,22 +602,19 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
-    create(data: { slots: Slots, plusButton: Phaser.GameObjects.Sprite, plusModeButton: Phaser.GameObjects.Sprite, failed: Phaser.GameObjects.Sprite }) {
+    create(data: {
+        slots: Slots,
+        plusButton: Phaser.GameObjects.Sprite,
+        plusModeButton: Phaser.GameObjects.Sprite,
+        failed: Phaser.GameObjects.Sprite
+    }) {
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
         failed = data.failed;
 
-        bootGameScene = this.scene.get("BootGame");
-        //console.log("BOOT SCENE IS")
-        //console.dir(bootGameScene)
-        //this.scene.setVisible(true, "BootGame");
-
-        //console.log("main slots")
-        //console.dir(slots)
-
-
-
+        //bootGameScene = this.scene.get("BootGame"); // unused... 
+        // oh right we can get an arbitrary scene not pass it around!
 
         //console.log("main create")
         let scene = this;
@@ -725,7 +720,7 @@ export class PlayGame extends Phaser.Scene {
         dictionary.set('takeMask', takeMask);
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
-                slots.addIcon(bootGameScene, icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
+                slots.addIcon(icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 tableState++;
                 if (tableState > 2) {
@@ -756,7 +751,7 @@ export class PlayGame extends Phaser.Scene {
             zotTableMask.setVisible(false);
 
             if (zotTableInit) {
-                this.scene.run("ZotTable", { fade: true, slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
+                this.scene.run("ZotTable", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
                 //this.scene.moveBelow("BootGame","ZotTable");
                 //this.scene.bringToTop("ZotTable");
                 //this.scene.bringToTop("BootGame");
@@ -773,7 +768,7 @@ export class PlayGame extends Phaser.Scene {
         battMask.on('pointerdown', () => {
             haveBatt = true;
 
-            slots.addIcon(bootGameScene, icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
+            slots.addIcon(icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
             this.add.sprite(487, 786, "battPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
@@ -782,7 +777,7 @@ export class PlayGame extends Phaser.Scene {
         zotMask.on('pointerdown', () => {
             haveZot = true;
 
-            slots.addIcon(bootGameScene, icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
+            slots.addIcon(icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
             this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
@@ -797,7 +792,7 @@ export class PlayGame extends Phaser.Scene {
                 doorUnlocked = true;
                 updateWall = true;
                 //slots.clearItem(this, "objKeyWhole");
-                slots.clearItem(this, "objKeyWhole");
+                slots.clearItem("objKeyWhole");
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
             }
         });
@@ -836,11 +831,11 @@ export class PlayGame extends Phaser.Scene {
             snagged = true; // swap out plate with key for the empty plate
             haveHalfKey = true;
 
-            slots.addIcon(bootGameScene, icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
+            slots.addIcon(icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
         });
 
         // Fakey test debug icon
-        slots.addIcon(bootGameScene, icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
+        slots.addIcon(icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
 
         // Debug recorder debugger
         viewportText = this.add.text(10, 10, '');
@@ -972,7 +967,7 @@ export class PlayGame extends Phaser.Scene {
         black.setDepth(3000);
 
         slots.displayInventoryBar(false);
-        slots.clearAll(this);
+        slots.clearAll();
     }
 
     // https://codereview.stackexchange.com/questions/171832/text-wrapping-function-in-javascript
@@ -1015,7 +1010,7 @@ export class PlayGame extends Phaser.Scene {
         icons[5] = "iconDonutPlated";
         icons[6] = "iconRoach";
         icons[7] = "iconFake";
-        icons[8] = "iconBatt";
+        icons[8] = "iconBattery";
         icons[9] = "DELETED";
         icons[10] = "iconZot";
 
@@ -1053,8 +1048,5 @@ export class PlayGame extends Phaser.Scene {
         closeView[2] = "closeKey"
         closeView[3] = "closeEmpty"
 
-
-        //this.load.image('testplateShown', 'src/assets/sprites/closePlate.png'); 
-        //this.load.image('testplateIcon', 'src/assets/sprites/icon - plate.png');
     }
 }

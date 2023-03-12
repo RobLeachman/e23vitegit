@@ -130,6 +130,7 @@ export default class Slots {
     fakeClicks: number = 0;
     combining: string = "";
     invBar: Phaser.GameObjects.Sprite;
+    scene: Phaser.Scene;
 
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
     constructor(scene: Phaser.Scene,
@@ -144,6 +145,7 @@ export default class Slots {
         this.selectedSecondIcon = scene.add.sprite(1000, 1078, selectSecond).setOrigin(0, 0); //TODO remove second, it is stupid
         this.recorder = recorder;
         this.invBar = invBar;
+        this.scene = scene;
 
         for (var i = 0; i < 12; i++) {
             let slotItem = new InvItem(scene, i, slotIconSprite, this, this.recorder); // empty sprite image, or select
@@ -185,7 +187,7 @@ export default class Slots {
         this.slotArray[clickIndex].iconSprite.emit('pointerdown'); // selects the icon at position
     }
 
-    addIcon(scene: Phaser.Scene, iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
+    addIcon(iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
         //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
@@ -204,7 +206,7 @@ export default class Slots {
 
             this.slotArray[i].iconSprite.destroy();
         this.slotArray[i].iconSprite =
-            scene.add.sprite(112 + i * 83, 1078, iconSpriteName).setOrigin(0, 0);
+            this.scene.add.sprite(112 + i * 83, 1078, iconSpriteName).setOrigin(0, 0);
         if (i > 5) {
             this.slotArray[i].iconSprite.setX(112 + (i - 6) * 83)
             this.slotArray[i].iconSprite.setY(1161)
@@ -251,10 +253,11 @@ export default class Slots {
                 selectedThing = icon.name;
             }
         });
+        //console.log("selected thing: " + selectedThing)
         return selectedThing;
     }
 
-    clearItem(scene: Phaser.Scene, objName: string) {
+    clearItem(objName: string) {
         var clearSlot = -1;
         this.slotArray.forEach((icon, idx) => {
             if (icon.name == objName) {
@@ -264,7 +267,7 @@ export default class Slots {
 
         if (clearSlot > -1) {
             this.slotArray[clearSlot].iconSprite.destroy();
-            var clearedSprite = scene.add.sprite(1000, 1078, this.emptySprite);
+            var clearedSprite = this.scene.add.sprite(1000, 1078, this.emptySprite);
             if (clearSlot > 5) {
                 clearedSprite.setX(112 + (clearSlot - 6) * 83)
                 clearedSprite.setY(1161)
@@ -276,9 +279,8 @@ export default class Slots {
         }
         return clearSlot;
     }
-    // @ts-ignore
-    // TODO we don't need scene here!!
-    clearAll(scene: Phaser.Scene) {
+
+    clearAll() {
         this.slotArray.forEach((icon) => {
             icon.iconSprite.destroy();
         });

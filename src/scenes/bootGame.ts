@@ -159,10 +159,12 @@ export class BootGame extends Phaser.Scene {
         this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.webp');
         this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.webp');
         this.load.image('zotTopMask', 'assets/sprites/zotTopMask.webp');
+        this.load.image('zotBottomMask', 'assets/sprites/zotBottomMask.webp');
         this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
         this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
         this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
         this.load.image('zotBatteryMask', 'assets/sprites/zotBatteryMask.webp');
+        this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.webp');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
