@@ -186,6 +186,7 @@ export default class Slots {
     }
 
     addIcon(scene: Phaser.Scene, iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
+        //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
             if (i == -1 && (icon.iconSprite.name.length == 0)) {
@@ -212,7 +213,7 @@ export default class Slots {
         this.slotArray[i].index = i;
         this.slotArray[i].name = objectView;
         this.slotArray[i].selected = false;
-        this.slotArray[i].iconSprite.setInteractive();
+        this.slotArray[i].iconSprite.setInteractive({ cursor: 'pointer' });
         this.slotArray[i].iconSprite.setDepth(200);
         this.slotArray[i].iconSprite.on('pointerdown', this.slotArray[i].clickIt, this.slotArray[i]);
         this.slotArray[i].objView = objectView;

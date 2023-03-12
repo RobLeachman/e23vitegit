@@ -15,6 +15,9 @@ var viewportPointerClick: Phaser.GameObjects.Sprite;
 
 // UI stuff
 var invBar: Phaser.GameObjects.Sprite;
+var plusButton: Phaser.GameObjects.Sprite;
+var plusModeButton: Phaser.GameObjects.Sprite;
+var failed: Phaser.GameObjects.Sprite;
 
 export class BootGame extends Phaser.Scene {
     constructor() {
@@ -63,7 +66,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.webp');
         this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.webp');
 
-        this.load.image('objBatt', 'assets/backgrounds/invroom - obj - battery.webp');
+        this.load.image('objBattery', 'assets/backgrounds/invroom - obj - battery.webp');
         this.load.image('objZot', 'assets/backgrounds/invroom - obj - zot.webp');
 
         this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.webp');
@@ -75,7 +78,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.webp');
         this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.webp');
 
-        this.load.image('altobjBatt', 'assets/backgrounds/invroom - altobj - battery.webp');
+        this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
         this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
         this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.webp');
@@ -108,7 +111,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('iconRoach', 'assets/sprites/icon - roach.webp');
         this.load.image('iconFake', 'assets/sprites/icon - empty.webp');
 
-        this.load.image('iconBatt', 'assets/sprites/iconBattery.webp');
+        this.load.image('iconBattery', 'assets/sprites/iconBattery.webp');
         this.load.image('iconZot', 'assets/sprites/iconZot.webp');
 
         this.load.image('tableDonut', 'assets/sprites/tableDonut.webp');
@@ -146,7 +149,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('topBottomButton', 'assets/sprites/topBottomButton.webp');
         this.load.image('zotPlaced', 'assets/sprites/zotPlaced.webp');
         this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.webp');
-    
+
         this.load.image('zotStateOff', 'assets/sprites/zotState-off.webp');
         this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.webp');
         this.load.image('zotStateGreen', 'assets/sprites/zotState-green.webp');
@@ -235,17 +238,31 @@ export class BootGame extends Phaser.Scene {
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar);
 
-        
+        plusButton = this.add.sprite(80, 950, 'plusButton');
+        //        dictionary.set('plusButton', plusButton);
+        plusModeButton = this.add.sprite(80, 950, 'plusModeButton');
+        //        dictionary.set('plusModeButtonButton', plusModeButton);
+        plusModeButton.on('pointerdown', () => {
+            //console.log("combine mode cancelled");
+            slots.combining = ""; // so slots object knows what is happening
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+        });
+        plusButton.on('pointerdown', () => {
+            slots.combining = "trying"; // so slots object knows what is happening            
+            plusButton.setVisible(false);
+            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();
+        });
 
-        //FINALLY
-        //slots.addIcon(this, "iconZot", "objZot", "altobjZot", 2); // it is the zot
+        failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
+
 
         //        var {slots} : {slots:any}
         //console.log("boot create")
         if (true) {
             //this.scene.run("ZotTable", { fade: true, inv: slots })
-            loadDone.destroy()            
-            this.scene.run("PlayGame", { slots: slots });
+            loadDone.destroy()
+            this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed });
             //this.scene.run("ZotTable", { slots: slots });
         } else {
             if (true) {
