@@ -69,11 +69,14 @@ export class ZotTable extends Phaser.Scene {
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
 
+        this.registry.set('boxHasZot', haveZot);
+        this.registry.set('boxColor', "off");
+
         backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
         backButton.setVisible(true);
 
         backButton.on('pointerdown', () => {
-            console.log("back to " + previousWall);
+            //console.log(`go back from ${viewWall} to ${previousWall}`)
             slots.currentMode = "room";
             zot_objectMask.setVisible(false);
             if (previousWall == -1) {
@@ -83,14 +86,10 @@ export class ZotTable extends Phaser.Scene {
                 this.scene.moveUp("PlayGame");
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
-            } else if (viewWall > 3) {
-                if (previousWall > -1) {
-                    viewWall = previousWall;
-                    previousWall = -1;
-                    updateWall = true;
-                } else {
-                    throw new Error("I DON'T EVEN"); //TODO take this out
-                }
+            } else if (viewWall > 3) { // battery closeup
+                viewWall = previousWall;
+                //previousWall = -1;
+                updateWall = true;
             }
         });
 
@@ -134,10 +133,9 @@ export class ZotTable extends Phaser.Scene {
                 slots.clearItem("objZot")
                 slots.clearSelect();
                 haveZot = true;
+                this.registry.set('boxHasZot', haveZot);
                 updateWall = true;
             }
-            //previousWall = viewWall;
-            //viewWall = 4;
         });
 
         zotBottomMask = this.add.sprite(298, 450, 'zotBottomMask').setOrigin(0, 0);
@@ -227,9 +225,7 @@ export class ZotTable extends Phaser.Scene {
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
-            if (viewWall < 5) {
-                previousWall = viewWall;
-            }
+            previousWall = viewWall;
 
             // ZOT ROOM IMPLEMENTATION //   
             // zot specific stuff
@@ -282,9 +278,14 @@ export class ZotTable extends Phaser.Scene {
                     zotDrawerState++;
                 if (batteryPlaced)
                     zotDrawerState++;
+                if (keyTaken)
+                    zotDrawerState = 0;
             }
+            this.registry.set('zotBoxColor', zotDrawerState);
             zotDrawerMask.setVisible(false);
             if (viewWall == 0) {
+                if (keyTaken)
+                    drawerOpen = 0;
                 if (drawerOpen == 1) {
                     this.add.image(134, 659, zotState[3]).setOrigin(0, 0);
                     zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });

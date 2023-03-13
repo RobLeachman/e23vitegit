@@ -69,11 +69,11 @@ export default class Recorder {
         this.pointer = pointer;
     }
 
-    // called once per update, tracks pointer movement and clicks
+    // called once per update, tracks pointer movement and clicks on the scene
     checkPointer(scene: Phaser.Scene) {
         let pointerClicked: Boolean = false;
 
-        this.fadeClick(scene);
+        this.fadeClick();
 
         if (this.oldPointerDown != this.pointer.isDown) {
             this.oldPointerDown = this.pointer.isDown;
@@ -102,37 +102,37 @@ export default class Recorder {
                 if (this.recordPointerX != this.oldPointerX || this.recordPointerY != this.oldPointerY) {
                     this.recordPointerX = this.oldPointerX;
                     this.recordPointerY = this.oldPointerY;
-                    this.recordAction(scene, "mousemove");
+                    this.recordPointerAction("mousemove", scene.time.now);
                 }
             }
         }
 
         if (pointerClicked) {
-            this.recordAction(scene, "mouseclick");
+            this.recordPointerAction("mouseclick", scene.time.now);
             this.showClick(scene, this.pointer.x, this.pointer.y);
             pointerClicked = false;
             this.dumpRecording();
         }
     }
 
-    recordAction(scene: Phaser.Scene, action: string) {
-        // @ts-ignore
-        // we don't need scene if we're not using actionTime
-        const actionTime = scene.time.now;
-        //console.log(`RECORDER ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${scene.time.now}`)
-        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now}:`);
+    recordPointerAction(action: string, time: number) {
+        //if (action != "mousemove")
+        //    console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
+        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
+        console.log("recording so far:");
+        console.log(this.recording)
     }
-    // everything would be so much easier if we had a scene here!! NO SHIT I GOT IT
+    // need a scene here just to get the current runtime
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        //console.log(`RECORDER OBJECT ${object}`);
+        //console.log(`>>>>>>>>RECORDER OBJECT ${object}`);
         //console.log(scene.time.now);
         this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now}:`);
+        //console.log("recording so far:");
+        //console.log(this.recording)        
     }
-    recordIconClick(object: string, scene: Phaser.Scene) {
-        //console.log(`RECORDER ICON CLICK ${object}`);
-        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now}:`);
-        //console.log(this.recording);
-
+    recordIconClick(object: string, time: number) {
+        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
     }
 
     getRecording() {
@@ -159,7 +159,7 @@ export default class Recorder {
         re = /\-/g; recIn = recIn.replace(re, "icon=");
 
         if (recInCheck == this.checksum(recIn)) {
-            //console.log("Good recording " + recIn);
+            //console.log("-->Good recording " + recIn);
         } else {
             throw new Error('recording cksum error');
         }
@@ -264,15 +264,17 @@ export default class Recorder {
             if (idx < actions.length - 1) {
                 const nextAction = actions[idx + 1];
                 //console.log(action[3] + " " + nextAction[3])
-                const complexAction = action[0].split('=');
+                const complexAction = action[0].split('='); // icon or object mask
                 if (complexAction.length > 1) {
                     if (action[3] == nextAction[3]) {
                         nextAction[3] = 0;
                         if (idx < actions.length - 2)
                             actions[idx + 2][3] = 0;
                     }
-                } else if (action[3] == nextAction[3]) // move then click, skip the move
+                } else if (action[3] == nextAction[3]) {
+                    //console.log("move then click, skip the move");
                     action[3] = 0;
+                }
             }
         });
 
@@ -335,6 +337,7 @@ export default class Recorder {
         return (chk & 0xffffffff).toString(16);
     }
 
+    // Called once per update when the recorder has a click to show, creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
         const config = {
             key: 'clckrClk',
@@ -351,8 +354,8 @@ export default class Recorder {
         this.prevClickX = x; this.prevClickY = y;
         newSprite.setDepth(3000);
     }
-    // @ts-ignore DONT NEED SCENE
-    fadeClick(scene: Phaser.Scene) {
+
+    fadeClick() {
         this.clickers.forEach((clicked, idx) => {
             if (clicked.alpha > 0) {
                 clicked.setScale(clicked.scale * .8);

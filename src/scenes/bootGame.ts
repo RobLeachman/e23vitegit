@@ -119,8 +119,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('tableKey', 'assets/sprites/tableKey.webp');
         this.load.image('tableEmpty', 'assets/sprites/tableEmpty.webp');
 
-        this.load.image('battShown', 'assets/sprites/southMelon.webp');
-        this.load.image('battPicked', 'assets/sprites/southMelonPicked.webp');
+        this.load.image('battShown', 'assets/sprites/battOnFloor.webp');
         this.load.image('zotShown', 'assets/sprites/southZot.webp');
         this.load.image('zotPicked', 'assets/sprites/southZotPicked.webp');
 
@@ -139,6 +138,9 @@ export class BootGame extends Phaser.Scene {
 
         this.load.image('battMask', 'assets/sprites/battMask.webp');
         this.load.image('zotMask', 'assets/sprites/zotMask.webp');
+        this.load.image('boxZot', 'assets/sprites/boxZot.webp');
+        this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.webp');
+        this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.webp');
 
         this.load.image('zotTableOff', 'assets/backgrounds/zot - off.webp');
         this.load.image('zotTableBack', 'assets/backgrounds/zot - back.webp');
@@ -237,6 +239,7 @@ export class BootGame extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
 
         invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
+
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar);
 
@@ -272,8 +275,6 @@ export class BootGame extends Phaser.Scene {
             } else {
                 this.scene.start("PlayGame", { mobile: false })
             }
-            //console.log("start recorder...");
-            //this.scene.start("Recorder");
         }
     }
 

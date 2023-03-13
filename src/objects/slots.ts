@@ -40,8 +40,9 @@ class InvItem {
         //console.log((this.iconSprite as Phaser.GameObjects.Sprite).texture.key)
         //this.recorder.recordIconClick(this.name, this.scene);
 
-        //console.log("ICON CLICK!! " + this.name);
-        this.recorder.recordIconClick((this.iconSprite as Phaser.GameObjects.Sprite).texture.key, this.scene);
+        //console.log("RECORD ICON CLICK!! " + this.name);
+        let time = this.scene.time.now;
+        this.recorder.recordIconClick((this.iconSprite as Phaser.GameObjects.Sprite).texture.key, time);
         if (this.name == "fake") {
             //console.log("FAKE")
             this.allSlots.fakeClicks++;

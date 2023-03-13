@@ -1,14 +1,15 @@
 /****************
  * An escape room coded in Phaser.
  * 
- * - Recorder
- * - Rework combination logic
+ * - Count clicks, verify ` ` save
+ * - 3x3 slider puzzle
+ * - 4x4 picture puzzle
  * - Rework hints
  * -- show question mark when stuck
- * - Changing cursor
  * - Sound
  * - Fireworks on winner screen
  * - Fade scene in
+ * - Screen shake on bad guess
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
  */
@@ -21,6 +22,8 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
 let debugInput = true;
 let debugUpdateOnce = false;
+
+let mainReplayRequest = "frustrated";
 
 var viewWall = 1;
 var currentWall = -1;
@@ -55,6 +58,9 @@ var hintMask: Phaser.GameObjects.Sprite;
 var battMask: Phaser.GameObjects.Sprite;
 var zotMask: Phaser.GameObjects.Sprite;
 var zotTableMask: Phaser.GameObjects.Sprite;
+var boxZot: Phaser.GameObjects.Sprite;
+var zotBoxColorYellow: Phaser.GameObjects.Sprite;
+var zotBoxColorGreen: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
 
@@ -71,10 +77,10 @@ var haveZot = false;
 var haveBatt = false;
 var zotTableInit = true;
 var zotIsRunning = false;
+var boxHasZot = false;
+var zotBoxColor: number;
 
 var slots: Slots;
-//var bootGameScene: Phaser.Scene;
-
 
 var showXtime = -1;
 
@@ -85,7 +91,7 @@ var viewportPointerClick: Phaser.GameObjects.Sprite;
 var pointer: Phaser.Input.Pointer;
 
 let lastKeyDebouncer = ""; //
-let recorderMode = "?";
+
 let recording = "";
 let actions: [string, number, number, number][] = [["BOJ", 0, 0, 0]];
 let nextActionTime = 0;
@@ -177,7 +183,6 @@ export class PlayGame extends Phaser.Scene {
                 inputText.text = "pastebox";
                 //theText.resize(100, 200);
             } else {
-                console.log("no text");
                 inputText.text = "off";
                 theText.resize(0, 0);
             }
@@ -193,6 +198,9 @@ export class PlayGame extends Phaser.Scene {
         }
 
         this.input.keyboard.on('keydown', this.handleKey);
+        //console.log("handled key, mode=" + recorder.getMode())
+        if (mainReplayRequest == "do the damn replay")
+            return;
         if (this.input.activePointer.rightButtonDown()) {
             this.showRecording();
         }
@@ -278,9 +286,10 @@ export class PlayGame extends Phaser.Scene {
 
         ////////////// RECORDER SHIT //////////////
 
-        if (debugging || recorderMode == "record" || recorderMode == "replay" || recorderMode == "replayOnce") {
+        let debugTheRecorder = recorder.getMode();
+        if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
             let displayDebugMode = "RECORDING";
-            if (recorderMode == "replay" || recorderMode == "replayOnce")
+            if (debugTheRecorder == "replay" || debugTheRecorder == "replayOnce")
                 displayDebugMode = "REPLAY"
             viewportText.setText([
                 'x: ' + pointer.worldX,
@@ -291,15 +300,19 @@ export class PlayGame extends Phaser.Scene {
                 displayDebugMode + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize()
             ]);
         }
-        if (recorderMode == "record") {
+        // Be sure we have the pointer, and then record any movement or clicks
+        if (recorder.getMode() == "record") {
             recorder.fixPointer(this.input.activePointer)
             recorder.checkPointer(this);
-        } else if (recorderMode == "replay" || recorderMode == "replayOnce") {
-            //console.log("action " + nextActionTime + "now " + this.time.now)
+        } else if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
+            //console.log("action " + nextActionTime + " now " + this.time.now)
             //console.log("replay " + actions[0]);
             //console.log(" at " + actions[0][3]);
             if (this.time.now >= nextActionTime) {
                 let replayAction = actions[0][0];
+                //if (replayAction != "mousemove")
+                //    console.log(`(${this.time.now}) Replaying ACTION ${replayAction}`)                
+
                 if (replayAction == "mouseclick") {
                     viewportPointer.setX(actions[0][1]);
                     viewportPointer.setY(actions[0][2]);
@@ -311,8 +324,10 @@ export class PlayGame extends Phaser.Scene {
                     let target = actions[0][0];
                     let targetType = target.split('=')[0];
                     let targetObject = target.split('=')[1];
+                    // The money maker: call this scene's objects just like they were executed and recorded,
+                    // or click the icon just that same way.
                     if (targetType == "object") {
-                        // TODO much blood was spilt here. Check unmapped object.
+                        // TODO Need to check unmapped objects
                         let object = dictionary.get(targetObject);
                         object?.emit('pointerdown')
                     } else if (targetType == "icon") {
@@ -325,25 +340,24 @@ export class PlayGame extends Phaser.Scene {
                 //console.log(actions.length);
                 if (actions.length == 0) {
                     //console.log("recorder EOJ")
-                    if (recorderMode == "replayOnce") {
-                        console.log("did once")
-                        recorder.setMode("idle");
+                    if (recorder.getMode() == "replayOnce") {
+                        console.log("did once... roach mode EOJ")
                     }
-                    recorderMode = "idle";
+                    //console.log("SET RECORD IDLE")
+                    recorder.setMode("idle");
 
                     viewportText.setDepth(-1);
                     recordingEndedFadeClicks = 20;
                 } else {
-                    nextActionTime += actions[0][3];
+                    nextActionTime += actions[0][3]; // wait for this amount of time to elapse then do the next
                 }
             }
-            recorder.fadeClick(this);
-            //console.log("REPLAY STUFF");
-            //console.log(actions);
+            recorder.fadeClick();
         }
-        //console.log("MODE IS " + recorderMode)
+        //console.log("Main recorder mode=" + recorder.getMode())
+        // need to clear any remaining clicks left displayed when the recording ended
         if (recordingEndedFadeClicks-- > 0) {
-            recorder.fadeClick(this);
+            recorder.fadeClick();
             viewportPointer.setX(1000);
         }
         if (slots.fakeClicks == 3) {
@@ -410,17 +424,14 @@ export class PlayGame extends Phaser.Scene {
 
                 //console.log("IDLE IT? OR REPLAY");
                 if (slots.inventoryViewObj == "objRoach") {
-                    if (recorderMode == "record") {
+                    if (recorder.getMode() == "record") {
                         recorder.setMode("idle")
-                        recorderMode = "idle";
-                        this.showRecording()
 
-                        //recorder.setMode("replay");
-                        //window.location.reload();
+                        this.showRecording()
                     } else {
                         // TODO write proper exit function, called twice and did it here wrongly
                         recorder.setMode("idle")
-                        recorderMode = "idle";
+
                         viewportText.setDepth(-1);
                         recordingEndedFadeClicks = 20;
                     }
@@ -472,7 +483,7 @@ export class PlayGame extends Phaser.Scene {
                 viewportPointerClick.setDepth(-1);
                 let fadeClicks = 10;
                 while (fadeClicks-- > 0) {
-                    recorder.fadeClick(this);
+                    recorder.fadeClick();
                 }
 
                 currentWall = viewWall;
@@ -501,20 +512,18 @@ export class PlayGame extends Phaser.Scene {
                 updateWall = false;
                 viewWall = currentWall;
 
-                if (recorderMode == "replayOnce") {
+                // the game is over, now see what comes next...
+                if (recorder.getMode() == "replayOnce") {
                     recorder.setMode("idle")
-                    recorderMode = "idle";
                 }
 
-                if (recorderMode == "record") {
+                if (recorder.getMode() == "record") {
                     recorder.setMode("idle")
-                    recorderMode = "idle";
                     this.showRecording()
                 }
 
                 viewportText.setDepth(-1);
-
-                return;
+                return; // that's all we need to do on egress
             }
 
             slots.currentMode = "room";
@@ -534,13 +543,29 @@ export class PlayGame extends Phaser.Scene {
             currentWall = viewWall;
             updateWall = false;
 
+            boxZot.setDepth(-1);
+            zotBoxColorYellow.setDepth(-1);
+            zotBoxColorGreen.setDepth(-1);
+
             if (viewWall == 0)
                 this.add.sprite(540, 650, tableView[tableState]).setOrigin(0, 0);
             if (viewWall == 2) {
                 if (!haveZot)
                     this.add.sprite(493, 555, "zotShown").setOrigin(0, 0);
+            }
+            if (viewWall == 1) {
                 if (!haveBatt)
-                    this.add.sprite(349, 602, "battShown").setOrigin(0, 0);
+                    this.add.sprite(320, 926, "battShown").setOrigin(0, 0);
+                if (boxHasZot)
+                    boxZot.setDepth(100);
+
+                if (zotBoxColor == 1) {
+                    zotBoxColorYellow.setDepth(100);
+                }
+                if (zotBoxColor == 2) {
+                    zotBoxColorGreen.setDepth(100);
+                }
+
             }
 
             if (viewWall == 4)
@@ -577,7 +602,7 @@ export class PlayGame extends Phaser.Scene {
                 hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' });
 
             battMask.setVisible(false);
-            if (viewWall == 2 && !haveBatt)
+            if (viewWall == 1 && !haveBatt)
                 battMask.setVisible(true); battMask.setDepth(100); battMask.setInteractive({ cursor: 'pointer' });
 
             zotMask.setVisible(false);
@@ -599,6 +624,19 @@ export class PlayGame extends Phaser.Scene {
                 takeMask.setVisible(false);
             }
             objectMask.setVisible(false);
+        }
+    }
+
+    // @ts-ignore
+    // data will be boolean or number, so any here is legit!
+    updateData(parent: Phaser.Game, key: string, data: any) {
+        if (key == "boxHasZot") {
+            console.log("boxHasZot=" + data)
+            boxHasZot = data;
+        }
+        if (key == "zotBoxColor") {
+            console.log("zotBoxColor=" + data)
+            zotBoxColor = data;
         }
     }
 
@@ -660,12 +698,11 @@ export class PlayGame extends Phaser.Scene {
                 text.setDepth(5000);
         */
 
-        this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
-        viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
-        viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
-        recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
+        recorder = slots.recorder;
+        viewportPointer = recorder.pointerSprite;
+        viewportPointerClick = recorder.clickSprite;
 
-        console.log("Recorder mode=" + recorder.getMode());
+        console.log("Recorder mode = " + recorder.getMode());
 
         inputText = new InputText(this, 300, 100, 300, 100, {
             type: 'textarea',
@@ -678,10 +715,8 @@ export class PlayGame extends Phaser.Scene {
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
 
-        //slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder);
         slots.displaySlots(1);
         slots.currentMode = "room";
-
 
         leftButton = this.add.sprite(80, 950, 'leftButton');
         dictionary.set('leftButton', leftButton);
@@ -763,15 +798,19 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        battMask = this.add.sprite(339, 590, 'battMask').setOrigin(0, 0);
+        boxZot = this.add.sprite(382, 650, 'boxZot').setOrigin(0, 0);
+        zotBoxColorYellow = this.add.sprite(354, 657, 'zotBoxColorYellow').setOrigin(0, 0);
+        zotBoxColorGreen = this.add.sprite(354, 657, 'zotBoxColorGreen').setOrigin(0, 0);
+
+        battMask = this.add.sprite(320, 926, 'battMask').setOrigin(0, 0);
         dictionary.set('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
-
             slots.addIcon(icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
-            this.add.sprite(487, 786, "battPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
         });
+
+        // Temporary zot on wall
         zotMask = this.add.sprite(493, 555, 'zotMask').setOrigin(0, 0);
         dictionary.set('zotMask', zotMask);
         zotMask.on('pointerdown', () => {
@@ -810,11 +849,9 @@ export class PlayGame extends Phaser.Scene {
                 foundHalfKey = true;
             }
             if (slots.inventoryViewObj == "objRoach" && viewWall == 5) {
-                if (recorderMode == "replay") {
+                if (recorder.getMode() == "replay") {
                     recorder.setMode("idle")
-                    recorderMode = "idle";
                 } else {
-                    //console.log("RECORD IT! mode was " + recorderMode);
                     recorder.setMode("record")
                     window.location.reload();
                 }
@@ -841,15 +878,11 @@ export class PlayGame extends Phaser.Scene {
         viewportText = this.add.text(10, 10, '');
         viewportText.setDepth(3001); // TODO: rationalize the crazy depths!
 
-        recorderMode = recorder.getMode();
-        //console.log("Recordermode: " + recorderMode);
-        if (recorderMode == "replay" || recorderMode == "replayOnce") {
+        if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
             recording = recorder.getRecording();
             if (recorder.getReplaySpeed() == "fast") {
                 recording = recorder.makeFast(recording);
             }
-            //console.log("REPLAY " + recorderMode);
-
             const actionString = recording.split(":");
             actionString.forEach((action) => {
                 if (action.length > 0) {
@@ -858,7 +891,7 @@ export class PlayGame extends Phaser.Scene {
                 }
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
-            nextActionTime = actions[0][3];
+            nextActionTime = actions[0][3]; // the first action will fire when the current timer reaches this
         }
 
         this.events.on('wake', () => {
@@ -913,12 +946,12 @@ export class PlayGame extends Phaser.Scene {
             case "`":
                 //console.log("play recording");
                 recorder.setMode("replay")
+                mainReplayRequest = "do the damn replay"
                 window.location.reload();
                 break;
             case "Escape":
                 //;console.log("quit recorder");
                 recorder.setMode("idle")
-                recorderMode = "idle";
                 viewportText.setDepth(-1);
                 //window.location.reload();
                 break;
@@ -927,7 +960,6 @@ export class PlayGame extends Phaser.Scene {
 
     showRecording() {
         recorder.setMode("idle")
-        recorderMode = "idle";
         viewportText.setDepth(-1);
         viewportPointer.setDepth(-1);
         viewportPointerClick.setDepth(-1);
