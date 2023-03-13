@@ -21,16 +21,19 @@ export default class Recorder {
 
     recording: string;
     recordingSize: number;
-    recorderMode: string; // try everything
+    recorderMode: string;
+    totalClicks: number;
 
     constructor(pointer: Phaser.Input.Pointer,
         pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite) {
+
         this.pointer = pointer;
         this.pointerSprite = pointerSprite;
         this.clickSprite = clickSprite;
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
+        this.totalClicks = 0;
     }
 
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
@@ -120,6 +123,7 @@ export default class Recorder {
             this.recordPointerAction("mouseclick", scene.time.now, sceneName);
             this.showClick(scene, this.pointer.x, this.pointer.y);
             pointerClicked = false;
+            this.totalClicks++;
             this.dumpRecording();
         }
     }
@@ -165,7 +169,7 @@ export default class Recorder {
         re = /\-/g; recIn = recIn.replace(re, "icon=");
 
         if (recInCheck == this.checksum(recIn)) {
-            console.log("-->Good recording " + recIn);
+            //console.log("-->Good recording " + recIn);
         } else {
             throw new Error('recording cksum error');
         }
@@ -302,13 +306,21 @@ export default class Recorder {
         });
 
         const recording = recOut;
-        //console.log("Save: " + recOut);
+
+        const recordedClicks = (recording.match(/mouseclick/g) || []).length;
+        if (recordedClicks != this.totalClicks) {
+            console.log(`********* recording click error, recorded=${recordedClicks} actual=${this.totalClicks}`)
+            //throw new Error(`recording click error, recorded=${recordedClicks} actual=${this.totalClicks}`);
+        }
+
+
+        //console.log(`Save recording (clicks=${this.totalClicks}):\n ${recOut}`);
         let re = /mousemove,/g; recOut = recording.replace(re, "#");
         re = /mouseclick,/g; recOut = recOut.replace(re, "!");
         re = /object=/g; recOut = recOut.replace(re, "=");
         re = /icon=/g; recOut = recOut.replace(re, "\-");
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
-        console.log("RECORDING OUT " + recOut);
+        //console.log("RECORDING OUT " + recOut);
         this.saveCookies(recOut);
     }
 
@@ -360,7 +372,7 @@ export default class Recorder {
             newSprite.setScale(5);
         }
         this.clickers.push(newSprite);
-        console.log("CLICKERCOUNT " + this.clickers.length)
+        //console.log("CLICKERCOUNT " + this.clickers.length)
         this.prevClickX = x; this.prevClickY = y;
         newSprite.setDepth(3000);
     }

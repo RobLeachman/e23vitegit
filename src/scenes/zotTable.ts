@@ -93,7 +93,12 @@ export class ZotTable extends Phaser.Scene {
 
         zotBackButton.on('pointerdown', () => {
             //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallBattery}`)
-            recorder.recordObjectDown(zotBackButton.texture.key, thisscene);
+
+            // the global call for this may or may not fire
+            //console.log("MAY OR MAY NOT")
+            if (viewWall < 7)
+                recorder.recordObjectDown(zotBackButton.texture.key, thisscene);
+
             slots.currentMode = "room";
             zotObjectMask.setVisible(false);
             if (previousWall == -1) {
@@ -111,8 +116,10 @@ export class ZotTable extends Phaser.Scene {
                 viewWall = previousWall;
             //console.log(`now go view ${viewWall} and previous ${previousWall}`)
             // need a hack here for returning from looking at an object while viewing a battery wall... ugh
-            if (viewWall == previousWall)
+            if (viewWall == previousWall) {
+                //console.log("HACK " + previousWallBattery);
                 previousWall = previousWallBattery
+            }
         });
 
         backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
@@ -174,7 +181,7 @@ export class ZotTable extends Phaser.Scene {
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2;
-                slots.addIcon("iconKeyA", "objKeyA", "altobjKeyA", 0); // it is the zot
+                slots.addIcon("iconKeyA", "objKeyA", "altobjKeyA");
             }
             if (!keyTaken) {
                 //console.log("can take it")
@@ -207,7 +214,7 @@ export class ZotTable extends Phaser.Scene {
         });
 
 
-        zotObjectMask = this.add.sprite(87, 423, 'zotObjectMask').setOrigin(0, 0);
+        zotObjectMask = this.add.sprite(170, 410, 'zotObjectMask').setOrigin(0, 0);
         recorder.addMaskSprite('zotObjectMask', zotObjectMask);
 
         // Flip object over. TODO: must adjust for key presence if it's the plate. Awkward! ??????
@@ -219,6 +226,7 @@ export class ZotTable extends Phaser.Scene {
 
         this.events.on('wake', () => {
             viewWall = 0;
+            previousWallBattery = -1;
             updateWall = true;
         });
 
@@ -321,7 +329,9 @@ export class ZotTable extends Phaser.Scene {
 
             zotPlacedFlipped.setDepth(-1);
             zotPlaced.setDepth(-1);
-            // looking at the front, normal
+
+            if (viewWall < 4) // lost track of the hacks... wouldn't this be sufficient in all cases?
+                previousWallBattery = -1;
 
             if (viewWall == 0 || viewWall == 2) {
                 zotDrawerState = 0;

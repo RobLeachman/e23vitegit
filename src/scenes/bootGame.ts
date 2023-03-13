@@ -121,8 +121,8 @@ export class BootGame extends Phaser.Scene {
         this.load.image('tableEmpty', 'assets/sprites/tableEmpty.webp');
 
         this.load.image('battShown', 'assets/sprites/battOnFloor.webp');
-        this.load.image('zotShown', 'assets/sprites/southZot.webp');
-        this.load.image('zotPicked', 'assets/sprites/southZotPicked.webp');
+        this.load.image('zotShown', 'assets/sprites/southZotOBSOLETE.webp');
+        this.load.image('zotPicked', 'assets/sprites/southZotPickedOBSOLETE.webp');
 
         this.load.image('closeDonut', 'assets/sprites/closeDonut.webp');
         this.load.image('closePlate', 'assets/sprites/closePlate.webp');
@@ -132,14 +132,14 @@ export class BootGame extends Phaser.Scene {
         this.load.image('tableMask', 'assets/sprites/tableMask.webp');
         this.load.image('zotTableMask', 'assets/sprites/zotTableMask.webp');
         this.load.image('takeMask', 'assets/sprites/takeMask.webp');
-        this.load.image('objectMask', 'assets/sprites/object-maskB.webp');
-        this.load.image('zotObjectMask', 'assets/sprites/object-maskB.webp');
+        this.load.image('objectMask', 'assets/sprites/object-maskC.webp');
+        this.load.image('zotObjectMask', 'assets/sprites/object-maskC.webp');
         this.load.image('keyMask', 'assets/sprites/keyMask.webp');
         this.load.image('doorMask', 'assets/sprites/doorMask.webp');
         this.load.image('hintMask', 'assets/sprites/hintMask.webp');
 
         this.load.image('battMask', 'assets/sprites/battMask.webp');
-        this.load.image('zotMask', 'assets/sprites/zotMask.webp');
+        this.load.image('zotMask', 'assets/sprites/zotMaskOBSOLETE.webp');
         this.load.image('boxZot', 'assets/sprites/boxZot.webp');
         this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.webp');
         this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.webp');

@@ -74,7 +74,6 @@ var egress = false;
 var didBonus = false;
 var hasSearched = false;
 var hasCombined = false;
-var haveZot = false;
 var haveBatt = false;
 var zotTableInit = true;
 var zotIsRunning = false;
@@ -274,7 +273,12 @@ export class PlayGame extends Phaser.Scene {
                 slots.inventoryViewAlt = altObj[4];
                 slots.addIcon(icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
-                this.add.image(0, 0, obj[4]).setOrigin(0, 0);
+                if (zotIsRunning)
+                    zotGameScene.add.image(0, 0, obj[4]).setOrigin(0, 0);
+                else
+                    this.add.image(0, 0, obj[4]).setOrigin(0, 0);
+
+
             } else {
                 slots.addIcon(icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
             }
@@ -416,15 +420,21 @@ export class PlayGame extends Phaser.Scene {
 
         ////////////// VIEW INVENTORY OR ROOM //////////////
 
+
         // If an icon is clicked, slots will tell us we need to switch to inventory view mode.
         if (slots.inventoryViewSwitch) {
             slots.currentMode = "item"; // so slots object knows we did indeed switch
 
-            // Turn off room navigation. If viewing a wall, return to the same wall
+            // Turn off room navigation. If viewing a wall, return to the same wall. Turn off embellishments.
             leftButton.setVisible(false);
             rightButton.setVisible(false);
             if (viewWall < 5)
                 previousWall = viewWall;
+
+            boxZot.setDepth(-1);
+            zotBoxColorYellow.setDepth(-1);
+            zotBoxColorGreen.setDepth(-1);
+
 
             // FIRST ROOM IMPLEMENTATION //   
             if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
@@ -472,7 +482,7 @@ export class PlayGame extends Phaser.Scene {
             slots.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
-            backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
+            backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
             if (!hasSearched) {
@@ -578,17 +588,19 @@ export class PlayGame extends Phaser.Scene {
             zotBoxColorGreen.setDepth(-1);
 
             if (viewWall == 0)
-                this.add.sprite(540, 650, tableView[tableState]).setOrigin(0, 0);
+                this.add.sprite(542, 650, tableView[tableState]).setOrigin(0, 0);
+            /* OBSOLETE
             if (viewWall == 2) {
                 if (!haveZot)
                     this.add.sprite(493, 555, "zotShown").setOrigin(0, 0);
             }
+            */
             if (viewWall == 1) {
                 if (!haveBatt)
                     this.add.sprite(320, 926, "battShown").setOrigin(0, 0);
-                if (boxHasZot)
+                if (boxHasZot) {
                     boxZot.setDepth(100);
-
+                }
                 if (zotBoxColor == 1) {
                     zotBoxColorYellow.setDepth(100);
                 }
@@ -598,12 +610,12 @@ export class PlayGame extends Phaser.Scene {
             }
 
             if (viewWall == 4)
-                this.add.sprite(176, 532, closeView[tableState]).setOrigin(0, 0);
+                this.add.sprite(180, 544, closeView[tableState]).setOrigin(0, 0);
 
             if (viewWall > 3) { // viewing table not room wall, or inventory view
                 leftButton.setVisible(false);
                 rightButton.setVisible(false);
-                backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
+                backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
             } else {
                 leftButton.setVisible(true); leftButton.setDepth(100); leftButton.setInteractive({ cursor: 'pointer' });
                 rightButton.setVisible(true); rightButton.setDepth(100); rightButton.setInteractive({ cursor: 'pointer' });
@@ -636,8 +648,10 @@ export class PlayGame extends Phaser.Scene {
 
             zotMask.setVisible(false);
 
+            /* OBSOLETE
             if (viewWall == 2 && !haveZot)
                 zotMask.setVisible(true); zotMask.setDepth(100); zotMask.setInteractive({ cursor: 'pointer' });
+            */
 
             if (viewWall == 4) { // the table
                 //takeMask.setVisible(true); takeMask.setDepth(100); takeMask.setInteractive();
@@ -702,7 +716,6 @@ export class PlayGame extends Phaser.Scene {
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
 
-
         fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
         fullClue.setDepth(-1);
         combineClue = this.add.image(0, 0, 'interfaceCombine').setOrigin(0, 0);
@@ -757,7 +770,10 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('takeMask', takeMask);
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
-                slots.addIcon(icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
+                if (tableState == 2)
+                    slots.addIcon(icons[10].toString(), obj[9], altObj[9]); // TODO: renumber the objects, used to be simple:
+                else
+                    slots.addIcon(icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 tableState++;
                 if (tableState > 2) {
@@ -817,11 +833,14 @@ export class PlayGame extends Phaser.Scene {
         zotMask = this.add.sprite(493, 555, 'zotMask').setOrigin(0, 0);
         recorder.addMaskSprite('zotMask', zotMask);
         zotMask.on('pointerdown', () => {
+            console.log("OBSOLETE")
+            /*
             haveZot = true;
 
             slots.addIcon(icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
             this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
+            */
         });
 
         doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
@@ -839,7 +858,7 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        objectMask = this.add.sprite(87, 423, 'objectMask').setOrigin(0, 0);
+        objectMask = this.add.sprite(170, 410, 'objectMask').setOrigin(0, 0);
         recorder.addMaskSprite('objectMask', objectMask);
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         objectMask.on('pointerdown', () => {
@@ -871,7 +890,7 @@ export class PlayGame extends Phaser.Scene {
             snagged = true; // swap out plate with key for the empty plate
             haveHalfKey = true;
 
-            slots.addIcon(icons[3].toString(), obj[3], altObj[3]); // TODO: get name from sprite!!
+            slots.addIcon(icons[2].toString(), obj[2], altObj[2]); // TODO: get name from sprite!!
         });
 
         // Prep recording stack for replay
