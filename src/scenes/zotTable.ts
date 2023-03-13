@@ -4,10 +4,10 @@ import Recorder from "../objects/recorder"
 
 var recorder: Recorder;
 
-
 let viewWall = 0;
 let currentWall = -1;
 let previousWall = -1;
+let previousWallBattery: number; // need a hack because battery views are walls not sprites
 let updateWall = false;
 
 const walls = new Array();
@@ -17,9 +17,9 @@ walls[2] = "zotTableOffFlipped";
 walls[3] = "zotTableBackFlipped";
 
 // these regions are so big I suppose won't bother with sprites
-walls[4] = "zotBatteryClosed";
-walls[5] = "zotBatteryEmpty";
-walls[6] = "zotBatteryPlaced";
+walls[7] = "zotBatteryClosed";
+walls[8] = "zotBatteryEmpty";
+walls[9] = "zotBatteryPlaced";
 
 const zotState = new Array();
 zotState[0] = "zotStateOff";
@@ -92,7 +92,7 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.setVisible(true);
 
         zotBackButton.on('pointerdown', () => {
-            console.log(`go back from ${viewWall} to ${previousWall}`)
+            //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallBattery}`)
             recorder.recordObjectDown(zotBackButton.texture.key, thisscene);
             slots.currentMode = "room";
             zotObjectMask.setVisible(false);
@@ -103,11 +103,16 @@ export class ZotTable extends Phaser.Scene {
                 this.scene.moveUp("PlayGame");
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
-            } else if (viewWall > 3) { // battery closeup
+            } else if (viewWall > 6) { // battery closeup
                 viewWall = previousWall;
                 previousWall = -1;
                 updateWall = true;
-            }
+            } else if (viewWall == 5 || viewWall == 6)
+                viewWall = previousWall;
+            //console.log(`now go view ${viewWall} and previous ${previousWall}`)
+            // need a hack here for returning from looking at an object while viewing a battery wall... ugh
+            if (viewWall == previousWall)
+                previousWall = previousWallBattery
         });
 
         backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
@@ -158,7 +163,8 @@ export class ZotTable extends Phaser.Scene {
         zotBottomMask.on('pointerdown', () => {
             previousWall = viewWall;
             console.log("ZOT return from battery view to wall " + viewWall)
-            viewWall = 4;
+            previousWallBattery = viewWall;
+            viewWall = 7;
         });
 
         zotDrawerMask = this.add.sprite(134, 659, 'zotDrawerMask').setOrigin(0, 0);
@@ -180,20 +186,23 @@ export class ZotTable extends Phaser.Scene {
         batteryMask = this.add.sprite(90, 507, 'batteryMask').setOrigin(0, 0);
         recorder.addMaskSprite('batteryMask', batteryMask);
         batteryMask.on('pointerdown', () => {
-            if (viewWall == 6) { // cover open, battery placed
-                viewWall = 4;
-            } else if (viewWall == 5) { // cover open, empty
+            //console.log("viewing " + viewWall)
+            if (viewWall == 9) { // cover open, battery placed
+                viewWall = 7;
+            } else if (viewWall == 8) { // cover open, empty
                 if (slots.getSelected() == "objBattery") {
                     slots.clearItem("objBattery")
                     slots.clearSelect();
                     batteryPlaced = true;
-                    viewWall = 6;
-                    updateWall = true;
+                    viewWall = 9;
+                } else {
+                    viewWall = 7;
                 }
-            } else if (viewWall == 4) { // cover closed
-                viewWall = 5;
+                updateWall = true;
+            } else if (viewWall == 7) { // cover closed
+                viewWall = 8;
                 if (batteryPlaced)
-                    viewWall = 6;
+                    viewWall = 9;
             }
         });
 
@@ -247,18 +256,30 @@ export class ZotTable extends Phaser.Scene {
     }
 
     update() {
+        // Be sure we have the pointer, and then record any movement or clicks
+        if (recorder.getMode() == "record") {
+            recorder.fixPointer(this.input.activePointer)
+            recorder.checkPointer(this);
+        }
+
         if (slots.inventoryViewSwitch) {
-            //console.log("Zot Item View")
+            //console.log(`Zot Item View view=${viewWall} previous=${previousWall}`)
             slots.currentMode = "item"; // so slots object knows we switched
 
             // Turn off room navigation. If viewing a wall, return to the same wall
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
-            previousWall = viewWall;
+            if (previousWall < 5) {
+                // inspecting an object and not from a battery wall...
+                //console.log(`set previous=${viewWall}`)
+                previousWall = viewWall;
+            } else if (previousWall > 6) {
+                // fairly sure this never happens
+                console.log(`leave ${previousWall} alone!`)
+            }
 
             // ZOT ROOM IMPLEMENTATION //   
-            // zot specific stuff
 
             if (currentWall == 5 && zot_flipIt) { // they just clicked the object, show alt view
 
@@ -335,13 +356,6 @@ export class ZotTable extends Phaser.Scene {
                 if (zotDrawerState > 0)
                     this.add.image(153, 664, zotStateFlipped[zotDrawerState]).setOrigin(0, 0);
             }
-
-
-
-
-
-
-
 
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);

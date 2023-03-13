@@ -80,6 +80,7 @@ export default class Recorder {
     // called once per update, tracks pointer movement and clicks on the scene
     checkPointer(scene: Phaser.Scene) {
         let pointerClicked: Boolean = false;
+        const sceneName = scene.sys.settings.key;
 
         this.fadeClick();
 
@@ -110,34 +111,34 @@ export default class Recorder {
                 if (this.recordPointerX != this.oldPointerX || this.recordPointerY != this.oldPointerY) {
                     this.recordPointerX = this.oldPointerX;
                     this.recordPointerY = this.oldPointerY;
-                    this.recordPointerAction("mousemove", scene.time.now);
+                    this.recordPointerAction("mousemove", scene.time.now, sceneName);
                 }
             }
         }
 
         if (pointerClicked) {
-            this.recordPointerAction("mouseclick", scene.time.now);
+            this.recordPointerAction("mouseclick", scene.time.now, sceneName);
             this.showClick(scene, this.pointer.x, this.pointer.y);
             pointerClicked = false;
             this.dumpRecording();
         }
     }
 
-    recordPointerAction(action: string, time: number) {
+    recordPointerAction(action: string, time: number, sceneName: string) {
         //if (action != "mousemove")
         //    console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
-        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
+        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},${sceneName}:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
-    // need a scene here just to get the current runtime
     recordObjectDown(object: string, scene: Phaser.Scene) {
         //console.log(`>>>>>>>>RECORDER OBJECT ${object}`);
-        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now}:`);
+        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},${scene.sys.settings.key}:`);
     }
+    // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number) {
         //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
-        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
+        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 
     getRecording() {
@@ -164,7 +165,7 @@ export default class Recorder {
         re = /\-/g; recIn = recIn.replace(re, "icon=");
 
         if (recInCheck == this.checksum(recIn)) {
-            //console.log("-->Good recording " + recIn);
+            console.log("-->Good recording " + recIn);
         } else {
             throw new Error('recording cksum error');
         }
@@ -176,8 +177,7 @@ export default class Recorder {
         const actionString = recordingSlow.split(":");
         actionString.forEach((action) => {
             let thisAction = action.split(',');
-            //fast = fast.concat(`${action[0]},${action[1]},${action[2]},${fastTime}:`);
-            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${minDelayFastMode}:`);
+            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${minDelayFastMode},${thisAction[4]}:`);
         });
         return fast;
     }
@@ -217,14 +217,14 @@ export default class Recorder {
         let recOut = "";
         //console.log("ACTION COUNT " + rec.length);
         // struggling with TS arrays https://dpericich.medium.com/how-to-build-multi-type-multidimensional-arrays-in-typescript-a9550c9a688e
-        let actions: [string, number, number, number][] = [["BOJ", 0, 0, 0]];
+        let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 
         //console.log(rec);
         // @ts-ignore
         // TODO how to use index without action? easy stuff probably, just now trying to build
         rec.forEach((action, idx) => {
             let thisActionRec = rec[idx];
-            //console.log("RAW " + thisActionRec);
+            //console.log("raw recording " + thisActionRec);
             let nextActionRec = rec[idx + 1] ?? "";   //Typescript check undefined and fix it up
             const secondLookahead = rec[idx + 2] ?? "";
 
@@ -257,7 +257,7 @@ export default class Recorder {
                 //recOut += thisActionRec + ":";
                 const splitAction = thisActionRec.split(',');
 
-                actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10)]);
+                actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10), splitAction[4]]);
             }
         });
 
@@ -288,12 +288,16 @@ export default class Recorder {
         let elapsed = 0;
         actions.forEach((action) => {
             //console.log(`ActionIn ${action}  time ${action[3]}`);
+            if (action[4] == "PlayGame")
+                action[4] = "A"
+            if (action[4] == "ZotTable")
+                action[4] = "B"
             if (action[3] > 0) {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
                 //console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}`);
-                recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed}:`);
+                recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed},${action[4]}:`);
             }
         });
 
@@ -356,7 +360,7 @@ export default class Recorder {
             newSprite.setScale(5);
         }
         this.clickers.push(newSprite);
-        //console.log("CLICKERCOUNT " + this.clickers.length)
+        console.log("CLICKERCOUNT " + this.clickers.length)
         this.prevClickX = x; this.prevClickY = y;
         newSprite.setDepth(3000);
     }

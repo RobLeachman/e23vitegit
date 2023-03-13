@@ -20,7 +20,7 @@ import Recorder from "../objects/recorder"
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-const minDelayReplay = 100;
+const minDelayReplay = 50;
 
 let debugInput = true;
 let debugUpdateOnce = false;
@@ -90,11 +90,12 @@ var viewportText: any;                                     //??
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
 var pointer: Phaser.Input.Pointer;
+let zotGameScene: Phaser.Scene;
 
 let lastKeyDebouncer = ""; //
 
 let recording = "";
-let actions: [string, number, number, number][] = [["BOJ", 0, 0, 0]];
+let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
 let debugging = false;
@@ -171,10 +172,9 @@ export class PlayGame extends Phaser.Scene {
         //console.log("main update")
         if (inputText.text == "init") {
 
-            console.log("BONUS TEST ZOTS")
-            slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
-            slots.addIcon("iconBattery", "objBattery", "altobjBattery");
-
+            //console.log("BONUS TEST ZOTS")
+            //slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
+            //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -315,45 +315,50 @@ export class PlayGame extends Phaser.Scene {
             //console.log(" at " + actions[0][3]);
             if (this.time.now >= nextActionTime) {
                 let replayAction = actions[0][0];
-                if (replayAction != "mousemove")
-                    //console.log(`(${this.time.now}) Replaying ACTION ${replayAction}`)                
+                if (replayAction == "mouseclick") {
+                    viewportPointer.setX(actions[0][1]);
+                    viewportPointer.setY(actions[0][2]);
 
-                    if (replayAction == "mouseclick") {
-                        viewportPointer.setX(actions[0][1]);
-                        viewportPointer.setY(actions[0][2]);
+                    //console.log("show click on " + actions[0][4])
+                    if (actions[0][4] == "B")
+                        recorder.showClick(zotGameScene, actions[0][1], actions[0][2]);
+                    else
                         recorder.showClick(this, actions[0][1], actions[0][2]);
-                    } else if (replayAction == "mousemove") {
-                        viewportPointer.setX(actions[0][1]);
-                        viewportPointer.setY(actions[0][2]);
-                    } else {
-                        let target = actions[0][0];
-                        let targetType = target.split('=')[0];
-                        let targetObject = target.split('=')[1];
 
-                        //////////////                        
-                        // The money maker: call this scene's objects just like they were executed and recorded,
-                        // or click the icon just that same way.
-                        //////////////
-                        if (targetType == "object") {
-                            // TODO Need to check unmapped objects
-                            let object = recorder.getMaskSprite(targetObject);
+                } else if (replayAction == "mousemove") {
+                    viewportPointer.setX(actions[0][1]);
+                    viewportPointer.setY(actions[0][2]);
+                } else {
+                    let target = actions[0][0];
+                    let targetType = target.split('=')[0];
+                    let targetObject = target.split('=')[1];
 
-                            // if (object?.scene.sys.settings.key != "PlayGame") {
-                            if (object?.scene === this) {
-                                //console.log("SIMULATE MAIN")
-                                //console.log("simulating " + targetObject)
-                                object?.emit('pointerdown')
-                            } else {
-                                //console.log("SIMULATE ZOT")
-                                //console.log("it aint PlayGame must be ZotTable")
-                                //console.log("zot simulate " + targetObject)
-                                this.registry.set('zotReplayObject', targetObject);
-                            }
-                        } else if (targetType == "icon") {
-                            //console.log("do icon " + targetObject);
-                            slots.recordedClickIt(targetObject);   // here's how we click an icon!
+                    //////////////                        
+                    // The money maker: call this scene's objects just like they were executed and recorded,
+                    // or click the icon just that same way.
+                    //////////////
+                    if (targetType == "object") {
+                        // TODO Need to check unmapped objects
+                        let object = recorder.getMaskSprite(targetObject);
+
+                        // TODO Now we save the scene name explicitly so this could be smarter...
+
+                        // if (object?.scene.sys.settings.key != "PlayGame") {
+                        if (object?.scene === this) {
+                            //console.log("SIMULATE MAIN")
+                            //console.log("simulating " + targetObject)
+                            object?.emit('pointerdown')
+                        } else {
+                            //console.log("SIMULATE ZOT")
+                            //console.log("it aint PlayGame must be ZotTable")
+                            //console.log("zot simulate " + targetObject)
+                            this.registry.set('zotReplayObject', targetObject);
                         }
+                    } else if (targetType == "icon") {
+                        //console.log("do icon " + targetObject);
+                        slots.recordedClickIt(targetObject);   // here's how we click an icon!
                     }
+                }
 
                 actions = actions.slice(1);
                 //console.log(actions.length);
@@ -361,17 +366,19 @@ export class PlayGame extends Phaser.Scene {
                     //console.log("recorder EOJ")
                     if (recorder.getMode() == "replayOnce") {
                         console.log("did once... roach mode EOJ")
+                        recorder.setMode("idle");
+                    } else {
+                        // need a little hack here so we can set the mode but do replay again on reload
+                        recorder.setMode("idleButReplayAgainSoon");
                     }
-                    //console.log("SET RECORD IDLE")
-                    recorder.setMode("idle");
 
                     viewportText.setDepth(-1);
                     recordingEndedFadeClicks = 20;
                 } else {
-                    if (actions[0][3] > 500)
+                    if (actions[0][3] > minDelayReplay)
                         nextActionTime += actions[0][3]; // wait for this amount of time to elapse then do the next
                     else {
-                        console.log("too fast!")
+                        //console.log("too fast!")
                         nextActionTime += minDelayReplay;
                     }
                 }
@@ -653,11 +660,11 @@ export class PlayGame extends Phaser.Scene {
     // data will be boolean or number, so "any" here is legit!
     updateData(parent: Phaser.Game, key: string, data: any) {
         if (key == "boxHasZot") {
-            console.log("boxHasZot=" + data)
+            //console.log("boxHasZot=" + data)
             boxHasZot = data;
         }
         if (key == "zotBoxColor") {
-            console.log("zotBoxColor=" + data)
+            //console.log("zotBoxColor=" + data)
             zotBoxColor = data;
         }
     }
@@ -673,9 +680,6 @@ export class PlayGame extends Phaser.Scene {
         plusModeButton = data.plusModeButton;
         failed = data.failed;
 
-        //bootGameScene = this.scene.get("BootGame"); // unused... 
-        // oh right we can get an arbitrary scene not pass it around!
-
         this.registry.events.on('changedata', this.updateData, this);
         this.registry.set('zotReplayObject', "init");
 
@@ -686,12 +690,13 @@ export class PlayGame extends Phaser.Scene {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, thisscene);
         });
 
-
         recorder = slots.recorder;
         viewportPointer = recorder.pointerSprite;
         viewportPointerClick = recorder.clickSprite;
 
         //console.log("Recorder mode = " + recorder.getMode());
+        if (recorder.getMode() == "idleButReplayAgainSoon")
+            recorder.setMode("replay")
 
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
@@ -788,7 +793,8 @@ export class PlayGame extends Phaser.Scene {
                 //this.scene.bringToTop("ZotTable");
                 //this.scene.bringToTop("BootGame");
                 //this.scene.sleep();
-                zotTableInit = false
+                zotTableInit = false;
+                zotGameScene = this.scene.get("ZotTable");
             } else {
                 this.scene.wake("ZotTable");
                 this.scene.moveUp("ZotTable");
@@ -878,7 +884,7 @@ export class PlayGame extends Phaser.Scene {
             actionString.forEach((action) => {
                 if (action.length > 0) {
                     let splitAction = action.split(',');
-                    actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10)]);
+                    actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10), splitAction[4]]);
                 }
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
