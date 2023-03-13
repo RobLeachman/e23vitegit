@@ -34,7 +34,7 @@ export class BootGame extends Phaser.Scene {
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`});
 
-        /* Will need sprite atlas at some point        
+        /* Will need sprite atlas SOON        
                 this.load.multiatlas("bigBackground", `assets/graphics/pdw1A@${assetsDPR}.json`, "assets/graphics");
         
                 this.load.bitmapFont('gameplay-black', 'assets/fonts/gameplay-1987-black.png', 'assets/fonts/gameplay-1987-bw.fnt');
@@ -91,6 +91,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('rightButton', 'assets/sprites/arrowRight.webp');
         this.load.image('leftButton', 'assets/sprites/arrowLeft.webp');
         this.load.image('backButton', 'assets/sprites/arrowDown.webp');
+        this.load.image('zotBackButton', 'assets/sprites/arrowDown.webp');
         this.load.image('plusButton', 'assets/sprites/plus - unselected.webp');
         this.load.image('plusModeButton', 'assets/sprites/plus - selected.webp');
         this.load.image('fail', 'assets/sprites/fail.webp');
@@ -132,6 +133,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('zotTableMask', 'assets/sprites/zotTableMask.webp');
         this.load.image('takeMask', 'assets/sprites/takeMask.webp');
         this.load.image('objectMask', 'assets/sprites/object-maskB.webp');
+        this.load.image('zotObjectMask', 'assets/sprites/object-maskB.webp');
         this.load.image('keyMask', 'assets/sprites/keyMask.webp');
         this.load.image('doorMask', 'assets/sprites/doorMask.webp');
         this.load.image('hintMask', 'assets/sprites/hintMask.webp');
@@ -165,7 +167,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
         this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
         this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
-        this.load.image('zotBatteryMask', 'assets/sprites/zotBatteryMask.webp');
+        this.load.image('batteryMask', 'assets/sprites/zotBatteryMask.webp');
         this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.webp');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/

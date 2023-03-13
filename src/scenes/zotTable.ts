@@ -1,5 +1,9 @@
 import 'phaser';
 import Slots from "../objects/slots"
+import Recorder from "../objects/recorder"
+
+var recorder: Recorder;
+
 
 let viewWall = 0;
 let currentWall = -1;
@@ -34,7 +38,7 @@ let batteryPlaced = false;
 let drawerOpen = 0;
 let keyTaken = false;
 
-let backButton: Phaser.GameObjects.Sprite;
+let zotBackButton: Phaser.GameObjects.Sprite;
 let backFrontButton: Phaser.GameObjects.Sprite;
 let topBottomButton: Phaser.GameObjects.Sprite;
 let batteryMask: Phaser.GameObjects.Sprite;
@@ -45,7 +49,7 @@ let zotBottomMask: Phaser.GameObjects.Sprite;
 let zotTopMask: Phaser.GameObjects.Sprite;
 let zotDrawerMask: Phaser.GameObjects.Sprite;
 
-let zot_objectMask: Phaser.GameObjects.Sprite;
+let zotObjectMask: Phaser.GameObjects.Sprite; // TODO should be a way to make this common but I got tired
 var zot_flipIt = false;
 
 let haveZot = false;
@@ -69,33 +73,45 @@ export class ZotTable extends Phaser.Scene {
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
 
+        recorder = slots.recorder;
+        // SCENERECORD: Capture all mask clicks on this scene
+
+        this.registry.events.on('changedata', this.zotUpdateData, this);
+
+        let thisscene = this;
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, thisscene);
+        });
+
         this.registry.set('boxHasZot', haveZot);
         this.registry.set('boxColor', "off");
 
-        backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
-        backButton.setVisible(true);
+        zotBackButton = this.add.sprite(300, 875, 'zotBackButton').setOrigin(0, 0);
+        recorder.addMaskSprite('zotBackButton', zotBackButton);
+        zotBackButton.setVisible(true);
 
-        backButton.on('pointerdown', () => {
-            //console.log(`go back from ${viewWall} to ${previousWall}`)
+        zotBackButton.on('pointerdown', () => {
+            console.log(`go back from ${viewWall} to ${previousWall}`)
+            recorder.recordObjectDown(zotBackButton.texture.key, thisscene);
             slots.currentMode = "room";
-            zot_objectMask.setVisible(false);
+            zotObjectMask.setVisible(false);
             if (previousWall == -1) {
-                backButton.setVisible(false);
-                backButton.removeInteractive(); // fix up the cursor displayed on main scene
+                zotBackButton.setVisible(false);
+                zotBackButton.removeInteractive(); // fix up the cursor displayed on main scene
 
                 this.scene.moveUp("PlayGame");
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
             } else if (viewWall > 3) { // battery closeup
                 viewWall = previousWall;
-                //previousWall = -1;
+                previousWall = -1;
                 updateWall = true;
             }
         });
 
         backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
-        //dictionary.set('backFrontButton', backFrontButton);
-
+        recorder.addMaskSprite('backFrontButton', backFrontButton);
         backFrontButton.on('pointerdown', () => {
             if (viewWall == 0)
                 viewWall = 1;
@@ -108,10 +124,8 @@ export class ZotTable extends Phaser.Scene {
         });
 
         topBottomButton = this.add.sprite(360, 315, 'topBottomButton'); // fudge, forgot setOrigin
-        //dictionary.set('topBottomButton', topBottomButton);
-
+        recorder.addMaskSprite('topBottomButton', topBottomButton);
         topBottomButton.on('pointerdown', () => {
-            console.log("topbottom");
             if (viewWall == 0)
                 viewWall = 2;
             else if (viewWall == 2)
@@ -127,6 +141,7 @@ export class ZotTable extends Phaser.Scene {
         batteryMask = this.add.sprite(90, 507, 'zotBatteryMask').setOrigin(0, 0);
 
         zotTopMask = this.add.sprite(294, 466, 'zotTopMask').setOrigin(0, 0);
+        recorder.addMaskSprite('zotTopMask', zotTopMask);
         zotTopMask.on('pointerdown', () => {
             if (slots.getSelected() == "objZot") {
                 //console.log("ADD IT")
@@ -139,12 +154,15 @@ export class ZotTable extends Phaser.Scene {
         });
 
         zotBottomMask = this.add.sprite(298, 450, 'zotBottomMask').setOrigin(0, 0);
+        recorder.addMaskSprite('zotBottomMask', zotBottomMask);
         zotBottomMask.on('pointerdown', () => {
             previousWall = viewWall;
+            console.log("ZOT return from battery view to wall " + viewWall)
             viewWall = 4;
         });
 
         zotDrawerMask = this.add.sprite(134, 659, 'zotDrawerMask').setOrigin(0, 0);
+        recorder.addMaskSprite('zotDrawerMask', zotDrawerMask);
         zotDrawerMask.on('pointerdown', () => {
             //console.log("open the drawer!")
             if (drawerOpen == 1) {
@@ -159,7 +177,8 @@ export class ZotTable extends Phaser.Scene {
             updateWall = true;
         });
 
-        batteryMask = this.add.sprite(90, 507, 'zotBatteryMask').setOrigin(0, 0);
+        batteryMask = this.add.sprite(90, 507, 'batteryMask').setOrigin(0, 0);
+        recorder.addMaskSprite('batteryMask', batteryMask);
         batteryMask.on('pointerdown', () => {
             if (viewWall == 6) { // cover open, battery placed
                 viewWall = 4;
@@ -179,11 +198,11 @@ export class ZotTable extends Phaser.Scene {
         });
 
 
-        zot_objectMask = this.add.sprite(87, 423, 'objectMask').setOrigin(0, 0);
-        //dictionary.set('objectMask', objectMask);
+        zotObjectMask = this.add.sprite(87, 423, 'zotObjectMask').setOrigin(0, 0);
+        recorder.addMaskSprite('zotObjectMask', zotObjectMask);
 
-        // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
-        zot_objectMask.on('pointerdown', () => {
+        // Flip object over. TODO: must adjust for key presence if it's the plate. Awkward! ??????
+        zotObjectMask.on('pointerdown', () => {
             console.log("hacked objectMask into zot, why?")
             zot_flipIt = true;
             slots.inventoryViewSwitch = true;
@@ -216,6 +235,17 @@ export class ZotTable extends Phaser.Scene {
 
     }
 
+    // @ts-ignore
+    // data will be boolean or number, so any here is legit!
+    zotUpdateData(parent: Phaser.Game, key: string, data: any) {
+        if (key == "zotReplayObject") {
+            //console.log("ZOT OBJECT replay=" + data)
+            let object = recorder.getMaskSprite(data);
+            //console.log(object);
+            object?.emit('pointerdown')
+        }
+    }
+
     update() {
         if (slots.inventoryViewSwitch) {
             //console.log("Zot Item View")
@@ -232,7 +262,7 @@ export class ZotTable extends Phaser.Scene {
 
             if (currentWall == 5 && zot_flipIt) { // they just clicked the object, show alt view
 
-                // just run without fixing the inteface hints FOR NOW
+                //TODO: just run without fixing the interface hints 
                 //hasSearched = true;
 
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
@@ -246,7 +276,7 @@ export class ZotTable extends Phaser.Scene {
             slots.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
-            backButton.setVisible(true); backButton.setDepth(100); backButton.setInteractive({ cursor: 'pointer' });
+            zotBackButton.setVisible(true); zotBackButton.setDepth(100); zotBackButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
             // turn off all scene masks, and turn on the object alternate view mask
@@ -257,9 +287,9 @@ export class ZotTable extends Phaser.Scene {
             zotPlaced.setDepth(-1);
             zotPlacedFlipped.setDepth(-1);
 
-            zot_objectMask.setVisible(true);
-            zot_objectMask.setDepth(1);
-            zot_objectMask.setInteractive({ cursor: 'pointer' });
+            zotObjectMask.setVisible(true);
+            zotObjectMask.setDepth(1);
+            zotObjectMask.setInteractive({ cursor: 'pointer' });
 
             slots.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
@@ -320,7 +350,7 @@ export class ZotTable extends Phaser.Scene {
                 backFrontButton.setVisible(true); backFrontButton.setDepth(1); backFrontButton.setInteractive({ cursor: 'pointer' });
                 topBottomButton.setVisible(true); topBottomButton.setDepth(1); topBottomButton.setInteractive({ cursor: 'pointer' });
             }
-            backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
+            zotBackButton.setVisible(true); zotBackButton.setDepth(1); zotBackButton.setInteractive({ cursor: 'pointer' });
 
             if (viewWall == 1) {
                 if (haveZot)

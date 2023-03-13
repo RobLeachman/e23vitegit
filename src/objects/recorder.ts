@@ -3,6 +3,8 @@
 
 import { setCookie, getCookie } from "../utils/cookie";
 
+const minDelayFastMode = 100;
+
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
     pointerSprite: Phaser.GameObjects.Sprite;
@@ -13,6 +15,7 @@ export default class Recorder {
     oldPointerTime: number;
     oldPointerX: number; oldPointerY: number;
     recordPointerX: number; recordPointerY: number;
+    spriteMap = new Map<string, Phaser.GameObjects.Sprite>();
 
     clickers: Phaser.GameObjects.Sprite[] = [];
 
@@ -28,6 +31,13 @@ export default class Recorder {
         this.clickSprite = clickSprite;
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
+    }
+
+    addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
+        this.spriteMap.set(key, sprite);
+    }
+    getMaskSprite(key: string) {
+        return this.spriteMap.get(key);
     }
 
     setMode(mode: string) {
@@ -52,8 +62,6 @@ export default class Recorder {
     getReplaySpeed() {
         return getCookie("escapeRecorderSpeed");
     };
-
-
 
     getSize() {
         let size = -1;
@@ -119,19 +127,16 @@ export default class Recorder {
         //if (action != "mousemove")
         //    console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
         this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
-        console.log("recording so far:");
-        console.log(this.recording)
+        //console.log("recording so far:");
+        //console.log(this.recording)
     }
     // need a scene here just to get the current runtime
     recordObjectDown(object: string, scene: Phaser.Scene) {
         //console.log(`>>>>>>>>RECORDER OBJECT ${object}`);
-        //console.log(scene.time.now);
         this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now}:`);
-        //console.log("recording so far:");
-        //console.log(this.recording)        
     }
     recordIconClick(object: string, time: number) {
-        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time}:`);
     }
 
@@ -172,7 +177,7 @@ export default class Recorder {
         actionString.forEach((action) => {
             let thisAction = action.split(',');
             //fast = fast.concat(`${action[0]},${action[1]},${action[2]},${fastTime}:`);
-            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},50:`);
+            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${minDelayFastMode}:`);
         });
         return fast;
     }
@@ -285,6 +290,7 @@ export default class Recorder {
             //console.log(`ActionIn ${action}  time ${action[3]}`);
             if (action[3] > 0) {
                 elapsed = action[3] - prevTime;
+                //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
                 //console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}`);
                 recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed}:`);
