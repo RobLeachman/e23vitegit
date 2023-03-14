@@ -49,6 +49,8 @@ export class BootGame extends Phaser.Scene {
         */
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
 
+        this.load.multiatlas("textures", `assets/graphics/texture.json`, "assets/graphics");
+
         // used XnConvert to switch to webp, nice!
         this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
 

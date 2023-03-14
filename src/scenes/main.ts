@@ -128,16 +128,16 @@ export class PlayGame extends Phaser.Scene {
         re = /\n/g; output = output.replace(re, "");
         //re = /\w/g; output = output.replace(re, "");
 
-        console.log(output);
+        //console.log(output);
 
         let recInCheck = output.split('?')[0];
-        console.log("cksum in " + recInCheck)
+        //console.log("cksum in " + recInCheck)
 
         // @ts-ignore
         // with luck will need version checking later
         let recInVersion = output.split('?')[2];
         let recIn = output.split('?')[1];
-        console.log("REC IN " + recIn)
+        //console.log("REC IN " + recIn)
         if (recIn === undefined) {
             inputText.text = "ERROR";
             return;
@@ -148,8 +148,8 @@ export class PlayGame extends Phaser.Scene {
         re = /=/g; recIn = recIn.replace(re, "object=");
         re = /\-/g; recIn = recIn.replace(re, "icon=");
 
-        console.log("PARSED")
-        console.log(recIn);
+        //console.log("PARSED")
+        //console.log(recIn);
 
 
         if (recInCheck == recorder.checksum(recIn)) {
@@ -157,8 +157,8 @@ export class PlayGame extends Phaser.Scene {
             recorder.saveCookies(output);
         } else {
             inputText.text = "error";
-            console.log("cksum in   " + (recorder.checksum(recIn)))
-            console.log("cksum calc " + recInCheck)
+            //console.log("cksum in   " + (recorder.checksum(recIn)))
+            //console.log("cksum calc " + recInCheck)
         }
     }
 
@@ -168,7 +168,7 @@ export class PlayGame extends Phaser.Scene {
 
             //console.log("BONUS TEST ZOTS")
             //slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
-            slots.addIcon("iconBattery", "objBattery", "altobjBattery");
+            //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -366,7 +366,7 @@ export class PlayGame extends Phaser.Scene {
                 if (actions.length == 0) {
                     //console.log("recorder EOJ")
                     if (recorder.getMode() == "replayOnce") {
-                        console.log("did once... roach mode EOJ")
+                        //console.log("did once... roach mode EOJ")
                         recorder.setMode("idle");
                     } else {
                         // need a little hack here so we can set the mode but do replay again on reload

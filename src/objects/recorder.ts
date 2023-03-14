@@ -210,8 +210,8 @@ export default class Recorder {
 
         recOut = "\n\n\n\n\n\n____________\n____________\n____________\n" + this.checksum(recIn) + "?" + out + "?v1\n___________";
 
-        console.log("RECORDED")
-        console.log(recIn)
+        //console.log("RECORDED")
+        //console.log(recIn)
 
         return recOut;
     }
