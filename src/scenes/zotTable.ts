@@ -7,7 +7,7 @@ var recorder: Recorder;
 let viewWall = 0;
 let currentWall = -1;
 let previousWall = -1;
-let previousWallBattery: number; // need a hack because battery views are walls not sprites
+let previousWallHack: number; // need a hack because battery views are walls not sprites
 let updateWall = false;
 
 const walls = new Array();
@@ -92,7 +92,7 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.setVisible(true);
 
         zotBackButton.on('pointerdown', () => {
-            //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallBattery}`)
+            console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallHack}`)
 
             // the global call for this may or may not fire
             //console.log("MAY OR MAY NOT")
@@ -109,16 +109,19 @@ export class ZotTable extends Phaser.Scene {
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
             } else if (viewWall > 6) { // battery closeup
+                console.log(`will exit from ${viewWall} after returning to ${previousWall}`)
                 viewWall = previousWall;
                 previousWall = -1;
-                updateWall = true;
-            } else if (viewWall == 5 || viewWall == 6)
+                //updateWall = true;
+            } else if (viewWall == 5 || viewWall == 6) {
+                console.log("still struggling")
                 viewWall = previousWall;
+            }
             //console.log(`now go view ${viewWall} and previous ${previousWall}`)
             // need a hack here for returning from looking at an object while viewing a battery wall... ugh
             if (viewWall == previousWall) {
-                //console.log("HACK " + previousWallBattery);
-                previousWall = previousWallBattery
+                console.log("HACK " + previousWallHack);
+                previousWall = previousWallHack
             }
         });
 
@@ -168,9 +171,9 @@ export class ZotTable extends Phaser.Scene {
         zotBottomMask = this.add.sprite(298, 450, 'zotBottomMask').setOrigin(0, 0);
         recorder.addMaskSprite('zotBottomMask', zotBottomMask);
         zotBottomMask.on('pointerdown', () => {
+            console.log("bottom mask return to " + viewWall)
             previousWall = viewWall;
-            console.log("ZOT return from battery view to wall " + viewWall)
-            previousWallBattery = viewWall;
+            previousWallHack = viewWall;
             viewWall = 7;
         });
 
@@ -226,7 +229,7 @@ export class ZotTable extends Phaser.Scene {
 
         this.events.on('wake', () => {
             viewWall = 0;
-            previousWallBattery = -1;
+            previousWallHack = -1;
             updateWall = true;
         });
 
@@ -271,29 +274,24 @@ export class ZotTable extends Phaser.Scene {
         }
 
         if (slots.inventoryViewSwitch) {
-            //console.log(`Zot Item View view=${viewWall} previous=${previousWall}`)
+            console.log(`Zot Item View   view=${viewWall} previous=${previousWall}`)
             slots.currentMode = "item"; // so slots object knows we switched
 
             // Turn off room navigation. If viewing a wall, return to the same wall
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
-            if (previousWall < 5) {
+            //if (previousWall < 5 && previousWall != 6) {
+            if (viewWall < 5 || viewWall > 6) {
                 // inspecting an object and not from a battery wall...
-                //console.log(`set previous=${viewWall}`)
+                console.log(`set previous=${viewWall}`)
                 previousWall = viewWall;
-            } else if (previousWall > 6) {
-                // fairly sure this never happens
-                console.log(`leave ${previousWall} alone!`)
             }
 
             // ZOT ROOM IMPLEMENTATION //   
 
             if (currentWall == 5 && zot_flipIt) { // they just clicked the object, show alt view
-
-                //TODO: just run without fixing the interface hints 
-                //hasSearched = true;
-
+                slots.setSearched(true);
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
                 viewWall = 6; currentWall = 6;
             } else {
@@ -305,8 +303,22 @@ export class ZotTable extends Phaser.Scene {
             slots.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
-            zotBackButton.setVisible(true); zotBackButton.setDepth(100); zotBackButton.setInteractive({ cursor: 'pointer' });
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            zotBackButton.setVisible(true); zotBackButton.setDepth(10010); zotBackButton.setInteractive({ cursor: 'pointer' });
+            plusButton.setVisible(true); plusButton.setDepth(10010); plusButton.setInteractive();
+
+            if (!slots.getSearched()) {
+                slots.displayInterfaceClueFull(true);
+                slots.displayInterfaceClueCombine(false);
+            } else {
+                if (!slots.getCombined()) {
+                    slots.displayInterfaceClueCombine(true);
+                    slots.displayInterfaceClueFull(false);
+                }
+            };
+            if (slots.inventoryViewObj == "objRoach") {
+                slots.displayInterfaceClueFull(false);
+                slots.displayInterfaceClueCombine(false);
+            }            
 
             // turn off all scene masks, and turn on the object alternate view mask
             batteryMask.setVisible(false);
@@ -324,14 +336,16 @@ export class ZotTable extends Phaser.Scene {
             slots.inventoryViewSwitch = false;
 
         } else if ((viewWall != currentWall || updateWall)) {
+            slots.displayInterfaceClueFull(false);
+            slots.displayInterfaceClueCombine(false);            
             //console.log("zot view wall=" + viewWall)
             this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
 
             zotPlacedFlipped.setDepth(-1);
             zotPlaced.setDepth(-1);
 
-            if (viewWall < 4) // lost track of the hacks... wouldn't this be sufficient in all cases?
-                previousWallBattery = -1;
+            if (viewWall < 4)
+                previousWallHack = -1;
 
             if (viewWall == 0 || viewWall == 2) {
                 zotDrawerState = 0;

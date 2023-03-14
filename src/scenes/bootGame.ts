@@ -18,6 +18,8 @@ var invBar: Phaser.GameObjects.Sprite;
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
 var failed: Phaser.GameObjects.Sprite;
+var interfaceClueFull: Phaser.GameObjects.Sprite;
+var interfaceClueCombine: Phaser.GameObjects.Sprite;
 
 export class BootGame extends Phaser.Scene {
     constructor() {
@@ -81,7 +83,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
         this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
-        this.load.image('interfaceClue', 'assets/backgrounds/invroom - interface.webp');
+        this.load.image('interfaceClueFull', 'assets/backgrounds/invroom - interface.webp');
         this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.webp');
         this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
@@ -242,8 +244,11 @@ export class BootGame extends Phaser.Scene {
 
         invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
 
+        interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
+        interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);        
+
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
-        slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar);
+        slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar, interfaceClueFull, interfaceClueCombine);
 
         plusButton = this.add.sprite(80, 950, 'plusButton');
         //        dictionary.set('plusButton', plusButton);

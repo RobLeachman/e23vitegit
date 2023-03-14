@@ -47,9 +47,6 @@ var plusModeButton: Phaser.GameObjects.Sprite;
 
 var failed: Phaser.GameObjects.Sprite;
 
-var fullClue: Phaser.GameObjects.Image;
-var combineClue: Phaser.GameObjects.Image;
-
 var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
 var doorMask: Phaser.GameObjects.Sprite;
@@ -72,8 +69,6 @@ var haveHalfKey = false; // don't show key part on plate back if already taken
 var doorUnlocked = false;
 var egress = false;
 var didBonus = false;
-var hasSearched = false;
-var hasCombined = false;
 var haveBatt = false;
 var zotTableInit = true;
 var zotIsRunning = false;
@@ -173,7 +168,7 @@ export class PlayGame extends Phaser.Scene {
 
             //console.log("BONUS TEST ZOTS")
             //slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
-            //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
+            slots.addIcon("iconBattery", "objBattery", "altobjBattery");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -231,8 +226,9 @@ export class PlayGame extends Phaser.Scene {
 
 
         if (slots.combining.split(':')[0] == "bad combine") {
-            hasCombined = true;
-            combineClue.setDepth(-1);
+            slots.setCombined(true);
+
+            slots.displayInterfaceClueCombine(false);
             //console.log("BAD COMBINE")
             slots.combining = "";
             plusModeButton.setVisible(false);
@@ -243,8 +239,9 @@ export class PlayGame extends Phaser.Scene {
         }
 
         if (slots.combining.split(':')[0] == "good combine") {
-            hasCombined = true;
-            combineClue.setDepth(-1);
+            slots.setCombined(true);
+
+            slots.displayInterfaceClueCombine(false);
             //console.log("clear out " + slots.combining.split(':')[1])
             // Clear the first object...
             // ... unless it's a knife
@@ -453,7 +450,7 @@ export class PlayGame extends Phaser.Scene {
             }
 
             if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
-                hasSearched = true;
+                slots.setSearched(true);
                 this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
                 viewWall = 6; currentWall = 6;
             } else {
@@ -485,18 +482,18 @@ export class PlayGame extends Phaser.Scene {
             backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
 
-            if (!hasSearched) {
-                fullClue.setDepth(10);
-                combineClue.setDepth(-1)
+            if (!slots.getSearched()) {
+                slots.displayInterfaceClueFull(true);
+                slots.displayInterfaceClueCombine(false);
             } else {
-                if (!hasCombined) {
-                    combineClue.setDepth(10)
-                    fullClue.setDepth(-1)
+                if (!slots.getCombined()) {
+                    slots.displayInterfaceClueCombine(true);
+                    slots.displayInterfaceClueFull(false);
                 }
             };
             if (slots.inventoryViewObj == "objRoach") {
-                fullClue.setDepth(-1);
-                combineClue.setDepth(-1)
+                slots.displayInterfaceClueFull(false);
+                slots.displayInterfaceClueCombine(false);
             }
 
             // turn off all scene masks, and turn on the object alternate view mask
@@ -513,8 +510,8 @@ export class PlayGame extends Phaser.Scene {
             //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
 
         } else if ((viewWall != currentWall || updateWall)) {
-            fullClue.setDepth(-1);
-            combineClue.setDepth(-1)
+            slots.displayInterfaceClueFull(false);
+            slots.displayInterfaceClueCombine(false);
             if (egress) {
                 this.add.image(0, 0, walls[8]).setOrigin(0, 0);
                 leftButton.setVisible(false);
@@ -715,11 +712,6 @@ export class PlayGame extends Phaser.Scene {
         viewportPointer.setDepth(3001);
         viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
-
-        fullClue = this.add.image(0, 0, 'interfaceClue').setOrigin(0, 0);
-        fullClue.setDepth(-1);
-        combineClue = this.add.image(0, 0, 'interfaceCombine').setOrigin(0, 0);
-        combineClue.setDepth(-1);
 
         inputText = new InputText(this, 300, 100, 300, 100, {
             type: 'textarea',

@@ -131,6 +131,10 @@ export default class Slots {
     fakeClicks: number = 0;
     combining: string = "";
     invBar: Phaser.GameObjects.Sprite;
+    interfaceClueFull: Phaser.GameObjects.Image;
+    interfaceClueCombine: Phaser.GameObjects.Image;
+    hasSearched = false;
+    hasCombined = false;    
     scene: Phaser.Scene;
 
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
@@ -139,23 +143,55 @@ export default class Slots {
         selectSprite: string,
         selectSecond: string,
         recorder: Recorder,
-        invBar: Phaser.GameObjects.Sprite) {
+        invBar: Phaser.GameObjects.Sprite,
+        interfaceClueFull: Phaser.GameObjects.Sprite,
+        interfaceClueCombine: Phaser.GameObjects.Sprite) {
 
         this.emptySprite = slotIconSprite;
         this.selectedIcon = scene.add.sprite(1000, 1078, selectSprite).setOrigin(0, 0); //??
         this.selectedSecondIcon = scene.add.sprite(1000, 1078, selectSecond).setOrigin(0, 0); //TODO remove second, it is stupid
         this.recorder = recorder;
         this.invBar = invBar;
+        this.interfaceClueFull = interfaceClueFull;
+        this.interfaceClueCombine = interfaceClueCombine;
         this.scene = scene;
 
         for (var i = 0; i < 12; i++) {
             let slotItem = new InvItem(scene, i, slotIconSprite, this, this.recorder); // empty sprite image, or select
             this.slotArray.push(slotItem);
-
-
         }
         this.currentMode = "room"; // TODO is this even needed? 
     }
+
+    setSearched(playerHasSearchedOnce: boolean) {
+        this.hasSearched = playerHasSearchedOnce;
+    }
+    getSearched() {
+        return this.hasSearched;
+    }
+    setCombined(playerDidThisToo: boolean) {
+        this.hasCombined = playerDidThisToo;
+    }
+    getCombined() {
+        return this.hasCombined;
+    }
+
+    displayInterfaceClueFull(showIt: boolean) {
+        if (showIt) {
+            this.interfaceClueFull.setVisible(true);
+            //this.interfaceClueFull.setDepth(10000);
+        } else
+            this.interfaceClueFull.setVisible(false);
+    }
+
+    displayInterfaceClueCombine(showIt: boolean) {
+        if (showIt) {
+            this.interfaceClueCombine.setVisible(true);
+            //this.interfaceClueCombine.setDepth(10000);
+        } else
+            this.interfaceClueCombine.setVisible(false);
+    }
+
 
     displayInventoryBar(showBar: boolean) {
         if (showBar)
