@@ -382,13 +382,12 @@ export default class Recorder {
 
     // Called once per update when the recorder has a click to show, creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
-        const config = {
-            key: 'clckrClk',
-            scale: 3
-        };
 
-        var newSprite = scene.make.sprite(config);
+        var newSprite = scene.add.sprite(1000,0, 'atlas', 'pointerClicked.png');
+
         newSprite.setX(x); newSprite.setY(y);
+        newSprite.setScale(2);
+        
         if (x == this.prevClickX && y == this.prevClickY) {
             newSprite.setScale(5);
         }

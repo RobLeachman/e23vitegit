@@ -535,7 +535,7 @@ export class PlayGame extends Phaser.Scene {
                 updateWall = false;
                 var sentence = "Nice job slugger!\nTry it again for the bonus?\nJust reload the page";
                 if (didBonus) {
-                    this.add.image(360, 800, "winnerDonut")
+                    this.add.sprite(360, 800, 'atlas', 'winner donutPlated.png');
                     sentence = "You did it :)\n\nThanks for testing!";
                 } else {
                     failed.setDepth(400);
@@ -592,17 +592,14 @@ export class PlayGame extends Phaser.Scene {
             zotBoxColorYellow.setDepth(-1);
             zotBoxColorGreen.setDepth(-1);
 
-            if (viewWall == 0)
-                this.add.sprite(542, 650, tableView[tableState]).setOrigin(0, 0);
-            /* OBSOLETE
-            if (viewWall == 2) {
-                if (!haveZot)
-                    this.add.sprite(493, 555, "zotShown").setOrigin(0, 0);
+            if (viewWall == 0) {
+                this.add.sprite(542, 650, 'atlas', tableView[tableState]).setOrigin(0, 0);
             }
-            */
+
             if (viewWall == 1) {
                 if (!haveBatt)
-                    this.add.sprite(320, 926, "battShown").setOrigin(0, 0);
+                    this.add.sprite(320, 926, 'atlas', "battOnFloor.png").setOrigin(0, 0)
+
                 if (boxHasZot) {
                     boxZot.setDepth(100);
                 }
@@ -615,7 +612,8 @@ export class PlayGame extends Phaser.Scene {
             }
 
             if (viewWall == 4)
-                this.add.sprite(180, 544, closeView[tableState]).setOrigin(0, 0);
+                //this.add.sprite(180, 544, closeView[tableState]).setOrigin(0, 0);
+                this.add.sprite(180, 544, 'atlas', closeView[tableState]).setOrigin(0, 0);
 
             if (viewWall > 3) { // viewing table not room wall, or inventory view
                 leftButton.setVisible(false);
@@ -717,8 +715,8 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
 
-        viewportPointer.setDepth(3001);
-        viewportPointerClick.setDepth(3001);
+        //viewportPointer.setDepth(3001);
+        //viewportPointerClick.setDepth(3001);
         pointer = this.input.activePointer;
 
         inputText = new InputText(this, 300, 100, 300, 100, {
@@ -821,9 +819,10 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        boxZot = this.add.sprite(382, 650, 'boxZot').setOrigin(0, 0);
-        zotBoxColorYellow = this.add.sprite(354, 657, 'zotBoxColorYellow').setOrigin(0, 0);
-        zotBoxColorGreen = this.add.sprite(354, 657, 'zotBoxColorGreen').setOrigin(0, 0);
+        boxZot = this.add.sprite(382, 650, 'atlas', 'boxZot.png').setOrigin(0, 0);
+        zotBoxColorYellow = this.add.sprite(354, 657, 'atlas', 'boxColorYellow.png').setOrigin(0, 0);
+        zotBoxColorGreen = this.add.sprite(354, 657, 'atlas', 'boxColorGreen.png').setOrigin(0, 0);
+
 
         //battMask = this.add.sprite(320, 926, 'battMask').setOrigin(0, 0);
         battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0, 0);
@@ -1091,15 +1090,15 @@ export class PlayGame extends Phaser.Scene {
         altObj[8] = "DELETED";
         altObj[9] = "altobjZot";
 
-        tableView[0] = "tableDonut";
-        tableView[1] = "tablePlate";
-        tableView[2] = "tableKey";
-        tableView[3] = "tableEmpty";
+        tableView[0] = "tableDonut.png";
+        tableView[1] = "tablePlate.png";
+        tableView[2] = "tableKey.png";
+        tableView[3] = "tableEmpty.png";
 
-        closeView[0] = "closeDonut"
-        closeView[1] = "closePlate"
-        closeView[2] = "closeKey"
-        closeView[3] = "closeEmpty"
+        closeView[0] = "closeDonut.png"
+        closeView[1] = "closePlate.png"
+        closeView[2] = "closeKey.png"
+        closeView[3] = "closeEmpty.png"
 
     }
 }

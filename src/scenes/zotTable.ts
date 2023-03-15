@@ -22,16 +22,16 @@ walls[8] = "zotBatteryEmpty";
 walls[9] = "zotBatteryPlaced";
 
 const zotState = new Array();
-zotState[0] = "zotStateOff";
-zotState[1] = "zotStateYellow";
-zotState[2] = "zotStateGreen";
-zotState[3] = "zotStateKey";
-zotState[4] = "zotStateEmpty";
+zotState[0] = "zotState-off.png";
+zotState[1] = "zotState-yellow.png";
+zotState[2] = "zotState-green.png";
+zotState[3] = "zotState-key.png";
+zotState[4] = "zotState-empty.png";
 
 const zotStateFlipped = new Array();
-zotStateFlipped[0] = "zotStateFlippedGreen"; // impossible, upside down green is red
-zotStateFlipped[1] = "zotStateFlippedYellow";
-zotStateFlipped[2] = "zotStateFlippedRed";
+zotStateFlipped[0] = "zotStateFlipped-green.png_removed"; // impossible, upside down green is red
+zotStateFlipped[1] = "zotStateFlipped-yellow.png";
+zotStateFlipped[2] = "zotStateFlipped-red.png";
 
 let zotDrawerState = 0;
 let batteryPlaced = false;
@@ -153,8 +153,8 @@ export class ZotTable extends Phaser.Scene {
                 viewWall = 1;
         });
 
-        zotPlaced = this.add.sprite(302, 483, 'zotPlaced').setOrigin(0, 0);
-        zotPlacedFlipped = this.add.sprite(293, 478, 'zotPlacedFlipped').setOrigin(0, 0);
+        zotPlaced = this.add.sprite(302, 483, 'atlas', 'zotPlaced.png').setOrigin(0, 0);
+        zotPlacedFlipped = this.add.sprite(293, 478, 'atlas', 'zotPlacedFlipped.png').setOrigin(0, 0);
 
         //zotTopMask = this.add.sprite(294, 466, 'zotTopMask').setOrigin(0, 0);
         zotTopMask = this.add.sprite(294, 466, 'atlas', 'takeMask.png').setName("zotTopMask").setOrigin(0, 0);
@@ -357,12 +357,12 @@ export class ZotTable extends Phaser.Scene {
                     zotDrawerMask.setVisible(false); // done with the drawer
                 }
                 if (drawerOpen == 1) {
-                    this.add.image(134, 659, zotState[3]).setOrigin(0, 0); // drawer open key not taken
+                    this.add.sprite(134, 659, 'atlas', zotState[3]).setOrigin(0, 0);                    
 
                 } else if (drawerOpen == 2) {
-                    this.add.image(134, 659, zotState[4]).setOrigin(0, 0); // drawer open empty (never displayed)
+                    this.add.sprite(134, 659, 'atlas', zotState[4]).setOrigin(0, 0);                    
                 } else {
-                    this.add.image(134, 659, zotState[zotDrawerState]).setOrigin(0, 0); // off yellow or green
+                    this.add.sprite(134, 659, 'atlas', zotState[zotDrawerState]).setOrigin(0, 0);                    
                     if (haveZot)
                         zotPlaced.setDepth(1);
                     //if (zotDrawerState == 2) { // green, now let it be opened
@@ -374,7 +374,7 @@ export class ZotTable extends Phaser.Scene {
             if (viewWall == 2) {
                 zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });
                 if (zotDrawerState > 0)
-                    this.add.image(153, 664, zotStateFlipped[zotDrawerState]).setOrigin(0, 0);
+                    this.add.sprite(153, 664, 'atlas', zotStateFlipped[zotDrawerState]).setOrigin(0, 0);                    
             }
 
             backFrontButton.setVisible(false);

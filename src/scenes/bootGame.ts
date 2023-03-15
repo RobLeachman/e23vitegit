@@ -127,14 +127,15 @@ export class BootGame extends Phaser.Scene {
         //this.load.image('batteryMask', 'assets/sprites/zotBatteryMask.png');
         //this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.png');
 
-        this.load.image('clckrLoc', 'assets/sprites/pointer.png');
-        this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
+        //this.load.image('clckrLoc', 'assets/sprites/pointer.png');
+        //this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
 
-        this.load.image('fail', 'assets/sprites/fail.png');
-        this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
+        //this.load.image('fail', 'assets/sprites/fail.png');
+        //this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
 
-        this.load.image('inventory', 'assets/sprites/inventory cells.png');
+        //this.load.image('inventory', 'assets/sprites/inventory cells.png');
 
+        // do these last
         this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
         this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
         this.load.image('iconSelectedSecond', 'assets/sprites/icon - selectedSecond.png'); // UNUSED
@@ -147,39 +148,38 @@ export class BootGame extends Phaser.Scene {
         this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
         this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
         this.load.image('iconFake', 'assets/sprites/icon - empty.png');
-
         this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
         this.load.image('iconZot', 'assets/sprites/iconZot.png');
 
-        this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
-        this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
-        this.load.image('tableKey', 'assets/sprites/tableKey.png');
-        this.load.image('tableEmpty', 'assets/sprites/tableEmpty.png');
+        //this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
+        //this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
+        //this.load.image('tableKey', 'assets/sprites/tableKey.png');
+        //this.load.image('tableEmpty', 'assets/sprites/tableEmpty.png');
 
-        this.load.image('battShown', 'assets/sprites/battOnFloor.png');
-        this.load.image('zotShown', 'assets/sprites/southZotOBSOLETE.png');
-        this.load.image('zotPicked', 'assets/sprites/southZotPickedOBSOLETE.png');
 
-        this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
-        this.load.image('closePlate', 'assets/sprites/closePlate.png');
-        this.load.image('closeKey', 'assets/sprites/closeKey.png');
-        this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
+        //this.load.image('battShown', 'assets/sprites/battOnFloor.png');
 
-        this.load.image('boxZot', 'assets/sprites/boxZot.png');
-        this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.png');
-        this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.png');
+        //this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
+        //this.load.image('closePlate', 'assets/sprites/closePlate.png');
+        //this.load.image('closeKey', 'assets/sprites/closeKey.png');
+        //this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
 
-        this.load.image('zotPlaced', 'assets/sprites/zotPlaced.png');
-        this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.png');
+        //this.load.image('boxZot', 'assets/sprites/boxZot.png');
+        //this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.png');
+        //this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.png');
 
-        this.load.image('zotStateOff', 'assets/sprites/zotState-off.png');
-        this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.png');
-        this.load.image('zotStateGreen', 'assets/sprites/zotState-green.png');
-        this.load.image('zotStateKey', 'assets/sprites/zotState-key.png');
-        this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.png');
-        this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.png');
-        this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.png');
-        this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.png');
+        //this.load.image('zotPlaced', 'assets/sprites/zotPlaced.png');
+        //this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.png');
+
+        //this.load.image('zotStateOff', 'assets/sprites/zotState-off.png');
+        //this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.png');
+        //this.load.image('zotStateGreen', 'assets/sprites/zotState-green.png');
+        //this.load.image('zotStateKey', 'assets/sprites/zotState-key.png');
+        //this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.png');
+
+        //this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.png');
+        //this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.png');
+        //this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.png');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
@@ -264,10 +264,10 @@ export class BootGame extends Phaser.Scene {
         this.registry.events.on('changedata', this.registryUpdate, this);
 
         //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
-        viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
-        viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
+        viewportPointerClick = this.add.sprite(1000,0, 'atlas', 'pointerClicked.png');
+        viewportPointer = this.add.sprite(1000,0, 'atlas', 'pointer.png');
 
-        invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
+        invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0,0);
 
         interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
         interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
@@ -299,7 +299,8 @@ export class BootGame extends Phaser.Scene {
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();
         });
 
-        failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
+        //failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
+        failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
 
 
         //        var {slots} : {slots:any}
