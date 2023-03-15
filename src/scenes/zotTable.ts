@@ -191,7 +191,7 @@ export class ZotTable extends Phaser.Scene {
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer
-                slots.addIcon("iconKeyA", "objKeyA", "altobjKeyA");
+                slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
             }
             if (!keyTaken) {
                 console.log("can take it")
@@ -358,12 +358,12 @@ export class ZotTable extends Phaser.Scene {
                     zotDrawerMask.setVisible(false); // done with the drawer
                 }
                 if (drawerOpen == 1) {
-                    this.add.sprite(134, 659, 'atlas', zotState[3]).setOrigin(0, 0);                    
+                    this.add.sprite(134, 659, 'atlas', zotState[3]).setOrigin(0, 0);
 
                 } else if (drawerOpen == 2) {
-                    this.add.sprite(134, 659, 'atlas', zotState[4]).setOrigin(0, 0);                    
+                    this.add.sprite(134, 659, 'atlas', zotState[4]).setOrigin(0, 0);
                 } else {
-                    this.add.sprite(134, 659, 'atlas', zotState[zotDrawerState]).setOrigin(0, 0);                    
+                    this.add.sprite(134, 659, 'atlas', zotState[zotDrawerState]).setOrigin(0, 0);
                     if (haveZot)
                         zotPlaced.setDepth(1);
                     //if (zotDrawerState == 2) { // green, now let it be opened
@@ -375,7 +375,7 @@ export class ZotTable extends Phaser.Scene {
             if (viewWall == 2) {
                 zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });
                 if (zotDrawerState > 0)
-                    this.add.sprite(153, 664, 'atlas', zotStateFlipped[zotDrawerState]).setOrigin(0, 0);                    
+                    this.add.sprite(153, 664, 'atlas', zotStateFlipped[zotDrawerState]).setOrigin(0, 0);
             }
 
             backFrontButton.setVisible(false);

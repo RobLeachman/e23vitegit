@@ -136,10 +136,9 @@ export class BootGame extends Phaser.Scene {
         //this.load.image('inventory', 'assets/sprites/inventory cells.png');
 
         // do these last
-        this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
-        this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
-        this.load.image('iconSelectedSecond', 'assets/sprites/icon - selectedSecond.png'); // UNUSED
-
+        //this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
+        //this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
+/*
         this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
         this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
         this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
@@ -150,6 +149,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('iconFake', 'assets/sprites/icon - empty.png');
         this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
         this.load.image('iconZot', 'assets/sprites/iconZot.png');
+*/        
 
         //this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
         //this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
@@ -272,8 +272,10 @@ export class BootGame extends Phaser.Scene {
         interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
         interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
 
+        const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0); 
+
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
-        slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar, interfaceClueFull, interfaceClueCombine);
+        slots = new Slots(this, iconSelected, recorder, invBar, interfaceClueFull, interfaceClueCombine);
 
         // THESE NEED TO BE ADDED TO DICTIONARY
         //plusButton = this.add.sprite(80, 950, 'plusButton');

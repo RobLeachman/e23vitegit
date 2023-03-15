@@ -15,12 +15,12 @@ class InvItem {
 
     constructor(scene: Phaser.Scene,
         index: number,
-        iconSpriteImage: string,
         allSlots: Slots,
         recorder: Recorder) {
 
         this.scene = scene;
-        this.iconSprite = this.scene.add.sprite(112 + index * 83, 1078, iconSpriteImage).setOrigin(0, 0);
+        //this.iconSprite = this.scene.add.sprite(112 + index * 83, 1078, iconSpriteImage).setOrigin(0, 0);
+        this.iconSprite = this.scene.add.sprite(112 + index * 83, 1078, 'atlas', 'icon - empty.png').setOrigin(0, 0);
         if (index > 5) {
             this.iconSprite.setX(112 + (index - 6) * 83)
             this.iconSprite.setY(1161)
@@ -115,13 +115,11 @@ export default class Slots {
     //slotArray: [];
     slotArray: InvItem[] = [];
 
-    emptySprite: string;
     inventoryViewSwitch: boolean;
     inventoryViewObj: string;
     inventoryViewAlt: string;
     otherViewObj: string;
     selectedIcon: Phaser.GameObjects.Sprite;
-    selectedSecondIcon: Phaser.GameObjects.Sprite;
     selected: boolean;
     objView: string;
     altObjView: string;
@@ -134,22 +132,18 @@ export default class Slots {
     interfaceClueFull: Phaser.GameObjects.Image;
     interfaceClueCombine: Phaser.GameObjects.Image;
     hasSearched = false;
-    hasCombined = false;    
+    hasCombined = false;
     scene: Phaser.Scene;
 
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
     constructor(scene: Phaser.Scene,
-        slotIconSprite: string,
-        selectSprite: string,
-        selectSecond: string,
+        selectSprite: Phaser.GameObjects.Sprite,
         recorder: Recorder,
         invBar: Phaser.GameObjects.Sprite,
         interfaceClueFull: Phaser.GameObjects.Sprite,
         interfaceClueCombine: Phaser.GameObjects.Sprite) {
 
-        this.emptySprite = slotIconSprite;
-        this.selectedIcon = scene.add.sprite(1000, 1078, selectSprite).setOrigin(0, 0); //??
-        this.selectedSecondIcon = scene.add.sprite(1000, 1078, selectSecond).setOrigin(0, 0); //TODO remove second, it is stupid
+        this.selectedIcon = selectSprite;
         this.recorder = recorder;
         this.invBar = invBar;
         this.interfaceClueFull = interfaceClueFull;
@@ -157,7 +151,7 @@ export default class Slots {
         this.scene = scene;
 
         for (var i = 0; i < 12; i++) {
-            let slotItem = new InvItem(scene, i, slotIconSprite, this, this.recorder); // empty sprite image, or select
+            let slotItem = new InvItem(scene, i, this, this.recorder); // empty sprite image, or select
             this.slotArray.push(slotItem);
         }
         this.currentMode = "room"; // TODO is this even needed? 
@@ -243,7 +237,7 @@ export default class Slots {
 
             this.slotArray[i].iconSprite.destroy();
         this.slotArray[i].iconSprite =
-            this.scene.add.sprite(112 + i * 83, 1078, iconSpriteName).setOrigin(0, 0);
+            this.scene.add.sprite(112 + i * 83, 1078, 'atlas', iconSpriteName).setOrigin(0, 0);
         if (i > 5) {
             this.slotArray[i].iconSprite.setX(112 + (i - 6) * 83)
             this.slotArray[i].iconSprite.setY(1161)
@@ -304,7 +298,7 @@ export default class Slots {
 
         if (clearSlot > -1) {
             this.slotArray[clearSlot].iconSprite.destroy();
-            var clearedSprite = this.scene.add.sprite(1000, 1078, this.emptySprite);
+            const clearedSprite = this.scene.add.sprite(1000, 1078, 'atlas', 'icon - empty.png').setOrigin(0, 0);
             if (clearSlot > 5) {
                 clearedSprite.setX(112 + (clearSlot - 6) * 83)
                 clearedSprite.setY(1161)
@@ -322,6 +316,5 @@ export default class Slots {
             icon.iconSprite.destroy();
         });
         this.selectedIcon.setX(1000);
-        this.selectedSecondIcon.setX(1000);
     }
 } 

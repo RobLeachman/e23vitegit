@@ -1056,29 +1056,17 @@ export class PlayGame extends Phaser.Scene {
         walls[9] = "wallHint";
 
 
-        icons[0] = "iconDonut";
-        icons[1] = "iconPlate";
-        icons[2] = "iconKeyB";
-        icons[3] = "iconKeyA";
-        icons[4] = "iconKeyWhole";
-        icons[5] = "iconDonutPlated";
-        icons[6] = "iconRoach";
-        icons[7] = "iconFake";
-        icons[8] = "iconBattery";
+        icons[0] = "icon - donut.png";
+        icons[1] = "icon - plate.png";
+        icons[2] = "icon - keyB.png";
+        icons[3] = "icon - keyA.png";
+        icons[4] = "icon - keyWhole.png";
+        icons[5] = "icon - donutPlated.png";
+        icons[6] = "icon - roach.png";
+        icons[7] = "icon - empty.png";
+        icons[8] = "iconBattery.png";
         icons[9] = "DELETED";
-        icons[10] = "iconZot";
-
-        this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
-        this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
-        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
-        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.png');
-        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.png');
-        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
-        this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
-        this.load.image('iconFake', 'assets/sprites/icon - empty.png');
-        this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
-        this.load.image('iconZot', 'assets/sprites/iconZot.png');        
-
+        icons[10] = "iconZot.png";
 
         obj[0] = "objDonut";
         obj[1] = "objPlate";

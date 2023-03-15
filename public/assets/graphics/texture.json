@@ -52,7 +52,7 @@
 					}
 				},
 				{
-					"filename": "zotStateFlipped-red.png",
+					"filename": "zotStateFlipped-yellow.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -73,7 +73,7 @@
 					}
 				},
 				{
-					"filename": "zotStateFlipped-yellow.png",
+					"filename": "zotStateFlipped-red.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -94,7 +94,7 @@
 					}
 				},
 				{
-					"filename": "zotState-green.png",
+					"filename": "zotState-yellow.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -115,7 +115,7 @@
 					}
 				},
 				{
-					"filename": "zotState-key.png",
+					"filename": "zotState-off.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -136,7 +136,7 @@
 					}
 				},
 				{
-					"filename": "zotDrawerMask.png",
+					"filename": "zotState-key.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -157,7 +157,7 @@
 					}
 				},
 				{
-					"filename": "zotState-empty.png",
+					"filename": "zotState-green.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -178,7 +178,7 @@
 					}
 				},
 				{
-					"filename": "zotState-yellow.png",
+					"filename": "zotDrawerMask.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -199,7 +199,7 @@
 					}
 				},
 				{
-					"filename": "zotState-off.png",
+					"filename": "zotState-empty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -241,7 +241,7 @@
 					}
 				},
 				{
-					"filename": "closeEmpty.png",
+					"filename": "closeKey.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -262,7 +262,7 @@
 					}
 				},
 				{
-					"filename": "closeDonut.png",
+					"filename": "closeEmpty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -283,7 +283,7 @@
 					}
 				},
 				{
-					"filename": "closeKey.png",
+					"filename": "closeDonut.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -556,7 +556,7 @@
 					}
 				},
 				{
-					"filename": "plus - selected.png",
+					"filename": "fail.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -577,7 +577,7 @@
 					}
 				},
 				{
-					"filename": "plus - unselected.png",
+					"filename": "arrowRight.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -598,7 +598,7 @@
 					}
 				},
 				{
-					"filename": "fail.png",
+					"filename": "arrowLeft.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -619,7 +619,7 @@
 					}
 				},
 				{
-					"filename": "arrowLeft.png",
+					"filename": "arrowDown.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -640,7 +640,7 @@
 					}
 				},
 				{
-					"filename": "arrowRight.png",
+					"filename": "plus - selected.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -661,7 +661,7 @@
 					}
 				},
 				{
-					"filename": "arrowDown.png",
+					"filename": "plus - unselected.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -724,7 +724,7 @@
 					}
 				},
 				{
-					"filename": "icon - roach.png",
+					"filename": "icon - keyB.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -745,24 +745,213 @@
 					}
 				},
 				{
-					"filename": "battMask.png",
+					"filename": "icon - donut.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 62,
-						"h": 58
+						"w": 80,
+						"h": 80
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 62,
-						"h": 58
+						"w": 80,
+						"h": 80
 					},
 					"frame": {
 						"x": 1088,
 						"y": 816,
-						"w": 62,
-						"h": 58
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - donutPlated.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1101,
+						"y": 896,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "iconZot.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1168,
+						"y": 816,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - empty.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1120,
+						"y": 976,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "iconBattery.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1181,
+						"y": 896,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - selected.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1120,
+						"y": 1056,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - roach.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1113,
+						"y": 492,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - plate.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1113,
+						"y": 572,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - keyWhole.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1113,
+						"y": 652,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - keyA.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1193,
+						"y": 492,
+						"w": 80,
+						"h": 80
 					}
 				},
 				{
@@ -780,8 +969,29 @@
 						"h": 58
 					},
 					"frame": {
-						"x": 1101,
-						"y": 874,
+						"x": 1120,
+						"y": 1136,
+						"w": 62,
+						"h": 58
+					}
+				},
+				{
+					"filename": "battMask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 62,
+						"h": 58
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 62,
+						"h": 58
+					},
+					"frame": {
+						"x": 1193,
+						"y": 572,
 						"w": 62,
 						"h": 58
 					}
@@ -829,7 +1039,7 @@
 					}
 				},
 				{
-					"filename": "tableEmpty.png",
+					"filename": "tableKey.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -850,7 +1060,7 @@
 					}
 				},
 				{
-					"filename": "tableKey.png",
+					"filename": "tableEmpty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
