@@ -86,7 +86,7 @@ export class ZotTable extends Phaser.Scene {
         this.registry.set('boxColor', "off");
 
         //zotBackButton = this.add.sprite(300, 875, 'zotBackButton').setOrigin(0, 0);
-        zotBackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0,0).setName("zotBackButton");
+        zotBackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("zotBackButton");
         recorder.addMaskSprite('zotBackButton', zotBackButton);
         zotBackButton.setVisible(true);
 
@@ -96,7 +96,7 @@ export class ZotTable extends Phaser.Scene {
             // the global call for this may or may not fire
             //console.log("MAY OR MAY NOT")
             if (viewWall < 7)
-                recorder.recordObjectDown(zotBackButton.texture.key, thisscene);
+                recorder.recordObjectDown(zotBackButton.name, thisscene);
 
             slots.currentMode = "room";
             zotObjectMask.setVisible(false);
@@ -157,7 +157,7 @@ export class ZotTable extends Phaser.Scene {
         zotPlacedFlipped = this.add.sprite(293, 478, 'zotPlacedFlipped').setOrigin(0, 0);
 
         //zotTopMask = this.add.sprite(294, 466, 'zotTopMask').setOrigin(0, 0);
-        zotTopMask = this.add.sprite(294, 466, 'atlas', 'takeMask.png').setName("zotTopMask").setOrigin(0,0);
+        zotTopMask = this.add.sprite(294, 466, 'atlas', 'takeMask.png').setName("zotTopMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotTopMask', zotTopMask);
         zotTopMask.on('pointerdown', () => {
             if (slots.getSelected() == "objZot") {
@@ -170,7 +170,7 @@ export class ZotTable extends Phaser.Scene {
             }
         });
 
-        zotBottomMask = this.add.sprite(298, 450, 'atlas', 'zotBottomMask.png').setName("zotBottomMask").setOrigin(0,0);
+        zotBottomMask = this.add.sprite(298, 450, 'atlas', 'zotBottomMask.png').setName("zotBottomMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotBottomMask', zotBottomMask);
         zotBottomMask.on('pointerdown', () => {
             //console.log("bottom mask return to " + viewWall)
@@ -179,10 +179,10 @@ export class ZotTable extends Phaser.Scene {
             viewWall = 7;
         });
 
-        zotDrawerMask = this.add.sprite(134, 659, 'atlas', 'zotDrawerMask.png').setName("zotDrawerMask").setOrigin(0,0);
+        zotDrawerMask = this.add.sprite(134, 659, 'atlas', 'zotDrawerMask.png').setName("zotDrawerMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotDrawerMask', zotDrawerMask);
         zotDrawerMask.on('pointerdown', () => {
-            console.log(`open the drawer? state=${zotDrawerState} wall ${viewWall}` )
+            console.log(`open the drawer? state=${zotDrawerState} wall ${viewWall}`)
             if (viewWall == 2) // tease the drawer but can't open if flipped
                 return;
             if (zotDrawerState < 2)
@@ -200,7 +200,7 @@ export class ZotTable extends Phaser.Scene {
         });
 
         //batteryMask = this.add.sprite(90, 307, 'batteryMask').setOrigin(0, 0);
-        batteryMask = this.add.sprite(90, 307, 'atlas', 'zotBatteryMask.png').setName("batteryMask").setOrigin(0,0);
+        batteryMask = this.add.sprite(90, 307, 'atlas', 'zotBatteryMask.png').setName("batteryMask").setOrigin(0, 0);
         recorder.addMaskSprite('batteryMask', batteryMask);
         batteryMask.on('pointerdown', () => {
             //console.log("viewing " + viewWall)
@@ -225,7 +225,7 @@ export class ZotTable extends Phaser.Scene {
 
 
         //zotObjectMask = this.add.sprite(170, 410, 'zotObjectMask').setOrigin(0, 0);
-        zotObjectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0,0).setName("zotObjectMask");
+        zotObjectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("zotObjectMask");
         recorder.addMaskSprite('zotObjectMask', zotObjectMask);
 
         // Flip object over. TODO: must adjust for key presence if it's the plate. Awkward! ??????
@@ -340,15 +340,12 @@ export class ZotTable extends Phaser.Scene {
                     zotDrawerState++;
                 if (batteryPlaced)
                     zotDrawerState++;
-                if (keyTaken) 
+                if (keyTaken)
                     zotDrawerState = 0;
             }
             this.registry.set('zotBoxColor', zotDrawerState);
-            
 
-            console.log("mask off, view wall=" + viewWall)
             if (viewWall == 0) {
-                console.log("mask on")
                 zotDrawerMask.setVisible(true); zotDrawerMask.setDepth(1); zotDrawerMask.setInteractive({ cursor: 'pointer' });
                 if (keyTaken) {
                     drawerOpen = 0;
@@ -356,7 +353,7 @@ export class ZotTable extends Phaser.Scene {
                 }
                 if (drawerOpen == 1) {
                     this.add.image(134, 659, zotState[3]).setOrigin(0, 0); // drawer open key not taken
-                    
+
                 } else if (drawerOpen == 2) {
                     this.add.image(134, 659, zotState[4]).setOrigin(0, 0); // drawer open empty (never displayed)
                 } else {

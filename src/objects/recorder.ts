@@ -296,7 +296,7 @@ export default class Recorder {
         let prevTime = 0;
         let elapsed = 0;
         actions.forEach((action) => {
-            console.log(`ActionIn ${action}  time ${action[3]} scene ${action[4]}`);
+            //console.log(`ActionIn ${action}  time ${action[3]} scene ${action[4]}`);
             if (action[4] == "PlayGame") {
                 action[4] = "A"
             } else if (action[4] == "ZotTable") {
