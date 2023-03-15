@@ -39,7 +39,7 @@ export default class Recorder {
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
         this.spriteMap.set(key, sprite);
     }
-    getMaskSprite(key: string) {
+    getMaskSpriteName(key: string) {
         return this.spriteMap.get(key);
     }
 
@@ -136,12 +136,16 @@ export default class Recorder {
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        //console.log(`>>>>>>>>RECORDER OBJECT ${object}`);
+        console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        
+        if (object == "__MISSING") {
+            throw new Error("MISSING OBJECT MASK")
+        }
         this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},${scene.sys.settings.key}:`);
     }
     // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number) {
-        //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 
@@ -157,19 +161,20 @@ export default class Recorder {
         }
         //console.log("COOKIE RECORDING IN");
         //console.log(recordingIn);
-        let recInCheck = recordingIn.split('?')[0];
+        const recordingChecksum = recordingIn.split('?')[0];
         // @ts-ignore
         // with luck will need version checking later
-        let recInVersion = recordingIn.split('?')[2];
-        let recIn = recordingIn.split('?')[1];
+        const recordingVersion = recordingIn.split('?')[2];
+        const recordingDataCompressed = recordingIn.split('?')[1];
+        let recIn = recordingDataCompressed
         let re = /mousemove,/g; recIn = recIn.replace(re, "#");
         re = /#/g; recIn = recIn.replace(re, "mousemove,");
         re = /!/g; recIn = recIn.replace(re, "mouseclick,");
         re = /=/g; recIn = recIn.replace(re, "object=");
         re = /\-/g; recIn = recIn.replace(re, "icon=");
 
-        if (recInCheck == this.checksum(recIn)) {
-            //console.log("-->Good recording " + recIn);
+        if (recordingChecksum == this.checksum(recIn)) {
+            console.log("-->Good recording " + recIn);
         } else {
             throw new Error('recording cksum error');
         }
@@ -291,16 +296,19 @@ export default class Recorder {
         let prevTime = 0;
         let elapsed = 0;
         actions.forEach((action) => {
-            //console.log(`ActionIn ${action}  time ${action[3]}`);
-            if (action[4] == "PlayGame")
+            console.log(`ActionIn ${action}  time ${action[3]} scene ${action[4]}`);
+            if (action[4] == "PlayGame") {
                 action[4] = "A"
-            if (action[4] == "ZotTable")
+            } else if (action[4] == "ZotTable") {
                 action[4] = "B"
+            } else if (action[4] == "BootGame") {    
+                action[4] = "C"
+            }
             if (action[3] > 0) {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
-                //console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}`);
+                console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}  scene ${action[4]}`);
                 recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed},${action[4]}:`);
             }
         });

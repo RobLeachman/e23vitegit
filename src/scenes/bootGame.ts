@@ -49,7 +49,9 @@ export class BootGame extends Phaser.Scene {
         */
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
 
-        this.load.multiatlas("textures", `assets/graphics/texture.json`, "assets/graphics");
+        
+        this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
+
 
         // used XnConvert to switch to webp, nice!
         this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
@@ -89,90 +91,95 @@ export class BootGame extends Phaser.Scene {
         this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.webp');
         this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
-        this.load.image('clckrLoc', 'assets/sprites/pointer.webp');
-        this.load.image('clckrClk', 'assets/sprites/pointerClicked.webp');
-
-        this.load.image('rightButton', 'assets/sprites/arrowRight.webp');
-        this.load.image('leftButton', 'assets/sprites/arrowLeft.webp');
-        this.load.image('backButton', 'assets/sprites/arrowDown.webp');
-        this.load.image('zotBackButton', 'assets/sprites/arrowDown.webp');
-        this.load.image('plusButton', 'assets/sprites/plus - unselected.webp');
-        this.load.image('plusModeButton', 'assets/sprites/plus - selected.webp');
-        this.load.image('fail', 'assets/sprites/fail.webp');
-        this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.webp');
-
-        this.load.image('inventory', 'assets/sprites/inventory cells.webp');
-
-        this.load.image('iconEmpty', 'assets/sprites/icon - empty.webp');
-        this.load.image('iconSelected', 'assets/sprites/icon - selected.webp');
-        this.load.image('iconSelectedSecond', 'assets/sprites/icon - selectedSecond.webp');
-
-        this.load.image('iconDonut', 'assets/sprites/icon - donut.webp');
-        this.load.image('iconPlate', 'assets/sprites/icon - plate.webp');
-        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.webp');
-        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.webp');
-        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.webp');
-        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.webp');
-        this.load.image('iconRoach', 'assets/sprites/icon - roach.webp');
-        this.load.image('iconFake', 'assets/sprites/icon - empty.webp');
-
-        this.load.image('iconBattery', 'assets/sprites/iconBattery.webp');
-        this.load.image('iconZot', 'assets/sprites/iconZot.webp');
-
-        this.load.image('tableDonut', 'assets/sprites/tableDonut.webp');
-        this.load.image('tablePlate', 'assets/sprites/tablePlate.webp');
-        this.load.image('tableKey', 'assets/sprites/tableKey.webp');
-        this.load.image('tableEmpty', 'assets/sprites/tableEmpty.webp');
-
-        this.load.image('battShown', 'assets/sprites/battOnFloor.webp');
-        this.load.image('zotShown', 'assets/sprites/southZotOBSOLETE.webp');
-        this.load.image('zotPicked', 'assets/sprites/southZotPickedOBSOLETE.webp');
-
-        this.load.image('closeDonut', 'assets/sprites/closeDonut.webp');
-        this.load.image('closePlate', 'assets/sprites/closePlate.webp');
-        this.load.image('closeKey', 'assets/sprites/closeKey.webp');
-        this.load.image('closeEmpty', 'assets/sprites/closeEmpty.webp');
-
-        this.load.image('tableMask', 'assets/sprites/tableMask.webp');
-        this.load.image('zotTableMask', 'assets/sprites/zotTableMask.webp');
-        this.load.image('takeMask', 'assets/sprites/takeMask.webp');
-        this.load.image('objectMask', 'assets/sprites/object-maskC.webp');
-        this.load.image('zotObjectMask', 'assets/sprites/object-maskC.webp');
-        this.load.image('keyMask', 'assets/sprites/keyMask.webp');
-        this.load.image('doorMask', 'assets/sprites/doorMask.webp');
-        this.load.image('hintMask', 'assets/sprites/hintMask.webp');
-
-        this.load.image('battMask', 'assets/sprites/battMask.webp');
-        this.load.image('zotMask', 'assets/sprites/zotMaskOBSOLETE.webp');
-        this.load.image('boxZot', 'assets/sprites/boxZot.webp');
-        this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.webp');
-        this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.webp');
-
         this.load.image('zotTableOff', 'assets/backgrounds/zot - off.webp');
         this.load.image('zotTableBack', 'assets/backgrounds/zot - back.webp');
         this.load.image('zotTableOffFlipped', 'assets/backgrounds/zot - flip - off.webp');
         this.load.image('zotTableBackFlipped', 'assets/backgrounds/zot - flip - back.webp');
-
-        this.load.image('backFrontButton', 'assets/sprites/backFrontButton.webp');
-        this.load.image('topBottomButton', 'assets/sprites/topBottomButton.webp');
-        this.load.image('zotPlaced', 'assets/sprites/zotPlaced.webp');
-        this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.webp');
-
-        this.load.image('zotStateOff', 'assets/sprites/zotState-off.webp');
-        this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.webp');
-        this.load.image('zotStateGreen', 'assets/sprites/zotState-green.webp');
-        this.load.image('zotStateKey', 'assets/sprites/zotState-key.webp');
-        this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.webp');
-        this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.webp');
-        this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.webp');
-        this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.webp');
-        this.load.image('zotTopMask', 'assets/sprites/zotTopMask.webp');
-        this.load.image('zotBottomMask', 'assets/sprites/zotBottomMask.webp');
         this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
         this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
         this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
-        this.load.image('batteryMask', 'assets/sprites/zotBatteryMask.webp');
-        this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.webp');
+
+
+
+
+        //this.load.image('rightButton', 'assets/sprites/arrowRight.png');
+        //this.load.image('leftButton', 'assets/sprites/arrowLeft.png');
+        //this.load.image('backButton', 'assets/sprites/arrowDown.png');
+        //this.load.image('zotBackButton', 'assets/sprites/arrowDown.png');
+
+        //this.load.image('plusButton', 'assets/sprites/plus - unselected.png');
+        //this.load.image('plusModeButton', 'assets/sprites/plus - selected.png');
+        //this.load.image('tableMask', 'assets/sprites/tableMask.png');
+        //this.load.image('zotTableMask', 'assets/sprites/zotTableMask.png');
+
+        //this.load.image('takeMask', 'assets/sprites/takeMask.png');
+        //this.load.image('objectMask', 'assets/sprites/object-maskC.png');
+        //this.load.image('zotObjectMask', 'assets/sprites/object-maskC.png');
+        //this.load.image('keyMask', 'assets/sprites/keyMask.png');
+        //this.load.image('doorMask', 'assets/sprites/doorMask.png');
+        //this.load.image('hintMask', 'assets/sprites/hintMask.png');
+        //this.load.image('battMask', 'assets/sprites/battMask.png');
+        
+        //this.load.image('backFrontButton', 'assets/sprites/backFrontButton.png');
+        //this.load.image('topBottomButton', 'assets/sprites/topBottomButton.png');
+        //this.load.image('zotTopMask', 'assets/sprites/zotTopMask.png');
+        //this.load.image('zotBottomMask', 'assets/sprites/zotBottomMask.png');
+        //this.load.image('batteryMask', 'assets/sprites/zotBatteryMask.png');
+        //this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.png');
+
+        this.load.image('clckrLoc', 'assets/sprites/pointer.png');
+        this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
+
+        this.load.image('fail', 'assets/sprites/fail.png');
+        this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
+
+        this.load.image('inventory', 'assets/sprites/inventory cells.png');
+
+        this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
+        this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
+        this.load.image('iconSelectedSecond', 'assets/sprites/icon - selectedSecond.png'); // UNUSED
+
+        this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
+        this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
+        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
+        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.png');
+        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.png');
+        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
+        this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
+        this.load.image('iconFake', 'assets/sprites/icon - empty.png');
+
+        this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
+        this.load.image('iconZot', 'assets/sprites/iconZot.png');
+
+        this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
+        this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
+        this.load.image('tableKey', 'assets/sprites/tableKey.png');
+        this.load.image('tableEmpty', 'assets/sprites/tableEmpty.png');
+
+        this.load.image('battShown', 'assets/sprites/battOnFloor.png');
+        this.load.image('zotShown', 'assets/sprites/southZotOBSOLETE.png');
+        this.load.image('zotPicked', 'assets/sprites/southZotPickedOBSOLETE.png');
+
+        this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
+        this.load.image('closePlate', 'assets/sprites/closePlate.png');
+        this.load.image('closeKey', 'assets/sprites/closeKey.png');
+        this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
+        
+        this.load.image('boxZot', 'assets/sprites/boxZot.png');
+        this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.png');
+        this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.png');
+
+        this.load.image('zotPlaced', 'assets/sprites/zotPlaced.png');
+        this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.png');
+
+        this.load.image('zotStateOff', 'assets/sprites/zotState-off.png');
+        this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.png');
+        this.load.image('zotStateGreen', 'assets/sprites/zotState-green.png');
+        this.load.image('zotStateKey', 'assets/sprites/zotState-key.png');
+        this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.png');
+        this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.png');
+        this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.png');
+        this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.png');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
@@ -240,6 +247,21 @@ export class BootGame extends Phaser.Scene {
     }
 
     create() {
+        // SCENERECORD: Capture all mask clicks on this scene
+
+        let thisscene = this;
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            // need extra sauce because this scene always runs and would capture other clicks too
+            const spriteName = (gameObject as Phaser.GameObjects.Sprite).name
+            if (spriteName == "plusButton" || spriteName == "plusModeButton") {
+                recorder.recordObjectDown(spriteName, thisscene);
+            } else {
+                //console.log("not ours")
+            }
+        });
+        
+
         //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'clckrClk');
@@ -252,17 +274,25 @@ export class BootGame extends Phaser.Scene {
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar, interfaceClueFull, interfaceClueCombine);
 
-        plusButton = this.add.sprite(80, 950, 'plusButton');
-        //        dictionary.set('plusButton', plusButton);
-        plusModeButton = this.add.sprite(80, 950, 'plusModeButton');
-        //        dictionary.set('plusModeButtonButton', plusModeButton);
+        // THESE NEED TO BE ADDED TO DICTIONARY
+        //plusButton = this.add.sprite(80, 950, 'plusButton');
+        //plusModeButton = this.add.sprite(80, 950, 'plusModeButton');
+        plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton");
+        plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
+        recorder.addMaskSprite('plusButton', plusButton);
+        recorder.addMaskSprite('plusModeButton', plusModeButton);
+        
+        
         plusModeButton.on('pointerdown', () => {
+            //console.log("record pointer down, mode is " + recorder.getMode())
+
             //console.log("combine mode cancelled");
             slots.combining = ""; // so slots object knows what is happening
             plusModeButton.setVisible(false);
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
         });
         plusButton.on('pointerdown', () => {
+            //recorder.recordObjectDown("plusButton", this);
             slots.combining = "trying"; // so slots object knows what is happening            
             plusButton.setVisible(false);
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();

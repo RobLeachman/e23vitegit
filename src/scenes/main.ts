@@ -1,7 +1,9 @@
 /****************
  * An escape room coded in Phaser.
  * 
- * - Count clicks, verify ` ` save
+ * - Count clicks, verify valid save
+ * - Icon interface clues
+ * 
  * - 3x3 slider puzzle
  * - 4x4 picture puzzle
  * - Rework hints
@@ -339,8 +341,11 @@ export class PlayGame extends Phaser.Scene {
                     // or click the icon just that same way.
                     //////////////
                     if (targetType == "object") {
+                        let targetScene = actions[0][4];
+                        console.log("check target scene: " + targetScene)
+    
                         // TODO Need to check unmapped objects
-                        let object = recorder.getMaskSprite(targetObject);
+                        let object = recorder.getMaskSpriteName(targetObject);
 
                         // TODO Now we save the scene name explicitly so this could be smarter...
 
@@ -352,8 +357,8 @@ export class PlayGame extends Phaser.Scene {
                         } else {
                             //console.log("SIMULATE ZOT")
                             //console.log("it aint PlayGame must be ZotTable")
-                            //console.log("zot simulate " + targetObject)
-                            this.registry.set('zotReplayObject', targetObject);
+                            console.log(`simulate sprite ${targetObject} on scene ${actions[0][4]}`)
+                            this.registry.set('replayObject', targetObject);
                         }
                     } else if (targetType == "icon") {
                         //console.log("do icon " + targetObject);
@@ -669,7 +674,7 @@ export class PlayGame extends Phaser.Scene {
 
     // @ts-ignore
     // data will be boolean or number, so "any" here is legit!
-    updateData(parent: Phaser.Game, key: string, data: any) {
+    registryUpdate(parent: Phaser.Game, key: string, data: any) {
         if (key == "boxHasZot") {
             //console.log("boxHasZot=" + data)
             boxHasZot = data;
@@ -691,14 +696,14 @@ export class PlayGame extends Phaser.Scene {
         plusModeButton = data.plusModeButton;
         failed = data.failed;
 
-        this.registry.events.on('changedata', this.updateData, this);
-        this.registry.set('zotReplayObject', "init");
+        this.registry.events.on('changedata', this.registryUpdate, this);
+        this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
 
         // SCENERECORD: Capture all mask clicks on this scene
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
-            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).texture.key, thisscene);
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
 
         recorder = slots.recorder;
@@ -725,11 +730,11 @@ export class PlayGame extends Phaser.Scene {
         slots.currentMode = "room";
 
         //SCENERECORD add to recorder dictionary every sprite that can be clicked 
-        leftButton = this.add.sprite(80, 950, 'leftButton');
+        leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton");
         recorder.addMaskSprite('leftButton', leftButton);
-        rightButton = this.add.sprite(640, 950, 'rightButton');
+        rightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton");
         recorder.addMaskSprite('rightButton', rightButton);
-        backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
+        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0,0).setName("backButton");
         recorder.addMaskSprite('backButton', backButton);
 
         rightButton.on('pointerdown', () => {
@@ -751,14 +756,18 @@ export class PlayGame extends Phaser.Scene {
             slots.currentMode = "room";
         });
 
-        hintMask = this.add.sprite(110, 446, 'hintMask').setOrigin(0, 0);
+        //hintMask = this.add.sprite(110, 446, 'hintMask').setOrigin(0, 0);
+        hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0,0);
+        // WHERE IS DICTIONARY
+        
         hintMask.on('pointerdown', () => {
             viewWall = 9;
         });
 
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
-        takeMask = this.add.sprite(155, 530, 'takeMask').setOrigin(0, 0);
+        //takeMask = this.add.sprite(155, 530, 'takeMask').setOrigin(0, 0);
+        takeMask = this.add.sprite(155, 530, 'atlas', 'takeMask.png').setName("takeMask").setOrigin(0,0);
         recorder.addMaskSprite('takeMask', takeMask);
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
@@ -775,7 +784,8 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        tableMask = this.add.sprite(440, 615, 'tableMask').setOrigin(0, 0);
+        //tableMask = this.add.sprite(440, 615, 'tableMask').setOrigin(0, 0);
+        tableMask = this.add.sprite(440, 615, 'atlas', 'tableMask.png').setOrigin(0,0).setName("tableMask");
         recorder.addMaskSprite('tableMask', tableMask);
         tableMask.on('pointerdown', () => {
             //console.log("view table!")
@@ -784,7 +794,7 @@ export class PlayGame extends Phaser.Scene {
 
         });
 
-        zotTableMask = this.add.sprite(340, 634, 'zotTableMask').setOrigin(0, 0);
+        zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0,0).setName("zotTableMask");
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
@@ -813,7 +823,8 @@ export class PlayGame extends Phaser.Scene {
         zotBoxColorYellow = this.add.sprite(354, 657, 'zotBoxColorYellow').setOrigin(0, 0);
         zotBoxColorGreen = this.add.sprite(354, 657, 'zotBoxColorGreen').setOrigin(0, 0);
 
-        battMask = this.add.sprite(320, 926, 'battMask').setOrigin(0, 0);
+        //battMask = this.add.sprite(320, 926, 'battMask').setOrigin(0, 0);
+        battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0,0);
         recorder.addMaskSprite('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
@@ -835,7 +846,8 @@ export class PlayGame extends Phaser.Scene {
             */
         });
 
-        doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
+        //doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
+        doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0,0);
         recorder.addMaskSprite('doorMask', doorMask);
         doorMask.on('pointerdown', () => {
             if (doorUnlocked) {
@@ -850,7 +862,8 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        objectMask = this.add.sprite(170, 410, 'objectMask').setOrigin(0, 0);
+        //objectMask = this.add.sprite(170, 410, 'objectMask').setOrigin(0, 0);
+        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0,0).setName("objectMask");
         recorder.addMaskSprite('objectMask', objectMask);
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         objectMask.on('pointerdown', () => {
@@ -873,7 +886,8 @@ export class PlayGame extends Phaser.Scene {
         });
 
         // Found the key and clicked it. We need to update the inventory view with empty plate.
-        keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
+        //keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
+        keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0,0);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
             //console.log("KEYMASK")
