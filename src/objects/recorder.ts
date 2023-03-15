@@ -136,7 +136,7 @@ export default class Recorder {
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
         
         if (object == "__MISSING") {
             throw new Error("MISSING OBJECT MASK")
@@ -145,7 +145,7 @@ export default class Recorder {
     }
     // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number) {
-        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 

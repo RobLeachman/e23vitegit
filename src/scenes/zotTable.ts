@@ -6,9 +6,9 @@ var recorder: Recorder;
 
 let viewWall = 0;
 let currentWall = -1;
-let previousWall = -1;
-let previousWallHack: number; // need a hack because battery views are walls not sprites
 let updateWall = false;
+
+let backStack = new Array();
 
 const walls = new Array();
 walls[0] = "zotTableOff";
@@ -67,6 +67,7 @@ export class ZotTable extends Phaser.Scene {
         plusButton: Phaser.GameObjects.Sprite,
         plusModeButton: Phaser.GameObjects.Sprite
     }) {
+        //console.log("ZotTable create")
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
@@ -92,37 +93,49 @@ export class ZotTable extends Phaser.Scene {
 
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action
-            //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallHack}`)
+            slots.currentMode = "room"; // definitely not in view object mode
+            zotObjectMask.setVisible(false);
 
-            // the global call for this may or may not fire
-            //console.log("MAY OR MAY NOT")
+            // record the last back action, it won't be captured by global method
             if (viewWall < 7)
                 recorder.recordObjectDown(zotBackButton.name, thisscene);
 
-            slots.currentMode = "room";
-            zotObjectMask.setVisible(false);
-            if (previousWall == -1) {
+            if (backStack.length == 0) {
+                console.log("exit zottable")
+
                 zotBackButton.setVisible(false);
                 zotBackButton.removeInteractive(); // fix up the cursor displayed on main scene
 
                 this.scene.moveUp("PlayGame");
                 this.scene.sleep();
                 this.scene.wake("PlayGame");
-            } else if (viewWall > 6) { // battery closeup
-                //console.log(`will exit from ${viewWall} after returning to ${previousWall}`)
-                viewWall = previousWall;
-                previousWall = -1;
-                //updateWall = true;
-            } else if (viewWall == 5 || viewWall == 6) {
-                //console.log("still struggling")
-                viewWall = previousWall;
+            } else {
+                const returnTo = backStack.pop();
+                console.log("return to view " + returnTo);
+                viewWall = returnTo;
             }
-            //console.log(`now go view ${viewWall} and previous ${previousWall}`)
-            // need a hack here for returning from looking at an object while viewing a battery wall... ugh
-            if (viewWall == previousWall) {
-                //console.log("HACK " + previousWallHack);
-                previousWall = previousWallHack
-            }
+
+
+            //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallHack}`)
+
+
+            /*
+             if (viewWall > 6) { // battery closeup
+                 //console.log(`will exit from ${viewWall} after returning to ${previousWall}`)
+                 viewWall = previousWall;
+                 previousWall = -1;
+                 //updateWall = true;
+             } else if (viewWall == 5 || viewWall == 6) {
+                 //console.log("still struggling")
+                 viewWall = previousWall;
+             }
+             //console.log(`now go view ${viewWall} and previous ${previousWall}`)
+             // need a hack here for returning from looking at an object while viewing a battery wall... ugh
+             if (viewWall == previousWall) {
+                 //console.log("HACK " + previousWallHack);
+                 previousWall = previousWallHack
+             }
+             */
         });
 
 
@@ -174,9 +187,8 @@ export class ZotTable extends Phaser.Scene {
         zotBottomMask = this.add.sprite(298, 450, 'atlas', 'zotBottomMask.png').setName("zotBottomMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotBottomMask', zotBottomMask);
         zotBottomMask.on('pointerdown', () => {
-            //console.log("bottom mask return to " + viewWall)
-            previousWall = viewWall;
-            previousWallHack = viewWall;
+            console.log("bottom mask return to " + viewWall)
+            backStack.push(viewWall)
             viewWall = 7;
         });
 
@@ -224,7 +236,6 @@ export class ZotTable extends Phaser.Scene {
             }
         });
 
-
         //zotObjectMask = this.add.sprite(170, 410, 'zotObjectMask').setOrigin(0, 0);
         zotObjectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("zotObjectMask");
         recorder.addMaskSprite('zotObjectMask', zotObjectMask);
@@ -237,7 +248,6 @@ export class ZotTable extends Phaser.Scene {
 
         this.events.on('wake', () => {
             viewWall = 0;
-            previousWallHack = -1;
             updateWall = true;
         });
     }
@@ -273,11 +283,9 @@ export class ZotTable extends Phaser.Scene {
             backFrontButton.setVisible(false);
             topBottomButton.setVisible(false);
 
-            //if (previousWall < 5 && previousWall != 6) {
+            //just started inspecting an object
             if (viewWall < 5 || viewWall > 6) {
-                // inspecting an object and not from a battery wall...
-                //console.log(`set previous=${viewWall}`)
-                previousWall = viewWall;
+                backStack.push(viewWall);
             }
 
             // ZOT ROOM IMPLEMENTATION //   
@@ -335,9 +343,6 @@ export class ZotTable extends Phaser.Scene {
 
             zotPlacedFlipped.setDepth(-1);
             zotPlaced.setDepth(-1);
-
-            if (viewWall < 4)
-                previousWallHack = -1;
 
             zotDrawerMask.setVisible(false);
             if (viewWall == 0 || viewWall == 2) { // front view, right side up or flipped
