@@ -149,6 +149,9 @@ export class PlayGame extends Phaser.Scene {
         re = /!/g; recIn = recIn.replace(re, "mouseclick,");
         re = /=/g; recIn = recIn.replace(re, "object=");
         re = /\-/g; recIn = recIn.replace(re, "icon=");
+        re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
+        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");
+        re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
 
         //console.log("PARSED")
         //console.log(recIn);
@@ -341,9 +344,9 @@ export class PlayGame extends Phaser.Scene {
                     // or click the icon just that same way.
                     //////////////
                     if (targetType == "object") {
-                        let targetScene = actions[0][4];
-                        console.log("check target scene: " + targetScene)
-    
+                        let targetScene = actions[0][4].split('%')[1];
+                        //console.log("check target scene: " + targetScene)
+
                         // TODO Need to check unmapped objects
                         let object = recorder.getMaskSpriteName(targetObject);
 
@@ -357,8 +360,8 @@ export class PlayGame extends Phaser.Scene {
                         } else {
                             //console.log("SIMULATE ZOT")
                             //console.log("it aint PlayGame must be ZotTable")
-                            console.log(`simulate sprite ${targetObject} on scene ${actions[0][4]}`)
-                            this.registry.set('replayObject', targetObject);
+                            console.log(`simulate sprite ${targetObject} on scene ${targetScene}`)
+                            this.registry.set('replayObject', targetObject + ":" + targetScene);
                         }
                     } else if (targetType == "icon") {
                         //console.log("do icon " + targetObject);
@@ -734,7 +737,7 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('leftButton', leftButton);
         rightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton");
         recorder.addMaskSprite('rightButton', rightButton);
-        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0,0).setName("backButton");
+        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton");
         recorder.addMaskSprite('backButton', backButton);
 
         rightButton.on('pointerdown', () => {
@@ -756,10 +759,9 @@ export class PlayGame extends Phaser.Scene {
             slots.currentMode = "room";
         });
 
-        //hintMask = this.add.sprite(110, 446, 'hintMask').setOrigin(0, 0);
-        hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0,0);
-        // WHERE IS DICTIONARY
-        
+        hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
+        recorder.addMaskSprite('hintMask', hintMask);
+
         hintMask.on('pointerdown', () => {
             viewWall = 9;
         });
@@ -767,7 +769,7 @@ export class PlayGame extends Phaser.Scene {
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
         //takeMask = this.add.sprite(155, 530, 'takeMask').setOrigin(0, 0);
-        takeMask = this.add.sprite(155, 530, 'atlas', 'takeMask.png').setName("takeMask").setOrigin(0,0);
+        takeMask = this.add.sprite(155, 530, 'atlas', 'takeMask.png').setName("takeMask").setOrigin(0, 0);
         recorder.addMaskSprite('takeMask', takeMask);
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
@@ -785,7 +787,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         //tableMask = this.add.sprite(440, 615, 'tableMask').setOrigin(0, 0);
-        tableMask = this.add.sprite(440, 615, 'atlas', 'tableMask.png').setOrigin(0,0).setName("tableMask");
+        tableMask = this.add.sprite(440, 615, 'atlas', 'tableMask.png').setOrigin(0, 0).setName("tableMask");
         recorder.addMaskSprite('tableMask', tableMask);
         tableMask.on('pointerdown', () => {
             //console.log("view table!")
@@ -794,7 +796,7 @@ export class PlayGame extends Phaser.Scene {
 
         });
 
-        zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0,0).setName("zotTableMask");
+        zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("zotTableMask");
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
@@ -824,7 +826,7 @@ export class PlayGame extends Phaser.Scene {
         zotBoxColorGreen = this.add.sprite(354, 657, 'zotBoxColorGreen').setOrigin(0, 0);
 
         //battMask = this.add.sprite(320, 926, 'battMask').setOrigin(0, 0);
-        battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0,0);
+        battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0, 0);
         recorder.addMaskSprite('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
@@ -847,7 +849,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         //doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
-        doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0,0);
+        doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0, 0);
         recorder.addMaskSprite('doorMask', doorMask);
         doorMask.on('pointerdown', () => {
             if (doorUnlocked) {
@@ -863,7 +865,7 @@ export class PlayGame extends Phaser.Scene {
         });
 
         //objectMask = this.add.sprite(170, 410, 'objectMask').setOrigin(0, 0);
-        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0,0).setName("objectMask");
+        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("objectMask");
         recorder.addMaskSprite('objectMask', objectMask);
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         objectMask.on('pointerdown', () => {
@@ -887,7 +889,7 @@ export class PlayGame extends Phaser.Scene {
 
         // Found the key and clicked it. We need to update the inventory view with empty plate.
         //keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
-        keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0,0);
+        keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
             //console.log("KEYMASK")

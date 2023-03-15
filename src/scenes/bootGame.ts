@@ -49,7 +49,7 @@ export class BootGame extends Phaser.Scene {
         */
         //this.add.text(10, 90, "OK! Click to continue...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
 
-        
+
         this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
 
 
@@ -119,7 +119,7 @@ export class BootGame extends Phaser.Scene {
         //this.load.image('doorMask', 'assets/sprites/doorMask.png');
         //this.load.image('hintMask', 'assets/sprites/hintMask.png');
         //this.load.image('battMask', 'assets/sprites/battMask.png');
-        
+
         //this.load.image('backFrontButton', 'assets/sprites/backFrontButton.png');
         //this.load.image('topBottomButton', 'assets/sprites/topBottomButton.png');
         //this.load.image('zotTopMask', 'assets/sprites/zotTopMask.png');
@@ -164,7 +164,7 @@ export class BootGame extends Phaser.Scene {
         this.load.image('closePlate', 'assets/sprites/closePlate.png');
         this.load.image('closeKey', 'assets/sprites/closeKey.png');
         this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
-        
+
         this.load.image('boxZot', 'assets/sprites/boxZot.png');
         this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.png');
         this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.png');
@@ -260,7 +260,8 @@ export class BootGame extends Phaser.Scene {
                 //console.log("not ours")
             }
         });
-        
+
+        this.registry.events.on('changedata', this.registryUpdate, this);
 
         //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointer = this.add.sprite(1000, 0, 'clckrLoc').setOrigin(0, 0);
@@ -269,7 +270,7 @@ export class BootGame extends Phaser.Scene {
         invBar = this.add.sprite(109, 1075, 'inventory').setOrigin(0, 0);
 
         interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
-        interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);        
+        interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
 
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, "iconEmpty", "iconSelected", "iconSelectedSecond", recorder, invBar, interfaceClueFull, interfaceClueCombine);
@@ -281,8 +282,8 @@ export class BootGame extends Phaser.Scene {
         plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
-        
-        
+
+
         plusModeButton.on('pointerdown', () => {
             //console.log("record pointer down, mode is " + recorder.getMode())
 
@@ -313,6 +314,22 @@ export class BootGame extends Phaser.Scene {
                 this.input.on("pointerup", this.handleClick, this);
             } else {
                 this.scene.start("PlayGame", { mobile: false })
+            }
+        }
+    }
+
+    // @ts-ignore
+    // no clue what parent is
+    registryUpdate(parent: Phaser.Game, key: string, data: string) {
+        //console.log("----------BOOT reg check " + data)
+        if (key == "replayObject") {
+            const spriteName = data.split(':')[0];
+            const spriteScene = data.split(':')[1];
+            //console.log("BOOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
+            if (spriteScene == "BootGame") {
+                //console.log("it is bootgame")
+                let object = recorder.getMaskSpriteName(spriteName);
+                object?.emit('pointerdown')
             }
         }
     }

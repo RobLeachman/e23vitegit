@@ -131,7 +131,7 @@ export default class Recorder {
     recordPointerAction(action: string, time: number, sceneName: string) {
         //if (action != "mousemove")
         //    console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
-        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},${sceneName}:`);
+        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},%${sceneName}%:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
@@ -141,7 +141,7 @@ export default class Recorder {
         if (object == "__MISSING") {
             throw new Error("MISSING OBJECT MASK")
         }
-        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},${scene.sys.settings.key}:`);
+        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},%${scene.sys.settings.key}%:`);
     }
     // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number) {
@@ -172,11 +172,15 @@ export default class Recorder {
         re = /!/g; recIn = recIn.replace(re, "mouseclick,");
         re = /=/g; recIn = recIn.replace(re, "object=");
         re = /\-/g; recIn = recIn.replace(re, "icon=");
+        re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
+        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");        
+        re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
 
         if (recordingChecksum == this.checksum(recIn)) {
-            console.log("-->Good recording " + recIn);
+            //console.log("-->Good recording " + recIn);
         } else {
-            throw new Error('recording cksum error');
+            console.log("ERROR: RECORDING CKSUM, CAN'T THROW ERROR SINCE NO WAY TO CLEAR")
+            //throw new Error('recording cksum error');
         }
         return recIn;
     }
@@ -199,6 +203,9 @@ export default class Recorder {
         re = /mouseclick,/g; recOut = recOut.replace(re, "!");
         re = /object=/g; recOut = recOut.replace(re, "=");
         re = /icon=/g; recOut = recOut.replace(re, "\-");
+        re = /\%PlayGame\%/g; recOut = recOut.replace(re, "\%A\%");
+        re = /\%ZotTable\%/g; recOut = recOut.replace(re, "\%B\%");
+        re = /\%BootGame\%/g; recOut = recOut.replace(re, "\%C\%");
 
         let inStr = recOut;
         let out: string = "";
@@ -297,6 +304,7 @@ export default class Recorder {
         let elapsed = 0;
         actions.forEach((action) => {
             //console.log(`ActionIn ${action}  time ${action[3]} scene ${action[4]}`);
+            /*
             if (action[4] == "PlayGame") {
                 action[4] = "A"
             } else if (action[4] == "ZotTable") {
@@ -304,6 +312,7 @@ export default class Recorder {
             } else if (action[4] == "BootGame") {    
                 action[4] = "C"
             }
+            */
             if (action[3] > 0) {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
@@ -326,7 +335,11 @@ export default class Recorder {
         let re = /mousemove,/g; recOut = recording.replace(re, "#");
         re = /mouseclick,/g; recOut = recOut.replace(re, "!");
         re = /object=/g; recOut = recOut.replace(re, "=");
-        re = /icon=/g; recOut = recOut.replace(re, "\-");
+        re = /icon=/g; recOut = recOut.replace(re, "\-"); // NEEDS TO BE $ SINCE - COULD BE USED IN A NAME BY ACCIDENT
+        re = /\%PlayGame\%/g; recOut = recOut.replace(re, "\%A\%");
+        re = /\%ZotTable\%/g; recOut = recOut.replace(re, "\%B\%");
+        re = /\%BootGame\%/g; recOut = recOut.replace(re, "\%C\%");
+
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
         //console.log("RECORDING OUT " + recOut);
         this.saveCookies(recOut);

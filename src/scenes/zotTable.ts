@@ -242,13 +242,18 @@ export class ZotTable extends Phaser.Scene {
     }
 
     // @ts-ignore
-    // data will be boolean or number or string, so any here is legit!
-    registryUpdate(parent: Phaser.Game, key: string, data: any) {
-        console.log("ZOT reg check " + data)
+    // no clue what parent is
+    registryUpdate(parent: Phaser.Game, key: string, data: string) {
+        //console.log("----------ZOT reg check " + data)
         if (key == "replayObject") {
-            console.log("ZOT OBJECT replay=" + data)
-            let object = recorder.getMaskSpriteName(data);
-            object?.emit('pointerdown')
+            const spriteName = data.split(':')[0];
+            const spriteScene = data.split(':')[1];
+            //console.log("ZOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
+            if (spriteScene == "ZotTable") {
+                //console.log("it is zot")
+                let object = recorder.getMaskSpriteName(spriteName);
+                object?.emit('pointerdown')
+            }
         }
     }
 
