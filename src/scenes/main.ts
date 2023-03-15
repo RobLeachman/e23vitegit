@@ -172,8 +172,9 @@ export class PlayGame extends Phaser.Scene {
         if (inputText.text == "init") {
 
             //console.log("BONUS TEST ZOTS")
-            //slots.addIcon("iconZot", "objZot", "altobjZot", 0); // it is the zot
+            //slots.addIcon("iconZot", "objZot", "altobjZot"); // it is the zot
             //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
+            //slots.addIcon("iconDonut", "objDonut", "altobjDonut");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -261,7 +262,7 @@ export class PlayGame extends Phaser.Scene {
             if (slots.combining.split(':')[3] == "objDonutPlated") {
                 slots.inventoryViewObj = obj[5];
                 slots.inventoryViewAlt = altObj[5];
-                slots.addIcon(icons[5].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(icons[5], slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
 
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
@@ -273,7 +274,7 @@ export class PlayGame extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
                 slots.inventoryViewObj = obj[4];
                 slots.inventoryViewAlt = altObj[4];
-                slots.addIcon(icons[4].toString(), slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon(icons[4], slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 if (zotIsRunning)
                     zotGameScene.add.image(0, 0, obj[4]).setOrigin(0, 0);
@@ -282,7 +283,7 @@ export class PlayGame extends Phaser.Scene {
 
 
             } else {
-                slots.addIcon(icons[6].toString(), obj[6], altObj[6], slotRepl); // it is a bug
+                slots.addIcon(icons[6], obj[6], altObj[6], slotRepl); // it is a bug
             }
             slots.combining = "";
 
@@ -404,7 +405,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
-            slots.addIcon(icons[6].toString(), obj[6], altObj[6], 11); // roach
+            slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
         }
         if (slots.fakeClicks == 10) {
             recorder.setMode("replayOnce");
@@ -773,9 +774,9 @@ export class PlayGame extends Phaser.Scene {
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
                 if (tableState == 2)
-                    slots.addIcon(icons[10].toString(), obj[9], altObj[9]); // TODO: renumber the objects, used to be simple:
+                    slots.addIcon(icons[10], obj[9], altObj[9]); // TODO: renumber the objects, used to be simple:
                 else
-                    slots.addIcon(icons[tableState].toString(), obj[tableState], altObj[tableState]); // TODO: get name from sprite
+                    slots.addIcon(icons[tableState], obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 tableState++;
                 if (tableState > 2) {
@@ -830,7 +831,7 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('battMask', battMask);
         battMask.on('pointerdown', () => {
             haveBatt = true;
-            slots.addIcon(icons[8].toString(), obj[7], altObj[7]); // TODO: get name from sprite!
+            slots.addIcon(icons[8], obj[7], altObj[7]); // TODO: get name from sprite!
             updateWall = true;
         });
 
@@ -842,7 +843,7 @@ export class PlayGame extends Phaser.Scene {
             /*
             haveZot = true;
 
-            slots.addIcon(icons[10].toString(), obj[9], altObj[9]); // TODO: get name from sprite
+            slots.addIcon(icons[10], obj[9], altObj[9]); // TODO: get name from sprite
             this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
             */
@@ -898,7 +899,7 @@ export class PlayGame extends Phaser.Scene {
             snagged = true; // swap out plate with key for the empty plate
             haveHalfKey = true;
 
-            slots.addIcon(icons[2].toString(), obj[2], altObj[2]); // TODO: get name from sprite!!
+            slots.addIcon(icons[2], obj[2], altObj[2]); // TODO: get name from sprite!!
         });
 
         // Prep recording stack for replay
@@ -923,7 +924,7 @@ export class PlayGame extends Phaser.Scene {
         viewportText.setDepth(3001); // TODO: rationalize the crazy depths!
 
         // Fakey test debug icon
-        slots.addIcon(icons[7].toString(), "fake", "fake", 10); // TODO: get name from sprite?!
+        slots.addIcon(icons[7], "fake", "fake", 10); // TODO: get name from sprite?!
 
         this.events.on('wake', () => {
             //console.log("MAIN AWAKES")
@@ -1066,6 +1067,17 @@ export class PlayGame extends Phaser.Scene {
         icons[8] = "iconBattery";
         icons[9] = "DELETED";
         icons[10] = "iconZot";
+
+        this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
+        this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
+        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
+        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.png');
+        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.png');
+        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
+        this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
+        this.load.image('iconFake', 'assets/sprites/icon - empty.png');
+        this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
+        this.load.image('iconZot', 'assets/sprites/iconZot.png');        
 
 
         obj[0] = "objDonut";
