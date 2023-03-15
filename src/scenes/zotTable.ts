@@ -91,6 +91,7 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.setVisible(true);
 
         zotBackButton.on('pointerdown', () => {
+            slots.combining = ""; // cancel any combine action
             //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallHack}`)
 
             // the global call for this may or may not fire

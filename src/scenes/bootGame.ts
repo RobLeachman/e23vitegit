@@ -285,15 +285,12 @@ export class BootGame extends Phaser.Scene {
 
 
         plusModeButton.on('pointerdown', () => {
-            //console.log("record pointer down, mode is " + recorder.getMode())
-
             //console.log("combine mode cancelled");
             slots.combining = ""; // so slots object knows what is happening
             plusModeButton.setVisible(false);
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
         });
         plusButton.on('pointerdown', () => {
-            //recorder.recordObjectDown("plusButton", this);
             slots.combining = "trying"; // so slots object knows what is happening            
             plusButton.setVisible(false);
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();

@@ -750,6 +750,7 @@ export class PlayGame extends Phaser.Scene {
         });
         backButton.on('pointerdown', () => {
             //console.log("back to " + previousWall)
+            slots.combining = ""; // cancel any combine action
             if (viewWall == 4)
                 viewWall = 0;
             else
