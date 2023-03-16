@@ -300,6 +300,9 @@ export default class Slots {
 
     clearSelect() {
         this.selectedIcon.setX(1000);
+        this.slotArray.forEach((icon) => {
+            icon.selected = false;
+        });
     }
 
     selectItem(objName: string) {

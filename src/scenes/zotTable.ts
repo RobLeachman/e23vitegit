@@ -113,28 +113,6 @@ export class ZotTable extends Phaser.Scene {
                 console.log("return to view " + returnTo);
                 viewWall = returnTo;
             }
-
-
-            //console.log(`go back from ${viewWall} to ${previousWall}, previous battery wall is ${previousWallHack}`)
-
-
-            /*
-             if (viewWall > 6) { // battery closeup
-                 //console.log(`will exit from ${viewWall} after returning to ${previousWall}`)
-                 viewWall = previousWall;
-                 previousWall = -1;
-                 //updateWall = true;
-             } else if (viewWall == 5 || viewWall == 6) {
-                 //console.log("still struggling")
-                 viewWall = previousWall;
-             }
-             //console.log(`now go view ${viewWall} and previous ${previousWall}`)
-             // need a hack here for returning from looking at an object while viewing a battery wall... ugh
-             if (viewWall == previousWall) {
-                 //console.log("HACK " + previousWallHack);
-                 previousWall = previousWallHack
-             }
-             */
         });
 
 

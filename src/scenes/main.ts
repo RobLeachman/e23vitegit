@@ -438,12 +438,13 @@ export class PlayGame extends Phaser.Scene {
             // Turn off room navigation. If viewing a wall, return to the same wall. Turn off embellishments.
             leftButton.setVisible(false);
             rightButton.setVisible(false);
-            if (viewWall < 5)
-                previousWall = viewWall;
-
             boxZot.setDepth(-1);
             zotBoxColorYellow.setDepth(-1);
             zotBoxColorGreen.setDepth(-1);
+
+            if (viewWall < 5)
+                previousWall = viewWall;
+
 
 
             // FIRST ROOM IMPLEMENTATION //   
@@ -461,6 +462,8 @@ export class PlayGame extends Phaser.Scene {
             if (currentWall == 5 && foundHalfKey && !haveHalfKey) {
                 keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
             }
+
+
 
             if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
                 slots.setSearched(true);
