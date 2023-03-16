@@ -160,7 +160,8 @@ export default class Slots {
         this.currentMode = "room"; // TODO is this even needed? 
 
         //this.eyeButtonOn = scene.add.image(15, 1120, 'eyebuttonon').setOrigin(0, 0);
-        this.eyeButton = scene.add.sprite(15, 1120, 'eyebutton').setName("eyeButton").setOrigin(0, 0);
+        this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
+        //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
         this.eyeButton.setVisible(true); this.eyeButton.setDepth(110); this.eyeButton.setInteractive({ cursor: 'pointer' });;
         this.eyeButton.on('pointerdown', () => {
             //console.log("EYE CLICK");
@@ -168,7 +169,7 @@ export default class Slots {
                 let selectedThing = this.getSelected();
                 if (selectedThing.thing.length == 0)
                     return;
-                this.eyeButton.setTexture('eyebuttonon');
+                this.eyeButton.setTexture('eyeButtonOn');
                 this.eyeButton.setName("eyeButtonOn");
                 this.viewSelected();
             }
@@ -176,7 +177,7 @@ export default class Slots {
     }
 
     turnEyeOff() {
-        this.eyeButton.setTexture('eyebutton');
+        this.eyeButton.setTexture('eyeButton');
         this.eyeButton.setName("eyeButton");
     }
 

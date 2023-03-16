@@ -99,8 +99,8 @@ export class BootGame extends Phaser.Scene {
         this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
         this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
 
-        this.load.image('eyebutton', 'assets/sprites/eyeOff.png');
-        this.load.image('eyebuttonon', 'assets/sprites/eyeOn.png');
+        this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
+        this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
@@ -205,10 +205,6 @@ export class BootGame extends Phaser.Scene {
         plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
-
-        //eyeButton = this.add.sprite(80, 950, 'atlas', 'eyeOff.png').setName("plusButton").setOrigin(0,0);
-
-
 
         plusModeButton.on('pointerdown', () => {
             //console.log("combine mode cancelled");
