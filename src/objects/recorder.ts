@@ -4,6 +4,7 @@
 import { setCookie, getCookie } from "../utils/cookie";
 
 const minDelayFastMode = 100;
+const debuggingDumpRecorder = false;
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -316,7 +317,8 @@ export default class Recorder {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
-                console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}  scene ${action[4]}`);
+                if (debuggingDumpRecorder)
+                    console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}  scene ${action[4]}`);
                 recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed},${action[4]}:`);
             }
         });
@@ -386,14 +388,15 @@ export default class Recorder {
 
         newSprite.setX(x); newSprite.setY(y);
         newSprite.setScale(2);
-        
+        newSprite.setDepth(100);
+
         if (x == this.prevClickX && y == this.prevClickY) {
             newSprite.setScale(5);
         }
         this.clickers.push(newSprite);
         //console.log("CLICKERCOUNT " + this.clickers.length)
         this.prevClickX = x; this.prevClickY = y;
-        newSprite.setDepth(3000);
+
     }
 
     fadeClick() {

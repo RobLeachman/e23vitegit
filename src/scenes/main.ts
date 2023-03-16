@@ -728,8 +728,8 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
 
-        //viewportPointer.setDepth(3001);
-        //viewportPointerClick.setDepth(3001);
+        viewportPointer.setDepth(100);
+        viewportPointerClick.setDepth(100);
         pointer = this.input.activePointer;
 
         inputText = new InputText(this, 300, 100, 300, 100, {
@@ -813,6 +813,7 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
+            slots.setActiveScene("ZotTable");
             //console.log("zot table!")
 
             // the worst kind of hack, it will work but bad idea so TODO whenever...

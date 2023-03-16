@@ -186,7 +186,7 @@ export class BootGame extends Phaser.Scene {
 
         //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
-        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png');
+        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0,0);
 
         invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0);
 
@@ -233,6 +233,7 @@ export class BootGame extends Phaser.Scene {
                 this.scene.start("PlayGame", { mobile: false })
             }
         }
+        slots.setActiveScene("PlayGame");
     }
 
     // @ts-ignore

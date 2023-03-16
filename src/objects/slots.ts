@@ -42,7 +42,8 @@ class InvItem {
 
         //console.log("RECORD ICON CLICK!! " + this.name);
         let time = this.scene.time.now;
-        this.recorder.recordIconClick((this.iconSprite as Phaser.GameObjects.Sprite).texture.key, time);
+        //this.recorder.recordIconClick((this.iconSprite as Phaser.GameObjects.Sprite).texture.key, time);
+        this.recorder.recordIconClick(this.name, time);
         if (this.name == "fake") {
             //console.log("FAKE")
             this.allSlots.fakeClicks++;
@@ -90,6 +91,7 @@ class InvItem {
 
 
         } else {
+            //console.log("Click-Select " + this.name)
             this.selected = true;
             // mark this selected icon
             this.allSlots.selectedIcon.x = 112 + this.index * 83;
@@ -134,6 +136,7 @@ export default class Slots {
     hasSearched = false;
     hasCombined = false;
     scene: Phaser.Scene;
+    activeScene: string;
 
     eyeButton: Phaser.GameObjects.Sprite;
     eyeButtonOn: Phaser.GameObjects.Image;
@@ -163,22 +166,32 @@ export default class Slots {
         this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
         //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
 
-        this.eyeButton.setVisible(true); this.eyeButton.setDepth(110); this.eyeButton.setInteractive({ cursor: 'pointer' });;
+        this.eyeButton.setVisible(true); this.eyeButton.setDepth(1); this.eyeButton.setInteractive({ cursor: 'pointer' });;
         recorder.addMaskSprite('eyeButton', this.eyeButton);
         this.eyeButton.on('pointerdown', () => {
-            console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
+            //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
+            if (recorder.getMode() == "record")
+                recorder.recordObjectDown("eyeButton", this.scene);
             if (this.eyeButton.name != "eyeButtonOn") {
+                //console.log("view selected eyeball")
                 let selectedThing = this.getSelected();
-                if (selectedThing.thing.length == 0)
+                //console.log("**** selected thing=" + selectedThing.thing)
+                if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
                     return;
                 this.eyeButton.setTexture('eyeButtonOn');
                 this.eyeButton.setName("eyeButtonOn");
                 this.viewSelected();
             } else {
-                //console.log("back button fire")
-                scene.registry.set('replayObject', "backButton" + ":" + "PlayGame");
+                if (this.activeScene == "ZotTable")
+                    scene.registry.set('replayObject', "zotBackButton:ZotTable");
+                else
+                    scene.registry.set('replayObject', "backButton:PlayGame");
             }
         });
+    }
+
+    setActiveScene(activeScene: string) {
+        this.activeScene = activeScene;
     }
 
     turnEyeOff() {
@@ -242,7 +255,8 @@ export default class Slots {
         this.slotArray.forEach((icon, idx) => {
             //console.log("  iconsArray " + icon);
             //console.log(icon);
-            if ((this.slotArray[idx].iconSprite as Phaser.GameObjects.Sprite).texture.key == iconName)
+            //if ((this.slotArray[idx].iconSprite as Phaser.GameObjects.Sprite).texture.key == iconName)
+            if (this.slotArray[idx].name == iconName)
                 clickIndex = idx;
         });
         this.slotArray[clickIndex].iconSprite.emit('pointerdown'); // selects the icon at position
@@ -290,6 +304,7 @@ export default class Slots {
 
     selectItem(objName: string) {
         // Find the selected item
+        //console.log("select item="+objName)
         var k = -1;
         for (k = 0; k < 12; k++) {
             if (this.slotArray[k].iconSprite.name == objName) {
@@ -302,7 +317,6 @@ export default class Slots {
             this.selectedIcon.setY(1161)
         }
         this.slotArray[k].selected = true;
-        //console.log("selected item=" + k)
         return k;
     }
 
