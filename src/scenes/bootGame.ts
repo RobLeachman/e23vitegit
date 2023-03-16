@@ -99,87 +99,8 @@ export class BootGame extends Phaser.Scene {
         this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
         this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
 
-
-
-
-        //this.load.image('rightButton', 'assets/sprites/arrowRight.png');
-        //this.load.image('leftButton', 'assets/sprites/arrowLeft.png');
-        //this.load.image('backButton', 'assets/sprites/arrowDown.png');
-        //this.load.image('zotBackButton', 'assets/sprites/arrowDown.png');
-
-        //this.load.image('plusButton', 'assets/sprites/plus - unselected.png');
-        //this.load.image('plusModeButton', 'assets/sprites/plus - selected.png');
-        //this.load.image('tableMask', 'assets/sprites/tableMask.png');
-        //this.load.image('zotTableMask', 'assets/sprites/zotTableMask.png');
-
-        //this.load.image('takeMask', 'assets/sprites/takeMask.png');
-        //this.load.image('objectMask', 'assets/sprites/object-maskC.png');
-        //this.load.image('zotObjectMask', 'assets/sprites/object-maskC.png');
-        //this.load.image('keyMask', 'assets/sprites/keyMask.png');
-        //this.load.image('doorMask', 'assets/sprites/doorMask.png');
-        //this.load.image('hintMask', 'assets/sprites/hintMask.png');
-        //this.load.image('battMask', 'assets/sprites/battMask.png');
-
-        //this.load.image('backFrontButton', 'assets/sprites/backFrontButton.png');
-        //this.load.image('topBottomButton', 'assets/sprites/topBottomButton.png');
-        //this.load.image('zotTopMask', 'assets/sprites/zotTopMask.png');
-        //this.load.image('zotBottomMask', 'assets/sprites/zotBottomMask.png');
-        //this.load.image('batteryMask', 'assets/sprites/zotBatteryMask.png');
-        //this.load.image('zotDrawerMask', 'assets/sprites/zotDrawerMask.png');
-
-        //this.load.image('clckrLoc', 'assets/sprites/pointer.png');
-        //this.load.image('clckrClk', 'assets/sprites/pointerClicked.png');
-
-        //this.load.image('fail', 'assets/sprites/fail.png');
-        //this.load.image('winnerDonut', 'assets/sprites/winner donutPlated.png');
-
-        //this.load.image('inventory', 'assets/sprites/inventory cells.png');
-
-        // do these last
-        //this.load.image('iconEmpty', 'assets/sprites/icon - empty.png');
-        //this.load.image('iconSelected', 'assets/sprites/icon - selected.png');
-/*
-        this.load.image('iconDonut', 'assets/sprites/icon - donut.png');
-        this.load.image('iconPlate', 'assets/sprites/icon - plate.png');
-        this.load.image('iconKeyA', 'assets/sprites/icon - keyA.png');
-        this.load.image('iconKeyB', 'assets/sprites/icon - keyB.png');
-        this.load.image('iconKeyWhole', 'assets/sprites/icon - keyWhole.png');
-        this.load.image('iconDonutPlated', 'assets/sprites/icon - donutPlated.png');
-        this.load.image('iconRoach', 'assets/sprites/icon - roach.png');
-        this.load.image('iconFake', 'assets/sprites/icon - empty.png');
-        this.load.image('iconBattery', 'assets/sprites/iconBattery.png');
-        this.load.image('iconZot', 'assets/sprites/iconZot.png');
-*/        
-
-        //this.load.image('tableDonut', 'assets/sprites/tableDonut.png');
-        //this.load.image('tablePlate', 'assets/sprites/tablePlate.png');
-        //this.load.image('tableKey', 'assets/sprites/tableKey.png');
-        //this.load.image('tableEmpty', 'assets/sprites/tableEmpty.png');
-
-
-        //this.load.image('battShown', 'assets/sprites/battOnFloor.png');
-
-        //this.load.image('closeDonut', 'assets/sprites/closeDonut.png');
-        //this.load.image('closePlate', 'assets/sprites/closePlate.png');
-        //this.load.image('closeKey', 'assets/sprites/closeKey.png');
-        //this.load.image('closeEmpty', 'assets/sprites/closeEmpty.png');
-
-        //this.load.image('boxZot', 'assets/sprites/boxZot.png');
-        //this.load.image('zotBoxColorYellow', 'assets/sprites/boxColorYellow.png');
-        //this.load.image('zotBoxColorGreen', 'assets/sprites/boxColorGreen.png');
-
-        //this.load.image('zotPlaced', 'assets/sprites/zotPlaced.png');
-        //this.load.image('zotPlacedFlipped', 'assets/sprites/zotPlacedFlipped.png');
-
-        //this.load.image('zotStateOff', 'assets/sprites/zotState-off.png');
-        //this.load.image('zotStateYellow', 'assets/sprites/zotState-yellow.png');
-        //this.load.image('zotStateGreen', 'assets/sprites/zotState-green.png');
-        //this.load.image('zotStateKey', 'assets/sprites/zotState-key.png');
-        //this.load.image('zotStateEmpty', 'assets/sprites/zotState-empty.png');
-
-        //this.load.image('zotStateFlippedGreen', 'assets/sprites/zotStateFlipped-green.png');
-        //this.load.image('zotStateFlippedYellow', 'assets/sprites/zotStateFlipped-yellow.png');
-        //this.load.image('zotStateFlippedRed', 'assets/sprites/zotStateFlipped-red.png');
+        this.load.image('eyebutton', 'assets/sprites/eyeOff.png');
+        this.load.image('eyebuttonon', 'assets/sprites/eyeOn.png');
 
         // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
         var width = this.cameras.main.width;
@@ -264,15 +185,15 @@ export class BootGame extends Phaser.Scene {
         this.registry.events.on('changedata', this.registryUpdate, this);
 
         //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
-        viewportPointerClick = this.add.sprite(1000,0, 'atlas', 'pointerClicked.png');
-        viewportPointer = this.add.sprite(1000,0, 'atlas', 'pointer.png');
+        viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
+        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png');
 
-        invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0,0);
+        invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0);
 
         interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
         interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
 
-        const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0); 
+        const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
 
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, iconSelected, recorder, invBar, interfaceClueFull, interfaceClueCombine);
@@ -285,25 +206,25 @@ export class BootGame extends Phaser.Scene {
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
 
+        //eyeButton = this.add.sprite(80, 950, 'atlas', 'eyeOff.png').setName("plusButton").setOrigin(0,0);
+
+
 
         plusModeButton.on('pointerdown', () => {
             //console.log("combine mode cancelled");
             slots.combining = ""; // so slots object knows what is happening
             plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });;
         });
         plusButton.on('pointerdown', () => {
             slots.combining = "trying"; // so slots object knows what is happening            
             plusButton.setVisible(false);
-            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive();
+            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
         });
 
         //failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
         failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
 
-
-        //        var {slots} : {slots:any}
-        //console.log("boot create")
         if (true) {
             //this.scene.run("ZotTable", { fade: true, inv: slots })
             loadDone.destroy()
@@ -328,7 +249,7 @@ export class BootGame extends Phaser.Scene {
             //console.log("BOOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
             if (spriteScene == "BootGame") {
                 //console.log("it is bootgame")
-                let object = recorder.getMaskSpriteName(spriteName);
+                let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
         }

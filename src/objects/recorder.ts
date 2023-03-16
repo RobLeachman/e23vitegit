@@ -35,11 +35,10 @@ export default class Recorder {
         this.recording = "";
         this.totalClicks = 0;
     }
-
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
         this.spriteMap.set(key, sprite);
     }
-    getMaskSpriteName(key: string) {
+    getMaskSprite(key: string) {
         return this.spriteMap.get(key);
     }
 

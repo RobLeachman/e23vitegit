@@ -1,5 +1,6 @@
 /****************
  * An escape room coded in Phaser.
+ * - Roach replay is broken
  * 
  * - Count clicks, verify valid save
  * - Icon interface clues
@@ -172,9 +173,9 @@ export class PlayGame extends Phaser.Scene {
         if (inputText.text == "init") {
 
             //console.log("BONUS TEST ZOTS")
-            //slots.addIcon("iconZot", "objZot", "altobjZot"); // it is the zot
-            //slots.addIcon("iconBattery", "objBattery", "altobjBattery");
-            //slots.addIcon("iconDonut", "objDonut", "altobjDonut");
+            //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
+            //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -349,7 +350,8 @@ export class PlayGame extends Phaser.Scene {
                         //console.log("check target scene: " + targetScene)
 
                         // TODO Need to check unmapped objects
-                        let object = recorder.getMaskSpriteName(targetObject);
+                        let object = recorder.getMaskSprite(targetObject);
+                        //console.log("recorder replay object " + object)
 
                         // TODO Now we save the scene name explicitly so this could be smarter...
 
@@ -411,10 +413,12 @@ export class PlayGame extends Phaser.Scene {
             recorder.setMode("replayOnce");
             slots.fakeClicks = -1;
             //console.log("roach replay " + slots.getSelected());
-            if (slots.getSelected() == "objRoach")
+            let selectedThing = slots.getSelected();
+            if (selectedThing.thing == "objRoach") {  /// ROACH REPLAY IS BROKEN
                 recorder.setReplaySpeed("fast")
-            else
+            } else {
                 recorder.setReplaySpeed("perfect")
+            }
             window.location.reload();
         }
 
@@ -489,7 +493,7 @@ export class PlayGame extends Phaser.Scene {
             slots.inventoryViewSwitch = false;
 
             backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive();
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
 
             if (!slots.getSearched()) {
                 slots.displayInterfaceClueFull(true);
@@ -757,6 +761,7 @@ export class PlayGame extends Phaser.Scene {
             else
                 viewWall = previousWall;
             slots.currentMode = "room";
+            slots.turnEyeOff()
         });
 
         hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
@@ -853,10 +858,11 @@ export class PlayGame extends Phaser.Scene {
         doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0, 0);
         recorder.addMaskSprite('doorMask', doorMask);
         doorMask.on('pointerdown', () => {
+            let selectedThing = slots.getSelected();
             if (doorUnlocked) {
                 egress = true; // TODO doorUnlocked needs multiple states... then drop this flag
                 updateWall = true;
-            } else if (slots.getSelected() == "objKeyWhole") {
+            } else if (selectedThing.thing == "objKeyWhole") {
                 doorUnlocked = true;
                 updateWall = true;
                 //slots.clearItem(this, "objKeyWhole");

@@ -100,12 +100,12 @@ class InvItem {
                 this.allSlots.selectedIcon.setY(1161)
             }
 
-            // When selected icon is clicked again we need to switch view modes from room to item.
             // When in item view mode if another icon is clicked switch to that item
-            if (prevItem == this.index || this.allSlots.currentMode == "item") {
+            if (this.allSlots.currentMode == "item") {
                 this.allSlots.inventoryViewSwitch = true;
                 this.allSlots.inventoryViewObj = this.objView;
                 this.allSlots.inventoryViewAlt = this.altObjView;
+                console.log(`slots inventory view switch! ${this.objView} ${this.altObjView}`);
             }
         }
     }
@@ -135,6 +135,9 @@ export default class Slots {
     hasCombined = false;
     scene: Phaser.Scene;
 
+    eyeButton: Phaser.GameObjects.Sprite;
+    eyeButtonOn: Phaser.GameObjects.Image;
+
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
     constructor(scene: Phaser.Scene,
         selectSprite: Phaser.GameObjects.Sprite,
@@ -155,6 +158,26 @@ export default class Slots {
             this.slotArray.push(slotItem);
         }
         this.currentMode = "room"; // TODO is this even needed? 
+
+        //this.eyeButtonOn = scene.add.image(15, 1120, 'eyebuttonon').setOrigin(0, 0);
+        this.eyeButton = scene.add.sprite(15, 1120, 'eyebutton').setName("eyeButton").setOrigin(0, 0);
+        this.eyeButton.setVisible(true); this.eyeButton.setDepth(110); this.eyeButton.setInteractive({ cursor: 'pointer' });;
+        this.eyeButton.on('pointerdown', () => {
+            //console.log("EYE CLICK");
+            if (this.eyeButton.name != "eyeButtonOn") {
+                let selectedThing = this.getSelected();
+                if (selectedThing.thing.length == 0)
+                    return;
+                this.eyeButton.setTexture('eyebuttonon');
+                this.eyeButton.setName("eyeButtonOn");
+                this.viewSelected();
+            }
+        });
+    }
+
+    turnEyeOff() {
+        this.eyeButton.setTexture('eyebutton');
+        this.eyeButton.setName("eyeButton");
     }
 
     setSearched(playerHasSearchedOnce: boolean) {
@@ -201,7 +224,8 @@ export default class Slots {
             icon.iconSprite.setVisible(true);
         });
     }
-    //recorder will use this:
+
+    // Recorder uses this to click an icon
     recordedClickIt(iconName: string) {
         //console.log("DO ICON CLICK " + iconName);
         //console.log(this);
@@ -278,14 +302,34 @@ export default class Slots {
 
 
     getSelected() {
-        let selectedThing = "";
+        let thing = "";
+        let objView;
+        let objViewAlt;
         this.slotArray.forEach((icon) => {
             if (icon.selected) {
-                selectedThing = icon.name;
+                thing = icon.name;
+                objView = icon.objView;
+                objViewAlt = icon.altObjView;
+
             }
         });
-        //console.log("selected thing: " + selectedThing)
-        return selectedThing;
+        return { thing, objView, objViewAlt };
+    }
+
+    viewSelected() {
+        let objView: string = "";
+        let objViewAlt: string = "";
+
+        this.slotArray.forEach((icon) => {
+            if (icon.selected) {
+                objView = icon.objView;
+                objViewAlt = icon.altObjView;
+
+            }
+        });
+        this.inventoryViewSwitch = true;
+        this.inventoryViewObj = objView;
+        this.inventoryViewAlt = objViewAlt;
     }
 
     clearItem(objName: string) {

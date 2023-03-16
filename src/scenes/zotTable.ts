@@ -94,6 +94,7 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action
             slots.currentMode = "room"; // definitely not in view object mode
+            slots.turnEyeOff()
             zotObjectMask.setVisible(false);
 
             // record the last back action, it won't be captured by global method
@@ -174,7 +175,8 @@ export class ZotTable extends Phaser.Scene {
         zotTopMask = this.add.sprite(294, 466, 'atlas', 'takeMask.png').setName("zotTopMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotTopMask', zotTopMask);
         zotTopMask.on('pointerdown', () => {
-            if (slots.getSelected() == "objZot") {
+            let selectedThing = slots.getSelected();
+            if (selectedThing.thing == "objZot") {
                 //console.log("ADD IT")
                 slots.clearItem("objZot")
                 slots.clearSelect();
@@ -220,7 +222,8 @@ export class ZotTable extends Phaser.Scene {
             if (viewWall == 9) { // cover open, battery placed
                 viewWall = 7;
             } else if (viewWall == 8) { // cover open, empty
-                if (slots.getSelected() == "objBattery") {
+                let selectedThing = slots.getSelected();
+                if (selectedThing.thing == "objBattery") {
                     slots.clearItem("objBattery")
                     slots.clearSelect();
                     batteryPlaced = true;
@@ -262,7 +265,7 @@ export class ZotTable extends Phaser.Scene {
             //console.log("ZOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
             if (spriteScene == "ZotTable") {
                 //console.log("it is zot")
-                let object = recorder.getMaskSpriteName(spriteName);
+                let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
         }
