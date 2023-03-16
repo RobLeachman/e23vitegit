@@ -410,7 +410,7 @@ export class PlayGame extends Phaser.Scene {
             slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
         }
         if (slots.fakeClicks == 10) {
-            recorder.setMode("replayOnce");
+            recorder.setMode("roachReplay");
             slots.fakeClicks = -1;
             //console.log("roach replay " + slots.getSelected());
             let selectedThing = slots.getSelected();
@@ -727,6 +727,8 @@ export class PlayGame extends Phaser.Scene {
         //console.log("Recorder mode = " + recorder.getMode());
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
+        if (recorder.getMode() == "roachReplay")            
+            recorder.setMode("replayOnce")
 
         viewportPointer.setDepth(100);
         viewportPointerClick.setDepth(100);
