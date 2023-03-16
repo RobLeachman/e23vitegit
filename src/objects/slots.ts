@@ -162,9 +162,11 @@ export default class Slots {
         //this.eyeButtonOn = scene.add.image(15, 1120, 'eyebuttonon').setOrigin(0, 0);
         this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
         //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
+
         this.eyeButton.setVisible(true); this.eyeButton.setDepth(110); this.eyeButton.setInteractive({ cursor: 'pointer' });;
+        recorder.addMaskSprite('eyeButton', this.eyeButton);
         this.eyeButton.on('pointerdown', () => {
-            //console.log("EYE CLICK");
+            console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
             if (this.eyeButton.name != "eyeButtonOn") {
                 let selectedThing = this.getSelected();
                 if (selectedThing.thing.length == 0)
@@ -172,6 +174,9 @@ export default class Slots {
                 this.eyeButton.setTexture('eyeButtonOn');
                 this.eyeButton.setName("eyeButtonOn");
                 this.viewSelected();
+            } else {
+                //console.log("back button fire")
+                scene.registry.set('replayObject', "backButton" + ":" + "PlayGame");
             }
         });
     }

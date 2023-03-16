@@ -681,6 +681,7 @@ export class PlayGame extends Phaser.Scene {
     // @ts-ignore
     // data will be boolean or number, so "any" here is legit!
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
+        //console.log(`main registry update ${key}`)
         if (key == "boxHasZot") {
             //console.log("boxHasZot=" + data)
             boxHasZot = data;
@@ -688,6 +689,13 @@ export class PlayGame extends Phaser.Scene {
         if (key == "zotBoxColor") {
             //console.log("zotBoxColor=" + data)
             zotBoxColor = data;
+        }
+        // slots invokes back when eye is closed
+        if (key == "replayObject") {
+            if (data == "backButton:PlayGame") { // all I need for now
+                let object = recorder.getMaskSprite("backButton");
+                object?.emit('pointerdown')
+            }
         }
     }
 

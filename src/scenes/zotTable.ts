@@ -98,10 +98,8 @@ export class ZotTable extends Phaser.Scene {
             zotObjectMask.setVisible(false);
 
             // record the last back action, it won't be captured by global method
-            if (viewWall < 7)
-                recorder.recordObjectDown(zotBackButton.name, thisscene);
-
             if (backStack.length == 0) {
+                recorder.recordObjectDown(zotBackButton.name, thisscene);
                 console.log("exit zottable")
 
                 zotBackButton.setVisible(false);
