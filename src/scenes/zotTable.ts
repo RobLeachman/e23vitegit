@@ -89,7 +89,7 @@ export class ZotTable extends Phaser.Scene {
         //zotBackButton = this.add.sprite(300, 875, 'zotBackButton').setOrigin(0, 0);
         zotBackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("zotBackButton");
         recorder.addMaskSprite('zotBackButton', zotBackButton);
-        zotBackButton.setVisible(true);
+        zotBackButton.setVisible(true); zotBackButton.setDepth(10010); zotBackButton.setInteractive({ cursor: 'pointer' });
 
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action

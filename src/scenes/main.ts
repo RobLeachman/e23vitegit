@@ -532,6 +532,7 @@ export class PlayGame extends Phaser.Scene {
                 this.add.image(0, 0, walls[8]).setOrigin(0, 0);
                 leftButton.setVisible(false);
                 rightButton.setVisible(false);
+                slots.hideEye();
                 viewportPointer.setDepth(-1);
                 viewportPointerClick.setDepth(-1);
                 let fadeClicks = 10;

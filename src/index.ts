@@ -5,6 +5,7 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
 import { ZotTable } from './scenes/zotTable';
+import { Four } from './scenes/four';
 
 //import { Recorder } from './scenes/recorder';
 
@@ -73,7 +74,7 @@ let gameConfig = {
             mapping: 'rexText'
         }]
     },
-  scene: [BootGame, PlayGame, ZotTable]
+  scene: [BootGame, PlayGame, ZotTable, Four]
 };
 
 

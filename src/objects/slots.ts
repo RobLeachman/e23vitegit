@@ -198,6 +198,9 @@ export default class Slots {
         this.eyeButton.setTexture('eyeButton');
         this.eyeButton.setName("eyeButton");
     }
+    hideEye() {
+        this.eyeButton.setVisible(false);
+    }
 
     setSearched(playerHasSearchedOnce: boolean) {
         this.hasSearched = playerHasSearchedOnce;
