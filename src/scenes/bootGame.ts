@@ -48,7 +48,8 @@ export class BootGame extends Phaser.Scene {
         this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
         this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
         this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
-
+        this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
+        this.load.image('interfaceInspect', 'assets/sprites/interfaceInspect.png');
 
         // used XnConvert to switch to webp, nice!
 

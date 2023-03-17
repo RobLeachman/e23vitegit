@@ -108,6 +108,8 @@ class InvItem {
                 this.allSlots.inventoryViewObj = this.objView;
                 this.allSlots.inventoryViewAlt = this.altObjView;
                 console.log(`slots inventory view switch! ${this.objView} ${this.altObjView}`);
+            } else {
+                this.allSlots.eyeButton.setTexture('eyeHint'); // add a little reminder hint flair
             }
         }
     }
@@ -133,6 +135,9 @@ export default class Slots {
     invBar: Phaser.GameObjects.Sprite;
     interfaceClueFull: Phaser.GameObjects.Image;
     interfaceClueCombine: Phaser.GameObjects.Image;
+    interfaceInspect: Phaser.GameObjects.Sprite;
+    hasInspected = false;
+
     hasSearched = false;
     hasCombined = false;
     scene: Phaser.Scene;
@@ -154,6 +159,8 @@ export default class Slots {
         this.invBar = invBar;
         this.interfaceClueFull = interfaceClueFull;
         this.interfaceClueCombine = interfaceClueCombine;
+        this.interfaceInspect = scene.add.sprite(5, 1070, "interfaceInspect").setOrigin(0, 0).setVisible(false);
+
         this.scene = scene;
 
         for (var i = 0; i < 12; i++) {
@@ -172,6 +179,7 @@ export default class Slots {
             //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
             if (recorder.getMode() == "record")
                 recorder.recordObjectDown("eyeButton", this.scene);
+
             if (this.eyeButton.name != "eyeButtonOn") {
                 //console.log("view selected eyeball")
                 let selectedThing = this.getSelected();
@@ -180,6 +188,7 @@ export default class Slots {
                     return;
                 this.eyeButton.setTexture('eyeButtonOn');
                 this.eyeButton.setName("eyeButtonOn");
+                this.interfaceInspect.setVisible(false)
                 this.viewSelected();
             } else {
                 //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
@@ -269,6 +278,11 @@ export default class Slots {
 
     addIcon(iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
         //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
+        // show the clue on the first actual item icon, not the empty fakes
+        // only show it the first time
+        if (objectView != "fake" && !this.hasInspected) {
+            this.interfaceInspect.setVisible(true)
+        }
         let i = -1;
         this.slotArray.forEach((icon, idx) => {
             if (i == -1 && (icon.iconSprite.name.length == 0)) {
@@ -358,6 +372,7 @@ export default class Slots {
         this.inventoryViewSwitch = true;
         this.inventoryViewObj = objView;
         this.inventoryViewAlt = objViewAlt;
+        this.hasInspected = true;
     }
 
     clearItem(objName: string) {
