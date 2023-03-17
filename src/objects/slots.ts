@@ -182,6 +182,7 @@ export default class Slots {
                 this.eyeButton.setName("eyeButtonOn");
                 this.viewSelected();
             } else {
+                //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
                 if (this.activeScene == "ZotTable")
                     scene.registry.set('replayObject', "zotBackButton:ZotTable");
                 else
@@ -191,6 +192,7 @@ export default class Slots {
     }
 
     setActiveScene(activeScene: string) {
+        //console.log(">>>>>>>>>>>>>>>> Active Scene=" + activeScene)
         this.activeScene = activeScene;
     }
 

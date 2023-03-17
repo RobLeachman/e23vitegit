@@ -23,14 +23,15 @@ import Recorder from "../objects/recorder"
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-const minDelayReplay = 50;
+const minDelayReplay = 10;
+const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = true;
+let debugInput = false; // display pastebox for input of debug data
 let debugUpdateOnce = false;
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 1;
+var viewWall = 0;
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -731,7 +732,7 @@ export class PlayGame extends Phaser.Scene {
         //console.log("Recorder mode = " + recorder.getMode());
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
-        if (recorder.getMode() == "roachReplay")            
+        if (recorder.getMode() == "roachReplay")
             recorder.setMode("replayOnce")
 
         viewportPointer.setDepth(100);
@@ -927,7 +928,7 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
             recording = recorder.getRecording();
             if (recorder.getReplaySpeed() == "fast") {
-                recording = recorder.makeFast(recording);
+                recording = recorder.makeFast(recording, recorderPlayPerfectSkip);
             }
             const actionString = recording.split(":");
             actionString.forEach((action) => {

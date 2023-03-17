@@ -101,6 +101,7 @@ export class ZotTable extends Phaser.Scene {
             if (backStack.length == 0) {
                 recorder.recordObjectDown(zotBackButton.name, thisscene);
                 console.log("exit zottable")
+                slots.setActiveScene("PlayGame");
 
                 zotBackButton.setVisible(false);
                 zotBackButton.removeInteractive(); // fix up the cursor displayed on main scene

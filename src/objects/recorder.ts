@@ -5,6 +5,7 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 const minDelayFastMode = 100;
 const debuggingDumpRecorder = false;
+const debugDisplayFastSteps = false;
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -137,7 +138,7 @@ export default class Recorder {
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
         //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
-        
+
         if (object == "__MISSING") {
             throw new Error("MISSING OBJECT MASK")
         }
@@ -173,7 +174,7 @@ export default class Recorder {
         re = /=/g; recIn = recIn.replace(re, "object=");
         re = /\-/g; recIn = recIn.replace(re, "icon=");
         re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
-        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");        
+        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");
         re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
 
         if (recordingChecksum == this.checksum(recIn)) {
@@ -185,12 +186,30 @@ export default class Recorder {
         return recIn;
     }
 
-    makeFast(recordingSlow: string) {
+    makeFast(recordingSlow: string, speedSteps: number) {
         let fast = "";
         const actionString = recordingSlow.split(":");
+        //console.log("recorder action count=" + actionString.length)
+        let fastSteps = actionString.length;
+        if (speedSteps > 0) {
+            console.log(`will skip ${speedSteps} before going back to perfect play`);
+            fastSteps = speedSteps;
+        }
         actionString.forEach((action) => {
             let thisAction = action.split(',');
-            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${minDelayFastMode},${thisAction[4]}:`);
+            let delay = thisAction[3];
+            if (fastSteps > 0)
+                delay = minDelayFastMode.toString();
+            fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`);
+            if (debugDisplayFastSteps) {
+                if (thisAction[0] != "mousemove" && thisAction[0] != "mouseclick") {
+                    if (fastSteps > 0)
+                        console.log(`MAKEFAST* ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                    else
+                        console.log(`MAKEFAST  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                }
+            }
+            fastSteps--;
         });
         return fast;
     }
@@ -331,7 +350,6 @@ export default class Recorder {
             //throw new Error(`recording click error, recorded=${recordedClicks} actual=${this.totalClicks}`);
         }
 
-
         //console.log(`Save recording (clicks=${this.totalClicks}):\n ${recOut}`);
         let re = /mousemove,/g; recOut = recording.replace(re, "#");
         re = /mouseclick,/g; recOut = recOut.replace(re, "!");
@@ -384,7 +402,7 @@ export default class Recorder {
     // Called once per update when the recorder has a click to show, creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
 
-        var newSprite = scene.add.sprite(1000,0, 'atlas', 'pointerClicked.png');
+        var newSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         var newSpriteScale = 2;
 
         newSprite.setX(x); newSprite.setY(y);
@@ -394,8 +412,8 @@ export default class Recorder {
         if (x == this.prevClickX && y == this.prevClickY) {
             newSpriteScale = 5;
         }
-        if (y>1000)
-            newSpriteScale = newSpriteScale *3;
+        if (y > 1000)
+            newSpriteScale = newSpriteScale * 3;
         newSprite.setScale(newSpriteScale)
 
         this.clickers.push(newSprite);
