@@ -31,7 +31,7 @@ let debugUpdateOnce = false;
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 0;
+var viewWall = 2;
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;

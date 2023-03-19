@@ -45,18 +45,15 @@ export class BootGame extends Phaser.Scene {
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
 
-        this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
-        this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
-        this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
-        this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
-        this.load.image('interfaceInspect', 'assets/sprites/interfaceInspect.png');
-
-        // used XnConvert to switch to webp, nice!
-
         if (!testingFour) {
+            console.log("whole game")
+            this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
+            this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
+            this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
+            this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
+            this.load.image('interfaceInspect', 'assets/sprites/interfaceInspect.png');
 
-
-
+            // used XnConvert to switch to webp, nice!
             this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
 
             this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
@@ -216,7 +213,7 @@ export class BootGame extends Phaser.Scene {
             //console.log("combine mode cancelled");
             slots.combining = ""; // so slots object knows what is happening
             plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });;
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
         });
         plusButton.on('pointerdown', () => {
             slots.combining = "trying"; // so slots object knows what is happening            

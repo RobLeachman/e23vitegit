@@ -13,6 +13,7 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "firebase": "^9.18.0",
     "phaser": "^3.55.2",
     "phaser3-rex-plugins": "^1.1.82"
   }
