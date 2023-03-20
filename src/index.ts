@@ -1,7 +1,7 @@
 /* global Phaser */
 import 'phaser';
 
-const testingFour = false;
+const testingFour = false; // here we just skip loading stuff... but must comment out these too:
 //if (!testingFour) {
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 
@@ -100,7 +100,7 @@ if (testingFour) {
         },
         disableContextMenu: true, // ready for right-click if needed
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
-
+        //autoCenter: Phaser.Scale.CENTER_BOTH,     // needed for fullscreen?
         plugins: {
             scene: [{
                 key: 'rexInputText',

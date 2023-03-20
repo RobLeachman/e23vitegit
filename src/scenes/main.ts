@@ -1,6 +1,6 @@
 /****************
  * An escape room coded in Phaser.
- * - Roach replay is broken
+ * - Sign in with GitHub
  * 
  * - Count clicks, verify valid save
  * - Icon interface clues

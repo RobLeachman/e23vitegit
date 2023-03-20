@@ -29,6 +29,7 @@ export class Four extends Phaser.Scene {
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
         this.load.plugin('rexyoutubeplayerplugin', url, true);
 
+        this.load.image('background', 'assets/backgrounds/four wall.webp');
         this.load.image('watchIt', 'assets/backgrounds/watchTheYoutube.webp');
 
         this.load.image('artWhole', 'assets/graphics/' + graphicPrefix + '.webp');
@@ -61,6 +62,8 @@ export class Four extends Phaser.Scene {
     }
 
     create() {
+        // this hack cannot abide
+        this.add.image(0,-80, 'background').setOrigin(0,0);
         this.frame = this.add.sprite(13, 170, 'frame').setOrigin(0, 0);
 
         const tileMap = new Map();
@@ -103,6 +106,20 @@ export class Four extends Phaser.Scene {
 
         // @ts-ignore
         this.selectMask.on('pointerdown', (pointer: Phaser.Input.Pointer, x: number, y: number) => {
+/*
+https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=3.55.2
+            if (this.scale.isFullscreen)
+            {
+                
+                this.scale.stopFullscreen();
+            }
+            else
+            {
+                this.scale.startFullscreen();
+            }
+*/            
+
+
             const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
             //console.log(`selecting ${selection.x},${selection.y}`);
 
