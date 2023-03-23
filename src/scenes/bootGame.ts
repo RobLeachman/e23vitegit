@@ -24,6 +24,8 @@ var interfaceClueFull: Phaser.GameObjects.Sprite;
 var interfaceClueCombine: Phaser.GameObjects.Sprite;
 
 export class BootGame extends Phaser.Scene {
+    // load a background for before preload starts
+    // http://labs.phaser.io/edit.html?src=src/3.60/loader/scene%20payload/scene%20files%20payload.js
     constructor() {
         super("BootGame");
     }

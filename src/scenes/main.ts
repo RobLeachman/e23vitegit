@@ -26,7 +26,7 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 const minDelayReplay = 10;
 const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = false; // display pastebox for input of debug data
+let debugInput = true; // display pastebox for input of debug data
 let debugUpdateOnce = false;
 
 let mainReplayRequest = "frustrated";
@@ -183,7 +183,7 @@ export class PlayGame extends Phaser.Scene {
 
             if (debugInput && recorder.getMode() != "replay") {
                 //console.log("let's rock")
-                inputText.text = "pastebox";
+                inputText.text = "paste debugger here";
                 //theText.resize(100, 200);
             } else {
                 inputText.text = "off";
@@ -196,7 +196,7 @@ export class PlayGame extends Phaser.Scene {
             inputText.text != "off" &&
             inputText.text != "error" &&
             inputText.text != "success" &&
-            inputText.text != "pastebox") {
+            inputText.text != "paste debugger here") {
             this.parseRecording(inputText.text)
         }
 
