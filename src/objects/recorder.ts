@@ -3,6 +3,14 @@
 
 import { setCookie, getCookie } from "../utils/cookie";
 
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadString } from "firebase/storage";
+
+//import { getAnalytics } from "firebase/analytics";
+//import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+//import { getStorage, ref, uploadString } from "firebase/storage";
+// "Just to add more options to the puzzle: you can use a serverless realtime database (serverless, gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
+
 const minDelayFastMode = 100;
 const debuggingDumpRecorder = false;
 const debugDisplayFastSteps = false;
@@ -25,6 +33,7 @@ export default class Recorder {
     recordingSize: number;
     recorderMode: string;
     totalClicks: number;
+    storageRef;
 
     constructor(pointer: Phaser.Input.Pointer,
         pointerSprite: Phaser.GameObjects.Sprite,
@@ -36,7 +45,122 @@ export default class Recorder {
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
+
+/************
+ // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXKLmBPEdmc-7J0M9BWuFN2e9RqGMUf-0",
+            authDomain: "escape23-9c153.firebaseapp.com",
+            projectId: "escape23-9c153",
+            storageBucket: "escape23-9c153.appspot.com",
+            messagingSenderId: "575545476353",
+            appId: "1:575545476353:web:20671a688f62d9bb388700",
+            measurementId: "G-G9X9NTNH1M"
+        };
+
+        // Initialize Firebase
+        // @ts-ignore not sure what I'll do with app
+        const app = initializeApp(firebaseConfig);
+        //const analytics = getAnalytics(app);
+
+        // FIREBASE database action...                
+                const db = getFirestore(app);
+                // Get a list of cities from your database
+        
+                async function getCities(db) {
+                    const citiesCol = collection(db, 'cities');
+                    const citySnapshot = await getDocs(citiesCol);
+                    const cityList = citySnapshot.docs.map(doc => doc.data());
+                    return cityList;
+                }
+        
+
+        
+                // https://firebase.google.com/docs/storage/web/start -- quickstart steps, after shit works
+                Prepare to launch your app:
+                   Enable App Check to help ensure that only your apps can access your storage buckets.
+        
+                   Set up budget alerts for your project in the Google Cloud Console.
+        
+                   Monitor the Usage and billing dashboard in the Firebase console to get an overall picture of your project's usage across multiple Firebase services. You can also visit the Cloud Storage Usage dashboard for more detailed usage information.
+        
+                   Review the Firebase launch checklist.
+        
+
+
+
+
+        // WORKS!
+        const myUUID = Date.now().toString();
+        console.log("UUID " + myUUID)
+
+        // Initialize Cloud Storage and get a reference to the service
+        // Get a reference to the storage service, which is used to create references in your storage bucket
+        const storage = getStorage();
+
+        // Create a storage reference from our storage service
+
+        // https://firebase.google.com/docs/storage/web/create-reference        
+        //   You can create a reference to a location lower in the tree, say 'images/space.jpg' 
+        //   by passing in this path as a second argument when calling ref(). 
+        
+        
+        const storageRef = ref(storage, 'v1/' + myUUID + ".txt");
+
+
+        let message = 'DATA GOES HERE';
+        uploadString(storageRef, message).then((snapshot) => {
+            console.log(snapshot)
+            console.log('Uploaded a raw string!');
+        });
+        
+
+        //update
+                message = "OH WAIT IT CHANGED"
+                
+                uploadString(storageRef, message).then((snapshot) => {
+                    console.log(snapshot)
+                    console.log('Uploaded new string!');
+                });
+        
+        // https://firebase.google.com/docs/storage/web/upload-files#monitor_upload_progress
+
+        
+        "Start in test mode"
+        Your data is open by default to enable quick setup. However, 
+        you must update your security rules within 30 days to enable long-term client read/write access. 
+
+        https://firebase.google.com/docs/storage/security/rules-conditions#public
+
+        https://firebase.google.com/docs/firestore/security/get-started?authuser=0&hl=en
+*/        
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXKLmBPEdmc-7J0M9BWuFN2e9RqGMUf-0",
+            authDomain: "escape23-9c153.firebaseapp.com",
+            projectId: "escape23-9c153",
+            storageBucket: "escape23-9c153.appspot.com",
+            messagingSenderId: "575545476353",
+            appId: "1:575545476353:web:20671a688f62d9bb388700",
+            measurementId: "G-G9X9NTNH1M"
+        };
+        
+        // Initialize Firebase
+        // @ts-ignore not sure what I'll do with app
+        const app = initializeApp(firebaseConfig);        
+
+        const myUUID = Date.now().toString();
+        console.log("UUID " + myUUID)
+
+        // Initialize Cloud Storage and get a reference to the service
+        // Get a reference to the storage service, which is used to create references in your storage bucket
+        const storage = getStorage();
+        this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
     }
+
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
         this.spriteMap.set(key, sprite);
     }
@@ -362,6 +486,12 @@ export default class Recorder {
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
         //console.log("RECORDING OUT " + recOut);
         this.saveCookies(recOut);
+
+        // Firestore
+        // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
+        uploadString(this.storageRef, recOut).then((snapshot) => {
+            console.log('Uploaded recording!');
+        });        
     }
 
     saveCookies(data: string) {

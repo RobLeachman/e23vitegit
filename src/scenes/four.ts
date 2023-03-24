@@ -1,8 +1,6 @@
 import 'phaser';
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 
-// "Just to add more options to the puzzle: you can use a serverless realtime database (gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
-
 const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
@@ -65,7 +63,7 @@ export class Four extends Phaser.Scene {
 
     create() {
         // this hack cannot abide... TODO need a proper background and placement for the 5x5 puzzle!
-        this.add.image(0,-80, 'background').setOrigin(0,0);
+        this.add.image(0, -80, 'background').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 170, 'frame').setOrigin(0, 0);
 
         const tileMap = new Map();
@@ -74,9 +72,9 @@ export class Four extends Phaser.Scene {
                 const k = i.toString() + ':' + j.toString();
                 //const tileArt = this.add.sprite((13 + 28) + i * 160, (170 + 28) + j * 160, this.spriteNames[j][i]).setOrigin(0, 0)
 
-                const tileArt = this.add.sprite(0,0,'artWhole').setOrigin(0, 0)
-                tileArt.setCrop(i*160, j*160, 160, 160);
-                tileArt.setOrigin(.25*i,.25*j);
+                const tileArt = this.add.sprite(0, 0, 'artWhole').setOrigin(0, 0)
+                tileArt.setCrop(i * 160, j * 160, 160, 160);
+                tileArt.setOrigin(.25 * i, .25 * j);
                 tileArt.setX((13 + 28) + i * 160)
                 tileArt.setY((170 + 28) + j * 160)
 
@@ -87,7 +85,7 @@ export class Four extends Phaser.Scene {
             }
         }
         // pick two random tiles and swap
-        this.swapTiles(2,3,3,3, tileMap);
+        this.swapTiles(2, 3, 3, 3, tileMap);
 
         for (let z = 0; z < 50; z++) {
             const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
@@ -108,18 +106,18 @@ export class Four extends Phaser.Scene {
 
         // @ts-ignore
         this.selectMask.on('pointerdown', (pointer: Phaser.Input.Pointer, x: number, y: number) => {
-/*
-https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=3.55.2
-            if (this.scale.isFullscreen)
-            {
-                
-                this.scale.stopFullscreen();
-            }
-            else
-            {
-                this.scale.startFullscreen();
-            }
-*/            
+            /*
+            https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=3.55.2
+                        if (this.scale.isFullscreen)
+                        {
+                            
+                            this.scale.stopFullscreen();
+                        }
+                        else
+                        {
+                            this.scale.startFullscreen();
+                        }
+            */
 
 
             const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
@@ -148,18 +146,18 @@ https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=
 
 
                     this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
-                    
+
                     // Winning art view, which they can't see because the YT instructions must be shown
                     //this.add.sprite(13 + 28, 170 + 28, 'artWhole').setOrigin(0, 0).setDepth(10);
 
-                    this.add.image(0,0,'watchIt').setOrigin(0.0).setDepth(1);                    
+                    this.add.image(0, 0, 'watchIt').setOrigin(0.0).setDepth(1);
                     //now play  https://www.youtube.com/watch?v=feZluC5JheM
 
                     const ytConfig = {
                         x: 50, y: 620, // not sure what these do even
                         width: undefined,
                         height: undefined,
-                        videoId: youtubeID, 
+                        videoId: youtubeID,
                         autoPlay: true,
                         controls: false,
                         keyboardControl: true,
