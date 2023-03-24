@@ -1,8 +1,8 @@
 /* global Phaser */
 import 'phaser';
 
-const testingFour = false; // here we just skip loading stuff... but must comment out these too:
-//if (!testingFour) {
+const testingFour = true; // here we just skip loading stuff... but must comment out these too:
+//if (!testingFour) { // ALSO adjust scene config!
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 
 import { BootGame } from './scenes/bootGame';

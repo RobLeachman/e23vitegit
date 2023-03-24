@@ -1,6 +1,8 @@
 import 'phaser';
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 
+// "Just to add more options to the puzzle: you can use a serverless realtime database (gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
+
 const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
@@ -62,7 +64,7 @@ export class Four extends Phaser.Scene {
     }
 
     create() {
-        // this hack cannot abide
+        // this hack cannot abide... TODO need a proper background and placement for the 5x5 puzzle!
         this.add.image(0,-80, 'background').setOrigin(0,0);
         this.frame = this.add.sprite(13, 170, 'frame').setOrigin(0, 0);
 
@@ -208,6 +210,5 @@ https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=
     }
 
     update() {
-
     }
 }

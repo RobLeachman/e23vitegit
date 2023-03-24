@@ -4,7 +4,7 @@
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 
-const testingFour = false;
+const testingFour = true;
 
 let running = false;
 var slots: Slots;
