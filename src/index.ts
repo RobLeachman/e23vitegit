@@ -1,9 +1,10 @@
 /* global Phaser */
 import 'phaser';
+import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
 const testingFour = false; // here we just skip loading stuff... but must comment out these too:
 //if (!testingFour) { // ALSO adjust scene config!
-import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
@@ -77,7 +78,13 @@ let gameConfig = {
             key: 'rexInputText',
             plugin: InputText,
             mapping: 'rexText'
-        }]
+        },
+        {
+            key: 'rexUI',
+            plugin: RexUIPlugin,
+            mapping: 'rexUI'
+        }
+        ]
     },
 
     scene: [BootGame, PlayGame, ZotTable, Four]
@@ -106,7 +113,13 @@ if (testingFour) {
                 key: 'rexInputText',
                 plugin: InputText,
                 mapping: 'rexText'
-            }]
+            },
+            {
+                key: 'rexUI',
+                plugin: RexUIPlugin,
+                mapping: 'rexUI'
+            }
+            ]
         },
 
         //scene: [BootGame, PlayGame, ZotTable, Four]

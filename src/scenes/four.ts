@@ -1,11 +1,14 @@
 import 'phaser';
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
+
 const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
 
 export class Four extends Phaser.Scene {
+    rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type    
     art: Phaser.GameObjects.Image;
     frame: Phaser.GameObjects.Sprite;
     selected: Phaser.GameObjects.Sprite;
@@ -205,6 +208,16 @@ export class Four extends Phaser.Scene {
         this.events.on('wake', () => {
             console.log("Four awakes")
         });
+
+        const text = this.add.text(250, 50, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
+        text.setOrigin(0.5, 0.5)
+    
+        text.setInteractive().on('pointerdown', () => {
+            this.rexUI.edit(text)
+            console.log(text)
+        })
+
+
     }
 
     update() {

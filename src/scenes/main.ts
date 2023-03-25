@@ -50,6 +50,7 @@ var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
 
 var failed: Phaser.GameObjects.Sprite;
+let mobile: boolean;
 
 var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
@@ -98,8 +99,8 @@ let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
 let debugging = false;
 
-let inputText: InputText;
-let theText: InputText;
+let myText: InputText; //TODO: not sure why we need 2 items here
+let theText: InputText; // text box displayed in the middle of the header
 
 var content = [
     "The sky above the port was the color of television, tuned to a dead channel.",
@@ -119,7 +120,7 @@ var contentString =
 
 export class PlayGame extends Phaser.Scene {
     //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
-    rexInputText: InputText; // Declare scene property 'rexInputText' as InputText type
+    //rexInputText: InputText; // Declare scene property 'rexInputText' as InputText type
 
     constructor() {
         super("PlayGame");
@@ -143,7 +144,7 @@ export class PlayGame extends Phaser.Scene {
         let recIn = output.split('?')[1];
         //console.log("REC IN " + recIn)
         if (recIn === undefined) {
-            inputText.text = "ERROR";
+            myText.text = "ERROR";
             return;
         }
         re = /mousemove,/g; recIn = recIn.replace(re, "#");
@@ -160,10 +161,10 @@ export class PlayGame extends Phaser.Scene {
 
 
         if (recInCheck == recorder.checksum(recIn)) {
-            inputText.text = "success";
+            myText.text = "success";
             recorder.saveCookies(output);
         } else {
-            inputText.text = "error";
+            myText.text = "error";
             //console.log("cksum in   " + (recorder.checksum(recIn)))
             //console.log("cksum calc " + recInCheck)
         }
@@ -171,7 +172,7 @@ export class PlayGame extends Phaser.Scene {
 
     update() {
         //console.log("main update")
-        if (inputText.text == "init") {
+        if (myText.text == "init") {
 
             //console.log("BONUS TEST ZOTS")
             //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
@@ -182,22 +183,20 @@ export class PlayGame extends Phaser.Scene {
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
 
             if (debugInput && recorder.getMode() != "replay") {
-                //console.log("let's rock")
-                inputText.text = "paste debugger here";
-                //theText.resize(100, 200);
+                myText.text = "paste debugger here";
             } else {
-                inputText.text = "off";
+                myText.text = "off";
                 theText.resize(0, 0);
             }
         }
 
 
-        if (inputText.text != "init" &&
-            inputText.text != "off" &&
-            inputText.text != "error" &&
-            inputText.text != "success" &&
-            inputText.text != "paste debugger here") {
-            this.parseRecording(inputText.text)
+        if (myText.text != "init" &&
+            myText.text != "off" &&
+            myText.text != "error" &&
+            myText.text != "success" &&
+            myText.text != "paste debugger here") {
+            this.parseRecording(myText.text)
         }
 
         this.input.keyboard.on('keydown', this.handleKey);
@@ -708,12 +707,20 @@ export class PlayGame extends Phaser.Scene {
         slots: Slots,
         plusButton: Phaser.GameObjects.Sprite,
         plusModeButton: Phaser.GameObjects.Sprite,
-        failed: Phaser.GameObjects.Sprite
+        failed: Phaser.GameObjects.Sprite,
+        mobile: boolean;
     }) {
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
         failed = data.failed;
+        mobile = data.mobile;
+
+        if (mobile) {
+            console.log("mobile device")
+        } else {
+            console.log("desktop")
+        }
 
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
@@ -739,12 +746,12 @@ export class PlayGame extends Phaser.Scene {
         viewportPointerClick.setDepth(100);
         pointer = this.input.activePointer;
 
-        inputText = new InputText(this, 300, 100, 300, 100, {
+        myText = new InputText(this, 300, 100, 300, 100, {
             type: 'textarea',
             text: 'init',
             fontSize: '24px',
         });
-        theText = this.add.existing(inputText);
+        theText = this.add.existing(myText);
 
 
         slots.displaySlots(1);

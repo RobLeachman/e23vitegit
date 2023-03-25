@@ -5,6 +5,7 @@ import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 
 const testingFour = false;
+const skipClickToStart = false;
 
 let running = false;
 var slots: Slots;
@@ -168,6 +169,26 @@ export class BootGame extends Phaser.Scene {
         }
     }
 
+    // @ts-ignore
+    // no clue what parent is
+    registryUpdate(parent: Phaser.Game, key: string, data: string) {
+        //console.log("----------BOOT reg check " + data)
+        if (key == "replayObject") {
+            const spriteName = data.split(':')[0];
+            const spriteScene = data.split(':')[1];
+            //console.log("BOOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
+            if (spriteScene == "BootGame") {
+                //console.log("it is bootgame")
+                let object = recorder.getMaskSprite(spriteName);
+                object?.emit('pointerdown')
+            }
+        }
+    }
+
+    update() {
+        //console.log("BOOT LIVES")
+    }
+
     create() {
         // SCENERECORD: Capture all mask clicks on this scene
 
@@ -226,13 +247,18 @@ export class BootGame extends Phaser.Scene {
         //failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
         failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
 
-        if (true) {
 
+        ////////////// BOOT THE GAME //////////////
+
+
+        slots.displayInventoryBar(false); slots.hideEye()
+        if (skipClickToStart) {
+            loadDone.destroy()
             if (testingFour) {
-                slots.displayInventoryBar(false); slots.hideEye()
+
                 this.scene.run("Four");
             } else {
-                loadDone.destroy()
+
                 this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed });
             }
 
@@ -246,48 +272,20 @@ export class BootGame extends Phaser.Scene {
         slots.setActiveScene("PlayGame");
     }
 
-    // @ts-ignore
-    // no clue what parent is
-    registryUpdate(parent: Phaser.Game, key: string, data: string) {
-        //console.log("----------BOOT reg check " + data)
-        if (key == "replayObject") {
-            const spriteName = data.split(':')[0];
-            const spriteScene = data.split(':')[1];
-            //console.log("BOOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
-            if (spriteScene == "BootGame") {
-                //console.log("it is bootgame")
-                let object = recorder.getMaskSprite(spriteName);
-                object?.emit('pointerdown')
-            }
-        }
-    }
-
-    update() {
-        //console.log("BOOT LIVES")
-    }
-
     handleClick() {
-        //console.log("click to start!!!!!!")
+        
         if (!running) {
             running = true;
+            loadDone.destroy()
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
-                console.log("TOUCH")
-                //this.scene.start("PlayGame", { mobile: true }) // don't forget slots...
-                this.scene.run("PlayGame", { slots: slots }) // don't forget slots...
+                console.log("TOUCH - Mobile")
+                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: true });
             }
             else {
-                console.log("CLICK");
-                this.scene.run("PlayGame", { slots: slots })
+                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false });
             }
         }
-        /*
-        if (0)
-            this.scene.start("TestScene");
-        else {
-            this.scene.start("PlayGame");
-        }
-        */
     }
 }
