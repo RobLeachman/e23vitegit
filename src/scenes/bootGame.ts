@@ -35,6 +35,9 @@ let thePlayer: Phaser.GameObjects.Text;
 let greetings: Phaser.GameObjects.Text;
 let greets1: Phaser.GameObjects.Text;
 let greets2: Phaser.GameObjects.Text;
+let greets3: Phaser.GameObjects.Text;
+let greets4: Phaser.GameObjects.Text;
+let greets5: Phaser.GameObjects.Text;
 
 
 export class BootGame extends Phaser.Scene {
@@ -236,8 +239,17 @@ export class BootGame extends Phaser.Scene {
             greetings.destroy();
             greets1.destroy();
             greets2.destroy();
+            greets3.destroy();
+            greets4.destroy();
+            greets5.destroy();
 
             slots.displayInventoryBar(true); slots.showEye()
+
+            if (playerName == "qqq" || playerName == "Qqq") {
+                console.log("skip recorder enable")
+            } else {
+                recorder.setMode("record")
+            }
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
@@ -263,6 +275,8 @@ export class BootGame extends Phaser.Scene {
 
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick, playerName);
         slots = new Slots(this, iconSelected, recorder, invBar, interfaceClueFull, interfaceClueCombine);
+        slots.displayInventoryBar(false); slots.hideEye();
+        
 
 
         ////////////// PLAYER NAME REGISTRATION //////////////
@@ -321,6 +335,28 @@ export class BootGame extends Phaser.Scene {
             fontSize: '20px',
             color: '#fff',
         })
+        greets3 = this.add.text(50, 1060, 'By clicking play you consent to debug telemetry.', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#aaa',
+        })
+        greets4 = this.add.text(50, 1085, 'Your play will be recorded to improve the quality of my buggy game.', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#aaa',
+        })        
+        greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#fff',
+        })        
+
 
         greetings = this.make.text({
             x: 50,
@@ -368,12 +404,16 @@ export class BootGame extends Phaser.Scene {
         ////////////// BOOT THE GAME //////////////
 
         if (skipClickToStart) {
+            recorder.setPlayerName("test");            
             thePlayer.destroy();
             playButton.destroy();
             splashScreen.destroy();
             greetings.destroy();
             greets1.destroy();
             greets2.destroy();
+            greets3.destroy();
+            greets4.destroy();
+            greets5.destroy();            
 
             slots.displayInventoryBar(true); slots.showEye()
 
@@ -385,9 +425,6 @@ export class BootGame extends Phaser.Scene {
 
                 this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false });
             }
-
-        } else {
-            slots.displayInventoryBar(false); slots.hideEye()
         }
         slots.setActiveScene("PlayGame");
     }

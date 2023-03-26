@@ -26,8 +26,9 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 const minDelayReplay = 10;
 const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = true; // display pastebox for input of debug data
+let debugInput = false; // display pastebox for input of debug data
 let debugUpdateOnce = false;
+let debugDisplayActionSteps = false; // show actions while replaying
 
 let mainReplayRequest = "frustrated";
 
@@ -100,7 +101,7 @@ let recordingEndedFadeClicks = 0;
 let debugging = false;
 
 let myText: InputText; //TODO: not sure why we need 2 items here
-let theText: InputText; // text box displayed in the middle of the header
+//let theText: InputText; // text box displayed in the middle of the header
 
 var content = [
     "The sky above the port was the color of television, tuned to a dead channel.",
@@ -186,7 +187,8 @@ export class PlayGame extends Phaser.Scene {
                 myText.text = "paste debugger here";
             } else {
                 myText.text = "off";
-                theText.resize(0, 0);
+                //theText.resize(0, 0);
+                myText.resize(0, 0);
             }
             /*
                         // Nice clean text at top of screen...
@@ -310,7 +312,8 @@ export class PlayGame extends Phaser.Scene {
         ////////////// MAIN SCENE RECORDER DEBUGGER TEXT //////////////
 
         let debugTheRecorder = recorder.getMode();
-        if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
+        //if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
+        if (debugging) {
             let displayDebugMode = "RECORDING";
             if (debugTheRecorder == "replay" || debugTheRecorder == "replayOnce")
                 displayDebugMode = "REPLAY"
@@ -324,6 +327,7 @@ export class PlayGame extends Phaser.Scene {
             ]);
         }
 
+
         ////////////// SCENE RECORDER/REPLAY //////////////
 
         // Be sure we have the pointer, and then record any movement or clicks
@@ -332,8 +336,11 @@ export class PlayGame extends Phaser.Scene {
             recorder.checkPointer(this);
         } else if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
             //console.log("action " + nextActionTime + " now " + this.time.now)
-            //console.log("replay " + actions[0]);
+            if (debugDisplayActionSteps)
+                console.log("replay " + actions[0]);
             //console.log(" at " + actions[0][3]);
+            if (nextActionTime < 0) // first replay action
+                nextActionTime = this.time.now + 1000;
             if (this.time.now >= nextActionTime) {
                 let replayAction = actions[0][0];
                 if (replayAction == "mouseclick") {
@@ -745,6 +752,9 @@ export class PlayGame extends Phaser.Scene {
         });
 
         recorder = slots.recorder;
+        const playerName = recorder.getPlayerName();
+        console.log("THE PLAYER " + playerName);
+        debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
         viewportPointer = recorder.pointerSprite;
         viewportPointerClick = recorder.clickSprite;
 
@@ -763,7 +773,8 @@ export class PlayGame extends Phaser.Scene {
             text: 'init',
             fontSize: '24px',
         });
-        theText = this.add.existing(myText);
+        //theText = this.add.existing(myText);
+        this.add.existing(myText);
 
 
         slots.displaySlots(1);
@@ -882,7 +893,7 @@ export class PlayGame extends Phaser.Scene {
             console.log("OBSOLETE")
             /*
             haveZot = true;
-
+    
             slots.addIcon(icons[10], obj[9], altObj[9]); // TODO: get name from sprite
             this.add.sprite(312, 980, "zotPicked").setOrigin(0, 0); // TODO this would be better done in create()
             updateWall = true;
@@ -958,6 +969,8 @@ export class PlayGame extends Phaser.Scene {
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3]; // the first action will fire when the current timer reaches this
+            nextActionTime = -1; // the first action might not start for quite awhile, includes boot time fiddling with name
+
         }
 
         // Debugger text

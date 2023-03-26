@@ -11,8 +11,9 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 // "Just to add more options to the puzzle: you can use a serverless realtime database (serverless, gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
 
 const minDelayFastMode = 100;
-const debuggingDumpRecorder = false;
+const debuggingDumpRecordingOut = false;
 const debugDisplayFastSteps = false;
+const stealthRecord = true; // don't show pointer while recording
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -156,13 +157,15 @@ export default class Recorder {
         const app = initializeApp(firebaseConfig);
 
         this.timeStamp = new Date().toISOString();
+        //console.log("Recording play at " + this.timeStamp)
+
         this.playerName = "INIT"
         const myUUID = this.playerName + "_" + this.timeStamp;
 
         // Initialize Cloud Storage and get a reference to the service
         // Get a reference to the storage service, which is used to create references in your storage bucket
         const storage = getStorage();
-        console.log("Recording play at " + this.timeStamp)
+        
         this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
     }
 
@@ -212,8 +215,12 @@ export default class Recorder {
         this.playerName = name;
         const storage = getStorage();
         const myUUID = this.playerName + "_" + this.timeStamp;
-        //console.log("UUID " + myUUID)
+        console.log("UUID " + myUUID)
         this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
+    }
+
+    getPlayerName() {
+        return this.playerName;
     }
 
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
@@ -287,8 +294,10 @@ export default class Recorder {
             if ((distanceX + distanceY > 100) || (pointerTime > 1200) || pointerClicked) {
                 this.oldPointerX = this.pointer.worldX;
                 this.oldPointerY = this.pointer.worldY;
-                this.pointerSprite.setX(this.pointer.worldX);
-                this.pointerSprite.setY(this.pointer.worldY);
+                if (!stealthRecord) {
+                    this.pointerSprite.setX(this.pointer.worldX);
+                    this.pointerSprite.setY(this.pointer.worldY);
+                }
                 this.oldPointerTime = scene.time.now;
 
                 if (this.recordPointerX != this.oldPointerX || this.recordPointerY != this.oldPointerY) {
@@ -301,7 +310,8 @@ export default class Recorder {
 
         if (pointerClicked) {
             this.recordPointerAction("mouseclick", scene.time.now, sceneName);
-            this.showClick(scene, this.pointer.x, this.pointer.y);
+            if (!stealthRecord)
+                this.showClick(scene, this.pointer.x, this.pointer.y);
             pointerClicked = false;
             this.totalClicks++;
             this.dumpRecording();
@@ -515,7 +525,7 @@ export default class Recorder {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
-                if (debuggingDumpRecorder)
+                if (debuggingDumpRecordingOut)
                     console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}  scene ${action[4]}`);
                 recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed},${action[4]}:`);
             }
@@ -549,7 +559,12 @@ export default class Recorder {
         });
     }
 
+
+    // ALMOST OBSOLETE! Now this is saved to cloud
     saveCookies(data: string) {
+        console.log("RECORDING OUT " + data);
+        return;
+
         this.recordingSize = data.length;
         const cookieName = "test";
         // must split if too big
