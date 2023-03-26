@@ -29,6 +29,7 @@ const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops a
 let debugInput = false; // display pastebox for input of debug data
 let debugUpdateOnce = false;
 let debugDisplayActionSteps = false; // show actions while replaying
+let debugPanel = false; // debug panel on top of screen
 
 let mainReplayRequest = "frustrated";
 
@@ -52,6 +53,7 @@ var plusModeButton: Phaser.GameObjects.Sprite;
 
 var failed: Phaser.GameObjects.Sprite;
 let mobile: boolean;
+let theRecording:string;
 
 var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
@@ -98,26 +100,12 @@ let recording = "";
 let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
-let debugging = false;
+
 
 let myText: InputText; //TODO: not sure why we need 2 items here
 //let theText: InputText; // text box displayed in the middle of the header
 
-var content = [
-    "The sky above the port was the color of television, tuned to a dead channel.",
-    "'It's not like I'm using,' Case heard someone say, as he shouldered his way ",
-    "through the crowd around the door of the Chat. 'It's like my body's developed ",
-    "this massive drug deficiency.' It was a Sprawl voice and a Sprawl joke."
-];
-/*
-var contentString =
-    "The sky above the port was the color of television, tuned to a dead channel." +
-    "'It's not like I'm using,' Case heard someone say, as he shouldered his way " +
-    "through the crowd around the door of the Chat. 'It's like my body's developed " +
-    "this massive drug deficiency.' It was a Sprawl voice and a Sprawl joke."
-*/
-
-
+let myPaste: InputText; //TODO: not sure why we need 2 items here
 
 export class PlayGame extends Phaser.Scene {
     //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
@@ -171,7 +159,15 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
-    update() {
+    async getRecording(filename: string) {
+        console.log("TEST GET IT")
+        const theRecording = await recorder.fetchRecording(filename);
+        console.log("TEST GOT IT " + theRecording)
+        return theRecording;
+    }
+    
+
+    async update() {
         //console.log("main update")
         if (myText.text == "init") {
 
@@ -184,11 +180,13 @@ export class PlayGame extends Phaser.Scene {
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
 
             if (debugInput && recorder.getMode() != "replay") {
-                myText.text = "paste debugger here";
+                myText.text = "debugger file load";
+                myPaste.text = "pasteit";
             } else {
                 myText.text = "off";
                 //theText.resize(0, 0);
                 myText.resize(0, 0);
+                myPaste.resize(0, 0);
             }
             /*
                         // Nice clean text at top of screen...
@@ -210,23 +208,41 @@ export class PlayGame extends Phaser.Scene {
             myText.text != "off" &&
             myText.text != "error" &&
             myText.text != "success" &&
-            myText.text != "paste debugger here") {
+            myText.text != "debugger file load") {
             this.parseRecording(myText.text)
+        }
+
+        if (myPaste.text != "pasteit" && myPaste.text != "init") {
+            const getRec = myPaste.text;
+            myPaste.text = "pasteit";
+
+            console.log("lets fetch " + getRec)
+            const theRecording = await this.getRecording(getRec)
+            console.log("we fetched:")
+            console.log(theRecording)
+            if (theRecording == "fail") {
+                myText.text = "ERROR"
+            } else {
+                myText.text = "success"
+                recorder.setRecordingFilename(getRec);
+            }
         }
 
         this.input.keyboard.on('keydown', this.handleKey);
 
         // did we just hit the keyboard to start replaying?
-        if (mainReplayRequest == "do the damn replay")
+        if (mainReplayRequest == "do the damn replay") {
+            console.log("LETS DO IT")
             return;
+        }
         if (this.input.activePointer.rightButtonDown()) {
-            this.showRecording();
+            //this.showRecording();
         }
 
         if (debugUpdateOnce) {
             debugUpdateOnce = false;
             //var txt = this.add.rexCanvasInput(50, 150, 100, 200, config);
-            this.showRecording();
+            //this.showRecording();
             return;
 
         }
@@ -313,8 +329,8 @@ export class PlayGame extends Phaser.Scene {
 
         let debugTheRecorder = recorder.getMode();
         //if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
-        if (debugging) {
-            let displayDebugMode = "RECORDING";
+        if (debugPanel) {
+            let displayDebugMode = "RECORDING!";
             if (debugTheRecorder == "replay" || debugTheRecorder == "replayOnce")
                 displayDebugMode = "REPLAY"
             viewportText.setText([
@@ -335,9 +351,9 @@ export class PlayGame extends Phaser.Scene {
             recorder.fixPointer(this.input.activePointer)
             recorder.checkPointer(this);
         } else if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
-            //console.log("action " + nextActionTime + " now " + this.time.now)
+            //console.log("action " + nextActionTime + " now " + this.time.now) // DUMB, just fills screen with timer
             if (debugDisplayActionSteps)
-                console.log("replay " + actions[0]);
+                console.log("replay action:" + actions[0]);
             //console.log(" at " + actions[0][3]);
             if (nextActionTime < 0) // first replay action
                 nextActionTime = this.time.now + 1000;
@@ -393,7 +409,7 @@ export class PlayGame extends Phaser.Scene {
                 }
 
                 actions = actions.slice(1);
-                //console.log(actions.length);
+                //console.log(actions.length + " actions pending");
                 if (actions.length == 0) {
                     //console.log("recorder EOJ")
                     if (recorder.getMode() == "replayOnce") {
@@ -402,6 +418,7 @@ export class PlayGame extends Phaser.Scene {
                     } else {
                         // need a little hack here so we can set the mode but do replay again on reload
                         recorder.setMode("idleButReplayAgainSoon");
+                        //console.log("recording done, reload to try it again")
                     }
 
                     viewportText.setDepth(-1);
@@ -500,7 +517,7 @@ export class PlayGame extends Phaser.Scene {
                     if (recorder.getMode() == "record") {
                         recorder.setMode("idle")
 
-                        this.showRecording()
+                        //this.showRecording()
                     } else {
                         // TODO write proper exit function, called twice and did it here wrongly
                         recorder.setMode("idle")
@@ -593,7 +610,7 @@ export class PlayGame extends Phaser.Scene {
 
                 if (recorder.getMode() == "record") {
                     recorder.setMode("idle")
-                    this.showRecording()
+                    //this.showRecording()
                 }
 
                 viewportText.setDepth(-1);
@@ -729,17 +746,20 @@ export class PlayGame extends Phaser.Scene {
         plusModeButton: Phaser.GameObjects.Sprite,
         failed: Phaser.GameObjects.Sprite,
         mobile: boolean;
+        theRecording: string;
     }) {
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
         failed = data.failed;
         mobile = data.mobile;
+        theRecording = data.theRecording;
 
         // will be important later...
         if (mobile) {
             console.log("mobile device")
         }
+        //console.log("MAIN LOAD BOOT RECORDING " + theRecording)
 
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
@@ -753,16 +773,19 @@ export class PlayGame extends Phaser.Scene {
 
         recorder = slots.recorder;
         const playerName = recorder.getPlayerName();
-        console.log("THE PLAYER " + playerName);
+        //console.log("MAIN PLAYER " + playerName);
         debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
         viewportPointer = recorder.pointerSprite;
         viewportPointerClick = recorder.clickSprite;
 
-        //console.log("Recorder mode = " + recorder.getMode());
+        //console.log("Recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
         if (recorder.getMode() == "roachReplay")
             recorder.setMode("replayOnce")
+        
+        if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
+            debugPanel = true;
 
         viewportPointer.setDepth(100);
         viewportPointerClick.setDepth(100);
@@ -775,6 +798,14 @@ export class PlayGame extends Phaser.Scene {
         });
         //theText = this.add.existing(myText);
         this.add.existing(myText);
+
+        myPaste = new InputText(this, 300, 150, 300, 100, {
+            type: 'textarea',
+            text: 'init',
+            fontSize: '24px',
+        });
+        this.add.existing(myPaste);
+
 
 
         slots.displaySlots(1);
@@ -956,11 +987,17 @@ export class PlayGame extends Phaser.Scene {
 
         // Prep recording stack for replay
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
-            recording = recorder.getRecording();
+            //console.log("main is replaying");
+            //recording = await recorder.getRecording();
+            //recording = await this.getRecording(recorder.getRecordingFilename())
+            recording = theRecording;
+            //console.log("will replay " + recording)
             if (recorder.getReplaySpeed() == "fast") {
                 recording = recorder.makeFast(recording, recorderPlayPerfectSkip);
             }
+            
             const actionString = recording.split(":");
+            //console.log("stack prepped, count=" + actionString.length )
             actionString.forEach((action) => {
                 if (action.length > 0) {
                     let splitAction = action.split(',');
@@ -969,8 +1006,7 @@ export class PlayGame extends Phaser.Scene {
             });
             actions = actions.slice(1); // drop the first element, just used to instantiate the array
             nextActionTime = actions[0][3]; // the first action will fire when the current timer reaches this
-            nextActionTime = -1; // the first action might not start for quite awhile, includes boot time fiddling with name
-
+            //nextActionTime = -1; // the first action might not start for quite awhile, includes boot time fiddling with name
         }
 
         // Debugger text
@@ -1034,6 +1070,8 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
+    // OBSOLETE
+    /*
     showRecording() {
         recorder.setMode("idle")
         viewportText.setDepth(-1);
@@ -1053,19 +1091,6 @@ export class PlayGame extends Phaser.Scene {
         text = this.add.text(32, 22, beg, { fontSize: '25px', fontFamily: 'Lucida Console', color: "#00ff00" });
         text.setDepth(9000); // use bringToTop if in a container
 
-        /*
-                var graphics = this.add.graphics().setPosition(20, 0);
-                
-                graphics.fillRect(80, 300, 600, 250);
-                graphics.fillStyle(0xFF0000) // My test text is RED
-                graphics.setDepth(3000)
-                var mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
-                var text = this.add.text(150, 460, beg,
-                    { fontFamily: 'Lucida Console', color: '#00ff00', fontSize: '25px', wordWrap: { width: 700 } }).setOrigin(0,0);
-                text.setMask(mask);
-                text.setDepth(5000); 
-        */
-
         var black = this.add.graphics({
             x: 0,
             y: 0
@@ -1077,6 +1102,7 @@ export class PlayGame extends Phaser.Scene {
         slots.displayInventoryBar(false);
         slots.clearAll();
     }
+    */
 
     // https://codereview.stackexchange.com/questions/171832/text-wrapping-function-in-javascript
     formatTextWrap(text: string, maxLineLength: number) {

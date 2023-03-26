@@ -165,7 +165,7 @@ export default class Recorder {
         // Initialize Cloud Storage and get a reference to the service
         // Get a reference to the storage service, which is used to create references in your storage bucket
         const storage = getStorage();
-        
+
         this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
     }
 
@@ -205,9 +205,37 @@ export default class Recorder {
             uploadString(countStorageRef, nextCount.toString()).then((snapshot) => {
                 //console.log('Incremented count ' + nextCount);
             });
-            console.log("PLAYER COUNT=" + nextCount)
+            //console.log("PLAYER COUNT=" + nextCount)
             return nextCount;
         }
+    }
+
+    setRecordingFilename(fileName: string) {
+        //console.log("MODE: " + mode);
+        setCookie("escapeRecordingFilename", fileName, 7); // bake for a week
+    };
+
+    getRecordingFilename() {
+        return getCookie("escapeRecordingFilename");
+    }
+
+    async fetchRecording(filename: string) {
+        //console.log("Loading file=" + filename);
+        const storage = getStorage();
+        const bucket = ref(storage, 'v1/' + filename);
+
+        let data;
+        try {
+            data = await getBytes(bucket);
+        } catch (err) {
+            console.log(err);
+            this.setRecordingFilename("");
+            return "fail";
+        }
+        const str = new TextDecoder().decode(data);
+        //console.log("Fetched " + str)
+        this.recordingSize = str.length;
+        return str;
     }
 
     // This only works if we don't reload to start recording...
@@ -215,8 +243,8 @@ export default class Recorder {
         this.playerName = name;
         const storage = getStorage();
         const myUUID = this.playerName + "_" + this.timeStamp;
-        console.log("UUID " + myUUID)
-        this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
+        //console.log("Recorder UUID " + myUUID)
+        this.storageRef = ref(storage, 'v1/' + myUUID + '.txt');
     }
 
     getPlayerName() {
@@ -339,7 +367,12 @@ export default class Recorder {
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 
-    getRecording() {
+    async getRecording() {
+        const filename = this.getRecordingFilename();
+        //console.log("RECFILE " + filename)
+        let recordingIn = await this.fetchRecording(filename);
+        //console.log(recordingIn);
+/*
         let cookieNumber = -1;
         let eof = "";
         let recordingIn = "";
@@ -349,6 +382,7 @@ export default class Recorder {
             recordingIn += cookie.split('|')[0];;
             eof = cookie.split('|')[1];
         }
+*/        
         //console.log("COOKIE RECORDING IN");
         //console.log(recordingIn);
         const recordingChecksum = recordingIn.split('?')[0];
@@ -403,6 +437,8 @@ export default class Recorder {
         return fast;
     }
 
+    // ENTIRELY OBSOLETE
+    /*
     getFormattedRecording(maxLineLength: number) {
         let recIn = this.getRecording();
         let recOut = "";
@@ -435,6 +471,7 @@ export default class Recorder {
 
         return recOut;
     }
+    */
 
     dumpRecording() {
         const rec = this.recording.split(":");
@@ -555,14 +592,14 @@ export default class Recorder {
         // Firestore
         // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
         uploadString(this.storageRef, recOut).then((snapshot) => {
-            console.log('Uploaded recording!');
+            //console.log('Uploaded recording!');
         });
     }
 
 
     // ALMOST OBSOLETE! Now this is saved to cloud
     saveCookies(data: string) {
-        console.log("RECORDING OUT " + data);
+        //console.log("RECORDING OUT " + data);
         return;
 
         this.recordingSize = data.length;

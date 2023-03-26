@@ -8,7 +8,7 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipClickToStart = false;
+const skipClickToStart = true;
 
 let welcomeBack = false;
 let playerName = "";
@@ -16,6 +16,8 @@ const playerNameCookie = "escape23player1";
 
 var slots: Slots;
 var recorder: Recorder;
+
+let theRecording: string;
 
 let playButton: Phaser.GameObjects.Sprite;
 
@@ -246,17 +248,18 @@ export class BootGame extends Phaser.Scene {
             slots.displayInventoryBar(true); slots.showEye()
 
             if (playerName == "qqq" || playerName == "Qqq") {
-                console.log("skip recorder enable")
+                //console.log("do not record by default, Quazar")
+                recorder.setMode("idle")
             } else {
                 recorder.setMode("record")
             }
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: true });
+                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: true, theRecording: theRecording });
             }
             else {
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false });
+                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false, theRecording: theRecording });
             }
         });
 
@@ -278,16 +281,23 @@ export class BootGame extends Phaser.Scene {
         slots.displayInventoryBar(false); slots.hideEye();
         
 
-
         ////////////// PLAYER NAME REGISTRATION //////////////
         const playerCount = await this.getPlayerCount(); // async call to recorder's increment
+
+        const recordingFilename = recorder.getRecordingFilename();
+        //console.log("BOOT filename=" + recordingFilename);
+        if (recordingFilename.length > 0)
+            theRecording = await recorder.getRecording();
+        else
+            theRecording = "NO RECORDING";
+        //console.log("BOOT recording= " + theRecording);
 
         let playerCookie = getCookie(playerNameCookie);
         playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
 
         // Let the remain the same player number?
         //if (playerCookie.substring(0, 6) != "Player") {
-        if (playerCookie.length > 0) {            
+        if (playerCookie.length > 0) {
             playerName = playerCookie;
             welcomeBack = true;
         }
@@ -326,8 +336,10 @@ export class BootGame extends Phaser.Scene {
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '30px',
-            color: '#fff',
-        })
+            color: '#ff0',
+        });
+        if (welcomeBack)
+            greets1.setColor('#fff');
         greets2 = this.add.text(50, 70, 'Nicknames can be letters and numbers only', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
@@ -348,14 +360,14 @@ export class BootGame extends Phaser.Scene {
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#aaa',
-        })        
+        })
         greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#fff',
-        })        
+        })
 
 
         greetings = this.make.text({
@@ -404,7 +416,7 @@ export class BootGame extends Phaser.Scene {
         ////////////// BOOT THE GAME //////////////
 
         if (skipClickToStart) {
-            recorder.setPlayerName("test");            
+            recorder.setPlayerName("qqq");
             thePlayer.destroy();
             playButton.destroy();
             splashScreen.destroy();
@@ -413,7 +425,7 @@ export class BootGame extends Phaser.Scene {
             greets2.destroy();
             greets3.destroy();
             greets4.destroy();
-            greets5.destroy();            
+            greets5.destroy();
 
             slots.displayInventoryBar(true); slots.showEye()
 
@@ -423,7 +435,7 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("Four");
             } else {
 
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false });
+                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false, theRecording: theRecording });
             }
         }
         slots.setActiveScene("PlayGame");
@@ -431,5 +443,12 @@ export class BootGame extends Phaser.Scene {
 
     async getPlayerCount() {
         return await recorder.incrementPlayerCount();
+    }
+
+    async getRecording(filename: string) {
+        console.log("GET IT")
+        const theRecording = await recorder.fetchRecording(filename);
+        console.log("GOT IT " + theRecording)
+        return theRecording;
     }
 }
