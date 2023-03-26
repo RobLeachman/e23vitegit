@@ -188,6 +188,19 @@ export class PlayGame extends Phaser.Scene {
                 myText.text = "off";
                 theText.resize(0, 0);
             }
+            /*
+                        // Nice clean text at top of screen...
+                        const mobileTest = this.make.text({
+                            x: 5,
+                            y: 5,
+                            text: 'Mobile play=' + mobile,
+                            style: {
+                                font: '20px Verdana',
+                                //fill: '#ffffff'
+                            }
+                        });
+                        mobileTest.setDepth(1000)
+            */
         }
 
 
@@ -716,10 +729,9 @@ export class PlayGame extends Phaser.Scene {
         failed = data.failed;
         mobile = data.mobile;
 
+        // will be important later...
         if (mobile) {
             console.log("mobile device")
-        } else {
-            console.log("desktop")
         }
 
         this.registry.events.on('changedata', this.registryUpdate, this);

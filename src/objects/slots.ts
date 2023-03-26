@@ -213,6 +213,10 @@ export default class Slots {
         this.eyeButton.setVisible(false);
     }
 
+    showEye() {
+        this.eyeButton.setVisible(true);
+    }
+
     setSearched(playerHasSearchedOnce: boolean) {
         this.hasSearched = playerHasSearchedOnce;
     }

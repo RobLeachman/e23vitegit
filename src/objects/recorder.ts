@@ -4,9 +4,8 @@
 import { setCookie, getCookie } from "../utils/cookie";
 
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadString } from "firebase/storage";
+import { getStorage, ref, uploadString, getBytes, StorageReference } from "firebase/storage";
 
-//import { getAnalytics } from "firebase/analytics";
 //import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 //import { getStorage, ref, uploadString } from "firebase/storage";
 // "Just to add more options to the puzzle: you can use a serverless realtime database (serverless, gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
@@ -33,11 +32,14 @@ export default class Recorder {
     recordingSize: number;
     recorderMode: string;
     totalClicks: number;
-    storageRef;
+    storageRef: StorageReference;
+    playerName: string;
+    timeStamp: string;
 
     constructor(pointer: Phaser.Input.Pointer,
         pointerSprite: Phaser.GameObjects.Sprite,
-        clickSprite: Phaser.GameObjects.Sprite) {
+        clickSprite: Phaser.GameObjects.Sprite,
+        playerName: string) {
 
         this.pointer = pointer;
         this.pointerSprite = pointerSprite;
@@ -45,6 +47,7 @@ export default class Recorder {
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
+        this.playerName = playerName;
 
         /************
          // TODO: Add SDKs for Firebase products that you want to use
@@ -152,12 +155,64 @@ export default class Recorder {
         // @ts-ignore not sure what I'll do with app
         const app = initializeApp(firebaseConfig);
 
-        const myUUID = Date.now().toString();
-        console.log("UUID " + myUUID)
+        this.timeStamp = new Date().toISOString();
+        this.playerName = "INIT"
+        const myUUID = this.playerName + "_" + this.timeStamp;
 
         // Initialize Cloud Storage and get a reference to the service
         // Get a reference to the storage service, which is used to create references in your storage bucket
         const storage = getStorage();
+        console.log("Recording play at " + this.timeStamp)
+        this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
+    }
+
+    async incrementPlayerCount() {
+        const storage = getStorage();
+        const countStorageRef = ref(storage, "playerCount.txt");
+
+        // INIT COUNT
+        /*
+        const playerCount=1000;
+        // @ts-ignore no snapshot for uploadString, or at least don't know how to use it        
+        uploadString(countStorageRef, playerCount.toString()).then((snapshot) => {
+            console.log('Initial count ' + playerCount);
+        });
+        */
+
+        let fetchError = false;
+        let count;
+        try {
+            count = await getBytes(countStorageRef);
+        } catch (err) {
+            console.log(err);
+            fetchError = true;
+        }
+        let nextCount = -1;
+        if (count) {
+            const str = new TextDecoder().decode(count);
+            nextCount = parseInt(str, 10) + 1;
+        } else {
+            console.log("NO COUNT")
+            fetchError = true;
+        }
+        if (fetchError) {
+            return 1000;
+        } else {
+            // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
+            uploadString(countStorageRef, nextCount.toString()).then((snapshot) => {
+                //console.log('Incremented count ' + nextCount);
+            });
+            console.log("PLAYER COUNT=" + nextCount)
+            return nextCount;
+        }
+    }
+
+    // This only works if we don't reload to start recording...
+    setPlayerName(name: string) {
+        this.playerName = name;
+        const storage = getStorage();
+        const myUUID = this.playerName + "_" + this.timeStamp;
+        //console.log("UUID " + myUUID)
         this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
     }
 
