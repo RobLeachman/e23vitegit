@@ -8,11 +8,14 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipClickToStart = true;
+const skipClickToStart = false;
 
 let welcomeBack = false;
+
 let playerName = "";
 const playerNameCookie = "escape23player1";
+let playerCount = -1;
+let playButtonIsHidden = true;
 
 var slots: Slots;
 var recorder: Recorder;
@@ -205,9 +208,6 @@ export class BootGame extends Phaser.Scene {
         }
     }
 
-    update() {
-        //console.log("BOOT LIVES")
-    }
 
     async create() {
         // SCENERECORD: Capture all mask clicks on this scene
@@ -230,7 +230,8 @@ export class BootGame extends Phaser.Scene {
         const height = this.cameras.main.height;
 
         playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 60 - 50, "playButton").setOrigin(0, 0).setDepth(51);
-        playButton.setInteractive({ cursor: 'pointer' });
+        playButton.setVisible(false)
+
         playButton.on('pointerdown', () => {
             setCookie(playerNameCookie, playerName, 365); // bake for a year
             recorder.setPlayerName(playerName);
@@ -249,7 +250,8 @@ export class BootGame extends Phaser.Scene {
 
             if (playerName == "qqq" || playerName == "Qqq") {
                 //console.log("do not record by default, Quazar")
-                recorder.setMode("idle")
+                // this messes with roach replay... hmm
+                //recorder.setMode("idle")
             } else {
                 recorder.setMode("record")
             }
@@ -279,11 +281,9 @@ export class BootGame extends Phaser.Scene {
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick, playerName);
         slots = new Slots(this, iconSelected, recorder, invBar, interfaceClueFull, interfaceClueCombine);
         slots.displayInventoryBar(false); slots.hideEye();
-        
+
 
         ////////////// PLAYER NAME REGISTRATION //////////////
-        const playerCount = await this.getPlayerCount(); // async call to recorder's increment
-
         const recordingFilename = recorder.getRecordingFilename();
         //console.log("BOOT filename=" + recordingFilename);
         if (recordingFilename.length > 0)
@@ -291,6 +291,8 @@ export class BootGame extends Phaser.Scene {
         else
             theRecording = "NO RECORDING";
         //console.log("BOOT recording= " + theRecording);
+
+        playerCount = await this.getPlayerCount(); // async call to recorder's increment
 
         let playerCookie = getCookie(playerNameCookie);
         playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
@@ -445,10 +447,14 @@ export class BootGame extends Phaser.Scene {
         return await recorder.incrementPlayerCount();
     }
 
-    async getRecording(filename: string) {
-        console.log("GET IT")
-        const theRecording = await recorder.fetchRecording(filename);
-        console.log("GOT IT " + theRecording)
-        return theRecording;
+    update() {
+        // wait for cloud load to finish
+        if (playButtonIsHidden) {
+            if (playerCount > -1) {
+                playButton.setInteractive({ cursor: 'pointer' });
+                playButton.setVisible(true)
+                playButtonIsHidden = false;
+            }
+        }
     }
 }

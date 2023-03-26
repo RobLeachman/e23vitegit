@@ -33,7 +33,7 @@ let debugPanel = false; // debug panel on top of screen
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 2;
+var viewWall = 2; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
