@@ -639,21 +639,20 @@ export default class Recorder {
     // Called once per update when the recorder has a click to show, creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
 
-        var newSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
-        var newSpriteScale = 2;
+        const recordedClickSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
+        var recordedClickSpriteScale = 2;
 
-        newSprite.setX(x); newSprite.setY(y);
-
-        newSprite.setDepth(1000);
+        recordedClickSprite.setX(x); recordedClickSprite.setY(y);
+        recordedClickSprite.setDepth(999);
 
         if (x == this.prevClickX && y == this.prevClickY) {
-            newSpriteScale = 5;
+            recordedClickSpriteScale = 5;
         }
         if (y > 1000)
-            newSpriteScale = newSpriteScale * 3;
-        newSprite.setScale(newSpriteScale)
+            recordedClickSpriteScale = recordedClickSpriteScale * 3;
+        recordedClickSprite.setScale(recordedClickSpriteScale)
 
-        this.clickers.push(newSprite);
+        this.clickers.push(recordedClickSprite);
         //console.log("CLICKERCOUNT " + this.clickers.length)
         this.prevClickX = x; this.prevClickY = y;
 

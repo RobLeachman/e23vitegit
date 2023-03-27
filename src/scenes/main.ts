@@ -33,7 +33,7 @@ let debugPanel = false; // debug panel on top of screen
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 2; // production start at 0
+var viewWall = 3; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -172,9 +172,9 @@ export class PlayGame extends Phaser.Scene {
         if (myText.text == "init") {
 
             //console.log("BONUS TEST ZOTS")
-            //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
-            //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
-            //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
+            slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
+            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -199,7 +199,12 @@ export class PlayGame extends Phaser.Scene {
                                 //fill: '#ffffff'
                             }
                         });
-                        mobileTest.setDepth(1000)
+                        //mobileTest.setDepth(1000)
+
+                        // this works too!
+                        const text = this.add.text(250, 50, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
+                        text.setOrigin(0.5, 0.5)
+
             */
         }
 
@@ -806,9 +811,7 @@ export class PlayGame extends Phaser.Scene {
         });
         this.add.existing(myPaste);
 
-
-
-        slots.displaySlots(1);
+        slots.displaySlots();
         slots.currentMode = "room";
 
         //SCENERECORD add to recorder dictionary every sprite that can be clicked 

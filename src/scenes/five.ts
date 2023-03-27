@@ -153,7 +153,7 @@ export class Five extends Phaser.Scene {
 
         this.backButton = this.add.sprite(300, 925, 'backButton').setOrigin(0, 0);
         //this.backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton");
-        this.backButton.setVisible(true); this.backButton.setDepth(3); this.backButton.setInteractive({ cursor: 'pointer' });
+        this.backButton.setVisible(true); this.backButton.setInteractive({ cursor: 'pointer' });
 
         this.backButton.on('pointerdown', () => {
             console.log("Five back");
@@ -177,7 +177,7 @@ export class Five extends Phaser.Scene {
             if (phrase == winPhrase + ' ') {
                 console.log("FIVE WINNER")
                 this.compartmentOpen.setVisible(true);
-                this.compartmentMask.setVisible(true).setDepth(1);
+                this.compartmentMask.setVisible(true);
             }
         }
     }

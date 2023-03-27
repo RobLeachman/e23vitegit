@@ -6,9 +6,10 @@ import Recorder from "../objects/recorder"
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
+const skipClickToStart = true;
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipClickToStart = false;
+const skipCloud = true;
 
 let welcomeBack = false;
 
@@ -229,7 +230,7 @@ export class BootGame extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 60 - 50, "playButton").setOrigin(0, 0).setDepth(51);
+        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 60 - 50, "playButton").setOrigin(0, 0).setDepth(1);
         playButton.setVisible(false)
 
         playButton.on('pointerdown', () => {
@@ -284,27 +285,34 @@ export class BootGame extends Phaser.Scene {
 
 
         ////////////// PLAYER NAME REGISTRATION //////////////
-        const recordingFilename = recorder.getRecordingFilename();
-        //console.log("BOOT filename=" + recordingFilename);
-        if (recordingFilename.length > 0)
-            theRecording = await recorder.getRecording();
-        else
-            theRecording = "NO RECORDING";
-        console.log("BOOT recording= " + theRecording);
-
-        playerCount = await this.getPlayerCount(); // async call to recorder's increment
-
-        let playerCookie = getCookie(playerNameCookie);
-        playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
-
-        // Let the remain the same player number?
-        //if (playerCookie.substring(0, 6) != "Player") {
-        if (playerCookie.length > 0) {
-            playerName = playerCookie;
+        if (skipCloud) {
+            theRecording = "NO RECORDING"
+            playerCount = 999;
+            playerName = "Quazar"
             welcomeBack = true;
+        } else {
+            const recordingFilename = recorder.getRecordingFilename();
+            //console.log("BOOT filename=" + recordingFilename);
+            if (recordingFilename.length > 0)
+                theRecording = await recorder.getRecording();
+            else
+                theRecording = "NO RECORDING";
+            console.log("BOOT recording= " + theRecording);
+
+            playerCount = await this.getPlayerCount(); // async call to recorder's increment
+
+            let playerCookie = getCookie(playerNameCookie);
+            playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
+
+            // Let the remain the same player number?
+            //if (playerCookie.substring(0, 6) != "Player") {
+            if (playerCookie.length > 0) {
+                playerName = playerCookie;
+                welcomeBack = true;
+            }
+            if (playerName.length < 1)
+                playerName = "Player" + playerCount;
         }
-        if (playerName.length < 1)
-            playerName = "Player" + playerCount;
 
         plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton");
         plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
@@ -449,7 +457,7 @@ export class BootGame extends Phaser.Scene {
 
     update() {
         // wait for cloud load to finish
-        if (playButtonIsHidden) {
+        if (playButtonIsHidden && !skipClickToStart) {
             if (playerCount > -1) {
                 playButton.setInteractive({ cursor: 'pointer' });
                 playButton.setVisible(true)

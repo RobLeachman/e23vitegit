@@ -395,7 +395,7 @@ export class ZotTable extends Phaser.Scene {
         }
 
         this.scene.setVisible(true, "BootGame");
-        slots.displaySlots(30005);
+        slots.displaySlots();
 
         currentWall = viewWall;
         updateWall = false;

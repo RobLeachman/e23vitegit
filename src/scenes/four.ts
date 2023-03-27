@@ -147,11 +147,10 @@ export class Four extends Phaser.Scene {
                 if (winner) {
                     console.log("WINNER!!!!!!!!!!!")
 
-
                     this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
 
                     // Winning art view, which they can't see because the YT instructions must be shown
-                    //this.add.sprite(13 + 28, 170 + 28, 'artWhole').setOrigin(0, 0).setDepth(10);
+                    //this.add.sprite(13 + 28, 170 + 28, 'artWhole').setOrigin(0, 0).setDepth(1000);
 
                     this.add.image(0, 0, 'watchIt').setOrigin(0.0).setDepth(1);
                     //now play  https://www.youtube.com/watch?v=feZluC5JheM
@@ -198,7 +197,7 @@ export class Four extends Phaser.Scene {
 
         this.backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
         //this.backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton");
-        this.backButton.setVisible(true); this.backButton.setDepth(3); this.backButton.setInteractive({ cursor: 'pointer' });
+        this.backButton.setVisible(true); this.backButton.setDepth(2); this.backButton.setInteractive({ cursor: 'pointer' });
 
         this.backButton.on('pointerdown', () => {
             console.log("Four back");
@@ -208,16 +207,6 @@ export class Four extends Phaser.Scene {
         this.events.on('wake', () => {
             console.log("Four awakes")
         });
-
-        const text = this.add.text(250, 50, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
-        text.setOrigin(0.5, 0.5)
-    
-        text.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(text)
-            console.log(text)
-        })
-
-
     }
 
     update() {

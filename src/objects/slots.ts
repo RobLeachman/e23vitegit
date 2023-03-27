@@ -55,7 +55,7 @@ class InvItem {
             if (icon.selected)
                 prevItem = idx;
             icon.selected = false;
-            icon.iconSprite.setDepth(1); // do we need this here? probably not          
+            //icon.iconSprite.setDepth(1); // do we need this here? probably not          
         });
         //console.log("click index " + this.index + " previous " + prevItem + " combining:" + this.allSlots.combining);
         if (this.allSlots.combining == "trying") {
@@ -96,7 +96,7 @@ class InvItem {
             // mark this selected icon
             this.allSlots.selectedIcon.x = 112 + this.index * 83;
             this.allSlots.selectedIcon.setY(1078)
-            this.allSlots.selectedIcon.setDepth(1); // ??
+            //this.allSlots.selectedIcon.setDepth(1); // ??
             if (this.index > 5) {
                 this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83)
                 this.allSlots.selectedIcon.setY(1161)
@@ -173,7 +173,8 @@ export default class Slots {
         this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
         //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
 
-        this.eyeButton.setVisible(true); this.eyeButton.setDepth(1); this.eyeButton.setInteractive({ cursor: 'pointer' });;
+        this.eyeButton.setVisible(true); this.eyeButton.setInteractive({ cursor: 'pointer' });
+        //this.eyeButton.setDepth(1); 
         recorder.addMaskSprite('eyeButton', this.eyeButton);
         this.eyeButton.on('pointerdown', () => {
             //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
@@ -233,7 +234,6 @@ export default class Slots {
     displayInterfaceClueFull(showIt: boolean) {
         if (showIt) {
             this.interfaceClueFull.setVisible(true);
-            //this.interfaceClueFull.setDepth(10000);
         } else
             this.interfaceClueFull.setVisible(false);
     }
@@ -241,7 +241,6 @@ export default class Slots {
     displayInterfaceClueCombine(showIt: boolean) {
         if (showIt) {
             this.interfaceClueCombine.setVisible(true);
-            //this.interfaceClueCombine.setDepth(10000);
         } else
             this.interfaceClueCombine.setVisible(false);
     }
@@ -254,10 +253,10 @@ export default class Slots {
             this.invBar.setVisible(false)
     }
 
-    displaySlots(depth: number) {
+    displaySlots() {
         this.slotArray.forEach((icon) => {
             //console.log(icon.iconSprite.name)
-            icon.iconSprite.setDepth(depth);
+            //icon.iconSprite.setDepth(1); //Test! This doesn't seem to be needed
             icon.iconSprite.setVisible(true);
         });
     }
@@ -314,7 +313,7 @@ export default class Slots {
         this.slotArray[i].name = objectView;
         this.slotArray[i].selected = false;
         this.slotArray[i].iconSprite.setInteractive({ cursor: 'pointer' });
-        this.slotArray[i].iconSprite.setDepth(200);
+        //this.slotArray[i].iconSprite.setDepth(200);
         this.slotArray[i].iconSprite.on('pointerdown', this.slotArray[i].clickIt, this.slotArray[i]);
         this.slotArray[i].objView = objectView;
         this.slotArray[i].altObjView = altObjectView;
