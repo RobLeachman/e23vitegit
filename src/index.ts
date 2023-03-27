@@ -12,6 +12,7 @@ import { ZotTable } from './scenes/zotTable';
 //}
 
 import { Four } from './scenes/four';
+import { Five } from './scenes/five';
 
 //import { Recorder } from './scenes/recorder';
 
@@ -87,7 +88,7 @@ let gameConfig = {
         ]
     },
 
-    scene: [BootGame, PlayGame, ZotTable, Four]
+    scene: [BootGame, PlayGame, ZotTable, Four, Five]
 };
 
 
@@ -122,8 +123,8 @@ if (testingFour) {
             ]
         },
 
-        //scene: [BootGame, PlayGame, ZotTable, Four]
-        scene: [Four]
+        //scene: [BootGame, PlayGame, ZotTable, Four, Five]
+        scene: [Five]
     };
 }
 

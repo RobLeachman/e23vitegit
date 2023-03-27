@@ -290,7 +290,7 @@ export class BootGame extends Phaser.Scene {
             theRecording = await recorder.getRecording();
         else
             theRecording = "NO RECORDING";
-        //console.log("BOOT recording= " + theRecording);
+        console.log("BOOT recording= " + theRecording);
 
         playerCount = await this.getPlayerCount(); // async call to recorder's increment
 
@@ -434,7 +434,7 @@ export class BootGame extends Phaser.Scene {
             //loadDone.destroy()
             if (testingFour) {
 
-                this.scene.run("Four");
+                this.scene.run("Five");
             } else {
 
                 this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false, theRecording: theRecording });
