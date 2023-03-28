@@ -118,7 +118,7 @@ export class ZotTable extends Phaser.Scene {
 
 
         //backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
-        backFrontButton = this.add.sprite(65, 625, 'atlas', 'backFrontButton.png').setName("backFrontButton");
+        backFrontButton = this.add.sprite(65, 625, 'atlas', 'backFrontButton1.png').setName("backFrontButton");
         recorder.addMaskSprite('backFrontButton', backFrontButton);
         backFrontButton.on('pointerdown', () => {
             if (viewWall == 0)

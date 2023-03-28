@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "D:\\src\\e23\\public\\assets\\graphics",
+  "images": [
+    {
+      "name": "arrowDown.png",
+      "path": "D:/src/e23dumbloader/public/assets/sprites/arrowDown.png",
+      "folder": ""
+    },
+    {
+      "name": "arrowLeft.png",
+      "path": "D:/src/e23dumbloader/public/assets/sprites/arrowLeft.png",
+      "folder": ""
+    },
+    {
+      "name": "arrowRight.png",
+      "path": "D:/src/e23dumbloader/public/assets/sprites/arrowRight.png",
+      "folder": ""
+    },
+    {
+      "name": "battOnFloor.png",
+      "path": "D:/src/e23/public/assets/sprites/battOnFloor.png",
+      "folder": ""
+    },
+    {
+      "name": "boxColorGreen.png",
+      "path": "D:/src/e23/public/assets/sprites/boxColorGreen.png",
+      "folder": ""
+    },
+    {
+      "name": "boxColorYellow.png",
+      "path": "D:/src/e23/public/assets/sprites/boxColorYellow.png",
+      "folder": ""
+    },
+    {
+      "name": "boxZot.png",
+      "path": "D:/src/e23/public/assets/sprites/boxZot.png",
+      "folder": ""
+    },
+    {
+      "name": "closeDonut.png",
+      "path": "D:/src/e23/public/assets/sprites/closeDonut.png",
+      "folder": ""
+    },
+    {
+      "name": "closeEmpty.png",
+      "path": "D:/src/e23/public/assets/sprites/closeEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "closeKey.png",
+      "path": "D:/src/e23/public/assets/sprites/closeKey.png",
+      "folder": ""
+    },
+    {
+      "name": "closePlate.png",
+      "path": "D:/src/e23/public/assets/sprites/closePlate.png",
+      "folder": ""
+    },
+    {
+      "name": "eyeOff.png",
+      "path": "D:/src/e23/public/assets/sprites/eyeOff.png",
+      "folder": ""
+    },
+    {
+      "name": "eyeOn.png",
+      "path": "D:/src/e23/public/assets/sprites/eyeOn.png",
+      "folder": ""
+    },
+    {
+      "name": "fail.png",
+      "path": "D:/src/e23/public/assets/sprites/fail.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - donut.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - donut.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - donutPlated.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - donutPlated.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - empty.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - empty.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyA.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - keyA.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyB.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - keyB.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyWhole.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - keyWhole.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - plate.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - plate.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - roach.png",
+      "path": "D:/src/e23recorder/src/assets/sprites/icon - roach.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - selected.png",
+      "path": "D:/src/e23/public/assets/sprites/icon - selected.png",
+      "folder": ""
+    },
+    {
+      "name": "iconBattery.png",
+      "path": "D:/src/e23/public/assets/sprites/iconBattery.png",
+      "folder": ""
+    },
+    {
+      "name": "iconZot.png",
+      "path": "D:/src/e23/public/assets/sprites/iconZot.png",
+      "folder": ""
+    },
+    {
+      "name": "tableDonut.png",
+      "path": "D:/src/e23/public/assets/sprites/tableDonut.png",
+      "folder": ""
+    },
+    {
+      "name": "tableEmpty.png",
+      "path": "D:/src/e23/public/assets/sprites/tableEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "tableKey.png",
+      "path": "D:/src/e23/public/assets/sprites/tableKey.png",
+      "folder": ""
+    },
+    {
+      "name": "tablePlate.png",
+      "path": "D:/src/e23/public/assets/sprites/tablePlate.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPlaced.png",
+      "path": "D:/src/e23/public/assets/sprites/zotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPlacedFlipped.png",
+      "path": "D:/src/e23/public/assets/sprites/zotPlacedFlipped.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-empty.png",
+      "path": "D:/src/e23/public/assets/sprites/zotState-empty.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-green.png",
+      "path": "D:/src/e23/public/assets/sprites/zotState-green.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-key.png",
+      "path": "D:/src/e23/public/assets/sprites/zotState-key.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-off.png",
+      "path": "D:/src/e23/public/assets/sprites/zotState-off.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-yellow.png",
+      "path": "D:/src/e23/public/assets/sprites/zotState-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "zotStateFlipped-red.png",
+      "path": "D:/src/e23/public/assets/sprites/zotStateFlipped-red.png",
+      "folder": ""
+    },
+    {
+      "name": "zotStateFlipped-yellow.png",
+      "path": "D:/src/e23/public/assets/sprites/zotStateFlipped-yellow.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "texture",
+    "textureFormat": "png",
+    "removeFileExtension": false,
+    "prependFolderName": true,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "D:\\src\\e23\\public\\assets\\graphics",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": false,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "OptimalPacker",
+    "packerMethod": "Automatic"
+  }
+}
