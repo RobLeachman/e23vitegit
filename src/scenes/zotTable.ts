@@ -70,6 +70,7 @@ export class ZotTable extends Phaser.Scene {
         plusModeButton: Phaser.GameObjects.Sprite
     }) {
         //console.log("ZotTable create")
+        console.log("UNTESTED interface clues");
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         slots = data.slots;
@@ -298,18 +299,19 @@ export class ZotTable extends Phaser.Scene {
             zotBackButton.setVisible(true); zotBackButton.setDepth(10010); zotBackButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(10010); plusButton.setInteractive();
 
+            console.log("UNTESTED interface clues")
+            myUI.displayInterfaceClueFull(false);
+            myUI.displayInterfaceClueCombine(false);
             if (!slots.getSearched()) {
-                slots.displayInterfaceClueFull(true);
-                slots.displayInterfaceClueCombine(false);
-            } else {
-                if (!slots.getCombined()) {
-                    slots.displayInterfaceClueCombine(true);
-                    slots.displayInterfaceClueFull(false);
-                }
-            };
+                myUI.displayInterfaceClueFull(true);
+            }
+            if (!slots.getCombined()) {
+                myUI.displayInterfaceClueCombine(true);
+            }
+
             if (slots.inventoryViewObj == "objRoach") {
-                slots.displayInterfaceClueFull(false);
-                slots.displayInterfaceClueCombine(false);
+                myUI.displayInterfaceClueFull(false);
+                myUI.displayInterfaceClueCombine(false);
             }
 
             // turn off all scene masks, and turn on the object alternate view mask
@@ -328,8 +330,8 @@ export class ZotTable extends Phaser.Scene {
             slots.inventoryViewSwitch = false;
 
         } else if ((viewWall != currentWall || updateWall)) {
-            slots.displayInterfaceClueFull(false);
-            slots.displayInterfaceClueCombine(false);
+            myUI.displayInterfaceClueFull(false);
+            myUI.displayInterfaceClueCombine(false);
             //console.log("zot view wall=" + viewWall)
             this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
 

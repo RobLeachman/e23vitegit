@@ -1,6 +1,8 @@
 import 'phaser';
 
 var invBar: Phaser.GameObjects.Sprite;
+var interfaceClueFull: Phaser.GameObjects.Sprite;
+var interfaceClueCombine: Phaser.GameObjects.Sprite;
 
 export default class PlayerUI extends Phaser.Scene {
     activeSceneName: string;
@@ -31,6 +33,23 @@ export default class PlayerUI extends Phaser.Scene {
             invBar.setVisible(false)
     }
 
+    displayInterfaceClueFull(showIt: boolean) {
+        if (showIt) {
+            interfaceClueFull.setVisible(true);
+            interfaceClueCombine.setVisible(true);
+        } else
+            interfaceClueFull.setVisible(false);
+            interfaceClueCombine.setVisible(false);
+    }
+
+    displayInterfaceClueCombine(showIt: boolean) {
+        if (showIt) {
+            interfaceClueCombine.setVisible(true);
+        } else
+            interfaceClueCombine.setVisible(false);
+    }    
+
+    // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
     preload() {
         //console.log("playerUI preload")
         this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
@@ -42,6 +61,9 @@ export default class PlayerUI extends Phaser.Scene {
     create() {
         //console.log("UI shit goes here")
         invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0).setVisible(false);
+        interfaceClueFull = this.add.sprite(485,774,'atlas', 'interfaceClueSearch.png').setOrigin(0, 0).setVisible(false); 
+        interfaceClueCombine = this.add.sprite(17,305, 'atlas', 'interfaceClueCombine.png').setOrigin(0, 0).setVisible(false); 
+
 
         this.scene.launch("BootGame")
         

@@ -132,9 +132,7 @@ export default class Slots {
     recorder: Recorder;
     fakeClicks: number = 0;
     combining: string = "";
-    
-    interfaceClueFull: Phaser.GameObjects.Image;
-    interfaceClueCombine: Phaser.GameObjects.Image;
+
     interfaceInspect: Phaser.GameObjects.Sprite;
     hasInspected = false;
 
@@ -149,14 +147,11 @@ export default class Slots {
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
     constructor(scene: Phaser.Scene,
         selectSprite: Phaser.GameObjects.Sprite,
-        recorder: Recorder,
-        interfaceClueFull: Phaser.GameObjects.Sprite,
-        interfaceClueCombine: Phaser.GameObjects.Sprite) {
+        recorder: Recorder) {
 
         this.selectedIcon = selectSprite;
         this.recorder = recorder;
-        this.interfaceClueFull = interfaceClueFull;
-        this.interfaceClueCombine = interfaceClueCombine;
+
         this.interfaceInspect = scene.add.sprite(5, 1070, "interfaceInspect").setOrigin(0, 0).setVisible(false);
 
         this.scene = scene;
@@ -167,7 +162,7 @@ export default class Slots {
         }
         this.currentMode = "room"; // TODO is this even needed? 
 
-        //this.eyeButtonOn = scene.add.image(15, 1120, 'eyebuttonon').setOrigin(0, 0);
+        
         this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
         //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
 
@@ -228,20 +223,6 @@ export default class Slots {
     }
     getCombined() {
         return this.hasCombined;
-    }
-
-    displayInterfaceClueFull(showIt: boolean) {
-        if (showIt) {
-            this.interfaceClueFull.setVisible(true);
-        } else
-            this.interfaceClueFull.setVisible(false);
-    }
-
-    displayInterfaceClueCombine(showIt: boolean) {
-        if (showIt) {
-            this.interfaceClueCombine.setVisible(true);
-        } else
-            this.interfaceClueCombine.setVisible(false);
     }
 
     displaySlots() {

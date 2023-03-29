@@ -13,10 +13,10 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 let myUI: PlayerUI;
 
-const skipClickToStart = false;
+const skipClickToStart = true;
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipCloud = false;
+const skipCloud = true;
 
 let welcomeBack = false;
 
@@ -40,8 +40,6 @@ var viewportPointerClick: Phaser.GameObjects.Sprite;
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
 var failed: Phaser.GameObjects.Sprite;
-var interfaceClueFull: Phaser.GameObjects.Sprite;
-var interfaceClueCombine: Phaser.GameObjects.Sprite;
 
 let splashScreen: Phaser.GameObjects.Image;
 let thePlayer: Phaser.GameObjects.Text;
@@ -135,8 +133,6 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
                 this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
-                this.load.image('interfaceClueFull', 'assets/backgrounds/invroom - interface.webp');
-                this.load.image('interfaceCombine', 'assets/backgrounds/invroom - interface - combine.webp');
                 this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
                 this.load.image('zotTableOff', 'assets/backgrounds/zot - off.webp');
@@ -293,15 +289,10 @@ export class BootGame extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
 
-        interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
-        interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
-        interfaceClueFull.setVisible(false);
-        interfaceClueCombine.setVisible(false);
-
         const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
 
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick, playerName);
-        slots = new Slots(this, iconSelected, recorder, interfaceClueFull, interfaceClueCombine);
+        slots = new Slots(this, iconSelected, recorder);
 
         myUI.displayInventoryBar(false); slots.hideEye();
 

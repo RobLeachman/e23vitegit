@@ -284,7 +284,7 @@ export class PlayGame extends Phaser.Scene {
         if (slots.combining.split(':')[0] == "bad combine") {
             slots.setCombined(true);
 
-            slots.displayInterfaceClueCombine(false);
+            myUI.displayInterfaceClueCombine(false);
             //console.log("BAD COMBINE")
             slots.combining = "";
             plusModeButton.setVisible(false);
@@ -297,7 +297,7 @@ export class PlayGame extends Phaser.Scene {
         if (slots.combining.split(':')[0] == "good combine") {
             slots.setCombined(true);
 
-            slots.displayInterfaceClueCombine(false);
+            myUI.displayInterfaceClueCombine(false);
             //console.log("clear out " + slots.combining.split(':')[1])
             // Clear the first object...
             // ... unless it's a knife
@@ -553,18 +553,18 @@ export class PlayGame extends Phaser.Scene {
             backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
             plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
 
+            myUI.displayInterfaceClueFull(false);
+            myUI.displayInterfaceClueCombine(false);
             if (!slots.getSearched()) {
-                slots.displayInterfaceClueFull(true);
-                slots.displayInterfaceClueCombine(false);
-            } else {
-                if (!slots.getCombined()) {
-                    slots.displayInterfaceClueCombine(true);
-                    slots.displayInterfaceClueFull(false);
-                }
-            };
+                myUI.displayInterfaceClueFull(true);
+            }
+            if (!slots.getCombined()) {
+                myUI.displayInterfaceClueCombine(true);
+            }
+
             if (slots.inventoryViewObj == "objRoach") {
-                slots.displayInterfaceClueFull(false);
-                slots.displayInterfaceClueCombine(false);
+                myUI.displayInterfaceClueFull(false);
+                myUI.displayInterfaceClueCombine(false);
             }
 
             // turn off all scene masks, and turn on the object alternate view mask
@@ -586,8 +586,8 @@ export class PlayGame extends Phaser.Scene {
             //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
 
         } else if ((viewWall != currentWall || updateWall)) {
-            slots.displayInterfaceClueFull(false);
-            slots.displayInterfaceClueCombine(false);
+            myUI.displayInterfaceClueFull(false);
+            myUI.displayInterfaceClueCombine(false);
 
             fourSolved.setVisible(false);
             fiveOpen.setVisible(false);
