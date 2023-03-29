@@ -1,4 +1,7 @@
 import Recorder from "./recorder"
+import PlayerUI from '../scenes/playerUI';
+
+let myUI: PlayerUI;
 
 class InvItem {
     scene: Phaser.Scene; // do we need to save this?
@@ -151,10 +154,12 @@ export default class Slots {
 
         this.selectedIcon = selectSprite;
         this.recorder = recorder;
+        
 
         this.interfaceInspect = scene.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
         this.scene = scene;
+        myUI = scene.scene.get("PlayerUI") as PlayerUI;
 
         for (var i = 0; i < 12; i++) {
             let slotItem = new InvItem(scene, i, this, this.recorder); // empty sprite image, or select
@@ -185,17 +190,13 @@ export default class Slots {
             } else {
                 // slots must invoke the scene's back button... which is shitty, this is UI stuff
                 //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
-                if (this.activeScene == "ZotTable")
+                const activeScene = myUI.getActiveScene()
+                if (activeScene == "ZotTable")
                     scene.registry.set('replayObject', "zotBackButton:ZotTable");
                 else
                     scene.registry.set('replayObject', "backButton:PlayGame");
             }
         });
-    }
-
-    setActiveScene(activeScene: string) {
-        //console.log(">>>>>>>>>>>>>>>> Active Scene=" + activeScene)
-        this.activeScene = activeScene;
     }
 
     turnEyeOff() {

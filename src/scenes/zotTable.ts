@@ -73,11 +73,14 @@ export class ZotTable extends Phaser.Scene {
         console.log("UNTESTED interface clues");
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        myUI.setActiveScene("ZotTable");
+
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
 
-        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        
 
         recorder = slots.recorder;
         // SCENERECORD: Capture all mask clicks on this scene
@@ -108,7 +111,6 @@ export class ZotTable extends Phaser.Scene {
             if (backStack.length == 0) {
                 recorder.recordObjectDown(zotBackButton.name, thisscene);
                 console.log("exit zottable")
-                slots.setActiveScene("PlayGame");
 
                 zotBackButton.setVisible(false);
                 zotBackButton.removeInteractive(); // fix up the cursor displayed on main scene
@@ -237,6 +239,7 @@ export class ZotTable extends Phaser.Scene {
             console.log("zot awakes")
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
+            myUI.setActiveScene("ZotTable");
             viewWall = 0;
             updateWall = true;
         });
@@ -288,9 +291,6 @@ export class ZotTable extends Phaser.Scene {
                 viewWall = 5; currentWall = 5;
             }
             zot_flipIt = false;
-
-            myUI.setActiveScene('ZotTable');
-
 
             myUI.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;

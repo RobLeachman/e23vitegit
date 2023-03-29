@@ -61,6 +61,9 @@ export class Four extends Phaser.Scene {
     create() {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
+        const myUI = this.scene.get("PlayerUI") as PlayerUI;
+        myUI.setActiveScene("four");
+
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
         this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false)
@@ -123,10 +126,6 @@ export class Four extends Phaser.Scene {
 
             const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
             //console.log(`selecting ${selection.x},${selection.y}`);
-
-            // TEST UI METHOD
-            const myUI = this.scene.get("PlayerUI") as PlayerUI;
-            console.log(`active scene is ${myUI.getActiveScene()}`);
 
             if (this.selected.x < 1000) {
                 //console.log(`swap ${this.swapSelect.x},${this.swapSelect.y} with ${selection.x},${selection.y}`)
@@ -212,7 +211,6 @@ export class Four extends Phaser.Scene {
 
             //recorder.recordObjectDown(zotfourBackButton.name, thisscene);
             //console.log("exit four")
-            //slots.setActiveScene("PlayGame");
 
             this.fourBackButton.setVisible(false);
             this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
@@ -226,6 +224,8 @@ export class Four extends Phaser.Scene {
             console.log("Four awakes, solved=" + solved)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
+            myUI.setActiveScene("four");
+            
             this.fourBackButton.setVisible(true);
             this.fourBackButton.setInteractive({ cursor: 'pointer' }); //<==== HAS NO EFFECT
             bugz = true;

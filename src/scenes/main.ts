@@ -185,8 +185,8 @@ export class PlayGame extends Phaser.Scene {
         if (myText.text == "init") {
 
             //console.log("BONUS TEST ZOTS")
-            slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
-            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
+            //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
             slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
@@ -253,7 +253,7 @@ export class PlayGame extends Phaser.Scene {
             console.log("LETS DO IT")
             return;
         }
-        if (this.input.activePointer.rightButtonDown()) {
+        if (this.input.activePointer.rightButtonDown()) { // mouse right button action!
             //this.showRecording();
         }
 
@@ -499,8 +499,6 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall < 5)
                 previousWall = viewWall;
 
-
-
             // FIRST ROOM IMPLEMENTATION //   
             if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
                 slots.inventoryViewAlt = "altobjPlateEmpty";
@@ -516,8 +514,6 @@ export class PlayGame extends Phaser.Scene {
             if (currentWall == 5 && foundHalfKey && !haveHalfKey) {
                 keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
             }
-
-
 
             if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
                 slots.setSearched(true);
@@ -780,7 +776,9 @@ export class PlayGame extends Phaser.Scene {
         theRecording = data.theRecording;
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
-        this.scene.bringToTop("PlayerUI")
+        this.scene.bringToTop();
+        this.scene.bringToTop("PlayerUI");
+        myUI.setActiveScene("PlayGame");
 
         plusButton = myUI.getPlusButton();
         plusModeButton = myUI.getPlusModeButton();
@@ -912,7 +910,6 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
-            slots.setActiveScene("ZotTable");
             
             roomReturnWall = 1;
             leftButton.setVisible(false);
@@ -963,8 +960,6 @@ export class PlayGame extends Phaser.Scene {
             leftButton.setVisible(false);
             rightButton.setVisible(false);
 
-            //const myUI = this.scene.get("PlayerUI")
-            myUI.setActiveScene('Four');
 
             //fourSolved.setVisible(true).setDepth(1);
 
@@ -1081,6 +1076,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log("MAIN AWAKES")
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
+            myUI.setActiveScene("PlayGame");
             zotIsRunning = false;
             viewWall = roomReturnWall;
             updateWall = true;

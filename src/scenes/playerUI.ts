@@ -20,22 +20,24 @@ viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 
 const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
 */
 
-var slots: Slots;
-var recorder: Recorder;
+let slots: Slots;
+let recorder: Recorder;
+let activeSceneName: string;
 
 export default class PlayerUI extends Phaser.Scene {
-    activeSceneName: string;
+    
 
     constructor() {
         super("PlayerUI");
     }
 
     setActiveScene(activeSceneName: string) {
-        this.activeSceneName = activeSceneName;
+        console.log(">> Active Scene:" + activeSceneName)
+        activeSceneName = activeSceneName;
     }
 
     getActiveScene() {
-        return this.activeSceneName;
+        return activeSceneName;
     }
 
     getFourGraphicPrefix() {

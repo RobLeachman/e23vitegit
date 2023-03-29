@@ -431,7 +431,6 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         }
-        slots.setActiveScene("PlayGame");
     }
 
     async getPlayerCount() {
