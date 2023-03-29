@@ -40,7 +40,7 @@ export default class Recorder {
     constructor(pointer: Phaser.Input.Pointer,
         pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
-        playerName: string) {
+    ) {
 
         this.pointer = pointer;
         this.pointerSprite = pointerSprite;
@@ -48,7 +48,7 @@ export default class Recorder {
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
-        this.playerName = playerName;
+
 
         /************
          // TODO: Add SDKs for Firebase products that you want to use
@@ -372,17 +372,17 @@ export default class Recorder {
         //console.log("RECFILE " + filename)
         let recordingIn = await this.fetchRecording(filename);
         //console.log(recordingIn);
-/*
-        let cookieNumber = -1;
-        let eof = "";
-        let recordingIn = "";
-        while (eof == "") {
-            cookieNumber++;
-            let cookie = getCookie("test" + cookieNumber);
-            recordingIn += cookie.split('|')[0];;
-            eof = cookie.split('|')[1];
-        }
-*/        
+        /*
+                let cookieNumber = -1;
+                let eof = "";
+                let recordingIn = "";
+                while (eof == "") {
+                    cookieNumber++;
+                    let cookie = getCookie("test" + cookieNumber);
+                    recordingIn += cookie.split('|')[0];;
+                    eof = cookie.split('|')[1];
+                }
+        */
         //console.log("COOKIE RECORDING IN");
         //console.log(recordingIn);
         const recordingChecksum = recordingIn.split('?')[0];

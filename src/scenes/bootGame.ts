@@ -14,9 +14,9 @@ import { setCookie, getCookie } from "../utils/cookie";
 let myUI: PlayerUI;
 
 const skipClickToStart = true;
+const skipCloud = true;
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipCloud = true;
 
 let welcomeBack = false;
 
@@ -34,6 +34,7 @@ let playButton: Phaser.GameObjects.Sprite;
 
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
+var iconSelected: Phaser.GameObjects.Sprite;
 
 // UI stuff
 
@@ -285,13 +286,11 @@ export class BootGame extends Phaser.Scene {
             }
         });
 
-        //this.add.image(0, 0, 'myViewport').setOrigin(0, 0);
-        viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
-        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
+        viewportPointerClick = myUI.getViewportPointerClick();
+        viewportPointer = myUI.getViewportPointer();
+        iconSelected = myUI.getIconSelected();
 
-        const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
-
-        recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick, playerName);
+        recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
         slots = new Slots(this, iconSelected, recorder);
 
         myUI.displayInventoryBar(false); slots.hideEye();
