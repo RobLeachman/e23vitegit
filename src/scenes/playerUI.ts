@@ -8,6 +8,10 @@ let interfaceClueCombine: Phaser.GameObjects.Sprite;
 let viewportPointerClick: Phaser.GameObjects.Sprite;
 let viewportPointer: Phaser.GameObjects.Sprite;
 let iconSelected: Phaser.GameObjects.Sprite;
+let failed: Phaser.GameObjects.Sprite;
+
+var plusButton: Phaser.GameObjects.Sprite;
+var plusModeButton: Phaser.GameObjects.Sprite;
 
 /*
 viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
@@ -73,6 +77,23 @@ export default class PlayerUI extends Phaser.Scene {
     getIconSelected() {
         return iconSelected;
     }
+    getFailed() {
+        return failed;
+    }
+    getPlusButton() {
+        return plusButton;
+    }
+    getPlusModeButton() {
+        return plusModeButton;
+    }
+
+    getRecorder() {
+        return recorder;
+    }
+
+    getSlots() {
+        return slots;
+    }
 
     // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
     preload() {
@@ -89,6 +110,32 @@ export default class PlayerUI extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
         iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
+        failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
+        //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
+
+        recorder = new Recorder(viewportPointer, viewportPointerClick);
+        slots = new Slots(this, iconSelected, recorder);
+        
+        plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton");
+        plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
+        recorder.addMaskSprite('plusButton', plusButton);
+        recorder.addMaskSprite('plusModeButton', plusModeButton);
+        plusButton.setVisible(false);
+        plusModeButton.setVisible(false);
+
+        plusModeButton.on('pointerdown', () => {
+            //console.log("combine mode cancelled");
+            slots.combining = ""; // so slots object knows what is happening
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
+        });
+        plusButton.on('pointerdown', () => {
+            slots.combining = "trying"; // so slots object knows what is happening            
+            plusButton.setVisible(false);
+            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
+        });        
+
+
 
         this.scene.launch("BootGame")
     }

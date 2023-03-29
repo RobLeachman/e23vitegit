@@ -8,15 +8,12 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = false;
-const skipCloud = false;
+const skipClickToStart = true;
+const skipCloud = true;
 const testingFour = false;
 const skipBackgroundsLoad = false;
 
-
-
 let myUI: PlayerUI;
-
 
 let welcomeBack = false;
 
@@ -32,16 +29,6 @@ let theRecording: string;
 
 let playButton: Phaser.GameObjects.Sprite;
 
-var viewportPointer: Phaser.GameObjects.Sprite;
-var viewportPointerClick: Phaser.GameObjects.Sprite;
-var iconSelected: Phaser.GameObjects.Sprite;
-
-// UI stuff
-
-var plusButton: Phaser.GameObjects.Sprite;
-var plusModeButton: Phaser.GameObjects.Sprite;
-var failed: Phaser.GameObjects.Sprite;
-
 let splashScreen: Phaser.GameObjects.Image;
 let thePlayer: Phaser.GameObjects.Text;
 let greetings: Phaser.GameObjects.Text;
@@ -50,6 +37,7 @@ let greets2: Phaser.GameObjects.Text;
 let greets3: Phaser.GameObjects.Text;
 let greets4: Phaser.GameObjects.Text;
 let greets5: Phaser.GameObjects.Text;
+
 
 
 export class BootGame extends Phaser.Scene {
@@ -98,7 +86,6 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
                 this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
                 this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
-                this.load.image('interfaceInspect', 'assets/sprites/interfaceInspect.png');
 
                 // used XnConvert to switch to webp, nice!
                 this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
@@ -154,6 +141,11 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
 
             }
+
+            //let windowHeight = window.innerHeight;
+            //let windowWidth = window.innerWidth;
+            //const dims = this.add.text(640, 280, windowWidth + "x" + windowHeight, { fontSize:'24px' })
+            //dims.setOrigin(0.5, 0.5)            
 
             // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
             var width = this.cameras.main.width;
@@ -279,19 +271,15 @@ export class BootGame extends Phaser.Scene {
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: true, theRecording: theRecording });
+                this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
             }
             else {
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false, theRecording: theRecording });
+                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         });
 
-        viewportPointerClick = myUI.getViewportPointerClick();
-        viewportPointer = myUI.getViewportPointer();
-        iconSelected = myUI.getIconSelected();
-
-        recorder = new Recorder(viewportPointer, viewportPointerClick);
-        slots = new Slots(this, iconSelected, recorder);
+        recorder = myUI.getRecorder();
+        slots = myUI.getSlots();
 
         myUI.displayInventoryBar(false); slots.hideEye();
 
@@ -326,27 +314,10 @@ export class BootGame extends Phaser.Scene {
                 playerName = "Player" + playerCount;
         }
 
-        plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton");
-        plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
-        recorder.addMaskSprite('plusButton', plusButton);
-        recorder.addMaskSprite('plusModeButton', plusModeButton);
-        plusButton.setVisible(false);
-        plusModeButton.setVisible(false);
 
-        plusModeButton.on('pointerdown', () => {
-            //console.log("combine mode cancelled");
-            slots.combining = ""; // so slots object knows what is happening
-            plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
-        });
-        plusButton.on('pointerdown', () => {
-            slots.combining = "trying"; // so slots object knows what is happening            
-            plusButton.setVisible(false);
-            plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
-        });
 
-        //failed = this.add.sprite(1000, 950, 'fail'); // 640 is displayed
-        failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
+
+
 
         ////////////// PLAYER NAME //////////////
 
@@ -457,7 +428,7 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("Five");
             } else {
 
-                this.scene.run("PlayGame", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton, failed: failed, mobile: false, theRecording: theRecording });
+                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         }
         slots.setActiveScene("PlayGame");

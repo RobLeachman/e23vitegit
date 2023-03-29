@@ -346,6 +346,7 @@ export default class Recorder {
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
         //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        this.pointer = scene.input.activePointer;
 
         if (object == "__MISSING") {
             throw new Error("MISSING OBJECT MASK")

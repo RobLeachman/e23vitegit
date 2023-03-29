@@ -773,22 +773,19 @@ export class PlayGame extends Phaser.Scene {
     }
 
     create(data: {
-        slots: Slots,
-        plusButton: Phaser.GameObjects.Sprite,
-        plusModeButton: Phaser.GameObjects.Sprite,
-        failed: Phaser.GameObjects.Sprite,
         mobile: boolean;
         theRecording: string;
     }) {
-        slots = data.slots;
-        plusButton = data.plusButton;
-        plusModeButton = data.plusModeButton;
-        failed = data.failed;
         mobile = data.mobile;
         theRecording = data.theRecording;
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop("PlayerUI")
+
+        plusButton = myUI.getPlusButton();
+        plusModeButton = myUI.getPlusModeButton();
+        failed = myUI.getFailed();
+        slots = myUI.getSlots();
 
         // will be important later...
         if (mobile) {
@@ -802,6 +799,7 @@ export class PlayGame extends Phaser.Scene {
         // SCENERECORD: Capture all mask clicks on this scene
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
+
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
@@ -915,8 +913,10 @@ export class PlayGame extends Phaser.Scene {
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
             slots.setActiveScene("ZotTable");
-            console.log("zot table!")
+            
             roomReturnWall = 1;
+            leftButton.setVisible(false);
+            rightButton.setVisible(false);            
 
             // the worst kind of hack, it will work but bad idea so TODO whenever...
             // if this was a portal on a wall with lots of stuff would need to turn it all off...
@@ -960,6 +960,8 @@ export class PlayGame extends Phaser.Scene {
         fourMask.on('pointerdown', () => {
             console.log("GO FOUR");
             roomReturnWall = 3;
+            leftButton.setVisible(false);
+            rightButton.setVisible(false);
 
             //const myUI = this.scene.get("PlayerUI")
             myUI.setActiveScene('Four');

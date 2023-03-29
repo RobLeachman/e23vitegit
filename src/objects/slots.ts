@@ -152,7 +152,7 @@ export default class Slots {
         this.selectedIcon = selectSprite;
         this.recorder = recorder;
 
-        this.interfaceInspect = scene.add.sprite(5, 1070, "interfaceInspect").setOrigin(0, 0).setVisible(false);
+        this.interfaceInspect = scene.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
         this.scene = scene;
 
@@ -162,9 +162,7 @@ export default class Slots {
         }
         this.currentMode = "room"; // TODO is this even needed? 
 
-        
-        this.eyeButton = scene.add.sprite(15, 1120, 'eyeButton').setName("eyeButton").setOrigin(0, 0);
-        //this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
+        this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
 
         this.eyeButton.setVisible(true); this.eyeButton.setInteractive({ cursor: 'pointer' });
         //this.eyeButton.setDepth(1); 

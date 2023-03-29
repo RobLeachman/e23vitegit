@@ -200,6 +200,11 @@
       "folder": ""
     },
     {
+      "name": "interfaceInspect.png",
+      "path": "D:/src/e23/src/assets/packed/interfaceInspect.png",
+      "folder": ""
+    },
+    {
       "name": "inventory cells.png",
       "path": "D:/src/e23/src/assets/packed/inventory cells.png",
       "folder": ""
@@ -267,6 +272,11 @@
     {
       "name": "topBottomButton.png",
       "path": "D:/src/e23/src/assets/packed/topBottomButton.png",
+      "folder": ""
+    },
+    {
+      "name": "winner donutPlated.png",
+      "path": "D:/src/e23/src/assets/packed/winner donutPlated.png",
       "folder": ""
     },
     {
