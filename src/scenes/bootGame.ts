@@ -6,17 +6,17 @@ import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
 
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-
-//import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
-
 import { setCookie, getCookie } from "../utils/cookie";
+
+const skipClickToStart = false;
+const skipCloud = false;
+const testingFour = false;
+const skipBackgroundsLoad = false;
+
+
 
 let myUI: PlayerUI;
 
-const skipClickToStart = true;
-const skipCloud = true;
-const testingFour = false;
-const skipBackgroundsLoad = false;
 
 let welcomeBack = false;
 
@@ -290,7 +290,7 @@ export class BootGame extends Phaser.Scene {
         viewportPointer = myUI.getViewportPointer();
         iconSelected = myUI.getIconSelected();
 
-        recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick);
+        recorder = new Recorder(viewportPointer, viewportPointerClick);
         slots = new Slots(this, iconSelected, recorder);
 
         myUI.displayInventoryBar(false); slots.hideEye();

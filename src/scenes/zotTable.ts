@@ -261,7 +261,6 @@ export class ZotTable extends Phaser.Scene {
     update() {
         // Be sure we have the pointer, and then record any movement or clicks
         if (recorder.getMode() == "record") {
-            recorder.fixPointer(this.input.activePointer)
             recorder.checkPointer(this);
         }
 

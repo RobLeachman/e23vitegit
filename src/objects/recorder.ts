@@ -37,12 +37,9 @@ export default class Recorder {
     playerName: string;
     timeStamp: string;
 
-    constructor(pointer: Phaser.Input.Pointer,
-        pointerSprite: Phaser.GameObjects.Sprite,
+    constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
     ) {
-
-        this.pointer = pointer;
         this.pointerSprite = pointerSprite;
         this.clickSprite = clickSprite;
         this.oldPointerX = 0; this.oldPointerY = 0;
@@ -288,17 +285,11 @@ export default class Recorder {
         return size;
     }
 
-    // This is terrible, but I don't know how to fix it. Need to update the pointer on mobile,
-    // but we don't know what it is until update fires and they click?
-    fixPointer(pointer: Phaser.Input.Pointer) {
-        //console.log("OOF need to fix it");
-        this.pointer = pointer;
-    }
-
     // called once per update, tracks pointer movement and clicks on the scene
     checkPointer(scene: Phaser.Scene) {
         let pointerClicked: Boolean = false;
         const sceneName = scene.sys.settings.key;
+        this.pointer = scene.input.activePointer; // we don't know what it is until update fires and they click so set every time, is fine
 
         this.fadeClick();
 

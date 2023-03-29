@@ -366,7 +366,6 @@ export class PlayGame extends Phaser.Scene {
 
         // Be sure we have the pointer, and then record any movement or clicks
         if (recorder.getMode() == "record") {
-            recorder.fixPointer(this.input.activePointer)
             recorder.checkPointer(this);
         } else if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
             //console.log("action " + nextActionTime + " now " + this.time.now) // DUMB, just fills screen with timer
