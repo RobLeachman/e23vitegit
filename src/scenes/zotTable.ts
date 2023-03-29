@@ -1,7 +1,9 @@
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
+import PlayerUI from './playerUI';
 
+let myUI: PlayerUI;
 var recorder: Recorder;
 
 let viewWall = 0;
@@ -68,9 +70,13 @@ export class ZotTable extends Phaser.Scene {
         plusModeButton: Phaser.GameObjects.Sprite
     }) {
         //console.log("ZotTable create")
+        this.scene.bringToTop();
+        this.scene.bringToTop("PlayerUI");
         slots = data.slots;
         plusButton = data.plusButton;
         plusModeButton = data.plusModeButton;
+
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
 
         recorder = slots.recorder;
         // SCENERECORD: Capture all mask clicks on this scene
@@ -111,7 +117,7 @@ export class ZotTable extends Phaser.Scene {
                 this.scene.wake("PlayGame");
             } else {
                 const returnTo = backStack.pop();
-                console.log("return to view " + returnTo);
+                //console.log("return to view " + returnTo);
                 viewWall = returnTo;
             }
         });
@@ -174,7 +180,7 @@ export class ZotTable extends Phaser.Scene {
         zotDrawerMask = this.add.sprite(134, 659, 'atlas', 'zotDrawerMask.png').setName("zotDrawerMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotDrawerMask', zotDrawerMask);
         zotDrawerMask.on('pointerdown', () => {
-            console.log(`open the drawer? state=${zotDrawerState} wall ${viewWall}`)
+            //console.log(`open the drawer? state=${zotDrawerState} wall ${viewWall}`)
             if (viewWall == 2) // tease the drawer but can't open if flipped
                 return;
             if (zotDrawerState < 2)
@@ -227,6 +233,9 @@ export class ZotTable extends Phaser.Scene {
         });
 
         this.events.on('wake', () => {
+            console.log("zot awakes")
+            this.scene.bringToTop();
+            this.scene.bringToTop("PlayerUI");
             viewWall = 0;
             updateWall = true;
         });
@@ -280,7 +289,10 @@ export class ZotTable extends Phaser.Scene {
             }
             zot_flipIt = false;
 
-            slots.displayInventoryBar(true);
+            myUI.setActiveScene('ZotTable');
+
+
+            myUI.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
             zotBackButton.setVisible(true); zotBackButton.setDepth(10010); zotBackButton.setInteractive({ cursor: 'pointer' });
@@ -312,7 +324,7 @@ export class ZotTable extends Phaser.Scene {
             zotObjectMask.setDepth(1);
             zotObjectMask.setInteractive({ cursor: 'pointer' });
 
-            slots.displayInventoryBar(true);
+            myUI.displayInventoryBar(true); // why twice?
             slots.inventoryViewSwitch = false;
 
         } else if ((viewWall != currentWall || updateWall)) {

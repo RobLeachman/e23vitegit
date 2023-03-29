@@ -6,7 +6,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 const testingFour = false; // here we just skip loading stuff... but must comment out these too:
 //if (!testingFour) { // ALSO adjust scene config!
 
-import { PlayerUI } from './scenes/playerUI';
+import  PlayerUI  from './scenes/playerUI';
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
 import { ZotTable } from './scenes/zotTable';
@@ -123,7 +123,6 @@ if (testingFour) {
             }
             ]
         },
-
         //scene: [BootGame, PlayGame, ZotTable, Four, Five]
         scene: [PlayerUI, BootGame, Five]
     };

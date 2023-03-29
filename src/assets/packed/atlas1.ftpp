@@ -20,11 +20,6 @@
       "folder": ""
     },
     {
-      "name": "backFrontButton.png",
-      "path": "D:/src/e23/src/assets/packed/backFrontButton.png",
-      "folder": ""
-    },
-    {
       "name": "backFrontButton1.png",
       "path": "D:/src/e23/src/assets/packed/backFrontButton1.png",
       "folder": ""
@@ -112,6 +107,21 @@
     {
       "name": "fourMask.png",
       "path": "D:/src/e23/src/assets/packed/fourMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fourPieceFrame.png",
+      "path": "D:/src/e23/public/assets/sprites/fourPieceFrame.png",
+      "folder": ""
+    },
+    {
+      "name": "fourPieceMask.png",
+      "path": "D:/src/e23/public/assets/sprites/fourPieceMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fourPieceSelected.png",
+      "path": "D:/src/e23/public/assets/sprites/fourPieceSelected.png",
       "folder": ""
     },
     {

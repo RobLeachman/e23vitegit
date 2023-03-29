@@ -19,9 +19,12 @@
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
+import PlayerUI from './playerUI';
 
 //import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
+
+let myUI: PlayerUI;
 
 const minDelayReplay = 10;
 const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
@@ -37,6 +40,7 @@ var viewWall = 3; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
+let roomReturnWall = 1; // return here from other scene back button
 
 const walls = new Array();
 const icons = new Array();
@@ -89,6 +93,8 @@ var zotIsRunning = false;
 var boxHasZot = false;
 var zotBoxColor: number;
 
+var fourInit = true;
+
 var slots: Slots;
 
 var showXtime = -1;
@@ -98,6 +104,7 @@ var viewportText: any;                                     //??
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
 var pointer: Phaser.Input.Pointer;
+
 let zotGameScene: Phaser.Scene;
 
 let lastKeyDebouncer = ""; //
@@ -540,7 +547,7 @@ export class PlayGame extends Phaser.Scene {
             }
             flipIt = false;
 
-            slots.displayInventoryBar(true);
+            myUI.displayInventoryBar(true);
             slots.inventoryViewSwitch = false;
 
             backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
@@ -612,7 +619,7 @@ export class PlayGame extends Phaser.Scene {
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
                 this.add.dom(350, 1100, 'div', style, sentence);
 
-                slots.displayInventoryBar(false);
+                myUI.displayInventoryBar(false);
                 slots.clearAll();
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
@@ -656,7 +663,7 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 9)
                 previousWall = 2;
 
-            slots.displayInventoryBar(true);
+            myUI.displayInventoryBar(true);
             currentWall = viewWall;
             updateWall = false;
 
@@ -780,6 +787,9 @@ export class PlayGame extends Phaser.Scene {
         failed = data.failed;
         mobile = data.mobile;
         theRecording = data.theRecording;
+
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        this.scene.bringToTop("PlayerUI")
 
         // will be important later...
         if (mobile) {
@@ -906,7 +916,8 @@ export class PlayGame extends Phaser.Scene {
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
             slots.setActiveScene("ZotTable");
-            //console.log("zot table!")
+            console.log("zot table!")
+            roomReturnWall = 1;
 
             // the worst kind of hack, it will work but bad idea so TODO whenever...
             // if this was a portal on a wall with lots of stuff would need to turn it all off...
@@ -915,6 +926,7 @@ export class PlayGame extends Phaser.Scene {
 
             if (zotTableInit) {
                 this.scene.launch("ZotTable", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
+                //this.scene.bringToTop("ZotTable");
                 //this.scene.moveBelow("BootGame","ZotTable");
                 //this.scene.bringToTop("ZotTable");
                 //this.scene.bringToTop("BootGame");
@@ -922,8 +934,9 @@ export class PlayGame extends Phaser.Scene {
                 zotTableInit = false;
                 zotGameScene = this.scene.get("ZotTable");
             } else {
+                //console.log("back to zot")
                 this.scene.wake("ZotTable");
-                this.scene.moveUp("ZotTable");
+                //this.scene.moveUp("ZotTable");
             }
         });
 
@@ -946,8 +959,29 @@ export class PlayGame extends Phaser.Scene {
         fourMask = this.add.sprite(80, 455, 'atlas', 'fourMask.png').setOrigin(0, 0);
         recorder.addMaskSprite('fourMask', fourMask);
         fourMask.on('pointerdown', () => {
-            console.log("GO FOUR")
-            fourSolved.setVisible(true).setDepth(1);
+            console.log("GO FOUR");
+            roomReturnWall = 3;
+
+            //const myUI = this.scene.get("PlayerUI")
+            myUI.setActiveScene('Four');
+
+            //fourSolved.setVisible(true).setDepth(1);
+
+            if (fourInit) {
+                //this.scene.launch("Four", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
+                this.scene.launch("Four")
+                //this.scene.bringToTop("Four");
+
+                //this.scene.moveBelow("BootGame","ZotTable");
+                //this.scene.bringToTop("ZotTable");
+                //this.scene.bringToTop("BootGame");
+                //this.scene.sleep();
+                fourInit = false;
+                //zotGameScene = this.scene.get("ZotTable");
+            } else {
+                this.scene.wake("Four");
+                //this.scene.bringToTop("Four");
+            }
         });
 
         fiveMask = this.add.sprite(468, 533, 'atlas', 'fiveMask.png').setName("fiveMask").setOrigin(0, 0);
@@ -1044,8 +1078,10 @@ export class PlayGame extends Phaser.Scene {
 
         this.events.on('wake', () => {
             //console.log("MAIN AWAKES")
+            this.scene.bringToTop();
+            this.scene.bringToTop("PlayerUI")
             zotIsRunning = false;
-            viewWall = 1;
+            viewWall = roomReturnWall;
             updateWall = true;
 
         });

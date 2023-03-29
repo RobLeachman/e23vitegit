@@ -1,15 +1,21 @@
 import 'phaser';
-import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 
+import PlayerUI from './playerUI';
+
+import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
-const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
-//const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
-//const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
+//const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
+//const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+
+let bugz = false;
+let solved = false;
 
 export class Four extends Phaser.Scene {
-    rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type    
+    rexUI: RexUIPlugin;
     art: Phaser.GameObjects.Image;
+    videoBackground: Phaser.GameObjects.Image;
     frame: Phaser.GameObjects.Sprite;
     selected: Phaser.GameObjects.Sprite;
     selectMask: Phaser.GameObjects.Sprite;
@@ -22,25 +28,13 @@ export class Four extends Phaser.Scene {
     swapSelect = { x: 2, y: 2 }
     youtubes: YoutubePlayer;
 
-    backButton: Phaser.GameObjects.Sprite;
+    fourBackButton: Phaser.GameObjects.Sprite;
 
     constructor() {
         super("Four");
     }
 
     preload() {
-        var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
-        this.load.plugin('rexyoutubeplayerplugin', url, true);
-
-        this.load.image('background', 'assets/backgrounds/four wall.webp');
-        this.load.image('watchIt', 'assets/backgrounds/watchTheYoutube.webp');
-
-        this.load.image('artWhole', 'assets/graphics/' + graphicPrefix + '.webp');
-        this.load.image('frame', 'assets/backgrounds/4x4 frame1a.webp');
-        this.load.image('pieceFrame', 'assets/sprites/4x4 piece frame1a.png');
-        this.load.image('pieceSelected', 'assets/sprites/pieceSelected.png');
-        this.load.image('selectPieceMask', 'assets/sprites/selectPiecesMask.png');
-        this.load.image('backButton', 'assets/sprites/arrowDown.webp');
     }
 
     // @ts-ignore
@@ -65,44 +59,48 @@ export class Four extends Phaser.Scene {
     }
 
     create() {
-        // this hack cannot abide... TODO need a proper background and placement for the 5x5 puzzle!
-        this.add.image(0, -80, 'background').setOrigin(0, 0);
-        this.frame = this.add.sprite(13, 170, 'frame').setOrigin(0, 0);
+        this.scene.bringToTop();
+        this.scene.bringToTop("PlayerUI");
+        this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
+        this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
+        this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false)
 
         const tileMap = new Map();
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
                 const k = i.toString() + ':' + j.toString();
-                //const tileArt = this.add.sprite((13 + 28) + i * 160, (170 + 28) + j * 160, this.spriteNames[j][i]).setOrigin(0, 0)
+                //const tileArt = this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, this.spriteNames[j][i]).setOrigin(0, 0)
 
-                const tileArt = this.add.sprite(0, 0, 'artWhole').setOrigin(0, 0)
+                const tileArt = this.add.sprite(0, 0, 'fourArtWhole').setOrigin(0, 0)
                 tileArt.setCrop(i * 160, j * 160, 160, 160);
                 tileArt.setOrigin(.25 * i, .25 * j);
                 tileArt.setX((13 + 28) + i * 160)
-                tileArt.setY((170 + 28) + j * 160)
+                tileArt.setY((250 + 28) + j * 160)
 
                 const v = { art: tileArt, origX: i, origY: j };
                 tileMap.set(k, v);
 
-                this.add.sprite((13 + 28) + i * 160, (170 + 28) + j * 160, 'pieceFrame').setOrigin(0, 0).setDepth(1);
+                this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, 'atlas', 'fourPieceFrame.png').setOrigin(0, 0).setDepth(1);
             }
         }
         // pick two random tiles and swap
         this.swapTiles(2, 3, 3, 3, tileMap);
-
-        for (let z = 0; z < 50; z++) {
-            const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
-            const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
-            this.swapTiles(x1, y1, x2, y2, tileMap);
-        }
+        /*
+                for (let z = 0; z < 50; z++) {
+                    const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
+                    const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
+                    this.swapTiles(x1, y1, x2, y2, tileMap);
+                }
+        */
 
         // select box displayed
-        this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 170 + 28 + 160 * this.swapSelect.y,
-            'pieceSelected').setOrigin(0, 0);
+        //this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y,
+        //    'fourPieceSelected').setOrigin(0, 0);
+        this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y, 'atlas', 'fourPieceSelected.png').setOrigin(0, 0);
         this.selected.x = 1000;
 
         // cover the whole board and then read the coordinates of the click
-        this.selectMask = this.add.sprite(13 + 28, 170 + 28, 'selectPieceMask').setOrigin(0, 0);
+        this.selectMask = this.add.sprite(13 + 28, 250 + 28, 'atlas', 'fourPieceMask.png').setOrigin(0, 0);
         //recorder.addMaskSprite('selectMask', selectMask); // don't forget to enable this in the real game!!!!!!
 
         this.selectMask.setVisible(true); this.selectMask.setDepth(1); this.selectMask.setInteractive({ cursor: 'pointer' });
@@ -126,6 +124,10 @@ export class Four extends Phaser.Scene {
             const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
             //console.log(`selecting ${selection.x},${selection.y}`);
 
+            // TEST UI METHOD
+            const myUI = this.scene.get("PlayerUI") as PlayerUI;
+            console.log(`active scene is ${myUI.getActiveScene()}`);
+
             if (this.selected.x < 1000) {
                 //console.log(`swap ${this.swapSelect.x},${this.swapSelect.y} with ${selection.x},${selection.y}`)
                 this.swapTiles(selection.x, selection.y, this.swapSelect.x, this.swapSelect.y, tileMap);
@@ -134,25 +136,27 @@ export class Four extends Phaser.Scene {
 
                 // chicken dinner?
                 let winner = true;
+
                 for (let i = 0; i < 4; i++) {
                     for (let j = 0; j < 4; j++) {
                         const k = i.toString() + ':' + j.toString();
                         const tile = tileMap.get(k);
-                        console.log(`dump ${i},${j}  orig ${tile.origX},${tile.origY}`)
+                        //console.log(`dump ${i},${j}  orig ${tile.origX},${tile.origY}`)
                         if (i != tile.origX || j != tile.origY)
                             winner = false;
                     }
                 }
 
                 if (winner) {
+                    solved = true;
                     console.log("WINNER!!!!!!!!!!!")
 
                     this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
 
                     // Winning art view, which they can't see because the YT instructions must be shown
-                    //this.add.sprite(13 + 28, 170 + 28, 'artWhole').setOrigin(0, 0).setDepth(1000);
+                    //this.add.sprite(13 + 28, 250 + 28, 'artWhole').setOrigin(0, 0).setDepth(1000);
 
-                    this.add.image(0, 0, 'watchIt').setOrigin(0.0).setDepth(1);
+                    this.videoBackground.setVisible(true)
                     //now play  https://www.youtube.com/watch?v=feZluC5JheM
 
                     const ytConfig = {
@@ -172,7 +176,6 @@ export class Four extends Phaser.Scene {
 
 
 
-
                     /*
                         var youtubePlayer = this.add.rexYoutubePlayer(0, 0, 600, 450, {
                             videoId: 'feZluC5JheM'
@@ -188,27 +191,58 @@ export class Four extends Phaser.Scene {
             } else {
                 // save and indicate the new selection
                 this.selected.setX((13 + 28) + selection.x * 160)
-                this.selected.setY((13 + 28 + 160) + selection.y * 160)
+                this.selected.setY((13 + 28 + 240) + selection.y * 160)
                 this.swapSelect.x = selection.x; this.swapSelect.y = selection.y;
                 //console.log(`next swap ${swapSelect.x},${swapSelect.y}`)
             }
         });
 
+        this.fourBackButton = this.add.sprite(300, 930, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");
+        this.fourBackButton.setVisible(true); this.fourBackButton.setDepth(3); this.fourBackButton.setInteractive({ cursor: 'pointer' });
 
-        this.backButton = this.add.sprite(300, 875, 'backButton').setOrigin(0, 0);
-        //this.backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton");
-        this.backButton.setVisible(true); this.backButton.setDepth(2); this.backButton.setInteractive({ cursor: 'pointer' });
+        this.fourBackButton.on('pointerdown', () => {
+            //console.log("Four back");
+            if (this.youtubes == undefined) {
+                //console.log('save state?')
+            } else {
+                //this.youtubes.pause();
+                this.youtubes.destroy();
+                this.videoBackground.setVisible(false);
+            }
 
-        this.backButton.on('pointerdown', () => {
-            console.log("Four back");
-            this.youtubes.pause();
+            //recorder.recordObjectDown(zotfourBackButton.name, thisscene);
+            //console.log("exit four")
+            //slots.setActiveScene("PlayGame");
+
+            this.fourBackButton.setVisible(false);
+            this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
+
+            this.scene.moveUp("PlayGame");
+            this.scene.sleep();
+            this.scene.wake("PlayGame");
         });
 
         this.events.on('wake', () => {
-            console.log("Four awakes")
+            console.log("Four awakes, solved=" + solved)
+            this.scene.bringToTop();
+            this.scene.bringToTop("PlayerUI");
+            this.fourBackButton.setVisible(true);
+            this.fourBackButton.setInteractive({ cursor: 'pointer' }); //<==== HAS NO EFFECT
+            bugz = true;
+
+            if (solved) {
+                this.add.sprite(13 + 28, 250 + 28, 'fourArtWhole').setOrigin(0, 0).setDepth(1000);
+                this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
+                this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
+            }
+
         });
     }
 
     update() {
+        if (bugz) {
+            this.fourBackButton.setInteractive({ cursor: 'pointer' });
+            bugz = false;
+        }
     }
 }

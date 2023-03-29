@@ -132,7 +132,7 @@ export default class Slots {
     recorder: Recorder;
     fakeClicks: number = 0;
     combining: string = "";
-    invBar: Phaser.GameObjects.Sprite;
+    
     interfaceClueFull: Phaser.GameObjects.Image;
     interfaceClueCombine: Phaser.GameObjects.Image;
     interfaceInspect: Phaser.GameObjects.Sprite;
@@ -150,13 +150,11 @@ export default class Slots {
     constructor(scene: Phaser.Scene,
         selectSprite: Phaser.GameObjects.Sprite,
         recorder: Recorder,
-        invBar: Phaser.GameObjects.Sprite,
         interfaceClueFull: Phaser.GameObjects.Sprite,
         interfaceClueCombine: Phaser.GameObjects.Sprite) {
 
         this.selectedIcon = selectSprite;
         this.recorder = recorder;
-        this.invBar = invBar;
         this.interfaceClueFull = interfaceClueFull;
         this.interfaceClueCombine = interfaceClueCombine;
         this.interfaceInspect = scene.add.sprite(5, 1070, "interfaceInspect").setOrigin(0, 0).setVisible(false);
@@ -192,6 +190,7 @@ export default class Slots {
                 this.interfaceInspect.setVisible(false)
                 this.viewSelected();
             } else {
+                // slots must invoke the scene's back button... which is shitty, this is UI stuff
                 //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
                 if (this.activeScene == "ZotTable")
                     scene.registry.set('replayObject', "zotBackButton:ZotTable");
@@ -243,14 +242,6 @@ export default class Slots {
             this.interfaceClueCombine.setVisible(true);
         } else
             this.interfaceClueCombine.setVisible(false);
-    }
-
-
-    displayInventoryBar(showBar: boolean) {
-        if (showBar)
-            this.invBar.setVisible(true)
-        else
-            this.invBar.setVisible(false)
     }
 
     displaySlots() {

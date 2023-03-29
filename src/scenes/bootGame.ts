@@ -3,13 +3,20 @@
 
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
+import PlayerUI from './playerUI';
+
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
+
+//import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
+
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true;
+let myUI: PlayerUI;
+
+const skipClickToStart = false;
 const testingFour = false;
 const skipBackgroundsLoad = false;
-const skipCloud = true;
+const skipCloud = false;
 
 let welcomeBack = false;
 
@@ -29,7 +36,7 @@ var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
 
 // UI stuff
-var invBar: Phaser.GameObjects.Sprite;
+
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
 var failed: Phaser.GameObjects.Sprite;
@@ -66,6 +73,9 @@ export class BootGame extends Phaser.Scene {
         //console.log("BOOT")
         splashScreen = this.add.image(0, 0, 'splash').setOrigin(0, 0);
 
+        var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
+        this.load.plugin('rexyoutubeplayerplugin', url, true);
+
         // On the fence about DPI, it all seems just fine...
         //var fontSize = 16*assetsDPR;
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
@@ -80,7 +90,7 @@ export class BootGame extends Phaser.Scene {
         
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
-        this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
+        //this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
         if (!testingFour) {
@@ -136,6 +146,16 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
                 this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
                 this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
+
+                this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
+                this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
+                this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');
+
+                //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
+                //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
+                //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+                this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
+
             }
 
             // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
@@ -190,6 +210,7 @@ export class BootGame extends Phaser.Scene {
                 }
 
             });
+            //console.log("boot preload finishes")
         }
     }
 
@@ -211,6 +232,8 @@ export class BootGame extends Phaser.Scene {
 
 
     async create() {
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+
         // SCENERECORD: Capture all mask clicks on this scene
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
@@ -247,7 +270,7 @@ export class BootGame extends Phaser.Scene {
             greets4.destroy();
             greets5.destroy();
 
-            slots.displayInventoryBar(true); slots.showEye()
+            myUI.displayInventoryBar(true); slots.showEye()
 
             if (playerName == "qqq" || playerName == "Qqq") {
                 //console.log("do not record by default, Quazar")
@@ -270,8 +293,6 @@ export class BootGame extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
 
-        invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0);
-
         interfaceClueFull = this.add.sprite(0, 0, 'interfaceClueFull').setOrigin(0, 0);
         interfaceClueCombine = this.add.sprite(0, 0, 'interfaceCombine').setOrigin(0, 0);
         interfaceClueFull.setVisible(false);
@@ -280,8 +301,9 @@ export class BootGame extends Phaser.Scene {
         const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
 
         recorder = new Recorder(this.input.activePointer, viewportPointer, viewportPointerClick, playerName);
-        slots = new Slots(this, iconSelected, recorder, invBar, interfaceClueFull, interfaceClueCombine);
-        slots.displayInventoryBar(false); slots.hideEye();
+        slots = new Slots(this, iconSelected, recorder, interfaceClueFull, interfaceClueCombine);
+
+        myUI.displayInventoryBar(false); slots.hideEye();
 
 
         ////////////// PLAYER NAME REGISTRATION //////////////
@@ -437,7 +459,7 @@ export class BootGame extends Phaser.Scene {
             greets4.destroy();
             greets5.destroy();
 
-            slots.displayInventoryBar(true); slots.showEye()
+            myUI.displayInventoryBar(true); slots.showEye()
 
             //loadDone.destroy()
             if (testingFour) {
