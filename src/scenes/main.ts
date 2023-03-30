@@ -62,7 +62,7 @@ let theRecording: string;
 var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
 var doorMask: Phaser.GameObjects.Sprite;
-var objectMask: Phaser.GameObjects.Sprite;
+
 var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
 var battMask: Phaser.GameObjects.Sprite;
@@ -80,10 +80,6 @@ var zotBoxColorGreen: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
 
-var flipIt = false;
-var foundHalfKey = false; // enable the key mask when key part is visible
-var snagged = false;
-var haveHalfKey = false; // don't show key part on plate back if already taken
 var doorUnlocked = false;
 var egress = false;
 var didBonus = false;
@@ -190,6 +186,7 @@ export class PlayGame extends Phaser.Scene {
             slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
             slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
             slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
+            slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -284,7 +281,7 @@ export class PlayGame extends Phaser.Scene {
 
 
         if (slots.combining.split(':')[0] == "bad combine") {
-            slots.setCombined(true);
+            //slots.setCombined(true);
 
             myUI.displayInterfaceClueCombine(false);
             //console.log("BAD COMBINE")
@@ -297,7 +294,7 @@ export class PlayGame extends Phaser.Scene {
         }
 
         if (slots.combining.split(':')[0] == "good combine") {
-            slots.setCombined(true);
+            //slots.setCombined(true);
 
             myUI.displayInterfaceClueCombine(false);
             //console.log("clear out " + slots.combining.split(':')[1])
@@ -484,107 +481,9 @@ export class PlayGame extends Phaser.Scene {
         }
 
 
-        ////////////// VIEW INVENTORY OR ROOM //////////////
+        ////////////// ROOM VIEW //////////////
 
-
-        // If an icon is clicked, slots will tell us we need to switch to inventory view mode.
-        if (slots.inventoryViewSwitch) {
-            slots.currentMode = "item"; // so slots object knows we did indeed switch
-
-            // Turn off room navigation. If viewing a wall, return to the same wall. Turn off embellishments.
-            leftButton.setVisible(false);
-            rightButton.setVisible(false);
-            boxZot.setDepth(-1);
-            zotBoxColorYellow.setDepth(-1);
-            zotBoxColorGreen.setDepth(-1);
-
-            if (viewWall < 5)
-                previousWall = viewWall;
-
-            // FIRST ROOM IMPLEMENTATION //   
-            if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
-                slots.inventoryViewAlt = "altobjPlateEmpty";
-            }
-            if (snagged) {
-                currentWall = 5; flipIt = true;
-                snagged = false;
-                slots.inventoryViewAlt = "altobjPlateEmpty";
-            }
-            // only show key when looking at back of plate
-            keyMask.setVisible(false);
-            // only make the piece available if seen...
-            if (currentWall == 5 && foundHalfKey && !haveHalfKey) {
-                keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
-            }
-
-            if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
-                slots.setSearched(true);
-                this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
-                viewWall = 6; currentWall = 6;
-            } else {
-                this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
-                viewWall = 5; currentWall = 5;
-
-                // DEBUG RECORDER START/STOP
-
-                //console.log("IDLE IT? OR REPLAY");
-                if (slots.inventoryViewObj == "objRoach") {
-                    if (recorder.getMode() == "record") {
-                        recorder.setMode("idle")
-
-                        //this.showRecording()
-                    } else {
-                        // TODO write proper exit function, called twice and did it here wrongly
-                        recorder.setMode("idle")
-
-                        viewportText.setDepth(-1);
-                        recordingEndedFadeClicks = 20;
-                    }
-                }
-            }
-            flipIt = false;
-
-            myUI.displayInventoryBar(true);
-            slots.inventoryViewSwitch = false;
-
-            backButton.setVisible(true); backButton.setDepth(110); backButton.setInteractive({ cursor: 'pointer' });
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
-
-            myUI.displayInterfaceClueFull(false);
-            myUI.displayInterfaceClueCombine(false);
-            if (!slots.getSearched()) {
-                myUI.displayInterfaceClueFull(true);
-            }
-            if (!slots.getCombined()) {
-                myUI.displayInterfaceClueCombine(true);
-            }
-
-            if (slots.inventoryViewObj == "objRoach") {
-                myUI.displayInterfaceClueFull(false);
-                myUI.displayInterfaceClueCombine(false);
-            }
-
-            // turn off all scene masks, and turn on the object alternate view mask
-            takeMask.setVisible(false);
-            tableMask.setVisible(false);
-            zotTableMask.setVisible(false);
-            doorMask.setVisible(false);
-            battMask.setVisible(false);
-
-            fourMask.setVisible(false);
-            fiveMask.setVisible(false);
-            fourSolved.setVisible(false);
-            fiveOpen.setVisible(false);
-            fiveBatt.setVisible(false);
-
-            objectMask.setVisible(true);
-            objectMask.setDepth(100);
-            objectMask.setInteractive({ cursor: 'pointer' });
-            //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-
-        } else if ((viewWall != currentWall || updateWall)) {
-            myUI.displayInterfaceClueFull(false);
-            myUI.displayInterfaceClueCombine(false);
+        if ((viewWall != currentWall || updateWall)) {
 
             fourSolved.setVisible(false);
             fiveOpen.setVisible(false);
@@ -647,20 +546,17 @@ export class PlayGame extends Phaser.Scene {
                 return; // that's all we need to do on egress
             }
 
-            slots.currentMode = "room";
-            if (viewWall > -1) { //?
-                if (doorUnlocked && viewWall == 0) {
-                    this.add.image(0, 0, walls[7]).setOrigin(0, 0);
-                } else {
-                    this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
-                }
+            // TODO: should not be adding images willy nilly!
+            if (doorUnlocked && viewWall == 0) {
+                this.add.image(0, 0, walls[7]).setOrigin(0, 0);
+            } else {
+                this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
             }
 
             // need to build out hint system
             if (viewWall == 9)
                 previousWall = 2;
 
-            myUI.displayInventoryBar(true);
             currentWall = viewWall;
             updateWall = false;
 
@@ -745,7 +641,6 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 takeMask.setVisible(false);
             }
-            objectMask.setVisible(false);
         }
     }
 
@@ -840,7 +735,6 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(myPaste);
 
         slots.displaySlots();
-        slots.currentMode = "room";
 
         //SCENERECORD add to recorder dictionary every sprite that can be clicked 
         leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton");
@@ -867,8 +761,6 @@ export class PlayGame extends Phaser.Scene {
                 viewWall = 0;
             else
                 viewWall = previousWall;
-            slots.currentMode = "room";
-            myUI.turnEyeOff()
         });
 
         hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
@@ -902,10 +794,7 @@ export class PlayGame extends Phaser.Scene {
         tableMask = this.add.sprite(440, 615, 'atlas', 'tableMask.png').setOrigin(0, 0).setName("tableMask");
         recorder.addMaskSprite('tableMask', tableMask);
         tableMask.on('pointerdown', () => {
-            //console.log("view table!")
-            if (viewWall == 0)
-                viewWall = 4;
-
+            viewWall = 4; roomReturnWall = 4;
         });
 
         zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("zotTableMask");
@@ -1006,41 +895,21 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        //objectMask = this.add.sprite(170, 410, 'objectMask').setOrigin(0, 0);
-        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("objectMask");
-        recorder.addMaskSprite('objectMask', objectMask);
-        // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
-        objectMask.on('pointerdown', () => {
-            //console.log("main object view")
-            flipIt = true;
-            slots.inventoryViewSwitch = true;
-
-            foundHalfKey = false;
-            if (slots.inventoryViewObj == "objPlate" && viewWall == 5) {
-                foundHalfKey = true;
-            }
-            if (slots.inventoryViewObj == "objRoach" && viewWall == 5) {
-                if (recorder.getMode() == "replay") {
-                    recorder.setMode("idle")
-                } else {
-                    recorder.setMode("record")
-                    window.location.reload();
-                }
-            }
-        });
 
         // Found the key and clicked it. We need to update the inventory view with empty plate.
         //keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
         keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
-            //console.log("KEYMASK")
+            console.log("KEYMASK")
+            /*
             slots.inventoryViewSwitch = true; // force inventory view update.
             flipIt = false;
             snagged = true; // swap out plate with key for the empty plate
             haveHalfKey = true;
 
             slots.addIcon(icons[2], obj[2], altObj[2]); // TODO: get name from sprite!!
+            */
         });
 
         // Prep recording stack for replay
@@ -1075,7 +944,7 @@ export class PlayGame extends Phaser.Scene {
         slots.addIcon(icons[7], "fake", "fake", 10); // TODO: get name from sprite?!
 
         this.events.on('wake', () => {
-            //console.log("MAIN AWAKES")
+            //console.log(`Main awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
             myUI.setActiveScene("PlayGame");

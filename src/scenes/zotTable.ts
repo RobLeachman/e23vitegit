@@ -51,9 +51,6 @@ let zotBottomMask: Phaser.GameObjects.Sprite;
 let zotTopMask: Phaser.GameObjects.Sprite;
 let zotDrawerMask: Phaser.GameObjects.Sprite;
 
-let zotObjectMask: Phaser.GameObjects.Sprite; // TODO should be a way to make this common but I got tired
-var zot_flipIt = false;
-
 let haveZot = false;
 
 var slots: Slots;
@@ -103,9 +100,6 @@ export class ZotTable extends Phaser.Scene {
 
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action
-            slots.currentMode = "room"; // definitely not in view object mode
-            myUI.turnEyeOff()
-            zotObjectMask.setVisible(false);
 
             // record the last back action, it won't be captured by global method
             if (backStack.length == 0) {
@@ -225,16 +219,6 @@ export class ZotTable extends Phaser.Scene {
             }
         });
 
-        //zotObjectMask = this.add.sprite(170, 410, 'zotObjectMask').setOrigin(0, 0);
-        zotObjectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("zotObjectMask");
-        recorder.addMaskSprite('zotObjectMask', zotObjectMask);
-
-        // Flip object over. TODO: must adjust for key presence if it's the plate. Awkward! ??????
-        zotObjectMask.on('pointerdown', () => {
-            zot_flipIt = true;
-            slots.inventoryViewSwitch = true;
-        });
-
         this.events.on('wake', () => {
             console.log("zot awakes")
             this.scene.bringToTop();
@@ -266,69 +250,8 @@ export class ZotTable extends Phaser.Scene {
         if (recorder.getMode() == "record") {
             recorder.checkPointer(this);
         }
-
-        if (slots.inventoryViewSwitch) {
-            //console.log(`Zot Item View   view=${viewWall} previous=${previousWall}`)
-            slots.currentMode = "item"; // so slots object knows we switched
-
-            // Turn off room navigation. If viewing a wall, return to the same wall
-            backFrontButton.setVisible(false);
-            topBottomButton.setVisible(false);
-
-            //just started inspecting an object
-            if (viewWall < 5 || viewWall > 6) {
-                backStack.push(viewWall);
-            }
-
-            // ZOT ROOM IMPLEMENTATION //   
-
-            if (currentWall == 5 && zot_flipIt) { // they just clicked the object, show alt view
-                slots.setSearched(true);
-                this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
-                viewWall = 6; currentWall = 6;
-            } else {
-                this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
-                viewWall = 5; currentWall = 5;
-            }
-            zot_flipIt = false;
-
-            myUI.displayInventoryBar(true);
-            slots.inventoryViewSwitch = false;
-
-            zotBackButton.setVisible(true); zotBackButton.setDepth(10010); zotBackButton.setInteractive({ cursor: 'pointer' });
-            plusButton.setVisible(true); plusButton.setDepth(10010); plusButton.setInteractive();
-
-            console.log("UNTESTED interface clues")
-            myUI.displayInterfaceClueFull(false);
-            myUI.displayInterfaceClueCombine(false);
-            if (!slots.getSearched()) {
-                myUI.displayInterfaceClueFull(true);
-            }
-            if (!slots.getCombined()) {
-                myUI.displayInterfaceClueCombine(true);
-            }
-
-            if (slots.inventoryViewObj == "objRoach") {
-                myUI.displayInterfaceClueFull(false);
-                myUI.displayInterfaceClueCombine(false);
-            }
-
-            // turn off all scene masks, and turn on the object alternate view mask
-            batteryMask.setVisible(false);
-            zotTopMask.setVisible(false);
-            zotBottomMask.setVisible(false);
-            zotDrawerMask.setVisible(false);
-            zotPlaced.setDepth(-1);
-            zotPlacedFlipped.setDepth(-1);
-
-            zotObjectMask.setVisible(true);
-            zotObjectMask.setDepth(1);
-            zotObjectMask.setInteractive({ cursor: 'pointer' });
-
-            myUI.displayInventoryBar(true); // why twice?
-            slots.inventoryViewSwitch = false;
-
-        } else if ((viewWall != currentWall || updateWall)) {
+       
+        if ((viewWall != currentWall || updateWall)) {
             myUI.displayInterfaceClueFull(false);
             myUI.displayInterfaceClueCombine(false);
             //console.log("zot view wall=" + viewWall)

@@ -91,28 +91,18 @@ class InvItem {
                 this.allSlots.slotArray[prevItem].selected = true;
             }
 
-
         } else {
+            // Update selection sprite (top or bottom row) and note this item is selected
             //console.log("Click-Select " + this.name)
-            this.selected = true;
-            // mark this selected icon
             this.allSlots.selectedIcon.x = 112 + this.index * 83;
             this.allSlots.selectedIcon.setY(1078);
-            //this.allSlots.selectedIcon.setDepth(1); // ??
             if (this.index > 5) {
                 this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83);
                 this.allSlots.selectedIcon.setY(1161);
             }
-
-            // When in item view mode if another icon is clicked switch to that item
-            if (this.allSlots.currentMode == "item") {
-                this.allSlots.inventoryViewSwitch = true;
-                this.allSlots.inventoryViewObj = this.objView;
-                this.allSlots.inventoryViewAlt = this.altObjView;
-                console.log(`slots inventory view switch! ${this.objView} ${this.altObjView}`);
-            } else {
-                myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
-            }
+            this.selected = true;
+            this.allSlots.selectedIndex = this.index;
+            myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
         }
     }
 }
@@ -130,7 +120,7 @@ export default class Slots {
     objView: string;
     altObjView: string;
     index: number;
-    currentMode: string;
+    selectedIndex: number;
     recorder: Recorder;
     fakeClicks: number = 0;
     combining: string = "";
@@ -141,7 +131,6 @@ export default class Slots {
     hasCombined = false;
     scene: Phaser.Scene;
     activeScene: string;
-
 
     eyeButtonOn: Phaser.GameObjects.Image;
 
@@ -160,20 +149,6 @@ export default class Slots {
             let slotItem = new InvItem(scene, i, this, this.recorder); // empty sprite image, or select
             this.slotArray.push(slotItem);
         }
-        this.currentMode = "room"; // TODO is this even needed? 
-    }
-
-    setSearched(playerHasSearchedOnce: boolean) {
-        this.hasSearched = playerHasSearchedOnce;
-    }
-    getSearched() {
-        return this.hasSearched;
-    }
-    setCombined(playerDidThisToo: boolean) {
-        this.hasCombined = playerDidThisToo;
-    }
-    getCombined() {
-        return this.hasCombined;
     }
 
     displaySlots() {
@@ -226,7 +201,7 @@ export default class Slots {
 
             this.slotArray[i].iconSprite.destroy();
         this.slotArray[i].iconSprite =
-            this.scene.add.sprite(112 + i * 83, 1078, 'atlas', iconSpriteName).setOrigin(0, 0);
+            this.scene.add.sprite(112 + i * 83, 1078, 'atlas', iconSpriteName).setOrigin(0, 0).setDepth(1);
         if (i > 5) {
             this.slotArray[i].iconSprite.setX(112 + (i - 6) * 83)
             this.slotArray[i].iconSprite.setY(1161)
@@ -252,7 +227,7 @@ export default class Slots {
 
     selectItem(objName: string) {
         // Find the selected item
-        //console.log("select item="+objName)
+        //console.log("select item: " + objName)
         var k = -1;
         for (k = 0; k < 12; k++) {
             if (this.slotArray[k].iconSprite.name == objName) {
@@ -265,7 +240,8 @@ export default class Slots {
             this.selectedIcon.setY(1161)
         }
         this.slotArray[k].selected = true;
-        return k;
+        this.selectedIndex = k;
+        return this.selectedIndex;
     }
 
 
@@ -284,7 +260,12 @@ export default class Slots {
         return { thing, objView, objViewAlt };
     }
 
+    getSelectedIndex() {
+        return this.selectedIndex;
+    }
+
     viewSelected() {
+        this.hasInspected = true;
         let objView: string = "";
         let objViewAlt: string = "";
 
@@ -295,10 +276,11 @@ export default class Slots {
 
             }
         });
-        this.inventoryViewSwitch = true;
-        this.inventoryViewObj = objView;
-        this.inventoryViewAlt = objViewAlt;
-        this.hasInspected = true;
+
+        return {
+            objectView: objView,
+            objectViewAlt: objViewAlt
+        }
     }
 
     clearItem(objName: string) {

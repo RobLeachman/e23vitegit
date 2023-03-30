@@ -1,7 +1,6 @@
 /* global Phaser */
 //import { assetsDPR } from '../index';
 
-import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
 
@@ -22,7 +21,6 @@ const playerNameCookie = "escape23player1";
 let playerCount = -1;
 let playButtonIsHidden = true;
 
-var slots: Slots;
 var recorder: Recorder;
 
 let theRecording: string;
@@ -279,7 +277,6 @@ export class BootGame extends Phaser.Scene {
         });
 
         recorder = myUI.getRecorder();
-        slots = myUI.getSlots();
 
         myUI.displayInventoryBar(false); myUI.hideEye();
 
