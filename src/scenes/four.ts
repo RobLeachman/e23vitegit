@@ -123,7 +123,6 @@ export class Four extends Phaser.Scene {
                         }
             */
 
-
             const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
             //console.log(`selecting ${selection.x},${selection.y}`);
 

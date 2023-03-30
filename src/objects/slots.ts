@@ -38,7 +38,6 @@ class InvItem {
     }
 
     clickIt() {
-        //console.log(this);
         //console.log(this.name);
         //console.log((this.iconSprite as Phaser.GameObjects.Sprite).texture.key)
         //this.recorder.recordIconClick(this.name, this.scene);
@@ -46,7 +45,7 @@ class InvItem {
         //console.log("RECORD ICON CLICK!! " + this.name);
         let time = this.scene.time.now;
         //this.recorder.recordIconClick((this.iconSprite as Phaser.GameObjects.Sprite).texture.key, time);
-        this.recorder.recordIconClick(this.name, time);
+        this.recorder.recordIconClick(this.name, time, this.scene);
         if (this.name == "fake") {
             //console.log("FAKE")
             this.allSlots.fakeClicks++;
@@ -98,11 +97,11 @@ class InvItem {
             this.selected = true;
             // mark this selected icon
             this.allSlots.selectedIcon.x = 112 + this.index * 83;
-            this.allSlots.selectedIcon.setY(1078)
+            this.allSlots.selectedIcon.setY(1078);
             //this.allSlots.selectedIcon.setDepth(1); // ??
             if (this.index > 5) {
-                this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83)
-                this.allSlots.selectedIcon.setY(1161)
+                this.allSlots.selectedIcon.setX(112 + (this.index - 6) * 83);
+                this.allSlots.selectedIcon.setY(1161);
             }
 
             // When in item view mode if another icon is clicked switch to that item
@@ -112,7 +111,7 @@ class InvItem {
                 this.allSlots.inventoryViewAlt = this.altObjView;
                 console.log(`slots inventory view switch! ${this.objView} ${this.altObjView}`);
             } else {
-                this.allSlots.eyeButton.setTexture('eyeHint'); // add a little reminder hint flair
+                myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
             }
         }
     }
@@ -136,7 +135,6 @@ export default class Slots {
     fakeClicks: number = 0;
     combining: string = "";
 
-    interfaceInspect: Phaser.GameObjects.Sprite;
     hasInspected = false;
 
     hasSearched = false;
@@ -144,7 +142,7 @@ export default class Slots {
     scene: Phaser.Scene;
     activeScene: string;
 
-    eyeButton: Phaser.GameObjects.Sprite;
+
     eyeButtonOn: Phaser.GameObjects.Image;
 
     // Construct with the active scene, the name of the empty sprite (for testing), and the select boxes 
@@ -154,9 +152,6 @@ export default class Slots {
 
         this.selectedIcon = selectSprite;
         this.recorder = recorder;
-        
-
-        this.interfaceInspect = scene.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
         this.scene = scene;
         myUI = scene.scene.get("PlayerUI") as PlayerUI;
@@ -166,49 +161,6 @@ export default class Slots {
             this.slotArray.push(slotItem);
         }
         this.currentMode = "room"; // TODO is this even needed? 
-
-        this.eyeButton = this.scene.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
-
-        this.eyeButton.setVisible(true); this.eyeButton.setInteractive({ cursor: 'pointer' });
-        //this.eyeButton.setDepth(1); 
-        recorder.addMaskSprite('eyeButton', this.eyeButton);
-        this.eyeButton.on('pointerdown', () => {
-            //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
-            if (recorder.getMode() == "record")
-                recorder.recordObjectDown("eyeButton", this.scene);
-
-            if (this.eyeButton.name != "eyeButtonOn") {
-                //console.log("view selected eyeball")
-                let selectedThing = this.getSelected();
-                //console.log("**** selected thing=" + selectedThing.thing)
-                if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
-                    return;
-                this.eyeButton.setTexture('eyeButtonOn');
-                this.eyeButton.setName("eyeButtonOn");
-                this.interfaceInspect.setVisible(false)
-                this.viewSelected();
-            } else {
-                // slots must invoke the scene's back button... which is shitty, this is UI stuff
-                //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
-                const activeScene = myUI.getActiveScene()
-                if (activeScene == "ZotTable")
-                    scene.registry.set('replayObject', "zotBackButton:ZotTable");
-                else
-                    scene.registry.set('replayObject', "backButton:PlayGame");
-            }
-        });
-    }
-
-    turnEyeOff() {
-        this.eyeButton.setTexture('eyeButton');
-        this.eyeButton.setName("eyeButton");
-    }
-    hideEye() {
-        this.eyeButton.setVisible(false);
-    }
-
-    showEye() {
-        this.eyeButton.setVisible(true);
     }
 
     setSearched(playerHasSearchedOnce: boolean) {
@@ -255,7 +207,7 @@ export default class Slots {
         // show the clue on the first actual item icon, not the empty fakes
         // only show it the first time
         if (objectView != "fake" && !this.hasInspected) {
-            this.interfaceInspect.setVisible(true)
+            myUI.showInspectClue();
         }
         let i = -1;
         this.slotArray.forEach((icon, idx) => {

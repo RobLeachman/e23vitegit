@@ -104,7 +104,7 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action
             slots.currentMode = "room"; // definitely not in view object mode
-            slots.turnEyeOff()
+            myUI.turnEyeOff()
             zotObjectMask.setVisible(false);
 
             // record the last back action, it won't be captured by global method

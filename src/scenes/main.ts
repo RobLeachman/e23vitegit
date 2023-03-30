@@ -188,6 +188,8 @@ export class PlayGame extends Phaser.Scene {
             //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
             //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
             slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
+            slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
+            slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
 
             //this.scene.swapPosition("PlayGame", "BootGame");            
             this.scene.bringToTop("BootGame"); //TODO: do this in create?
@@ -592,7 +594,7 @@ export class PlayGame extends Phaser.Scene {
                 this.add.image(0, 0, walls[8]).setOrigin(0, 0);
                 leftButton.setVisible(false);
                 rightButton.setVisible(false);
-                slots.hideEye();
+                myUI.hideEye();
                 viewportPointer.setDepth(-1);
                 viewportPointerClick.setDepth(-1);
                 let fadeClicks = 10;
@@ -861,12 +863,12 @@ export class PlayGame extends Phaser.Scene {
         backButton.on('pointerdown', () => {
             //console.log("back to " + previousWall)
             slots.combining = ""; // cancel any combine action
-            if (viewWall == 4)
+            if (viewWall == 4) // looking at table
                 viewWall = 0;
             else
                 viewWall = previousWall;
             slots.currentMode = "room";
-            slots.turnEyeOff()
+            myUI.turnEyeOff()
         });
 
         hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
@@ -910,10 +912,10 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
             zotIsRunning = true;
-            
+
             roomReturnWall = 1;
             leftButton.setVisible(false);
-            rightButton.setVisible(false);            
+            rightButton.setVisible(false);
 
             // the worst kind of hack, it will work but bad idea so TODO whenever...
             // if this was a portal on a wall with lots of stuff would need to turn it all off...

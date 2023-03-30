@@ -354,7 +354,8 @@ export default class Recorder {
         this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},%${scene.sys.settings.key}%:`);
     }
     // icons always belong to the main game scene so no need to save it
-    recordIconClick(object: string, time: number) {
+    recordIconClick(object: string, time: number, scene: Phaser.Scene) {
+        this.pointer = scene.input.activePointer;
         //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }

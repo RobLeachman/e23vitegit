@@ -9,9 +9,11 @@ let viewportPointerClick: Phaser.GameObjects.Sprite;
 let viewportPointer: Phaser.GameObjects.Sprite;
 let iconSelected: Phaser.GameObjects.Sprite;
 let failed: Phaser.GameObjects.Sprite;
+let interfaceInspect: Phaser.GameObjects.Sprite;
 
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
+var eyeButton: Phaser.GameObjects.Sprite;
 
 /*
 viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
@@ -25,8 +27,6 @@ let recorder: Recorder;
 let activeSceneName: string;
 
 export default class PlayerUI extends Phaser.Scene {
-    
-
     constructor() {
         super("PlayerUI");
     }
@@ -97,6 +97,24 @@ export default class PlayerUI extends Phaser.Scene {
         return slots;
     }
 
+    setEyeTexture(textureName: string) {
+        eyeButton.setTexture(textureName);
+    }
+    turnEyeOff() {
+        eyeButton.setTexture('eyeButton');
+        eyeButton.setName("eyeButton");
+    }
+    hideEye() {
+        eyeButton.setVisible(false);
+    }
+    showEye() {
+        eyeButton.setVisible(true);
+    }
+    showInspectClue() {
+        interfaceInspect.setVisible(true);
+    }
+
+
     // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
     preload() {
         //console.log("playerUI preload")
@@ -114,10 +132,11 @@ export default class PlayerUI extends Phaser.Scene {
         iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
         failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
         //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
+        interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
         recorder = new Recorder(viewportPointer, viewportPointerClick);
         slots = new Slots(this, iconSelected, recorder);
-        
+
         plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton");
         plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton");
         recorder.addMaskSprite('plusButton', plusButton);
@@ -135,7 +154,37 @@ export default class PlayerUI extends Phaser.Scene {
             slots.combining = "trying"; // so slots object knows what is happening            
             plusButton.setVisible(false);
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
-        });        
+        });
+
+        eyeButton = this.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0);
+        recorder.addMaskSprite('eyeButton', eyeButton);
+        eyeButton.setVisible(true); eyeButton.setInteractive({ cursor: 'pointer' });
+
+        eyeButton.on('pointerdown', () => {
+            //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
+            if (recorder.getMode() == "record")
+                recorder.recordObjectDown("eyeButton", this);
+
+            if (eyeButton.name != "eyeButtonOn") {
+                //console.log("view selected eyeball")
+                let selectedThing = slots.getSelected();
+                //console.log("**** selected thing=" + selectedThing.thing)
+                if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
+                    return;
+                eyeButton.setTexture('eyeButtonOn');
+                eyeButton.setName("eyeButtonOn");
+                interfaceInspect.setVisible(false)
+                slots.viewSelected();
+            } else {
+                // slots must invoke the scene's back button... which is shitty, this is UI stuff
+                //console.log("\n\n\nEYE CLICK BACK " + this.activeScene)
+
+                if (activeSceneName == "ZotTable")
+                    this.registry.set('replayObject', "zotBackButton:ZotTable");
+                else
+                    this.registry.set('replayObject', "backButton:PlayGame");
+            }
+        });
 
 
 

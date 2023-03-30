@@ -8,8 +8,8 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true;
-const skipCloud = true;
+const skipClickToStart = true; const skipCloud = true;
+//const skipClickToStart = false; const skipCloud = false;
 const testingFour = false;
 const skipBackgroundsLoad = false;
 
@@ -259,7 +259,7 @@ export class BootGame extends Phaser.Scene {
             greets4.destroy();
             greets5.destroy();
 
-            myUI.displayInventoryBar(true); slots.showEye()
+            myUI.displayInventoryBar(true); myUI.showEye()
 
             if (playerName == "qqq" || playerName == "Qqq") {
                 //console.log("do not record by default, Quazar")
@@ -281,7 +281,7 @@ export class BootGame extends Phaser.Scene {
         recorder = myUI.getRecorder();
         slots = myUI.getSlots();
 
-        myUI.displayInventoryBar(false); slots.hideEye();
+        myUI.displayInventoryBar(false); myUI.hideEye();
 
 
         ////////////// PLAYER NAME REGISTRATION //////////////
@@ -420,7 +420,7 @@ export class BootGame extends Phaser.Scene {
             greets4.destroy();
             greets5.destroy();
 
-            myUI.displayInventoryBar(true); slots.showEye()
+            myUI.displayInventoryBar(true); myUI.showEye()
 
             //loadDone.destroy()
             if (testingFour) {
