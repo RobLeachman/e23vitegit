@@ -38,10 +38,10 @@ let hasSearched = false;
 let hasCombined = false;
 let currentSelectedIndex: number;
 
-// need keymask!
-//var foundHalfKey = false; // enable the key mask when key part is visible
-//var snagged = false;
-//var haveHalfKey = false; // don't show key part on plate back if already taken
+// special for key hidden on back of plate
+var keyMask: Phaser.GameObjects.Sprite;
+let foundHalfKey = false; // enable the key mask when key part is visible
+let haveHalfKey = false; // don't show key part on plate back if already taken
 
 
 export default class PlayerUI extends Phaser.Scene {
@@ -133,6 +133,7 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
 
+
     // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
     preload() {
         //console.log("playerUI preload")
@@ -207,13 +208,13 @@ export default class PlayerUI extends Phaser.Scene {
             }
         });
 
-        UIbackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("UIbackButton").setDepth(1).setVisible(false);
+        UIbackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("UIbackButton").setDepth(3).setVisible(false);
         recorder.addMaskSprite('UIbackButton', UIbackButton);
         UIbackButton.on('pointerdown', () => {
             this.closeObjectUI();
         });
 
-        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("objectMask").setDepth(2);
+        objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("objectMask").setDepth(2).setVisible(false);
         recorder.addMaskSprite('objectMask', objectMask);
         // Flip object over. Need to adjust for key presence if it's the plate. Awkward!
         objectMask.on('pointerdown', () => {
@@ -221,10 +222,6 @@ export default class PlayerUI extends Phaser.Scene {
             hasSearched = true;
             uiObjectViewDirty = true;
             /*
-            foundHalfKey = false;
-            if (slots.inventoryViewObj == "objPlate" && viewWall == 5) {
-                foundHalfKey = true;
-            }
             if (slots.inventoryViewObj == "objRoach" && viewWall == 5) {
                 if (recorder.getMode() == "replay") {
                     recorder.setMode("idle")
@@ -235,7 +232,17 @@ export default class PlayerUI extends Phaser.Scene {
             }
             */
         });
-        objectMask.setVisible(false);
+
+        // Found the key and clicked it. We need to update the inventory view with empty plate.
+        keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0).setDepth(1).setVisible(false);
+        recorder.addMaskSprite('keyMask', keyMask);
+        keyMask.on('pointerdown', () => {
+            slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
+            haveHalfKey = true;
+
+            uiObjectViewDirty = true;
+        });
+
 
 
         this.scene.launch("BootGame")
@@ -270,8 +277,22 @@ export default class PlayerUI extends Phaser.Scene {
 
         if (uiObjectView && uiObjectViewDirty) {
             uiObjectViewDirty = false;
-
             const viewIt = slots.viewSelected();
+
+            // special hidden key on back of plate logic stuff
+            foundHalfKey = false;
+            if (viewIt.objectView == "objPlate" && flipIt) {
+                console.log("discovered key!")
+                foundHalfKey = true;
+            }
+            if (haveHalfKey && viewIt.objectViewAlt == "altobjPlateKey") {
+                viewIt.objectViewAlt = "altobjPlateEmpty";
+            }
+            keyMask.setVisible(false)
+            if (foundHalfKey && !haveHalfKey) {
+                keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
+            }
+
             //console.log(`VIEW ${viewIt.objectView} alt ${viewIt.objectViewAlt}`)
             if (objectImage != undefined)
                 objectImage.destroy();

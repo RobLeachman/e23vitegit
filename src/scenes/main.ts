@@ -36,7 +36,7 @@ let debugPanel = false; // debug panel on top of screen
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 3; // production start at 0
+var viewWall = 0; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -63,7 +63,6 @@ var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
 var doorMask: Phaser.GameObjects.Sprite;
 
-var keyMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
 var battMask: Phaser.GameObjects.Sprite;
 
@@ -896,21 +895,6 @@ export class PlayGame extends Phaser.Scene {
         });
 
 
-        // Found the key and clicked it. We need to update the inventory view with empty plate.
-        //keyMask = this.add.sprite(315, 540, 'keyMask').setOrigin(0, 0);
-        keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0);
-        recorder.addMaskSprite('keyMask', keyMask);
-        keyMask.on('pointerdown', () => {
-            console.log("KEYMASK")
-            /*
-            slots.inventoryViewSwitch = true; // force inventory view update.
-            flipIt = false;
-            snagged = true; // swap out plate with key for the empty plate
-            haveHalfKey = true;
-
-            slots.addIcon(icons[2], obj[2], altObj[2]); // TODO: get name from sprite!!
-            */
-        });
 
         // Prep recording stack for replay
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {

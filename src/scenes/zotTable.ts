@@ -9,6 +9,7 @@ var recorder: Recorder;
 let viewWall = 0;
 let currentWall = -1;
 let updateWall = false;
+let roomReturnWall = 0;
 
 let backStack = new Array();
 
@@ -224,7 +225,7 @@ export class ZotTable extends Phaser.Scene {
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
             myUI.setActiveScene("ZotTable");
-            viewWall = 0;
+            viewWall = roomReturnWall;
             updateWall = true;
         });
     }
@@ -252,6 +253,7 @@ export class ZotTable extends Phaser.Scene {
         }
        
         if ((viewWall != currentWall || updateWall)) {
+            roomReturnWall = viewWall;
             myUI.displayInterfaceClueFull(false);
             myUI.displayInterfaceClueCombine(false);
             //console.log("zot view wall=" + viewWall)
