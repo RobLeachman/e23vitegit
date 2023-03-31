@@ -29,7 +29,7 @@ let myUI: PlayerUI;
 const minDelayReplay = 10;
 const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = false; // display pastebox for input of debug data
+
 let debugUpdateOnce = false;
 let debugDisplayActionSteps = false; // show actions while replaying
 let debugPanel = false; // debug panel on top of screen
@@ -189,9 +189,7 @@ export class PlayGame extends Phaser.Scene {
             slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
             slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
 
-            //this.scene.swapPosition("PlayGame", "BootGame");            
-            this.scene.bringToTop("BootGame"); //TODO: do this in create?
-
+/*
             if (debugInput && recorder.getMode() != "replay") {
                 myText.text = "debugger file load";
                 myPaste.text = "pasteit";
@@ -201,6 +199,14 @@ export class PlayGame extends Phaser.Scene {
                 myText.resize(0, 0);
                 myPaste.resize(0, 0);
             }
+*/            
+
+            myText.text = "off";
+            myText.resize(0, 0);
+            myPaste.resize(0, 0);
+
+
+
             /*
                         // Nice clean text at top of screen...
                         const mobileTest = this.make.text({
@@ -291,7 +297,6 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "record") {
             recorder.checkPointer(this);
         } else if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
-            //console.log("action " + nextActionTime + " now " + this.time.now) // DUMB, just fills screen with timer
             if (debugDisplayActionSteps)
                 console.log("replay action:" + actions[0]);
             //console.log(" at " + actions[0][3]);
@@ -334,7 +339,7 @@ export class PlayGame extends Phaser.Scene {
                         // if (object?.scene.sys.settings.key != "PlayGame") {
                         if (object?.scene === this) {
                             //console.log("SIMULATE MAIN")
-                            //console.log("simulating " + targetObject)
+                            console.log("simulating main " + targetObject)
                             object?.emit('pointerdown')
                         } else {
                             //console.log("SIMULATE ZOT")
@@ -343,7 +348,7 @@ export class PlayGame extends Phaser.Scene {
                             this.registry.set('replayObject', targetObject + ":" + targetScene);
                         }
                     } else if (targetType == "icon") {
-                        //console.log("do icon " + targetObject);
+                        console.log("simulate icon " + targetObject);
                         slots.recordedClickIt(targetObject);   // here's how we click an icon!
                     }
                 }
@@ -587,6 +592,7 @@ export class PlayGame extends Phaser.Scene {
     }) {
         mobile = data.mobile;
         theRecording = data.theRecording;
+        //console.log(`main create ${mobile}`)
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
@@ -611,9 +617,9 @@ export class PlayGame extends Phaser.Scene {
         });
 
         recorder = slots.recorder;
-        const playerName = recorder.getPlayerName();
+        //const playerName = recorder.getPlayerName();
         //console.log("MAIN PLAYER " + playerName);
-        debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
+        //debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
         viewportPointer = recorder.pointerSprite;
         viewportPointerClick = recorder.clickSprite;
 
@@ -642,14 +648,14 @@ export class PlayGame extends Phaser.Scene {
             fontSize: '24px',
         });
         //theText = this.add.existing(myText);
-        this.add.existing(myText);
+        //this.add.existing(myText);
 
         myPaste = new InputText(this, 300, 150, 300, 100, {
             type: 'textarea',
             text: 'init',
             fontSize: '24px',
         });
-        this.add.existing(myPaste);
+        //this.add.existing(myPaste);
 
         slots.displaySlots();
 

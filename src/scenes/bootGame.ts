@@ -7,8 +7,8 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-//const skipClickToStart = true; const skipCloud = true; const writeCookieRecordings = true;
-const skipClickToStart = false; const skipCloud = false; const writeCookieRecordings = false;
+const skipClickToStart = true; const skipCloud = true; 
+//const skipClickToStart = false; const skipCloud = false; 
 const testingFour = false;
 const skipBackgroundsLoad = false;
 
@@ -73,7 +73,6 @@ export class BootGame extends Phaser.Scene {
         
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
-        //this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
         if (!testingFour) {
@@ -243,7 +242,6 @@ export class BootGame extends Phaser.Scene {
         });
 
         recorder = myUI.getRecorder();
-        recorder.setCookieRecorderMode(writeCookieRecordings);
 
         myUI.displayInventoryBar(false); myUI.hideEye();
 
@@ -262,7 +260,8 @@ export class BootGame extends Phaser.Scene {
                 theRecording = "NO RECORDING";
             console.log("BOOT recording= " + theRecording);
 
-            playerCount = await this.getPlayerCount(); // async call to recorder's increment
+            //playerCount = await this.getPlayerCount(); // async call to recorder's increment
+            playerCount = await recorder.incrementPlayerCount();
 
             let playerCookie = getCookie(playerNameCookie);
             playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
@@ -386,18 +385,14 @@ export class BootGame extends Phaser.Scene {
         }
     }
 
-    async getPlayerCount() {
-        return await recorder.incrementPlayerCount();
-    }
-
+     // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
     update() {
-        // wait for cloud load to finish
         if (playButtonIsHidden && !skipClickToStart) {
             if (playerCount > -1) {
                 playButton.setInteractive({ cursor: 'pointer' });
                 playButton.setVisible(true)
                 playButtonIsHidden = false;
             }
-        }
+        } 
     }
 }

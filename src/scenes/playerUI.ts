@@ -2,6 +2,11 @@ import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 
+import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
+
+let debugInput = true; // display pastebox for input of debug data
+const useCookieRecordings = true; // use cookies not the cloud
+
 let invBar: Phaser.GameObjects.Sprite;
 let interfaceClueFull: Phaser.GameObjects.Sprite;
 let interfaceClueCombine: Phaser.GameObjects.Sprite;
@@ -50,6 +55,12 @@ let showXtime = -1;
 
 let fourSolved = false;
 let fiveState = 0;
+
+let theRecording: string;
+let myText: InputText;
+let pasteBox: InputText;
+
+
 
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
@@ -156,17 +167,12 @@ export default class PlayerUI extends Phaser.Scene {
         fiveState = newState;
     }
 
-
-
-    // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
+    // Must preload initial UI sprites, the only graphic asset used here
     preload() {
-        //console.log("playerUI preload")
         this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
-        //this.load.atlas('uiatlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
     }
 
     create() {
-        //console.log("UI shit goes here")
         invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         interfaceClueFull = this.add.sprite(485, 774, 'atlas', 'interfaceClueSearch.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         interfaceClueCombine = this.add.sprite(17, 305, 'atlas', 'interfaceClueCombine.png').setOrigin(0, 0).setVisible(false).setDepth(1);
@@ -267,6 +273,28 @@ export default class PlayerUI extends Phaser.Scene {
             uiObjectViewDirty = true;
         });
 
+        ////////////// RECORDER INIT //////////////
+        const playerName = recorder.getPlayerName();
+        //console.log("MAIN PLAYER " + playerName);
+        debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
+        myText = new InputText(this, 220, 55, 300, 100, {
+            type: 'textarea',
+            text: 'init',
+            fontSize: '24px',
+        });
+        this.add.existing(myText);
+
+        pasteBox = new InputText(this, 220, 105, 300, 100, {
+            type: 'textarea',
+            text: 'init',
+            fontSize: '24px',
+        });
+        this.add.existing(pasteBox);
+        //myText.setDepth(1);
+        //pasteBox.setDepth(10000);
+
+        recorder.setCookieRecorderMode(useCookieRecordings);
+
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -276,26 +304,54 @@ export default class PlayerUI extends Phaser.Scene {
         this.scene.launch("BootGame")
     }
 
-    closeObjectUI() {
-        //console.log("UI back to " + activeSceneName);
-        uiObjectView = false;
-
-        objectImage.destroy();
-
-        slots.combining = ""; // cancel any combine action
-        this.turnEyeOff();
-        UIbackButton.setVisible(false);
-        objectMask.setVisible(false);
-        interfaceClueCombine.setVisible(false);
-        interfaceClueFull.setVisible(false);
-        plusButton.setVisible(false);
-        plusModeButton.setVisible(false);
-        this.scene.wake(activeSceneName)
-    }
-
-    update() {
+    async update() {
         //console.log("UI update")
         //scene.registry.set('replayObject', "zotBackButton:ZotTable");
+
+        if (myText.text == "init") {
+            if (debugInput && recorder.getMode() != "replay") {
+                myText.text = "debugger file load";
+                pasteBox.text = "pasteit";
+            } else {
+                console.log('text off')
+                myText.text = "off";
+                //theText.resize(0, 0);
+                myText.resize(0, 0);
+                pasteBox.resize(0, 0);
+            }
+
+            console.log("UI Recorder mode: " + recorder.getMode());
+            theRecording = "NO RECORDING";
+            if (useCookieRecordings) {
+                theRecording = recorder.getRecordingFromCookies();
+                console.log("cookie rec: " + theRecording)
+            } else {
+                const recordingFilename = recorder.getRecordingFilename();
+                console.log("UI filename=" + recordingFilename);
+                if (recordingFilename.length > 0)
+                    theRecording = await recorder.getRecording();
+            }
+            console.log("UI recording= " + theRecording);
+
+        }
+
+        if (pasteBox.text != "pasteit" && pasteBox.text != "init") {  // pastebox latch
+            const getRec = pasteBox.text;
+            pasteBox.text = "pasteit";
+
+            console.log("lets fetch " + getRec)
+            const theRecording = await recorder.fetchRecording(getRec);
+
+            console.log("we fetched:")
+            console.log(theRecording)
+            if (theRecording == "fail") {
+                myText.text = "ERROR"
+            } else {
+                myText.text = "success"
+                recorder.setRecordingFilename(getRec);
+            }
+        }
+
 
         if (slots.getSelectedIndex() != currentSelectedIndex) {
             currentSelectedIndex = slots.getSelectedIndex();
@@ -402,65 +458,9 @@ export default class PlayerUI extends Phaser.Scene {
             }
         }
 
-        /*        
-         // If an icon is clicked... slots will tell us we need to switch to inventory view mode.
-        
-                if (slots.inventoryViewSwitch) {
-        
-                    slots.inventoryViewSwitch = false;
-        
-        
-                    myUI.displayInterfaceClueFull(false);
-                    myUI.displayInterfaceClueCombine(false);
-                    if (!slots.getSearched()) {
-                        myUI.displayInterfaceClueFull(true);
-                    }
-                    if (!slots.getCombined()) {
-                        myUI.displayInterfaceClueCombine(true);
-                    }
-        
-                    if (slots.inventoryViewObj == "objRoach") {
-                        myUI.displayInterfaceClueFull(false);
-                        myUI.displayInterfaceClueCombine(false);
-                    }
-        
-                    //objectMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-        
-                }
-        */
-
-
-
-        /*
-                    // FIRST ROOM IMPLEMENTATION //   
-                    if (haveHalfKey && slots.inventoryViewAlt == "altobjPlateKey") {
-                        slots.inventoryViewAlt = "altobjPlateEmpty";
-                    }
-                    if (snagged) {
-                        currentWall = 5; flipIt = true;
-                        snagged = false;
-                        slots.inventoryViewAlt = "altobjPlateEmpty";
-                    }
-                    // only show key when looking at back of plate
-                    keyMask.setVisible(false);
-                    // only make the piece available if seen...
-                    if (currentWall == 5 && foundHalfKey && !haveHalfKey) {
-                        keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
-                    }
-        */
-
-
 
         /*                    
-                if (currentWall == 5 && flipIt) { // they just clicked the object, show alt view
-                    slots.setSearched(true);
-                    this.add.image(0, 0, slots.inventoryViewAlt).setOrigin(0, 0);
-                    viewWall = 6; currentWall = 6;
-                } else {
-                    this.add.image(0, 0, slots.inventoryViewObj).setOrigin(0, 0);
-                    viewWall = 5; currentWall = 5;
-        
-                    // DEBUG RECORDER START/STOP
+                    // ROACH DEBUG RECORDER START/STOP
         
                     //console.log("IDLE IT? OR REPLAY");
                     if (slots.inventoryViewObj == "objRoach") {
@@ -476,10 +476,23 @@ export default class PlayerUI extends Phaser.Scene {
                             recordingEndedFadeClicks = 20;
                         }
                     }
-                }
-                flipIt = false;
         */
+    }
 
+    closeObjectUI() {
+        //console.log("UI back to " + activeSceneName);
+        uiObjectView = false;
 
+        objectImage.destroy();
+
+        slots.combining = ""; // cancel any combine action
+        this.turnEyeOff();
+        UIbackButton.setVisible(false);
+        objectMask.setVisible(false);
+        interfaceClueCombine.setVisible(false);
+        interfaceClueFull.setVisible(false);
+        plusButton.setVisible(false);
+        plusModeButton.setVisible(false);
+        this.scene.wake(activeSceneName)
     }
 }

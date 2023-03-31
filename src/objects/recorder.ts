@@ -413,7 +413,11 @@ export default class Recorder {
             recordingIn += cookie.split('|')[0];;
             eof = cookie.split('|')[1];
         }
-        return this.parseRecording(recordingIn);
+        console.log("TEST MULTI-COOKIE PROBABLY BROKEN " + recordingIn.length)
+        if (recordingIn.length > 0)
+            return this.parseRecording(recordingIn);
+        else
+            return "no cookies"
     }
 
     makeFast(recordingSlow: string, speedSteps: number) {
