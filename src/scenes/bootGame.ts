@@ -201,41 +201,11 @@ export class BootGame extends Phaser.Scene {
         }
     }
 
-    // @ts-ignore
-    // no clue what parent is
-    registryUpdate(parent: Phaser.Game, key: string, data: string) {
-        //console.log("----------BOOT reg check " + data)
-        if (key == "replayObject") {
-            const spriteName = data.split(':')[0];
-            const spriteScene = data.split(':')[1];
-            //console.log("BOOT OBJECT replay=" + spriteName + " on scene " + spriteScene)
-            if (spriteScene == "BootGame") {
-                //console.log("it is bootgame")
-                let object = recorder.getMaskSprite(spriteName);
-                object?.emit('pointerdown')
-            }
-        }
-    }
 
 
     async create() {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
 
-        // SCENERECORD: Capture all mask clicks on this scene
-        let thisscene = this;
-        // @ts-ignore   pointer is unused until we get fancy...
-        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
-            // need extra sauce because this scene always runs and would capture other clicks too
-            const spriteName = (gameObject as Phaser.GameObjects.Sprite).name
-            if (spriteName == "plusButton" || spriteName == "plusModeButton") {
-                //console.log("saucy sauce")
-                recorder.recordObjectDown(spriteName, thisscene);
-            } else {
-                //console.log("no mask sauce")
-            }
-        });
-
-        this.registry.events.on('changedata', this.registryUpdate, this);
 
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;

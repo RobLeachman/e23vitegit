@@ -43,6 +43,12 @@ var keyMask: Phaser.GameObjects.Sprite;
 let foundHalfKey = false; // enable the key mask when key part is visible
 let haveHalfKey = false; // don't show key part on plate back if already taken
 
+// tricky stuff for combined plate
+var doorUnlocked = false;
+let didBonus = false;
+
+let showXtime = -1;
+
 
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
@@ -94,17 +100,8 @@ export default class PlayerUI extends Phaser.Scene {
     getViewportPointerClick() {
         return viewportPointerClick;
     }
-    getIconSelected() {
+    getIconSelected() { //USED?
         return iconSelected;
-    }
-    getFailed() {
-        return failed;
-    }
-    getPlusButton() {
-        return plusButton;
-    }
-    getPlusModeButton() {
-        return plusModeButton;
     }
 
     getRecorder() {
@@ -132,6 +129,18 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceInspect.setVisible(true);
     }
 
+    getBonus() {
+        return didBonus;
+    }
+
+    // has to be here because of bonus logic
+    getDoorUnlocked() {
+        return doorUnlocked;
+    }
+    setDoorUnlocked(unlockedIt: boolean) {
+        doorUnlocked = unlockedIt;
+    }
+
 
 
     // Must preload initial UI sprites -- for the stuff done in BootGame TODO goal is nothing like this
@@ -149,7 +158,7 @@ export default class PlayerUI extends Phaser.Scene {
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
         iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0).setDepth(1);
-        failed = this.add.sprite(1000, 950, 'atlas', 'fail.png'); // 640 is displayed
+        failed = this.add.sprite(1000, 950, 'atlas', 'fail.png').setDepth(1); // 640 is displayed
         //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
         interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
@@ -313,8 +322,67 @@ export default class PlayerUI extends Phaser.Scene {
                 this.displayInterfaceClueFull(false);
                 this.displayInterfaceClueCombine(false);
             }
-
         }
+
+        ////////////// INVENTORY COMBINE //////////////
+
+        // Can't combine the plate and donut if door is locked
+        if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
+            slots.combining = "bad combine:"
+        }
+
+        if (slots.combining.split(':')[0] == "bad combine") {
+            hasCombined = true;
+            //console.log("BAD COMBINE")
+            slots.combining = "";
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
+
+            failed.setX(640);
+            showXtime = this.time.now;
+        }
+
+        if (slots.combining.split(':')[0] == "good combine") {
+            hasCombined = true;
+            // remove the first item, note the position of the second item then clear it,
+            slots.clearItem(slots.combining.split(':')[1]);
+            const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
+            slots.clearItem(slots.combining.split(':')[2]);
+
+            if (slots.combining.split(':')[3] == "objDonutPlated") {
+                slots.inventoryViewObj = "objDonutPlated";
+                slots.inventoryViewAlt = "altobjDonutPlated";
+                slots.addIcon("icon - donutPlated.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+
+                slots.selectItem(slots.combining.split(':')[3]);
+                didBonus = true;
+
+                // switch view to new goodly combined object
+                objectImage.destroy();
+                objectImage = this.add.image(0, 0, "objDonutPlated").setOrigin(0, 0);
+            } else if (slots.combining.split(':')[3] == "objKeyWhole") {
+                slots.inventoryViewObj = "objKeyWhole";
+                slots.inventoryViewAlt = "altobjKeyWhole";
+                slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.selectItem(slots.combining.split(':')[3]);
+
+                objectImage.destroy();
+                objectImage = this.add.image(0, 0, "objKeyWhole").setOrigin(0, 0);
+            } else {
+                slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", slotRepl); // it is a bug
+            }
+            slots.combining = "";
+            plusModeButton.setVisible(false);
+            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
+        }
+
+        if (showXtime > 0) { // clear the big red X after awhile
+            if ((this.time.now - showXtime) > 500) {
+                showXtime = -1;
+                failed.setX(1000);
+            }
+        }
+
         /*        
          // If an icon is clicked... slots will tell us we need to switch to inventory view mode.
         

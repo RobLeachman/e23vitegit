@@ -52,8 +52,6 @@ const closeView = new Array();
 var leftButton: Phaser.GameObjects.Sprite;
 var rightButton: Phaser.GameObjects.Sprite;
 var backButton: Phaser.GameObjects.Sprite;
-var plusButton: Phaser.GameObjects.Sprite;
-var plusModeButton: Phaser.GameObjects.Sprite;
 
 var failed: Phaser.GameObjects.Sprite;
 let mobile: boolean;
@@ -79,7 +77,6 @@ var zotBoxColorGreen: Phaser.GameObjects.Sprite;
 
 var tableState = 0;
 
-var doorUnlocked = false;
 var egress = false;
 var didBonus = false;
 var haveBatt = false;
@@ -91,8 +88,6 @@ var zotBoxColor: number;
 var fourInit = true;
 
 var slots: Slots;
-
-var showXtime = -1;
 
 var recorder: Recorder;
 var viewportText: any;                                     //??
@@ -263,83 +258,6 @@ export class PlayGame extends Phaser.Scene {
 
         }
 
-        ////////////// INVENTORY VIEW COMBINE //////////////
-
-        if (showXtime > 0) { // clear the big red X after awhile
-            if ((this.time.now - showXtime) > 500) {
-                showXtime = -1;
-                failed.setX(1000);
-            }
-        }
-
-        // FIRST ROOM ...
-        // Can't combine the plate and donut if door is locked
-        if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
-            slots.combining = "bad combine:"
-        }
-
-
-        if (slots.combining.split(':')[0] == "bad combine") {
-            //slots.setCombined(true);
-
-            myUI.displayInterfaceClueCombine(false);
-            //console.log("BAD COMBINE")
-            slots.combining = "";
-            plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
-
-            failed.setX(640);
-            showXtime = this.time.now;
-        }
-
-        if (slots.combining.split(':')[0] == "good combine") {
-            //slots.setCombined(true);
-
-            myUI.displayInterfaceClueCombine(false);
-            //console.log("clear out " + slots.combining.split(':')[1])
-            // Clear the first object...
-            // ... unless it's a knife
-            // if (slots.combining.split(':')[1] != "objKnife") // keep some items when affecting others, save the knife
-            //     slots.clearItem(this, slots.combining.split(':')[1]);
-            slots.clearItem(slots.combining.split(':')[1]);
-
-            const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
-            //console.log("replacing " + slotRepl)
-            //slots.replaceItem(this, slots.combining.split(':')[2]);
-            slots.clearItem(slots.combining.split(':')[2]);
-            if (slots.combining.split(':')[3] == "objDonutPlated") {
-                slots.inventoryViewObj = obj[5];
-                slots.inventoryViewAlt = altObj[5];
-                slots.addIcon(icons[5], slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
-
-                slots.selectItem(slots.combining.split(':')[3]);
-                didBonus = true;
-
-                // !!!!!!!!!!!!! adding more images in update is always wrong !!!!!!!!!!!!
-
-                // switch view to new goodly combined object
-                this.add.image(0, 0, obj[5]).setOrigin(0, 0);
-            } else if (slots.combining.split(':')[3] == "objKeyWhole") {
-                slots.inventoryViewObj = obj[4];
-                slots.inventoryViewAlt = altObj[4];
-                slots.addIcon(icons[4], slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
-                slots.selectItem(slots.combining.split(':')[3]);
-                if (zotIsRunning)
-                    zotGameScene.add.image(0, 0, obj[4]).setOrigin(0, 0);
-                else
-                    this.add.image(0, 0, obj[4]).setOrigin(0, 0);
-
-
-            } else {
-                slots.addIcon(icons[6], obj[6], altObj[6], slotRepl); // it is a bug
-            }
-            slots.combining = "";
-
-            plusModeButton.setVisible(false);
-            plusButton.setVisible(true); plusButton.setDepth(110); plusButton.setInteractive({ cursor: 'pointer' });
-            viewWall = 5; currentWall = 5;
-            //updateWall = true;
-        }
 
         ////////////// MAIN SCENE RECORDER DEBUGGER TEXT //////////////
 
@@ -546,7 +464,7 @@ export class PlayGame extends Phaser.Scene {
             }
 
             // TODO: should not be adding images willy nilly!
-            if (doorUnlocked && viewWall == 0) {
+            if (myUI.getDoorUnlocked() && viewWall == 0) {
                 this.add.image(0, 0, walls[7]).setOrigin(0, 0);
             } else {
                 this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
@@ -595,9 +513,6 @@ export class PlayGame extends Phaser.Scene {
                 rightButton.setVisible(true); rightButton.setDepth(100); rightButton.setInteractive({ cursor: 'pointer' });
                 backButton.setVisible(false);
             }
-
-            plusButton.setVisible(false);
-            plusModeButton.setVisible(false);
 
             tableMask.setVisible(false);
             doorMask.setVisible(false);
@@ -676,9 +591,6 @@ export class PlayGame extends Phaser.Scene {
         this.scene.bringToTop("PlayerUI");
         myUI.setActiveScene("PlayGame");
 
-        plusButton = myUI.getPlusButton();
-        plusModeButton = myUI.getPlusModeButton();
-        failed = myUI.getFailed();
         slots = myUI.getSlots();
 
         // will be important later...
@@ -811,7 +723,7 @@ export class PlayGame extends Phaser.Scene {
             zotTableMask.setVisible(false);
 
             if (zotTableInit) {
-                this.scene.launch("ZotTable", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
+                this.scene.launch("ZotTable", { slots: slots })
                 //this.scene.bringToTop("ZotTable");
                 //this.scene.moveBelow("BootGame","ZotTable");
                 //this.scene.bringToTop("ZotTable");
@@ -850,23 +762,13 @@ export class PlayGame extends Phaser.Scene {
             leftButton.setVisible(false);
             rightButton.setVisible(false);
 
-
             //fourSolved.setVisible(true).setDepth(1);
 
             if (fourInit) {
-                //this.scene.launch("Four", { slots: slots, plusButton: plusButton, plusModeButton: plusModeButton })
                 this.scene.launch("Four")
-                //this.scene.bringToTop("Four");
-
-                //this.scene.moveBelow("BootGame","ZotTable");
-                //this.scene.bringToTop("ZotTable");
-                //this.scene.bringToTop("BootGame");
-                //this.scene.sleep();
                 fourInit = false;
-                //zotGameScene = this.scene.get("ZotTable");
             } else {
                 this.scene.wake("Four");
-                //this.scene.bringToTop("Four");
             }
         });
 
@@ -882,11 +784,11 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('doorMask', doorMask);
         doorMask.on('pointerdown', () => {
             let selectedThing = slots.getSelected();
-            if (doorUnlocked) {
+            if (myUI.getDoorUnlocked()) {
                 egress = true; // TODO doorUnlocked needs multiple states... then drop this flag
                 updateWall = true;
             } else if (selectedThing.thing == "objKeyWhole") {
-                doorUnlocked = true;
+                myUI.setDoorUnlocked(true);
                 updateWall = true;
                 //slots.clearItem(this, "objKeyWhole");
                 slots.clearItem("objKeyWhole");

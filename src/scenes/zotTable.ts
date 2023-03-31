@@ -55,30 +55,20 @@ let zotDrawerMask: Phaser.GameObjects.Sprite;
 let haveZot = false;
 
 var slots: Slots;
-var plusButton: Phaser.GameObjects.Sprite;
-var plusModeButton: Phaser.GameObjects.Sprite;
 
 export class ZotTable extends Phaser.Scene {
     constructor() {
         super("ZotTable");
     }
     create(data: {
-        slots: Slots,
-        plusButton: Phaser.GameObjects.Sprite,
-        plusModeButton: Phaser.GameObjects.Sprite
+        slots: Slots
     }) {
-        //console.log("ZotTable create")
-        console.log("UNTESTED interface clues");
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("ZotTable");
 
         slots = data.slots;
-        plusButton = data.plusButton;
-        plusModeButton = data.plusModeButton;
-
-        
 
         recorder = slots.recorder;
         // SCENERECORD: Capture all mask clicks on this scene
@@ -105,7 +95,7 @@ export class ZotTable extends Phaser.Scene {
             // record the last back action, it won't be captured by global method
             if (backStack.length == 0) {
                 recorder.recordObjectDown(zotBackButton.name, thisscene);
-                console.log("exit zottable")
+                //console.log("exit zottable")
 
                 zotBackButton.setVisible(false);
                 zotBackButton.removeInteractive(); // fix up the cursor displayed on main scene
@@ -251,7 +241,7 @@ export class ZotTable extends Phaser.Scene {
         if (recorder.getMode() == "record") {
             recorder.checkPointer(this);
         }
-       
+
         if ((viewWall != currentWall || updateWall)) {
             roomReturnWall = viewWall;
             myUI.displayInterfaceClueFull(false);
@@ -327,9 +317,6 @@ export class ZotTable extends Phaser.Scene {
             batteryMask.setVisible(false);
             if (viewWall > 3)
                 batteryMask.setVisible(true); batteryMask.setDepth(1); batteryMask.setInteractive({ cursor: 'pointer' });
-
-            plusButton.setVisible(false);
-            plusModeButton.setVisible(false);
         }
 
         this.scene.setVisible(true, "BootGame");
