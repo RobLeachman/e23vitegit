@@ -1,9 +1,12 @@
 import 'phaser';
+import PlayerUI from './playerUI';
+
+let myUI:PlayerUI;
 
 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run        
-const winPhrase = "everything must work properly everywhere";
+const winPhrase = "so much larger than life";
 
 class WordPanel {
     scene: Phaser.Scene;
@@ -14,10 +17,12 @@ class WordPanel {
     wordIndex = 0;
     selectedWord: string;
 
-    constructor(scene: Phaser.Scene, loc: number, maskImage: string, word: string) {
+    constructor(scene: Phaser.Scene, loc: number, word: string) {
         this.scene = scene;
         this.location = loc;
-        this.mask = scene.add.sprite(50, 270 + (this.location * 127), maskImage).setOrigin(0, 0);
+        //this.mask = scene.add.sprite(50, 270 + (this.location * 127), maskImage).setOrigin(0, 0);
+        this.mask = scene.add.sprite(50, 270 + (this.location * 127), 'atlas', 'fivewordsMask.png').setOrigin(0, 0).setName("fiveWordsMask");
+        console.log('recorder will be a bastard')
         this.word = this.scene.make.text({
             x: 80,
             y: 265 + (this.location * 127),
@@ -60,8 +65,8 @@ class WordPanel {
     }
 
     shuffle() {
-        const x1 = Phaser.Math.Between(1, this.words.length-1);
-        const x2 = Phaser.Math.Between(1, this.words.length-1);
+        const x1 = Phaser.Math.Between(1, this.words.length - 1);
+        const x2 = Phaser.Math.Between(1, this.words.length - 1);
         const word1 = this.words[x1];
         const word2 = this.words[x2];
 
@@ -71,7 +76,7 @@ class WordPanel {
 }
 
 export class Five extends Phaser.Scene {
-    backButton: Phaser.GameObjects.Sprite;
+    fiveBackButton: Phaser.GameObjects.Sprite;
     panels: WordPanel[] = [];
     lastPhrase = "";
     compartmentMask: Phaser.GameObjects.Sprite;
@@ -83,50 +88,36 @@ export class Five extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/backgrounds/5 words closed.webp');
-        this.load.image('5wordsMask', 'assets/sprites/5wordsMask.png');
-        this.load.image('compartmentMask', 'assets/sprites/5 words compartment mask.png');
-        this.load.image('compartmentOpen', 'assets/sprites/5 words donut.png');
-        this.load.image('compartmentEmpty', 'assets/sprites/5 words empty.png');
-
-        this.load.image('backButton', 'assets/sprites/arrowDown.webp');
     }
 
     create() {
-        this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.scene.bringToTop();
+        this.scene.bringToTop("PlayerUI");
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        myUI.setActiveScene("Five");
 
-        var height = this.cameras.main.height;
-        this.make.text({
-            x: 80,
-            y: 80,
-            text: height.toString(),
-            style: {
-                font: '80px Verdana',
-                //fill: '#ffffff'
-            }
-        });        
-
-        this.compartmentMask = this.add.sprite(53,886,'compartmentMask').setOrigin(0,0);
+        this.add.image(0, 0, 'fiveBackground').setOrigin(0, 0);
+        this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setOrigin(0, 0);
         this.compartmentMask.on('pointerdown', () => {
-            console.log("5 words BOOM")
+            myUI.setFiveState(2);
             this.compartmentOpen.setVisible(false);
             this.compartmentEmpty.setVisible(true);
             this.compartmentMask.setVisible(false);
             for (let i = 0; i < 5; i++) {
                 this.panels[i].winPanelOff();
-            }            
+            }
         });
         this.compartmentMask.setVisible(false);
         this.compartmentMask.setInteractive({ cursor: 'pointer' });
 
-        this.compartmentOpen = this.add.sprite(53,886,'compartmentOpen').setOrigin(0,0).setVisible(false);
-        this.compartmentEmpty = this.add.sprite(53,886,'compartmentEmpty').setOrigin(0,0).setVisible(false);
+        this.compartmentOpen = this.add.sprite(53, 886, 'atlas', 'fivewordsBattery.png').setOrigin(0, 0).setVisible(false);
+        this.compartmentEmpty = this.add.sprite(53, 886, 'atlas', 'fivewordsEmpty.png').setOrigin(0, 0).setVisible(false);
 
-        this.panels[0] = new WordPanel(this, 0, '5wordsMask', 'when')
-        this.panels[1] = new WordPanel(this, 1, '5wordsMask', 'you')
-        this.panels[2] = new WordPanel(this, 2, '5wordsMask', 'know')
-        this.panels[3] = new WordPanel(this, 3, '5wordsMask', 'it')
-        this.panels[4] = new WordPanel(this, 4, '5wordsMask', 'happens')
+        this.panels[0] = new WordPanel(this, 0, 'when')
+        this.panels[1] = new WordPanel(this, 1, 'you')
+        this.panels[2] = new WordPanel(this, 2, 'know')
+        this.panels[3] = new WordPanel(this, 3, 'it')
+        this.panels[4] = new WordPanel(this, 4, 'happens')
 
         const phrase1words = winPhrase.split(' ');
         phrase1words.forEach((word, idx) => {
@@ -141,22 +132,24 @@ export class Five extends Phaser.Scene {
         moreWords = "thanks for testing this Friendo".split(" ");
         moreWords.forEach((word, idx) => {
             this.panels[idx].addWord(word)
-        });      
+        });
 
         moreWords = "five words that mean nothing".split(" ");
         moreWords.forEach((word, idx) => {
             this.panels[idx].addWord(word)
-        });      
-        
-        for (let i=0;i<256;i++)
-            this.panels[Phaser.Math.Between(0,4)].shuffle()
+        });
 
-        this.backButton = this.add.sprite(300, 925, 'backButton').setOrigin(0, 0);
-        //this.backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton");
-        this.backButton.setVisible(true); this.backButton.setInteractive({ cursor: 'pointer' });
+        for (let i = 0; i < 256; i++)
+            this.panels[Phaser.Math.Between(0, 4)].shuffle()
 
-        this.backButton.on('pointerdown', () => {
-            console.log("Five back");
+
+        this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");
+        this.fiveBackButton.setVisible(true); this.fiveBackButton.setInteractive({ cursor: 'pointer' });
+
+        this.fiveBackButton.on('pointerdown', () => {
+            this.scene.moveUp("PlayGame");
+            this.scene.wake("PlayGame");
+            this.scene.sleep();
         });
 
         this.events.on('wake', () => {
@@ -175,7 +168,7 @@ export class Five extends Phaser.Scene {
             this.lastPhrase = phrase;
 
             if (phrase == winPhrase + ' ') {
-                console.log("FIVE WINNER")
+                myUI.setFiveState(1);
                 this.compartmentOpen.setVisible(true);
                 this.compartmentMask.setVisible(true);
             }

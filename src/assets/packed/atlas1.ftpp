@@ -105,6 +105,26 @@
       "folder": ""
     },
     {
+      "name": "fivewordsBattery.png",
+      "path": "D:/src/e23/src/assets/packed/fivewordsBattery.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsCompartmentMask.png",
+      "path": "D:/src/e23/src/assets/packed/fivewordsCompartmentMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsEmpty.png",
+      "path": "D:/src/e23/src/assets/packed/fivewordsEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsMask.png",
+      "path": "D:/src/e23/src/assets/packed/fivewordsMask.png",
+      "folder": ""
+    },
+    {
       "name": "fourMask.png",
       "path": "D:/src/e23/src/assets/packed/fourMask.png",
       "folder": ""
@@ -277,6 +297,11 @@
     {
       "name": "winner donutPlated.png",
       "path": "D:/src/e23/src/assets/packed/winner donutPlated.png",
+      "folder": ""
+    },
+    {
+      "name": "ytPlayButton.png",
+      "path": "D:/src/e23/src/assets/packed/ytPlayButton.png",
       "folder": ""
     },
     {

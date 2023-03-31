@@ -10,12 +10,12 @@ const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
 
 let bugz = false;
-let solved = false;
 
 export class Four extends Phaser.Scene {
     rexUI: RexUIPlugin;
     art: Phaser.GameObjects.Image;
     videoBackground: Phaser.GameObjects.Image;
+    artWhole: Phaser.GameObjects.Image;
     frame: Phaser.GameObjects.Sprite;
     selected: Phaser.GameObjects.Sprite;
     selectMask: Phaser.GameObjects.Sprite;
@@ -28,6 +28,7 @@ export class Four extends Phaser.Scene {
     swapSelect = { x: 2, y: 2 }
     youtubes: YoutubePlayer;
 
+    ytPlayButton: Phaser.GameObjects.Sprite;
     fourBackButton: Phaser.GameObjects.Sprite;
 
     constructor() {
@@ -58,15 +59,35 @@ export class Four extends Phaser.Scene {
         selectedTile.art.setX(swapX); selectedTile.art.setY(swapY);
     }
 
+    spinTheRecord() {
+        this.videoBackground.setVisible(true);
+        const ytConfig = {
+            x: 50, y: 620, // not sure what these do even
+            width: undefined,
+            height: undefined,
+            videoId: youtubeID,
+            autoPlay: true,
+            controls: false,
+            keyboardControl: true,
+            modestBranding: false,
+            loop: false,
+        }
+        this.artWhole.setVisible(false);
+        var youtubePlayer = new YoutubePlayer(this, 360, 580, 700, 500, ytConfig);
+        this.youtubes = this.add.existing(youtubePlayer);
+        this.youtubes.setDepth(2)
+    }
+
     create() {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         const myUI = this.scene.get("PlayerUI") as PlayerUI;
-        myUI.setActiveScene("four");
+        myUI.setActiveScene("Four");
 
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
-        this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false)
+        this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false);
+        this.artWhole = this.add.image(13 + 28, 250 + 28, 'fourArtWhole').setOrigin(0, 0).setDepth(1000).setVisible(false);
 
         const tileMap = new Map();
         for (let i = 0; i < 4; i++) {
@@ -146,31 +167,12 @@ export class Four extends Phaser.Scene {
                 }
 
                 if (winner) {
-                    solved = true;
-                    console.log("WINNER!!!!!!!!!!!")
+                    myUI.setFourSolved(true);
 
                     this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
 
-                    // Winning art view, which they can't see because the YT instructions must be shown
-                    //this.add.sprite(13 + 28, 250 + 28, 'artWhole').setOrigin(0, 0).setDepth(1000);
+                    this.spinTheRecord();
 
-                    this.videoBackground.setVisible(true)
-                    //now play  https://www.youtube.com/watch?v=feZluC5JheM
-
-                    const ytConfig = {
-                        x: 50, y: 620, // not sure what these do even
-                        width: undefined,
-                        height: undefined,
-                        videoId: youtubeID,
-                        autoPlay: true,
-                        controls: false,
-                        keyboardControl: true,
-                        modestBranding: false,
-                        loop: false,
-                    }
-                    var youtubePlayer = new YoutubePlayer(this, 360, 580, 700, 500, ytConfig);
-                    this.youtubes = this.add.existing(youtubePlayer);
-                    this.youtubes.setDepth(2)
 
 
 
@@ -194,10 +196,8 @@ export class Four extends Phaser.Scene {
                 //console.log(`next swap ${swapSelect.x},${swapSelect.y}`)
             }
         });
-
         this.fourBackButton = this.add.sprite(300, 930, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");
         this.fourBackButton.setVisible(true); this.fourBackButton.setDepth(3); this.fourBackButton.setInteractive({ cursor: 'pointer' });
-
         this.fourBackButton.on('pointerdown', () => {
             //console.log("Four back");
             if (this.youtubes == undefined) {
@@ -219,20 +219,28 @@ export class Four extends Phaser.Scene {
             this.scene.wake("PlayGame");
         });
 
+        this.ytPlayButton = this.add.sprite(360, 600, 'atlas', 'ytPlayButton.png').setName("ytPlayButton");
+        this.ytPlayButton.setVisible(false); this.ytPlayButton.setDepth(1001); this.ytPlayButton.setInteractive({ cursor: 'pointer' });
+        this.ytPlayButton.on('pointerdown', () => {
+            this.ytPlayButton.setVisible(false);
+            this.spinTheRecord();
+        });
+
+
         this.events.on('wake', () => {
-            console.log("Four awakes, solved=" + solved)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
             myUI.setActiveScene("four");
-            
+
             this.fourBackButton.setVisible(true);
             this.fourBackButton.setInteractive({ cursor: 'pointer' }); //<==== HAS NO EFFECT
             bugz = true;
 
-            if (solved) {
-                this.add.sprite(13 + 28, 250 + 28, 'fourArtWhole').setOrigin(0, 0).setDepth(1000);
+            if (myUI.getFourSolved()) {
+                this.artWhole.setVisible(true);
                 this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
                 this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
+                this.ytPlayButton.setVisible(true);
             }
 
         });

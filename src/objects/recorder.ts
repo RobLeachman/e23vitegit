@@ -338,14 +338,14 @@ export default class Recorder {
     }
 
     recordPointerAction(action: string, time: number, sceneName: string) {
-        //if (action != "mousemove")
-        //    console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
+        if (action != "mousemove")
+            console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
         this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},%${sceneName}%:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
         this.pointer = scene.input.activePointer;
 
         if (object == "__MISSING") {
@@ -356,7 +356,7 @@ export default class Recorder {
     // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number, scene: Phaser.Scene) {
         this.pointer = scene.input.activePointer;
-        //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 

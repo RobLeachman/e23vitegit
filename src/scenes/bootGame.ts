@@ -13,6 +13,7 @@ const testingFour = false;
 const skipBackgroundsLoad = false;
 
 let myUI: PlayerUI;
+var recorder: Recorder;
 
 let welcomeBack = false;
 
@@ -20,8 +21,6 @@ let playerName = "";
 const playerNameCookie = "escape23player1";
 let playerCount = -1;
 let playButtonIsHidden = true;
-
-var recorder: Recorder;
 
 let theRecording: string;
 
@@ -132,6 +131,8 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
                 this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
                 this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');
+
+                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
                 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
                 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall

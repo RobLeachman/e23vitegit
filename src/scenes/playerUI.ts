@@ -19,7 +19,6 @@ var objectMask: Phaser.GameObjects.Sprite;
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
 
-
 /*
 viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
 viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
@@ -49,6 +48,8 @@ let didBonus = false;
 
 let showXtime = -1;
 
+let fourSolved = false;
+let fiveState = 0;
 
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
@@ -139,6 +140,20 @@ export default class PlayerUI extends Phaser.Scene {
     }
     setDoorUnlocked(unlockedIt: boolean) {
         doorUnlocked = unlockedIt;
+    }
+
+    // bridge main scene to four
+    getFourSolved() {
+        return fourSolved;
+    }
+    setFourSolved(solvedIt: boolean) {
+        fourSolved = solvedIt;
+    }
+    getFiveState() {
+        return fiveState;
+    }
+    setFiveState(newState: number) {
+        fiveState = newState;
     }
 
 
@@ -252,7 +267,11 @@ export default class PlayerUI extends Phaser.Scene {
             uiObjectViewDirty = true;
         });
 
-
+        let thisscene = this;
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });
 
         this.scene.launch("BootGame")
     }

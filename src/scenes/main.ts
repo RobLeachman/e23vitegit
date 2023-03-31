@@ -36,7 +36,7 @@ let debugPanel = false; // debug panel on top of screen
 
 let mainReplayRequest = "frustrated";
 
-var viewWall = 0; // production start at 0
+var viewWall = 3; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -80,12 +80,18 @@ var tableState = 0;
 var egress = false;
 var didBonus = false;
 var haveBatt = false;
-var zotTableInit = true;
-var zotIsRunning = false;
+
 var boxHasZot = false;
 var zotBoxColor: number;
 
-var fourInit = true;
+let zotTableInit = true;
+let zotGameScene: Phaser.Scene;
+
+let fourInit = true;
+let fourGameScene: Phaser.Scene;
+
+var fiveInit = true;
+let fiveGameScene: Phaser.Scene;
 
 var slots: Slots;
 
@@ -95,7 +101,7 @@ var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
 var pointer: Phaser.Input.Pointer;
 
-let zotGameScene: Phaser.Scene;
+
 
 let lastKeyDebouncer = ""; //
 
@@ -392,12 +398,6 @@ export class PlayGame extends Phaser.Scene {
             window.location.reload();
         }
 
-        ////////////// -------------- end common update loop ---------- //////////////
-        if (zotIsRunning) {
-            return;
-        }
-
-
         ////////////// ROOM VIEW //////////////
 
         if ((viewWall != currentWall || updateWall)) {
@@ -540,6 +540,14 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 3) {
                 fourMask.setVisible(true); fourMask.setDepth(100); fourMask.setInteractive({ cursor: 'pointer' });
                 fiveMask.setVisible(true); fiveMask.setDepth(100); fiveMask.setInteractive({ cursor: 'pointer' });
+                if (myUI.getFourSolved())
+                    fourSolved.setVisible(true).setDepth(1);
+
+                const fiveState = myUI.getFiveState();
+                if (fiveState == 1)
+                    fiveBatt.setVisible(true)
+                if (fiveState == 2)
+                    fiveOpen.setVisible(true);
             }
 
             if (viewWall == 4) { // the table
@@ -605,7 +613,6 @@ export class PlayGame extends Phaser.Scene {
         // SCENERECORD: Capture all mask clicks on this scene
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
-
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
@@ -676,7 +683,6 @@ export class PlayGame extends Phaser.Scene {
 
         hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
         recorder.addMaskSprite('hintMask', hintMask);
-
         hintMask.on('pointerdown', () => {
             viewWall = 9;
         });
@@ -711,30 +717,15 @@ export class PlayGame extends Phaser.Scene {
         zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("zotTableMask");
         recorder.addMaskSprite('zotTableMask', zotTableMask);
         zotTableMask.on('pointerdown', () => {
-            zotIsRunning = true;
-
             roomReturnWall = 1;
-            leftButton.setVisible(false);
-            rightButton.setVisible(false);
-
-            // the worst kind of hack, it will work but bad idea so TODO whenever...
-            // if this was a portal on a wall with lots of stuff would need to turn it all off...
-            // TODO idk
-            zotTableMask.setVisible(false);
-
             if (zotTableInit) {
-                this.scene.launch("ZotTable", { slots: slots })
-                //this.scene.bringToTop("ZotTable");
-                //this.scene.moveBelow("BootGame","ZotTable");
-                //this.scene.bringToTop("ZotTable");
-                //this.scene.bringToTop("BootGame");
-                //this.scene.sleep();
                 zotTableInit = false;
+                this.scene.launch("ZotTable", { slots: slots })
                 zotGameScene = this.scene.get("ZotTable");
+                this.scene.sleep();
             } else {
-                //console.log("back to zot")
                 this.scene.wake("ZotTable");
-                //this.scene.moveUp("ZotTable");
+                this.scene.sleep();
             }
         });
 
@@ -751,32 +742,37 @@ export class PlayGame extends Phaser.Scene {
         });
 
         fourSolved = this.add.sprite(80, 455, 'atlas', 'fourSolved.png').setOrigin(0, 0).setVisible(false);
-        fiveOpen = this.add.sprite(500, 652, 'atlas', 'fiveOpen.png').setOrigin(0, 0).setVisible(false);
-        fiveBatt = this.add.sprite(500, 652, 'atlas', 'fiveBatt.png').setOrigin(0, 0).setVisible(false);
+        fiveOpen = this.add.sprite(500, 652, 'atlas', 'fiveOpen.png').setOrigin(0, 0).setVisible(false).setDepth(100);
+        fiveBatt = this.add.sprite(500, 652, 'atlas', 'fiveBatt.png').setOrigin(0, 0).setVisible(false).setDepth(100);
 
         fourMask = this.add.sprite(80, 455, 'atlas', 'fourMask.png').setOrigin(0, 0);
         recorder.addMaskSprite('fourMask', fourMask);
         fourMask.on('pointerdown', () => {
-            console.log("GO FOUR");
             roomReturnWall = 3;
-            leftButton.setVisible(false);
-            rightButton.setVisible(false);
-
-            //fourSolved.setVisible(true).setDepth(1);
-
             if (fourInit) {
-                this.scene.launch("Four")
                 fourInit = false;
+                this.scene.launch("Four")
+                fourGameScene = this.scene.get("Four");
+                this.scene.sleep();
             } else {
                 this.scene.wake("Four");
+                this.scene.sleep();
             }
         });
 
         fiveMask = this.add.sprite(468, 533, 'atlas', 'fiveMask.png').setName("fiveMask").setOrigin(0, 0);
         recorder.addMaskSprite('fiveMask', fiveMask);
         fiveMask.on('pointerdown', () => {
-            console.log("GO FIVE")
-            fiveOpen.setVisible(true).setDepth(1)
+            roomReturnWall = 3;
+            if (fiveInit) {
+                fiveInit = false;
+                this.scene.launch("Five")
+                fiveGameScene = this.scene.get("Five");
+                this.scene.sleep();
+            } else {
+                this.scene.wake("Five");
+                this.scene.sleep();
+            }
         });
 
         //doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
@@ -795,7 +791,6 @@ export class PlayGame extends Phaser.Scene {
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
             }
         });
-
 
 
         // Prep recording stack for replay
@@ -834,10 +829,9 @@ export class PlayGame extends Phaser.Scene {
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
             myUI.setActiveScene("PlayGame");
-            zotIsRunning = false;
+
             viewWall = roomReturnWall;
             updateWall = true;
-
         });
 
         // Fancy cursors can wait...
