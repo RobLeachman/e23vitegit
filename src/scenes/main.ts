@@ -79,7 +79,6 @@ var tableState = 0;
 
 var egress = false;
 var didBonus = false;
-var haveBatt = false;
 
 var boxHasZot = false;
 var zotBoxColor: number;
@@ -88,9 +87,11 @@ let zotTableInit = true;
 let zotGameScene: Phaser.Scene;
 
 let fourInit = true;
+//@ts-ignore
 let fourGameScene: Phaser.Scene;
 
 var fiveInit = true;
+//@ts-ignore
 let fiveGameScene: Phaser.Scene;
 
 var slots: Slots;
@@ -486,9 +487,6 @@ export class PlayGame extends Phaser.Scene {
             }
 
             if (viewWall == 1) {
-                if (!haveBatt)
-                    this.add.sprite(320, 926, 'atlas', "battOnFloor.png").setOrigin(0, 0)
-
                 if (boxHasZot) {
                     boxZot.setDepth(100);
                 }
@@ -530,10 +528,6 @@ export class PlayGame extends Phaser.Scene {
             hintMask.setVisible(false);
             if (viewWall == 2)
                 hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' });
-
-            battMask.setVisible(false);
-            if (viewWall == 1 && !haveBatt)
-                battMask.setVisible(true); battMask.setDepth(100); battMask.setInteractive({ cursor: 'pointer' });
 
             fourMask.setVisible(false);
             fiveMask.setVisible(false);
@@ -605,7 +599,6 @@ export class PlayGame extends Phaser.Scene {
         if (mobile) {
             console.log("mobile device")
         }
-        //console.log("MAIN LOAD BOOT RECORDING " + theRecording)
 
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
@@ -624,7 +617,13 @@ export class PlayGame extends Phaser.Scene {
         viewportPointer = recorder.pointerSprite;
         viewportPointerClick = recorder.clickSprite;
 
-        //console.log("Recorder mode: " + recorder.getMode());
+        if (recorder.getCookieRecorderMode()) {
+            theRecording = recorder.getRecordingFromCookies();
+            console.log("cookie rec:")
+        }
+        console.log("MAIN LOAD BOOT RECORDING " + theRecording);
+
+        console.log("Recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "idleButReplayAgainSoon")
             recorder.setMode("replay")
         if (recorder.getMode() == "roachReplay")
@@ -736,8 +735,7 @@ export class PlayGame extends Phaser.Scene {
         battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0, 0);
         recorder.addMaskSprite('battMask', battMask);
         battMask.on('pointerdown', () => {
-            haveBatt = true;
-            slots.addIcon(icons[8], obj[7], altObj[7]); // TODO: get name from sprite!
+            slots.addIcon(icons[8], obj[7], altObj[7]);
             updateWall = true;
         });
 
@@ -751,7 +749,7 @@ export class PlayGame extends Phaser.Scene {
             roomReturnWall = 3;
             if (fourInit) {
                 fourInit = false;
-                this.scene.launch("Four")
+                this.scene.launch("Four", { playerName: recorder.getPlayerName() })
                 fourGameScene = this.scene.get("Four");
                 this.scene.sleep();
             } else {
@@ -766,7 +764,7 @@ export class PlayGame extends Phaser.Scene {
             roomReturnWall = 3;
             if (fiveInit) {
                 fiveInit = false;
-                this.scene.launch("Five")
+                this.scene.launch("Five", { playerName: recorder.getPlayerName(), slots: slots })
                 fiveGameScene = this.scene.get("Five");
                 this.scene.sleep();
             } else {

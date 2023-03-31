@@ -7,8 +7,8 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true; const skipCloud = true;
-//const skipClickToStart = false; const skipCloud = false;
+//const skipClickToStart = true; const skipCloud = true; const writeCookieRecordings = true;
+const skipClickToStart = false; const skipCloud = false; const writeCookieRecordings = false;
 const testingFour = false;
 const skipBackgroundsLoad = false;
 
@@ -34,7 +34,6 @@ let greets2: Phaser.GameObjects.Text;
 let greets3: Phaser.GameObjects.Text;
 let greets4: Phaser.GameObjects.Text;
 let greets5: Phaser.GameObjects.Text;
-
 
 
 export class BootGame extends Phaser.Scene {
@@ -138,7 +137,6 @@ export class BootGame extends Phaser.Scene {
                 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
                 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
                 this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
-
             }
 
             //let windowHeight = window.innerHeight;
@@ -196,13 +194,10 @@ export class BootGame extends Phaser.Scene {
                     loadingText.destroy();
                     percentText.destroy();
                 }
-
             });
             //console.log("boot preload finishes")
         }
     }
-
-
 
     async create() {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
@@ -231,7 +226,7 @@ export class BootGame extends Phaser.Scene {
             myUI.displayInventoryBar(true); myUI.showEye()
 
             if (playerName == "qqq" || playerName == "Qqq") {
-                //console.log("do not record by default, Quazar")
+                console.log("do not record by default, Quazar")
                 // this messes with roach replay... hmm
                 //recorder.setMode("idle")
             } else {
@@ -248,9 +243,9 @@ export class BootGame extends Phaser.Scene {
         });
 
         recorder = myUI.getRecorder();
+        recorder.setCookieRecorderMode(writeCookieRecordings);
 
         myUI.displayInventoryBar(false); myUI.hideEye();
-
 
         ////////////// PLAYER NAME REGISTRATION //////////////
         if (skipCloud) {
@@ -282,13 +277,7 @@ export class BootGame extends Phaser.Scene {
                 playerName = "Player" + playerCount;
         }
 
-
-
-
-
-
         ////////////// PLAYER NAME //////////////
-
         let greets = "What can I call you?";
         if (welcomeBack)
             greets = "Welcome back! Change your nick?"
@@ -360,7 +349,6 @@ export class BootGame extends Phaser.Scene {
         thePlayer.setOrigin(0.5, 0.5)
         // https://blog.ourcade.co/posts/2020/phaser-3-add-text-input-rexui/
         thePlayer.setInteractive().on('pointerdown', () => {
-
             this.rexUI.edit(thePlayer, {
                 onClose: () => {
                     // TEST FOR BLANK ENTRY!
@@ -375,7 +363,6 @@ export class BootGame extends Phaser.Scene {
         })
 
         ////////////// BOOT THE GAME //////////////
-
         if (skipClickToStart) {
             recorder.setPlayerName("qqq");
             thePlayer.destroy();
@@ -392,10 +379,8 @@ export class BootGame extends Phaser.Scene {
 
             //loadDone.destroy()
             if (testingFour) {
-
                 this.scene.run("Five");
             } else {
-
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         }

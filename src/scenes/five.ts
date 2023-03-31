@@ -1,7 +1,8 @@
 import 'phaser';
 import PlayerUI from './playerUI';
+import Slots from "../objects/slots"
 
-let myUI:PlayerUI;
+let myUI: PlayerUI;
 
 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
@@ -82,6 +83,8 @@ export class Five extends Phaser.Scene {
     compartmentMask: Phaser.GameObjects.Sprite;
     compartmentOpen: Phaser.GameObjects.Sprite;
     compartmentEmpty: Phaser.GameObjects.Sprite;
+    thePlayerName: string;
+    slots: Slots;
 
     constructor() {
         super("Five");
@@ -90,11 +93,14 @@ export class Five extends Phaser.Scene {
     preload() {
     }
 
-    create() {
+    create(data: { playerName: string, slots: Slots }) {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("Five");
+
+        this.thePlayerName = data.playerName;
+        this.slots = data.slots;
 
         this.add.image(0, 0, 'fiveBackground').setOrigin(0, 0);
         this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setOrigin(0, 0);
@@ -106,6 +112,7 @@ export class Five extends Phaser.Scene {
             for (let i = 0; i < 5; i++) {
                 this.panels[i].winPanelOff();
             }
+            this.slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
         });
         this.compartmentMask.setVisible(false);
         this.compartmentMask.setInteractive({ cursor: 'pointer' });
@@ -113,7 +120,10 @@ export class Five extends Phaser.Scene {
         this.compartmentOpen = this.add.sprite(53, 886, 'atlas', 'fivewordsBattery.png').setOrigin(0, 0).setVisible(false);
         this.compartmentEmpty = this.add.sprite(53, 886, 'atlas', 'fivewordsEmpty.png').setOrigin(0, 0).setVisible(false);
 
-        this.panels[0] = new WordPanel(this, 0, 'when')
+        if (this.thePlayerName == "qqq")
+            this.panels[0] = new WordPanel(this, 0, 'noshuffle')
+        else
+            this.panels[0] = new WordPanel(this, 0, 'when')
         this.panels[1] = new WordPanel(this, 1, 'you')
         this.panels[2] = new WordPanel(this, 2, 'know')
         this.panels[3] = new WordPanel(this, 3, 'it')
@@ -129,7 +139,8 @@ export class Five extends Phaser.Scene {
             this.panels[idx].addWord(word)
         });
 
-        moreWords = "thanks for testing this Friendo".split(" ");
+        const playerWords = "thanks for testing this " + this.thePlayerName;
+        moreWords = playerWords.split(" ");
         moreWords.forEach((word, idx) => {
             this.panels[idx].addWord(word)
         });
@@ -139,8 +150,10 @@ export class Five extends Phaser.Scene {
             this.panels[idx].addWord(word)
         });
 
-        for (let i = 0; i < 256; i++)
-            this.panels[Phaser.Math.Between(0, 4)].shuffle()
+        if (this.thePlayerName != "qqq") {
+            for (let i = 0; i < 256; i++)
+                this.panels[Phaser.Math.Between(0, 4)].shuffle()
+        }
 
 
         this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");

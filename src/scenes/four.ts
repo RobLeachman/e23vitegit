@@ -27,6 +27,7 @@ export class Four extends Phaser.Scene {
     spriteNames: string[][] = [];
     swapSelect = { x: 2, y: 2 }
     youtubes: YoutubePlayer;
+    thePlayerName: string;
 
     ytPlayButton: Phaser.GameObjects.Sprite;
     fourBackButton: Phaser.GameObjects.Sprite;
@@ -78,11 +79,14 @@ export class Four extends Phaser.Scene {
         this.youtubes.setDepth(2)
     }
 
-    create() {
+
+    create(data: { playerName: string }) {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         const myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("Four");
+
+        this.thePlayerName = data.playerName;
 
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
@@ -107,15 +111,15 @@ export class Four extends Phaser.Scene {
                 this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, 'atlas', 'fourPieceFrame.png').setOrigin(0, 0).setDepth(1);
             }
         }
-        // pick two random tiles and swap
+        // Pick and swap two random tiles. Always swap once.
+        if (this.thePlayerName != "qqq") {
+            for (let z = 0; z < 50; z++) {
+                const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
+                const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
+                this.swapTiles(x1, y1, x2, y2, tileMap);
+            }
+        }
         this.swapTiles(2, 3, 3, 3, tileMap);
-        /*
-                for (let z = 0; z < 50; z++) {
-                    const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
-                    const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
-                    this.swapTiles(x1, y1, x2, y2, tileMap);
-                }
-        */
 
         // select box displayed
         //this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y,

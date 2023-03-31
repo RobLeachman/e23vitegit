@@ -13,7 +13,8 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 const minDelayFastMode = 100;
 const debuggingDumpRecordingOut = false;
 const debugDisplayFastSteps = false;
-const stealthRecord = true; // don't show pointer while recording
+let stealthRecord = true; // don't show pointer while recording
+let usingRecordingCookies = false; // relies on setter
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -242,6 +243,8 @@ export default class Recorder {
         const myUUID = this.playerName + "_" + this.timeStamp;
         //console.log("Recorder UUID " + myUUID)
         this.storageRef = ref(storage, 'v1/' + myUUID + '.txt');
+        if (this.playerName == "qqq")
+            stealthRecord = false;
     }
 
     getPlayerName() {
@@ -283,6 +286,13 @@ export default class Recorder {
         if (this.recordingSize)
             size = this.recordingSize
         return size;
+    }
+
+    setCookieRecorderMode(doCookies: boolean) {
+        usingRecordingCookies = doCookies;
+    }
+    getCookieRecorderMode() {
+        return usingRecordingCookies;
     }
 
     // called once per update, tracks pointer movement and clicks on the scene
@@ -361,23 +371,13 @@ export default class Recorder {
     }
 
     async getRecording() {
-        const filename = this.getRecordingFilename();
-        //console.log("RECFILE " + filename)
-        let recordingIn = await this.fetchRecording(filename);
-        //console.log(recordingIn);
-        /*
-                let cookieNumber = -1;
-                let eof = "";
-                let recordingIn = "";
-                while (eof == "") {
-                    cookieNumber++;
-                    let cookie = getCookie("test" + cookieNumber);
-                    recordingIn += cookie.split('|')[0];;
-                    eof = cookie.split('|')[1];
-                }
-        */
-        //console.log("COOKIE RECORDING IN");
-        //console.log(recordingIn);
+        let recordingIn = await this.fetchRecording(this.getRecordingFilename());
+        //console.log("CLOUD RECORDING IN");
+        console.log(recordingIn);
+        return this.parseRecording(recordingIn);
+    }
+
+    parseRecording(recordingIn: string) {
         const recordingChecksum = recordingIn.split('?')[0];
         // @ts-ignore
         // with luck will need version checking later
@@ -400,6 +400,20 @@ export default class Recorder {
             //throw new Error('recording cksum error');
         }
         return recIn;
+    }
+
+    getRecordingFromCookies() {
+        let recordingIn = "not loaded";
+        let cookieNumber = -1;
+        let eof = "";
+        recordingIn = "";
+        while (eof == "") {
+            cookieNumber++;
+            let cookie = getCookie("test" + cookieNumber);
+            recordingIn += cookie.split('|')[0];;
+            eof = cookie.split('|')[1];
+        }
+        return this.parseRecording(recordingIn);
     }
 
     makeFast(recordingSlow: string, speedSteps: number) {
@@ -580,7 +594,9 @@ export default class Recorder {
 
         recOut = this.checksum(recording) + "?" + recOut + "?v1";
         //console.log("RECORDING OUT " + recOut);
-        this.saveCookies(recOut);
+        if (usingRecordingCookies) {
+            this.saveCookies(recOut);
+        }
 
         // Firestore
         // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
@@ -589,11 +605,9 @@ export default class Recorder {
         });
     }
 
-
-    // ALMOST OBSOLETE! Now this is saved to cloud
+    // local debugging
     saveCookies(data: string) {
-        //console.log("RECORDING OUT " + data);
-        return;
+        //console.log("COOKIES OUT " + data);
 
         this.recordingSize = data.length;
         const cookieName = "test";
