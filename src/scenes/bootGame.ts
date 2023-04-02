@@ -8,7 +8,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
 const skipClickToStart = true; const skipCloud = true; 
-//const skipClickToStart = false; const skipCloud = false; 
+//const skipClickToStart = false; const skipCloud = false;
 const testingFour = false;
 const skipBackgroundsLoad = false;
 
@@ -76,7 +76,6 @@ export class BootGame extends Phaser.Scene {
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
         if (!testingFour) {
-            console.log("asset load for whole game")
             if (!skipBackgroundsLoad) {
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
                 this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
@@ -201,7 +200,6 @@ export class BootGame extends Phaser.Scene {
     async create() {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
 
-
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
@@ -258,7 +256,7 @@ export class BootGame extends Phaser.Scene {
                 theRecording = await recorder.getRecording();
             else
                 theRecording = "NO RECORDING";
-            console.log("BOOT recording= " + theRecording);
+            //console.log("BOOT recording= " + theRecording);
 
             //playerCount = await this.getPlayerCount(); // async call to recorder's increment
             playerCount = await recorder.incrementPlayerCount();
@@ -385,7 +383,7 @@ export class BootGame extends Phaser.Scene {
         }
     }
 
-     // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
+    // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
     update() {
         if (playButtonIsHidden && !skipClickToStart) {
             if (playerCount > -1) {
@@ -393,6 +391,6 @@ export class BootGame extends Phaser.Scene {
                 playButton.setVisible(true)
                 playButtonIsHidden = false;
             }
-        } 
+        }
     }
 }

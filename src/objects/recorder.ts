@@ -232,7 +232,7 @@ export default class Recorder {
         }
         const str = new TextDecoder().decode(data);
         //console.log("Fetched " + str)
-        this.recordingSize = str.length;
+        this.recordingSize = str.length*10000;
         return str;
     }
 
@@ -252,6 +252,7 @@ export default class Recorder {
     }
 
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
+        //console.log(`registered mask ${key} ${sprite}`)
         this.spriteMap.set(key, sprite);
     }
     getMaskSprite(key: string) {
@@ -338,6 +339,7 @@ export default class Recorder {
         }
 
         if (pointerClicked) {
+            //console.log("recorder.checkPointer.click!")
             this.recordPointerAction("mouseclick", scene.time.now, sceneName);
             if (!stealthRecord)
                 this.showClick(scene, this.pointer.x, this.pointer.y);
@@ -348,14 +350,17 @@ export default class Recorder {
     }
 
     recordPointerAction(action: string, time: number, sceneName: string) {
-        if (action != "mousemove")
+        if (action != "mousemove") {
             console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
+        }
         this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},%${sceneName}%:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
         console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        if (object == "")
+            console.log("ERROR no recorder object specified!")
         this.pointer = scene.input.activePointer;
 
         if (object == "__MISSING") {
@@ -486,6 +491,11 @@ export default class Recorder {
 
     dumpRecording() {
         const rec = this.recording.split(":");
+
+        rec.forEach((action) => {
+            console.log(`DUMPREC ${action}`)
+        });
+
         let recOut = "";
         //console.log("ACTION COUNT " + rec.length);
         // struggling with TS arrays https://dpericich.medium.com/how-to-build-multi-type-multidimensional-arrays-in-typescript-a9550c9a688e
@@ -533,11 +543,13 @@ export default class Recorder {
             }
         });
 
+        // BROKEN BY PLAYERUI 
         // Must throw out redundant stuff. Find these and mark time as 0.
         // Perhaps could clean up the input recorded actions but let's just fix them here
         // It's a big mess that calls for a do-over on all of this but for now it is what it is
+        /*
         actions.forEach((action, idx) => {
-            //console.log("ACT " + action);
+            //console.log("RECORDER ACT " + action);
             if (idx < actions.length - 1) {
                 const nextAction = actions[idx + 1];
                 //console.log(action[3] + " " + nextAction[3])
@@ -554,6 +566,7 @@ export default class Recorder {
                 }
             }
         });
+        */
 
         // calculate elapsed time for non-redundant events and we're done, build the output string
         let prevTime = 0;
@@ -583,7 +596,9 @@ export default class Recorder {
 
         const recordedClicks = (recording.match(/mouseclick/g) || []).length;
         if (recordedClicks != this.totalClicks) {
-            console.log(`********* recording click error, recorded=${recordedClicks} actual=${this.totalClicks}`)
+            console.log(`********* recording click ERROR, recorded=${recordedClicks} actual=${this.totalClicks}`)
+            console.log(`error recording`)
+            console.log(recording)
             //throw new Error(`recording click error, recorded=${recordedClicks} actual=${this.totalClicks}`);
         }
 
@@ -605,7 +620,7 @@ export default class Recorder {
         // Firestore
         // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
         uploadString(this.storageRef, recOut).then((snapshot) => {
-            //console.log('Uploaded recording!');
+            console.log('Uploaded recording!');
         });
     }
 
@@ -647,7 +662,7 @@ export default class Recorder {
         return (chk & 0xffffffff).toString(16);
     }
 
-    // Called once per update when the recorder has a click to show, creates a sprite on the scene
+    // When the recorder has a click to show this creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
 
         const recordedClickSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');

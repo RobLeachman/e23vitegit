@@ -181,7 +181,7 @@ export default class Slots {
         //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
         // show the clue on the first actual item icon, not the empty fakes
         // only show it the first time
-        if (objectView != "fake" && !this.hasInspected) {
+        if (objectView != "fake" && objectView != "objRoach" && !this.hasInspected) {
             myUI.showInspectClue();
         }
         let i = -1;

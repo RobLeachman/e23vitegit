@@ -5,6 +5,7 @@ import PlayerUI from './playerUI';
 
 let myUI: PlayerUI;
 var recorder: Recorder;
+var slots: Slots;
 
 let viewWall = 0;
 let currentWall = -1;
@@ -60,26 +61,26 @@ export class ZotTable extends Phaser.Scene {
     constructor() {
         super("ZotTable");
     }
-    create(data: {
-        slots: Slots
-    }) {
+    create(data: { slots: Slots }) {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("ZotTable");
 
         slots = data.slots;
-
         recorder = slots.recorder;
+        const thisscene = this;
         // SCENERECORD: Capture all mask clicks on this scene
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 
-        let thisscene = this;
+
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
+
+
 
         this.registry.set('boxHasZot', haveZot);
         this.registry.set('boxColor', "off");
@@ -92,9 +93,8 @@ export class ZotTable extends Phaser.Scene {
         zotBackButton.on('pointerdown', () => {
             slots.combining = ""; // cancel any combine action
 
-            // record the last back action, it won't be captured by global method
             if (backStack.length == 0) {
-                recorder.recordObjectDown(zotBackButton.name, thisscene);
+                recorder.recordObjectDown(zotBackButton.name, thisscene); // must record, won't be captured by global method
                 //console.log("exit zottable")
 
                 zotBackButton.setVisible(false);

@@ -1,8 +1,11 @@
 import 'phaser';
 import PlayerUI from './playerUI';
 import Slots from "../objects/slots"
+import Recorder from "../objects/recorder"
 
 let myUI: PlayerUI;
+let recorder: Recorder;
+let slots: Slots;
 
 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
@@ -23,7 +26,6 @@ class WordPanel {
         this.location = loc;
         //this.mask = scene.add.sprite(50, 270 + (this.location * 127), maskImage).setOrigin(0, 0);
         this.mask = scene.add.sprite(50, 270 + (this.location * 127), 'atlas', 'fivewordsMask.png').setOrigin(0, 0).setName("fiveWordsMask");
-        console.log('recorder will be a bastard')
         this.word = this.scene.make.text({
             x: 80,
             y: 265 + (this.location * 127),
@@ -41,16 +43,23 @@ class WordPanel {
 
         this.mask.setInteractive({ cursor: 'pointer' });
         this.mask.on('pointerdown', () => {
-            this.wordIndex++;
-            if (this.wordIndex == this.words.length)
-                this.wordIndex = 0;
 
-            this.selectedWord = this.words[this.wordIndex];
-            this.word.setText(this.selectedWord);
-            this.word.setX(80)
-            const width = this.word.getBottomRight().x - 80;
-            this.word.setX((720 - width) / 2);
+            // Need special recorder hack for panel array
+            recorder.recordObjectDown('fivePanelMask@' + this.location, this.scene);
+            this.spinPanel();
         });
+    }
+
+    spinPanel() {
+        this.wordIndex++;
+        if (this.wordIndex == this.words.length)
+            this.wordIndex = 0;
+
+        this.selectedWord = this.words[this.wordIndex];
+        this.word.setText(this.selectedWord);
+        this.word.setX(80)
+        const width = this.word.getBottomRight().x - 80;
+        this.word.setX((720 - width) / 2);
     }
 
     addWord(word: string) {
@@ -100,10 +109,30 @@ export class Five extends Phaser.Scene {
         myUI.setActiveScene("Five");
 
         this.thePlayerName = data.playerName;
-        this.slots = data.slots;
+
+        ////////////// RECORDER - CAPTURE //////////////
+
+        // Capture clicks on object masks from this scene
+        slots = data.slots;
+        recorder = slots.recorder;
+        const thisscene = this;
+
+        this.registry.events.on('changedata', this.registryUpdate, this);
+
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            console.log("FIVE mask click " + (gameObject as Phaser.GameObjects.Sprite).name)
+            if ((gameObject as Phaser.GameObjects.Sprite).name == "fiveWordsMask") {
+                //console.log("special panels handles it")
+            } else
+                recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });
+
+        ////////////// SCENE OBJECTS //////////////
 
         this.add.image(0, 0, 'fiveBackground').setOrigin(0, 0);
-        this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setOrigin(0, 0);
+        this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setName('compartmentMask').setOrigin(0, 0);
+        recorder.addMaskSprite('compartmentMask', this.compartmentMask);
         this.compartmentMask.on('pointerdown', () => {
             myUI.setFiveState(2);
             this.compartmentOpen.setVisible(false);
@@ -112,7 +141,7 @@ export class Five extends Phaser.Scene {
             for (let i = 0; i < 5; i++) {
                 this.panels[i].winPanelOff();
             }
-            this.slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
         });
         this.compartmentMask.setVisible(false);
         this.compartmentMask.setInteractive({ cursor: 'pointer' });
@@ -156,10 +185,12 @@ export class Five extends Phaser.Scene {
         }
 
 
-        this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");
+        this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fiveBackButton");
+        recorder.addMaskSprite('fiveBackButton', this.fiveBackButton);
         this.fiveBackButton.setVisible(true); this.fiveBackButton.setInteractive({ cursor: 'pointer' });
 
         this.fiveBackButton.on('pointerdown', () => {
+            recorder.recordObjectDown(this.fiveBackButton.name, thisscene); // must record, won't be captured by global method
             this.scene.moveUp("PlayGame");
             this.scene.wake("PlayGame");
             this.scene.sleep();
@@ -184,6 +215,31 @@ export class Five extends Phaser.Scene {
                 myUI.setFiveState(1);
                 this.compartmentOpen.setVisible(true);
                 this.compartmentMask.setVisible(true);
+            }
+        }
+        if (recorder.getMode() == "record")
+            recorder.checkPointer(this);
+    }
+
+    ////////////// RECORDER REGISTRY //////////////
+
+    // @ts-ignore no clue what we'd do with parent
+    registryUpdate(parent: Phaser.Game, key: string, data: string) {
+        // Listen to registry for updates alerting us things on this scene were clicked
+        if (key == "replayObject") {
+            const spriteName = data.split(':')[0];
+            const spriteScene = data.split(':')[1];
+            //console.log("FIVE replay=" + spriteName + " on scene " + spriteScene)
+
+            if (spriteScene == "Five") {
+                const fivePanelMask = spriteName.split('@'); // special for Five, we need to call panels from an array
+                if (fivePanelMask[0] == 'fivePanelMask') {
+                    this.panels[parseInt(fivePanelMask[1], 10)].spinPanel()
+                } else {
+                    let object = recorder.getMaskSprite(spriteName);
+                    //console.log("replay five object")
+                    object?.emit('pointerdown')
+                }
             }
         }
     }

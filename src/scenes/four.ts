@@ -1,6 +1,11 @@
 import 'phaser';
-
 import PlayerUI from './playerUI';
+import Slots from "../objects/slots"
+import Recorder from "../objects/recorder"
+
+let myUI: PlayerUI;
+var recorder: Recorder;
+var slots: Slots;
 
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
@@ -8,6 +13,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+//const youtubeID = 'VjEq-r2agqc' // Don't Give Up... we were wanted all along
 
 let bugz = false;
 
@@ -28,6 +34,7 @@ export class Four extends Phaser.Scene {
     swapSelect = { x: 2, y: 2 }
     youtubes: YoutubePlayer;
     thePlayerName: string;
+    tileMap = new Map();
 
     ytPlayButton: Phaser.GameObjects.Sprite;
     fourBackButton: Phaser.GameObjects.Sprite;
@@ -80,11 +87,17 @@ export class Four extends Phaser.Scene {
     }
 
 
-    create(data: { playerName: string }) {
+    create(data: { slots: Slots, playerName: string }) {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
-        const myUI = this.scene.get("PlayerUI") as PlayerUI;
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("Four");
+
+        slots = data.slots;
+        recorder = slots.recorder;
+        const thisscene = this;
+
+        this.registry.events.on('changedata', this.registryUpdate, this);
 
         this.thePlayerName = data.playerName;
 
@@ -93,7 +106,7 @@ export class Four extends Phaser.Scene {
         this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false);
         this.artWhole = this.add.image(13 + 28, 250 + 28, 'fourArtWhole').setOrigin(0, 0).setDepth(1000).setVisible(false);
 
-        const tileMap = new Map();
+        this.tileMap = new Map();
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
                 const k = i.toString() + ':' + j.toString();
@@ -106,7 +119,7 @@ export class Four extends Phaser.Scene {
                 tileArt.setY((250 + 28) + j * 160)
 
                 const v = { art: tileArt, origX: i, origY: j };
-                tileMap.set(k, v);
+                this.tileMap.set(k, v);
 
                 this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, 'atlas', 'fourPieceFrame.png').setOrigin(0, 0).setDepth(1);
             }
@@ -116,10 +129,10 @@ export class Four extends Phaser.Scene {
             for (let z = 0; z < 50; z++) {
                 const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
                 const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
-                this.swapTiles(x1, y1, x2, y2, tileMap);
+                this.swapTiles(x1, y1, x2, y2, this.tileMap);
             }
         }
-        this.swapTiles(2, 3, 3, 3, tileMap);
+        this.swapTiles(2, 3, 3, 3, this.tileMap);
 
         // select box displayed
         //this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y,
@@ -129,81 +142,24 @@ export class Four extends Phaser.Scene {
 
         // cover the whole board and then read the coordinates of the click
         this.selectMask = this.add.sprite(13 + 28, 250 + 28, 'atlas', 'fourPieceMask.png').setOrigin(0, 0);
-        //recorder.addMaskSprite('selectMask', selectMask); // don't forget to enable this in the real game!!!!!!
-
+        recorder.addMaskSprite('selectMask', this.selectMask);
         this.selectMask.setVisible(true); this.selectMask.setDepth(1); this.selectMask.setInteractive({ cursor: 'pointer' });
 
-        // @ts-ignore
+        // Recorder one-off, saves object click and also location
+        // @ts-ignore pointer is not fancy
         this.selectMask.on('pointerdown', (pointer: Phaser.Input.Pointer, x: number, y: number) => {
-            /*
-            https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=3.55.2
-                        if (this.scale.isFullscreen)
-                        {
-                            
-                            this.scale.stopFullscreen();
-                        }
-                        else
-                        {
-                            this.scale.startFullscreen();
-                        }
-            */
-
-            const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
-            //console.log(`selecting ${selection.x},${selection.y}`);
-
-            if (this.selected.x < 1000) {
-                //console.log(`swap ${this.swapSelect.x},${this.swapSelect.y} with ${selection.x},${selection.y}`)
-                this.swapTiles(selection.x, selection.y, this.swapSelect.x, this.swapSelect.y, tileMap);
-
-                this.selected.setX(1000)
-
-                // chicken dinner?
-                let winner = true;
-
-                for (let i = 0; i < 4; i++) {
-                    for (let j = 0; j < 4; j++) {
-                        const k = i.toString() + ':' + j.toString();
-                        const tile = tileMap.get(k);
-                        //console.log(`dump ${i},${j}  orig ${tile.origX},${tile.origY}`)
-                        if (i != tile.origX || j != tile.origY)
-                            winner = false;
-                    }
-                }
-
-                if (winner) {
-                    myUI.setFourSolved(true);
-
-                    this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
-
-                    this.spinTheRecord();
-
-
-
-
-                    /*
-                        var youtubePlayer = this.add.rexYoutubePlayer(0, 0, 600, 450, {
-                            videoId: 'feZluC5JheM'
-                        })
-                            .on('ready', function () {
-                                youtubePlayer.setPosition(400, 300);
-                            })
-                            */
-
-
-                }
-
-            } else {
-                // save and indicate the new selection
-                this.selected.setX((13 + 28) + selection.x * 160)
-                this.selected.setY((13 + 28 + 240) + selection.y * 160)
-                this.swapSelect.x = selection.x; this.swapSelect.y = selection.y;
-                //console.log(`next swap ${swapSelect.x},${swapSelect.y}`)
-            }
+            recorder.recordObjectDown('fourSelectMask@' + Math.floor(x) + '@' + Math.floor(y), this);
+            this.doTileSelect(this.tileMap, x, y)
         });
+
         this.fourBackButton = this.add.sprite(300, 930, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fourBackButton");
+        recorder.addMaskSprite('fourBackButton', this.fourBackButton);
         this.fourBackButton.setVisible(true); this.fourBackButton.setDepth(3); this.fourBackButton.setInteractive({ cursor: 'pointer' });
         this.fourBackButton.on('pointerdown', () => {
             //console.log("Four back");
+            recorder.recordObjectDown(this.fourBackButton.name, thisscene); // must record, won't be captured by global method
+
+
             if (this.youtubes == undefined) {
                 //console.log('save state?')
             } else {
@@ -250,10 +206,67 @@ export class Four extends Phaser.Scene {
         });
     }
 
+    //@ts-ignore
+    doTileSelect(tileMap, x: number, y: number) {
+        const selection = { x: Math.floor(x / 160), y: Math.floor(y / 160) };
+
+        // If there is an active selection, swap this tile with that one, clear the selection icon and test for win
+        if (this.selected.x < 1000) {
+            this.swapTiles(selection.x, selection.y, this.swapSelect.x, this.swapSelect.y, tileMap);
+            this.selected.setX(1000)
+            // chicken dinner?
+            let winner = true;
+
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    const k = i.toString() + ':' + j.toString();
+                    const tile = tileMap.get(k);
+                    //console.log(`dump ${i},${j}  orig ${tile.origX},${tile.origY}`)
+                    if (i != tile.origX || j != tile.origY)
+                        winner = false;
+                }
+            }
+            if (winner) {
+                myUI.setFourSolved(true);
+                this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
+                this.spinTheRecord();
+            }
+
+        } else {
+            // save and indicate the new selection
+            this.selected.setX((13 + 28) + selection.x * 160)
+            this.selected.setY((13 + 28 + 240) + selection.y * 160)
+            this.swapSelect.x = selection.x; this.swapSelect.y = selection.y;
+        }
+
+    }
+
     update() {
         if (bugz) {
             this.fourBackButton.setInteractive({ cursor: 'pointer' });
             bugz = false;
+        }
+        if (recorder.getMode() == "record")
+            recorder.checkPointer(this);
+    }
+
+    // @ts-ignore
+    // no clue what parent is
+    registryUpdate(parent: Phaser.Game, key: string, data: string) {
+        console.log("----------FOUR reg check " + data)
+        if (key == "replayObject") {
+            const spriteName = data.split(':')[0];
+            const spriteScene = data.split(':')[1];
+            if (spriteScene == "Four") {
+                const fourTileMask = spriteName.split('@');
+                if (fourTileMask[0] == 'fourSelectMask') {
+                    this.doTileSelect(this.tileMap, parseInt(fourTileMask[1], 10), parseInt(fourTileMask[2], 10))
+
+                } else {
+                    let object = recorder.getMaskSprite(spriteName);
+                    object?.emit('pointerdown')
+                }
+            }
         }
     }
 }
