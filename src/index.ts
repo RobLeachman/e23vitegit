@@ -6,7 +6,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 const testingFour = false; // here we just skip loading stuff... but must comment out these too:
 //if (!testingFour) { // ALSO adjust scene config!
 
-import  PlayerUI  from './scenes/playerUI';
+import PlayerUI from './scenes/playerUI';
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
 import { ZotTable } from './scenes/zotTable';
@@ -14,6 +14,8 @@ import { ZotTable } from './scenes/zotTable';
 
 import { Four } from './scenes/four';
 import { Five } from './scenes/five';
+import { RoomTwo } from './scenes/roomTwo';
+
 
 //import { Recorder } from './scenes/recorder';
 
@@ -39,14 +41,16 @@ import { Five } from './scenes/five';
 const DPR = 4; // so it looks nice while testing?
 
 //const { width, height } = window.screen;
-//const width = window.innerWidth;
-//const height = window.innerHeight;
+const width = window.innerWidth;
+const height = window.innerHeight;
+console.log(`window width: ${width} height: ${height}`)
 
 // base resolution is 640x480 @4
 //export const WIDTH = Math.round(Math.max(width, height) * DPR);
 //export const HEIGHT = Math.round(Math.min(width, height) * DPR);
 export const WIDTH = 640 * DPR;
 export const HEIGHT = 480 * DPR;
+console.log(`DPR window width: ${WIDTH} height: ${HEIGHT}`)
 
 // will be 1, 1.5, 2, 2.5, 3, 3.5 or 4
 //export const assetsDPR = roundHalf(Math.min(Math.max(HEIGHT / 480, 1), 4));
@@ -62,9 +66,10 @@ console.log('HEIGHT = ', HEIGHT);
 let gameConfig = {
     type: Phaser.WEBGL,
     //type: Phaser.CANVAS,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
     scale: {
         mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 720,
         height: 1280,
         parent: 'thegame',
@@ -73,7 +78,7 @@ let gameConfig = {
         createContainer: true
     },
     disableContextMenu: true, // ready for right-click if needed
-    autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+    //autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
 
     plugins: {
         scene: [{
@@ -89,7 +94,7 @@ let gameConfig = {
         ]
     },
 
-    scene: [PlayerUI, BootGame, PlayGame, ZotTable, Four, Five]
+    scene: [PlayerUI, BootGame, PlayGame, ZotTable, Four, Five, RoomTwo]
 };
 
 
@@ -97,9 +102,10 @@ if (testingFour) {
     gameConfig = {
         type: Phaser.WEBGL,
         //type: Phaser.CANVAS,
-        backgroundColor: '#222222',
+        backgroundColor: '#333333',
         scale: {
             mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
             width: 720,
             height: 1280,
             parent: 'thegame',
@@ -108,7 +114,7 @@ if (testingFour) {
             createContainer: true
         },
         disableContextMenu: true, // ready for right-click if needed
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+        //autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
         //autoCenter: Phaser.Scale.CENTER_BOTH,     // needed for fullscreen?
         plugins: {
             scene: [{
@@ -124,7 +130,7 @@ if (testingFour) {
             ]
         },
         //scene: [BootGame, PlayGame, ZotTable, Four, Five]
-        scene: [PlayerUI, BootGame, Five]
+        scene: [PlayerUI, BootGame, RoomTwo]
     };
 }
 

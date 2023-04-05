@@ -92,6 +92,8 @@ export class Four extends Phaser.Scene {
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("Four");
+        var camera = this.cameras.main;
+        camera.setPosition(0, myUI.getCameraHack());
 
         slots = data.slots;
         recorder = slots.recorder;
@@ -159,7 +161,6 @@ export class Four extends Phaser.Scene {
             //console.log("Four back");
             recorder.recordObjectDown(this.fourBackButton.name, thisscene); // must record, won't be captured by global method
 
-
             if (this.youtubes == undefined) {
                 //console.log('save state?')
             } else {
@@ -174,9 +175,9 @@ export class Four extends Phaser.Scene {
             this.fourBackButton.setVisible(false);
             this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
 
-            this.scene.moveUp("PlayGame");
+            this.scene.moveUp("RoomTwo");
             this.scene.sleep();
-            this.scene.wake("PlayGame");
+            this.scene.wake("RoomTwo");
         });
 
         this.ytPlayButton = this.add.sprite(360, 600, 'atlas', 'ytPlayButton.png').setName("ytPlayButton");

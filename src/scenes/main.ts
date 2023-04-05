@@ -16,6 +16,36 @@
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
  */
+
+/*
+ * ROOM 1
+ *   donut plate -> zot, half key
+ *   green box -> half key (battery, zot)
+ *   4x4
+ *   five words -> battery
+ * .....
+ * ROOM 1
+ *   donut plate -> zot, half key
+ *   five words
+ *   2-way clue panel -> red key
+ *   ... red key
+ * 
+ * ROOM 2 (red key)
+ *   4x4
+ *   green box
+ *   2-way puzzle -> half key
+ * 
+ * 1) get red key from 2-way clue panel
+ * 2) open middle
+ * 3) get clue from 4x4
+ * 4) back to first, solve 5-words, get battery
+ * 5) get zot
+ * 6) back to middle, solve green box, get half key
+ * 7) solve 2-way, get half key
+ * *
+ * ********** make eyeball bigger
+ * 
+ */
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
@@ -29,7 +59,7 @@ let myUI: PlayerUI;
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
 
-var viewWall = 0; // production start at 0
+var viewWall = 2; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -55,11 +85,10 @@ var doorMask: Phaser.GameObjects.Sprite;
 var hintMask: Phaser.GameObjects.Sprite;
 var battMask: Phaser.GameObjects.Sprite;
 
-var fourMask: Phaser.GameObjects.Sprite;
-var fourSolved: Phaser.GameObjects.Sprite;
 var fiveMask: Phaser.GameObjects.Sprite;
 var fiveOpen: Phaser.GameObjects.Sprite;
 var fiveBatt: Phaser.GameObjects.Sprite;
+var twoDoorMask: Phaser.GameObjects.Sprite;
 
 var zotTableMask: Phaser.GameObjects.Sprite;
 var boxZot: Phaser.GameObjects.Sprite;
@@ -70,14 +99,10 @@ var tableState = 0;
 
 var egress = false;
 
-var boxHasZot = false;
-var zotBoxColor: number;
-
 let zotTableInit = true;
-let fourInit = true;
-
 
 var fiveInit = true;
+var twoInit = true;
 
 var slots: Slots;
 
@@ -263,8 +288,9 @@ export class PlayGame extends Phaser.Scene {
 
         if ((viewWall != currentWall || updateWall)) {
             roomReturnWall = viewWall;
+            currentWall = viewWall;
+            updateWall = false;
 
-            fourSolved.setVisible(false);
             fiveOpen.setVisible(false);
             fiveBatt.setVisible(false);
 
@@ -303,9 +329,7 @@ export class PlayGame extends Phaser.Scene {
                 doorMask.setVisible(false);
                 battMask.setVisible(false);
 
-                fourMask.setVisible(false);
                 fiveMask.setVisible(false);
-                fourSolved.setVisible(false);
                 fiveOpen.setVisible(false);
                 fiveBatt.setVisible(false);
 
@@ -337,8 +361,6 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 9)
                 previousWall = 2;
 
-            currentWall = viewWall;
-            updateWall = false;
 
             boxZot.setDepth(-1);
             zotBoxColorYellow.setDepth(-1);
@@ -346,18 +368,6 @@ export class PlayGame extends Phaser.Scene {
 
             if (viewWall == 0) {
                 this.add.sprite(542, 650, 'atlas', tableView[tableState]).setOrigin(0, 0);
-            }
-
-            if (viewWall == 1) {
-                if (boxHasZot) {
-                    boxZot.setDepth(100);
-                }
-                if (zotBoxColor == 1) {
-                    zotBoxColorYellow.setDepth(100);
-                }
-                if (zotBoxColor == 2) {
-                    zotBoxColorGreen.setDepth(100);
-                }
             }
 
             if (viewWall == 4)
@@ -388,16 +398,15 @@ export class PlayGame extends Phaser.Scene {
                 zotTableMask.setVisible(true); zotTableMask.setDepth(100); zotTableMask.setInteractive({ cursor: 'pointer' });
 
             hintMask.setVisible(false);
-            if (viewWall == 2)
+            twoDoorMask.setVisible(false);
+            if (viewWall == 2) {
                 hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' });
+                twoDoorMask.setVisible(true); twoDoorMask.setDepth(100); twoDoorMask.setInteractive({ cursor: 'pointer' });
+            }
 
-            fourMask.setVisible(false);
             fiveMask.setVisible(false);
             if (viewWall == 3) {
-                fourMask.setVisible(true); fourMask.setDepth(100); fourMask.setInteractive({ cursor: 'pointer' });
                 fiveMask.setVisible(true); fiveMask.setDepth(100); fiveMask.setInteractive({ cursor: 'pointer' });
-                if (myUI.getFourSolved())
-                    fourSolved.setVisible(true).setDepth(1);
 
                 const fiveState = myUI.getFiveState();
                 if (fiveState == 1)
@@ -426,14 +435,7 @@ export class PlayGame extends Phaser.Scene {
     // data will be boolean or number, so "any" here is legit!
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
         //console.log(`main registry update ${key}`)
-        if (key == "boxHasZot") {
-            //console.log("boxHasZot=" + data)
-            boxHasZot = data;
-        }
-        if (key == "zotBoxColor") {
-            //console.log("zotBoxColor=" + data)
-            zotBoxColor = data;
-        }
+
 
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
@@ -450,6 +452,7 @@ export class PlayGame extends Phaser.Scene {
         mobile: boolean;
         theRecording: string;
     }) {
+
         mobile = data.mobile;
         //console.log(`main create ${mobile}`)
 
@@ -457,6 +460,8 @@ export class PlayGame extends Phaser.Scene {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI.setActiveScene("PlayGame");
+        let camera = this.cameras.main;
+        camera.setPosition(0, myUI.getCameraHack());
 
         slots = myUI.getSlots();
 
@@ -512,8 +517,6 @@ export class PlayGame extends Phaser.Scene {
             fontSize: '24px',
         });
         //this.add.existing(myPaste);
-
-        slots.displaySlots();
 
         //SCENERECORD add to recorder dictionary every sprite that can be clicked 
         leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton");
@@ -600,23 +603,9 @@ export class PlayGame extends Phaser.Scene {
             updateWall = true;
         });
 
-        fourSolved = this.add.sprite(80, 455, 'atlas', 'fourSolved.png').setOrigin(0, 0).setVisible(false);
+        
         fiveOpen = this.add.sprite(500, 652, 'atlas', 'fiveOpen.png').setOrigin(0, 0).setVisible(false).setDepth(100);
         fiveBatt = this.add.sprite(500, 652, 'atlas', 'fiveBatt.png').setOrigin(0, 0).setVisible(false).setDepth(100);
-
-        fourMask = this.add.sprite(80, 455, 'atlas', 'fourMask.png').setName('fourMask').setOrigin(0, 0);
-        recorder.addMaskSprite('fourMask', fourMask);
-        fourMask.on('pointerdown', () => {
-            roomReturnWall = 3;
-            if (fourInit) {
-                fourInit = false;
-                this.scene.launch("Four", { slots: slots, playerName: recorder.getPlayerName() })
-                this.scene.sleep();
-            } else {
-                this.scene.wake("Four");
-                this.scene.sleep();
-            }
-        });
 
         fiveMask = this.add.sprite(468, 533, 'atlas', 'fiveMask.png').setName("fiveMask").setOrigin(0, 0);
         recorder.addMaskSprite('fiveMask', fiveMask);
@@ -632,7 +621,20 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        //doorMask = this.add.sprite(274, 398, 'doorMask').setOrigin(0, 0);
+        twoDoorMask = this.add.sprite(235, 381, 'atlas', 'twoDoorMask.png').setName('twoDoorMask').setOrigin(0, 0);
+        recorder.addMaskSprite('twoDoorMask', twoDoorMask);
+        twoDoorMask.on('pointerdown', () => {
+            roomReturnWall = 0;
+            if (twoInit) {
+                twoInit = false;
+                this.scene.launch("RoomTwo");
+                this.scene.sleep();
+            } else {
+                this.scene.wake("RoomTwo");
+                this.scene.sleep();
+            }
+        });
+
         doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0, 0);
         recorder.addMaskSprite('doorMask', doorMask);
         doorMask.on('pointerdown', () => {

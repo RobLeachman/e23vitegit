@@ -90,6 +90,66 @@
       "folder": ""
     },
     {
+      "name": "farZotPlaced.png",
+      "path": "D:/src/e23/src/assets/packed/farZotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "farZotPlacedReverse.png",
+      "path": "D:/src/e23/src/assets/packed/farZotPlacedReverse.png",
+      "folder": ""
+    },
+    {
+      "name": "farZotPostit.png",
+      "path": "D:/src/e23/src/assets/packed/farZotPostit.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-0.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-0.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-1.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-1.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-2.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-2.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-3.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-3.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-4.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-4.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-5.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-5.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-6.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-6.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-7.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-7.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-8.png",
+      "path": "D:/src/e23/src/assets/packed/farzot-8.png",
+      "folder": ""
+    },
+    {
       "name": "fiveBatt.png",
       "path": "D:/src/e23/src/assets/packed/fiveBatt.png",
       "folder": ""
@@ -125,11 +185,6 @@
       "folder": ""
     },
     {
-      "name": "fourMask.png",
-      "path": "D:/src/e23/src/assets/packed/fourMask.png",
-      "folder": ""
-    },
-    {
       "name": "fourPieceFrame.png",
       "path": "D:/src/e23/public/assets/sprites/fourPieceFrame.png",
       "folder": ""
@@ -142,11 +197,6 @@
     {
       "name": "fourPieceSelected.png",
       "path": "D:/src/e23/public/assets/sprites/fourPieceSelected.png",
-      "folder": ""
-    },
-    {
-      "name": "fourSolved.png",
-      "path": "D:/src/e23/src/assets/packed/fourSolved.png",
       "folder": ""
     },
     {
@@ -187,6 +237,11 @@
     {
       "name": "icon - plate.png",
       "path": "D:/src/e23/src/assets/packed/icon - plate.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - postit2.png",
+      "path": "D:/src/e23/src/assets/packed/icon - postit2.png",
       "folder": ""
     },
     {
@@ -232,6 +287,76 @@
     {
       "name": "keyMask.png",
       "path": "D:/src/e23/src/assets/packed/keyMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newFourMask.png",
+      "path": "D:/src/e23/src/assets/packed/newFourMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newFourSolved.png",
+      "path": "D:/src/e23/src/assets/packed/newFourSolved.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotBottomMask.png",
+      "path": "D:/src/e23/src/assets/packed/newzotBottomMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotDrawerMask.png",
+      "path": "D:/src/e23/src/assets/packed/newzotDrawerMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlaceMask.png",
+      "path": "D:/src/e23/src/assets/packed/newzotPlaceMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlaced.png",
+      "path": "D:/src/e23/src/assets/packed/newzotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlacedFlipped.png",
+      "path": "D:/src/e23/src/assets/packed/newzotPlacedFlipped.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-empty.png",
+      "path": "D:/src/e23/src/assets/packed/newzotState-empty.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-green.png",
+      "path": "D:/src/e23/src/assets/packed/newzotState-green.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-key.png",
+      "path": "D:/src/e23/src/assets/packed/newzotState-key.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-yellow.png",
+      "path": "D:/src/e23/src/assets/packed/newzotState-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotStateFlipped-red.png",
+      "path": "D:/src/e23/src/assets/packed/newzotStateFlipped-red.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotStateFlipped-yellow.png",
+      "path": "D:/src/e23/src/assets/packed/newzotStateFlipped-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotTableMask.png",
+      "path": "D:/src/e23/src/assets/packed/newzotTableMask.png",
       "folder": ""
     },
     {
@@ -295,6 +420,11 @@
       "folder": ""
     },
     {
+      "name": "twoDoorMask.png",
+      "path": "D:/src/e23/src/assets/packed/twoDoorMask.png",
+      "folder": ""
+    },
+    {
       "name": "winner donutPlated.png",
       "path": "D:/src/e23/src/assets/packed/winner donutPlated.png",
       "folder": ""
@@ -310,58 +440,18 @@
       "folder": ""
     },
     {
-      "name": "zotBottomMask.png",
-      "path": "D:/src/e23/src/assets/packed/zotBottomMask.png",
+      "name": "zotPostit2.png",
+      "path": "D:/src/e23/src/assets/packed/zotPostit2.png",
       "folder": ""
     },
     {
-      "name": "zotDrawerMask.png",
-      "path": "D:/src/e23/src/assets/packed/zotDrawerMask.png",
+      "name": "zotPostitFlipped2.png",
+      "path": "D:/src/e23/src/assets/packed/zotPostitFlipped2.png",
       "folder": ""
     },
     {
-      "name": "zotPlaced.png",
-      "path": "D:/src/e23/src/assets/packed/zotPlaced.png",
-      "folder": ""
-    },
-    {
-      "name": "zotPlacedFlipped.png",
-      "path": "D:/src/e23/src/assets/packed/zotPlacedFlipped.png",
-      "folder": ""
-    },
-    {
-      "name": "zotState-empty.png",
-      "path": "D:/src/e23/src/assets/packed/zotState-empty.png",
-      "folder": ""
-    },
-    {
-      "name": "zotState-green.png",
-      "path": "D:/src/e23/src/assets/packed/zotState-green.png",
-      "folder": ""
-    },
-    {
-      "name": "zotState-key.png",
-      "path": "D:/src/e23/src/assets/packed/zotState-key.png",
-      "folder": ""
-    },
-    {
-      "name": "zotState-off.png",
-      "path": "D:/src/e23/src/assets/packed/zotState-off.png",
-      "folder": ""
-    },
-    {
-      "name": "zotState-yellow.png",
-      "path": "D:/src/e23/src/assets/packed/zotState-yellow.png",
-      "folder": ""
-    },
-    {
-      "name": "zotStateFlipped-red.png",
-      "path": "D:/src/e23/src/assets/packed/zotStateFlipped-red.png",
-      "folder": ""
-    },
-    {
-      "name": "zotStateFlipped-yellow.png",
-      "path": "D:/src/e23/src/assets/packed/zotStateFlipped-yellow.png",
+      "name": "zotPostitMask.png",
+      "path": "D:/src/e23/src/assets/packed/zotPostitMask.png",
       "folder": ""
     },
     {

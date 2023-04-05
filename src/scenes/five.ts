@@ -107,6 +107,8 @@ export class Five extends Phaser.Scene {
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         myUI.setActiveScene("Five");
+        var camera = this.cameras.main;
+        camera.setPosition(0, myUI.getCameraHack());
 
         this.thePlayerName = data.playerName;
 
@@ -184,10 +186,9 @@ export class Five extends Phaser.Scene {
                 this.panels[Phaser.Math.Between(0, 4)].shuffle()
         }
 
-
         this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fiveBackButton");
         recorder.addMaskSprite('fiveBackButton', this.fiveBackButton);
-        this.fiveBackButton.setVisible(true); this.fiveBackButton.setInteractive({ cursor: 'pointer' });
+        this.fiveBackButton.setVisible(true); this.fiveBackButton.setInteractive();
 
         this.fiveBackButton.on('pointerdown', () => {
             recorder.recordObjectDown(this.fiveBackButton.name, thisscene); // must record, won't be captured by global method

@@ -8,6 +8,8 @@ let debugInput = true; // display pastebox for input of debug data
 let useCookieRecordings = false; // use cookies not the cloud
 const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
+const cameraHack = 0;
+
 let invBar: Phaser.GameObjects.Sprite;
 let interfaceClueFull: Phaser.GameObjects.Sprite;
 let interfaceClueCombine: Phaser.GameObjects.Sprite;
@@ -24,13 +26,6 @@ var objectMask: Phaser.GameObjects.Sprite;
 
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
-
-/*
-viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
-viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
-
-const iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0);
-*/
 
 let slots: Slots;
 let recorder: Recorder;
@@ -180,6 +175,9 @@ export default class PlayerUI extends Phaser.Scene {
     setFiveState(newState: number) {
         fiveState = newState;
     }
+    getCameraHack() {
+        return cameraHack;
+    }
 
     // Must preload initial UI sprites, the only graphic asset used here
     preload() {
@@ -187,6 +185,13 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     create() {
+        var camera = this.cameras.main;
+        camera.setPosition(0,cameraHack);
+
+        console.log("scale size")
+        const mySize = this.scale.parentSize;
+        console.log(mySize.height*4)
+        console.log(1280-mySize.height*4)        
 
         let hostname = location.hostname;
         /*
@@ -212,13 +217,13 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceClueFull = this.add.sprite(485, 774, 'atlas', 'interfaceClueSearch.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         interfaceClueCombine = this.add.sprite(17, 305, 'atlas', 'interfaceClueCombine.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         viewportPointerClick = this.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
-        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer.png').setOrigin(0, 0);
+        viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer3.png').setOrigin(0, 0);
         iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0).setDepth(1);
         failed = this.add.sprite(1000, 950, 'atlas', 'fail.png').setDepth(1); // 640 is displayed
         //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
         interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
-        recorder = new Recorder(viewportPointer, viewportPointerClick);
+        recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack);
         slots = new Slots(this, iconSelected, recorder);
 
         plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton").setDepth(1).setVisible(false);
@@ -309,7 +314,7 @@ export default class PlayerUI extends Phaser.Scene {
         });
 
         ////////////// RECORDER INIT //////////////
-        console.log("MAIN PLAYER: " + recorder.getPlayerName());
+        //console.log("MAIN PLAYER: " + recorder.getPlayerName());
 
         myText = new InputText(this, 220, 55, 300, 100, {
             type: 'textarea',

@@ -7,9 +7,12 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true; const skipCloud = true; 
+const skipClickToStart = true; const skipCloud = true;
 //const skipClickToStart = false; const skipCloud = false;
-const testingFour = false;
+
+// Revive this
+const testingNewRoom = false;
+
 const skipBackgroundsLoad = false;
 
 let myUI: PlayerUI;
@@ -45,7 +48,7 @@ export class BootGame extends Phaser.Scene {
         super({
             pack: {
                 files: [
-                    { type: 'image', key: 'splash', url: 'assets/backgrounds/splash.webp' },
+                    { type: 'image', key: 'splash', url: 'assets/backgrounds/splashInit.webp' },
                 ]
             },
             key: 'BootGame'
@@ -75,7 +78,7 @@ export class BootGame extends Phaser.Scene {
         */
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
-        if (!testingFour) {
+        if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
                 this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
@@ -115,19 +118,22 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
                 this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
+                this.load.image('objPostit', 'assets/backgrounds/room2 - obj - postit.webp');
+                this.load.image('altobjPostit', 'assets/backgrounds/room2 - altobj - postit.webp');
+
                 this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
-                this.load.image('zotTableOff', 'assets/backgrounds/zot - off.webp');
-                this.load.image('zotTableBack', 'assets/backgrounds/zot - back.webp');
-                this.load.image('zotTableOffFlipped', 'assets/backgrounds/zot - flip - off.webp');
-                this.load.image('zotTableBackFlipped', 'assets/backgrounds/zot - flip - back.webp');
-                this.load.image('zotBatteryClosed', 'assets/backgrounds/zot - battery - closed.webp');
-                this.load.image('zotBatteryEmpty', 'assets/backgrounds/zot - battery - empty.webp');
-                this.load.image('zotBatteryPlaced', 'assets/backgrounds/zot - battery - placed.webp');
-
-                this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
-                this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
-                this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');
+                this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
+                this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
+                this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
+                this.load.image('room2 west', 'assets/backgrounds/room2 - west.webp');
+                this.load.image('zotTableOff', 'assets/backgrounds/newzot - off.webp');
+                this.load.image('zotTableBack', 'assets/backgrounds/newzot - back.webp');
+                this.load.image('zotTableOffFlipped', 'assets/backgrounds/newzot - flip - off.webp');
+                this.load.image('zotTableBackFlipped', 'assets/backgrounds/newzot - flip - back.webp');
+                this.load.image('zotBatteryClosed', 'assets/backgrounds/newzot - battery - closed.webp');
+                this.load.image('zotBatteryEmpty', 'assets/backgrounds/newzot - battery - empty.webp');
+                this.load.image('zotBatteryPlaced', 'assets/backgrounds/newzot - battery - placed.webp');
 
                 this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
@@ -135,6 +141,9 @@ export class BootGame extends Phaser.Scene {
                 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
                 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
                 this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
+                this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
+                this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
+                this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');
             }
 
             //let windowHeight = window.innerHeight;
@@ -146,14 +155,16 @@ export class BootGame extends Phaser.Scene {
             var width = this.cameras.main.width;
             var height = this.cameras.main.height;
 
+            const fudge = 30
+
             var progressBar = this.add.graphics();
             var progressBox = this.add.graphics();
             progressBox.fillStyle(0x333333, 0.8);
-            progressBox.fillRect(width / 2 - 10 - 160, height / 2 - 60, 320, 50);
+            progressBox.fillRect(width / 2 - 10 - 160, height / 2 - 60 + fudge, 320, 50);
 
             var loadingText = this.make.text({
                 x: width / 2,
-                y: height / 2 - 80,
+                y: height / 2 - 80 + fudge,
                 text: 'Loading...',
                 style: {
                     font: '20px monospace',
@@ -163,7 +174,7 @@ export class BootGame extends Phaser.Scene {
             loadingText.setOrigin(0.5, 0.5);
             var percentText = this.make.text({
                 x: width / 2,
-                y: height / 2 - 36,
+                y: height / 2 - 36 + fudge,
                 text: '0%',
                 style: {
                     font: '18px monospace',
@@ -178,7 +189,7 @@ export class BootGame extends Phaser.Scene {
                 percentText.setText(myParseIntValue + '%');
                 progressBar.clear();
                 progressBar.fillStyle(0xffffff, 1);
-                progressBar.fillRect(width / 2 - 160, height / 2 - 50, 300 * value, 30);
+                progressBar.fillRect(width / 2 - 160, height / 2 - 50 + fudge, 300 * value, 30);
             });
 
             this.load.on('fileprogress', function () {
@@ -199,11 +210,13 @@ export class BootGame extends Phaser.Scene {
 
     async create() {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
+        //var camera = this.cameras.main;
+        //camera.setPosition(0,-240); // didn't fudge the camera but instead repositioned everything in better spot, for now
 
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 60 - 50, "playButton").setOrigin(0, 0).setDepth(1);
+        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2, "playButton").setOrigin(0, 0).setDepth(1);
         playButton.setVisible(false)
 
         playButton.on('pointerdown', () => {
@@ -278,7 +291,7 @@ export class BootGame extends Phaser.Scene {
         let greets = "What can I call you?";
         if (welcomeBack)
             greets = "Welcome back! Change your nick?"
-        greets1 = this.add.text(50, 30, greets, {
+        greets1 = this.add.text(50, 350, greets, {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
@@ -287,28 +300,29 @@ export class BootGame extends Phaser.Scene {
         });
         if (welcomeBack)
             greets1.setColor('#fff');
-        greets2 = this.add.text(50, 70, 'Nicknames can be letters and numbers only', {
+        greets2 = this.add.text(50, 390, 'Nicknames can be letters and numbers only', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#fff',
         })
-        greets3 = this.add.text(50, 1060, 'By clicking play you consent to debug telemetry.', {
+        greets3 = this.add.text(50, 875, 'By clicking play you consent to debug telemetry.', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#aaa',
         })
-        greets4 = this.add.text(50, 1085, 'Your play will be recorded to improve the quality of my buggy game.', {
+        greets4 = this.add.text(50, 900, 'Your play will be recorded to improve the quality of my buggy game.', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#aaa',
         })
-        greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
+        //greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
+        greets5 = this.add.text(50, 925, 'I would love to hear from you! Email escape@bitblaster.com', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
@@ -319,7 +333,7 @@ export class BootGame extends Phaser.Scene {
 
         greetings = this.make.text({
             x: 50,
-            y: 300,
+            y: 815,
             text: 'Greetings',
             style: {
                 fontFamily: 'Helvetica',
@@ -332,7 +346,8 @@ export class BootGame extends Phaser.Scene {
 
         greetings.setText("Thanks for testing, " + playerName + "!");
 
-        thePlayer = this.add.text(320, 150, playerName, {
+        //thePlayer = this.add.text(320, 150, playerName, {
+        thePlayer = this.add.text(160, 450, playerName, {
             fixedWidth: 400,
             fixedHeight: 100,
             fontFamily: 'Helvetica',
@@ -340,10 +355,8 @@ export class BootGame extends Phaser.Scene {
             color: '#fff',
             backgroundColor: 'grey',
             padding: { x: 20, y: 20 }
-
-
         })
-        thePlayer.setOrigin(0.5, 0.5)
+        thePlayer.setOrigin(0, 0)
         // https://blog.ourcade.co/posts/2020/phaser-3-add-text-input-rexui/
         thePlayer.setInteractive().on('pointerdown', () => {
             this.rexUI.edit(thePlayer, {
@@ -375,9 +388,10 @@ export class BootGame extends Phaser.Scene {
             myUI.displayInventoryBar(true); myUI.showEye()
 
             //loadDone.destroy()
-            if (testingFour) {
-                this.scene.run("Five");
+            if (testingNewRoom) {
+                this.scene.run("RoomTwo");
             } else {
+
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         }

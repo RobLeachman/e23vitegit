@@ -4,8 +4,8 @@
 			"image": "texture",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1886,
-				"h": 1921
+				"w": 2020,
+				"h": 1850
 			},
 			"scale": 1,
 			"frames": [
@@ -94,171 +94,108 @@
 					}
 				},
 				{
-					"filename": "zotStateFlipped-yellow.png",
+					"filename": "newzotState-key.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					},
 					"frame": {
 						"x": 640,
 						"y": 625,
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					}
 				},
 				{
-					"filename": "zotStateFlipped-red.png",
+					"filename": "newzotState-empty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					},
 					"frame": {
 						"x": 0,
 						"y": 1140,
-						"w": 423,
-						"h": 274
+						"w": 499,
+						"h": 275
 					}
 				},
 				{
-					"filename": "zotState-yellow.png",
+					"filename": "newzotState-green.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"frame": {
-						"x": 423,
+						"x": 499,
 						"y": 1140,
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					}
 				},
 				{
-					"filename": "zotState-off.png",
+					"filename": "newzotState-yellow.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"frame": {
-						"x": 526,
-						"y": 899,
-						"w": 467,
-						"h": 226
+						"x": 0,
+						"y": 1415,
+						"w": 499,
+						"h": 275
 					}
 				},
 				{
-					"filename": "zotState-key.png",
+					"filename": "newzotDrawerMask.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 467,
-						"h": 226
+						"w": 499,
+						"h": 275
 					},
 					"frame": {
-						"x": 890,
-						"y": 1125,
-						"w": 467,
-						"h": 226
-					}
-				},
-				{
-					"filename": "zotDrawerMask.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 467,
-						"h": 226
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 467,
-						"h": 226
-					},
-					"frame": {
-						"x": 890,
-						"y": 1351,
-						"w": 467,
-						"h": 226
-					}
-				},
-				{
-					"filename": "zotState-green.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 467,
-						"h": 226
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 467,
-						"h": 226
-					},
-					"frame": {
-						"x": 423,
-						"y": 1366,
-						"w": 467,
-						"h": 226
-					}
-				},
-				{
-					"filename": "zotState-empty.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 467,
-						"h": 226
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 467,
-						"h": 226
-					},
-					"frame": {
-						"x": 993,
-						"y": 899,
-						"w": 467,
-						"h": 226
+						"x": 499,
+						"y": 1415,
+						"w": 499,
+						"h": 275
 					}
 				},
 				{
@@ -276,8 +213,8 @@
 						"h": 246
 					},
 					"frame": {
-						"x": 1063,
-						"y": 625,
+						"x": 998,
+						"y": 900,
 						"w": 421,
 						"h": 246
 					}
@@ -297,8 +234,8 @@
 						"h": 246
 					},
 					"frame": {
-						"x": 1357,
-						"y": 1125,
+						"x": 998,
+						"y": 1146,
 						"w": 421,
 						"h": 246
 					}
@@ -318,8 +255,8 @@
 						"h": 246
 					},
 					"frame": {
-						"x": 1460,
-						"y": 871,
+						"x": 998,
+						"y": 1392,
 						"w": 421,
 						"h": 246
 					}
@@ -339,8 +276,8 @@
 						"h": 246
 					},
 					"frame": {
-						"x": 1357,
-						"y": 1371,
+						"x": 1139,
+						"y": 625,
 						"w": 421,
 						"h": 246
 					}
@@ -360,10 +297,31 @@
 						"h": 230
 					},
 					"frame": {
-						"x": 1419,
-						"y": 0,
+						"x": 526,
+						"y": 900,
 						"w": 414,
 						"h": 230
+					}
+				},
+				{
+					"filename": "twoDoorMask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 211,
+						"h": 429
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 211,
+						"h": 429
+					},
+					"frame": {
+						"x": 1419,
+						"y": 0,
+						"w": 211,
+						"h": 429
 					}
 				},
 				{
@@ -381,8 +339,8 @@
 						"h": 169
 					},
 					"frame": {
-						"x": 0,
-						"y": 1592,
+						"x": 998,
+						"y": 1638,
 						"w": 501,
 						"h": 169
 					}
@@ -403,7 +361,7 @@
 					},
 					"frame": {
 						"x": 1419,
-						"y": 230,
+						"y": 871,
 						"w": 169,
 						"h": 371
 					}
@@ -423,10 +381,31 @@
 						"h": 99
 					},
 					"frame": {
-						"x": 501,
-						"y": 1592,
+						"x": 0,
+						"y": 1690,
 						"w": 615,
 						"h": 99
+					}
+				},
+				{
+					"filename": "newzotBottomMask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 263,
+						"h": 160
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 263,
+						"h": 160
+					},
+					"frame": {
+						"x": 615,
+						"y": 1690,
+						"w": 263,
+						"h": 160
 					}
 				},
 				{
@@ -444,8 +423,8 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 1116,
-						"y": 1577,
+						"x": 1560,
+						"y": 429,
 						"w": 200,
 						"h": 200
 					}
@@ -465,52 +444,52 @@
 						"h": 201
 					},
 					"frame": {
-						"x": 1484,
-						"y": 601,
+						"x": 1560,
+						"y": 629,
 						"w": 197,
 						"h": 201
 					}
 				},
 				{
-					"filename": "fourMask.png",
+					"filename": "newFourMask.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 197,
-						"h": 196
+						"w": 194,
+						"h": 191
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 197,
-						"h": 196
+						"w": 194,
+						"h": 191
 					},
 					"frame": {
-						"x": 1588,
-						"y": 230,
-						"w": 197,
-						"h": 196
+						"x": 1630,
+						"y": 0,
+						"w": 194,
+						"h": 191
 					}
 				},
 				{
-					"filename": "fourSolved.png",
+					"filename": "newFourSolved.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 197,
-						"h": 196
+						"w": 194,
+						"h": 191
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 197,
-						"h": 196
+						"w": 194,
+						"h": 191
 					},
 					"frame": {
-						"x": 1681,
-						"y": 426,
-						"w": 197,
-						"h": 196
+						"x": 1630,
+						"y": 191,
+						"w": 194,
+						"h": 191
 					}
 				},
 				{
@@ -528,8 +507,8 @@
 						"h": 186
 					},
 					"frame": {
-						"x": 1681,
-						"y": 622,
+						"x": 1419,
+						"y": 1242,
 						"w": 186,
 						"h": 186
 					}
@@ -549,52 +528,10 @@
 						"h": 308
 					},
 					"frame": {
-						"x": 1778,
-						"y": 1117,
+						"x": 1588,
+						"y": 830,
 						"w": 94,
 						"h": 308
-					}
-				},
-				{
-					"filename": "zotBottomMask.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 137,
-						"h": 191
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 137,
-						"h": 191
-					},
-					"frame": {
-						"x": 1316,
-						"y": 1617,
-						"w": 137,
-						"h": 191
-					}
-				},
-				{
-					"filename": "fourPieceFrame.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 160,
-						"h": 160
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 160,
-						"h": 160
-					},
-					"frame": {
-						"x": 0,
-						"y": 1414,
-						"w": 160,
-						"h": 160
 					}
 				},
 				{
@@ -612,10 +549,52 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 160,
-						"y": 1414,
+						"x": 1419,
+						"y": 1428,
 						"w": 160,
 						"h": 160
+					}
+				},
+				{
+					"filename": "fourPieceFrame.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 160,
+						"h": 160
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 160,
+						"h": 160
+					},
+					"frame": {
+						"x": 1499,
+						"y": 1588,
+						"w": 160,
+						"h": 160
+					}
+				},
+				{
+					"filename": "zotPostitMask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 189,
+						"h": 130
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 189,
+						"h": 130
+					},
+					"frame": {
+						"x": 1579,
+						"y": 1428,
+						"w": 189,
+						"h": 130
 					}
 				},
 				{
@@ -633,8 +612,8 @@
 						"h": 152
 					},
 					"frame": {
-						"x": 1453,
-						"y": 1617,
+						"x": 1659,
+						"y": 1558,
 						"w": 154,
 						"h": 152
 					}
@@ -654,8 +633,8 @@
 						"h": 116
 					},
 					"frame": {
-						"x": 1607,
-						"y": 1617,
+						"x": 1605,
+						"y": 1138,
 						"w": 182,
 						"h": 116
 					}
@@ -675,8 +654,8 @@
 						"h": 116
 					},
 					"frame": {
-						"x": 501,
-						"y": 1691,
+						"x": 1605,
+						"y": 1254,
 						"w": 182,
 						"h": 116
 					}
@@ -696,10 +675,52 @@
 						"h": 116
 					},
 					"frame": {
-						"x": 683,
-						"y": 1691,
+						"x": 1768,
+						"y": 1370,
 						"w": 182,
 						"h": 116
+					}
+				},
+				{
+					"filename": "newzotStateFlipped-red.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 106,
+						"h": 187
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 106,
+						"h": 187
+					},
+					"frame": {
+						"x": 1419,
+						"y": 429,
+						"w": 106,
+						"h": 187
+					}
+				},
+				{
+					"filename": "newzotStateFlipped-yellow.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 106,
+						"h": 187
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 106,
+						"h": 187
+					},
+					"frame": {
+						"x": 526,
+						"y": 640,
+						"w": 106,
+						"h": 187
 					}
 				},
 				{
@@ -717,8 +738,8 @@
 						"h": 94
 					},
 					"frame": {
-						"x": 865,
-						"y": 1691,
+						"x": 1659,
+						"y": 1710,
 						"w": 205,
 						"h": 94
 					}
@@ -738,52 +759,10 @@
 						"h": 114
 					},
 					"frame": {
-						"x": 1070,
-						"y": 1777,
+						"x": 1813,
+						"y": 1486,
 						"w": 154,
 						"h": 114
-					}
-				},
-				{
-					"filename": "zotPlaced.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 136,
-						"h": 112
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 136,
-						"h": 112
-					},
-					"frame": {
-						"x": 865,
-						"y": 1785,
-						"w": 136,
-						"h": 112
-					}
-				},
-				{
-					"filename": "zotPlacedFlipped.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 142,
-						"h": 105
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 142,
-						"h": 105
-					},
-					"frame": {
-						"x": 1607,
-						"y": 1733,
-						"w": 142,
-						"h": 105
 					}
 				},
 				{
@@ -801,73 +780,94 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 1588,
-						"y": 426,
+						"x": 878,
+						"y": 1690,
 						"w": 91,
 						"h": 160
 					}
 				},
 				{
-					"filename": "arrowLeft.png",
+					"filename": "newzotPlaced.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 120,
-						"h": 120
+						"w": 150,
+						"h": 97
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 120,
-						"h": 120
+						"w": 150,
+						"h": 97
 					},
 					"frame": {
-						"x": 1453,
-						"y": 1769,
-						"w": 120,
-						"h": 120
+						"x": 1499,
+						"y": 1748,
+						"w": 150,
+						"h": 97
 					}
 				},
 				{
-					"filename": "fail.png",
+					"filename": "newzotPlaceMask.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 120,
-						"h": 120
+						"w": 150,
+						"h": 97
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 120,
-						"h": 120
+						"w": 150,
+						"h": 97
 					},
 					"frame": {
-						"x": 1749,
-						"y": 1733,
-						"w": 120,
-						"h": 120
+						"x": 1813,
+						"y": 1600,
+						"w": 150,
+						"h": 97
 					}
 				},
 				{
-					"filename": "arrowDown.png",
+					"filename": "newzotPlacedFlipped.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 120,
-						"h": 120
+						"w": 156,
+						"h": 93
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 120,
-						"h": 120
+						"w": 156,
+						"h": 93
 					},
 					"frame": {
+						"x": 1864,
+						"y": 1697,
+						"w": 156,
+						"h": 93
+					}
+				},
+				{
+					"filename": "newzotTableMask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 163,
+						"h": 89
+					},
+					"spriteSourceSize": {
 						"x": 0,
-						"y": 1761,
-						"w": 120,
-						"h": 120
+						"y": 0,
+						"w": 163,
+						"h": 89
+					},
+					"frame": {
+						"x": 1682,
+						"y": 830,
+						"w": 163,
+						"h": 89
 					}
 				},
 				{
@@ -885,29 +885,8 @@
 						"h": 120
 					},
 					"frame": {
-						"x": 120,
-						"y": 1761,
-						"w": 120,
-						"h": 120
-					}
-				},
-				{
-					"filename": "plus - unselected.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 120,
-						"h": 120
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 120,
-						"h": 120
-					},
-					"frame": {
-						"x": 240,
-						"y": 1761,
+						"x": 1757,
+						"y": 629,
 						"w": 120,
 						"h": 120
 					}
@@ -927,8 +906,92 @@
 						"h": 120
 					},
 					"frame": {
-						"x": 360,
-						"y": 1761,
+						"x": 1760,
+						"y": 382,
+						"w": 120,
+						"h": 120
+					}
+				},
+				{
+					"filename": "plus - unselected.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 120
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 120
+					},
+					"frame": {
+						"x": 1760,
+						"y": 502,
+						"w": 120,
+						"h": 120
+					}
+				},
+				{
+					"filename": "arrowLeft.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 120
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 120
+					},
+					"frame": {
+						"x": 1682,
+						"y": 919,
+						"w": 120,
+						"h": 120
+					}
+				},
+				{
+					"filename": "fail.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 120
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 120
+					},
+					"frame": {
+						"x": 1824,
+						"y": 0,
+						"w": 120,
+						"h": 120
+					}
+				},
+				{
+					"filename": "arrowDown.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 120
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 120
+					},
+					"frame": {
+						"x": 1824,
+						"y": 120,
 						"w": 120,
 						"h": 120
 					}
@@ -948,8 +1011,8 @@
 						"h": 78
 					},
 					"frame": {
-						"x": 1573,
-						"y": 1838,
+						"x": 1757,
+						"y": 749,
 						"w": 120,
 						"h": 78
 					}
@@ -969,178 +1032,52 @@
 						"h": 84
 					},
 					"frame": {
-						"x": 1778,
-						"y": 1425,
+						"x": 1824,
+						"y": 240,
 						"w": 108,
 						"h": 84
 					}
 				},
 				{
-					"filename": "icon - plate.png",
+					"filename": "zotPostitFlipped2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 80,
-						"h": 80
+						"w": 99,
+						"h": 83
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 80,
-						"h": 80
+						"w": 99,
+						"h": 83
 					},
 					"frame": {
-						"x": 1778,
-						"y": 1509,
-						"w": 80,
-						"h": 80
+						"x": 1682,
+						"y": 1039,
+						"w": 99,
+						"h": 83
 					}
 				},
 				{
-					"filename": "iconBattery.png",
+					"filename": "zotPostit2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 80,
-						"h": 80
+						"w": 99,
+						"h": 83
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 80,
-						"h": 80
+						"w": 99,
+						"h": 83
 					},
 					"frame": {
-						"x": 1224,
-						"y": 1777,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "icon - selected.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 1789,
-						"y": 1589,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "eyeOff.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 1304,
-						"y": 1808,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "eyeOn.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 320,
-						"y": 1414,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "icon - donut.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 320,
-						"y": 1494,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "icon - donutPlated.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 1785,
-						"y": 230,
-						"w": 80,
-						"h": 80
-					}
-				},
-				{
-					"filename": "icon - empty.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 80
-					},
-					"frame": {
-						"x": 1785,
-						"y": 310,
-						"w": 80,
-						"h": 80
+						"x": 1781,
+						"y": 1039,
+						"w": 99,
+						"h": 83
 					}
 				},
 				{
@@ -1158,14 +1095,14 @@
 						"h": 80
 					},
 					"frame": {
-						"x": 526,
-						"y": 640,
+						"x": 1802,
+						"y": 919,
 						"w": 80,
 						"h": 80
 					}
 				},
 				{
-					"filename": "iconZot.png",
+					"filename": "icon - postit2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1179,14 +1116,14 @@
 						"h": 80
 					},
 					"frame": {
-						"x": 526,
-						"y": 720,
+						"x": 1845,
+						"y": 827,
 						"w": 80,
 						"h": 80
 					}
 				},
 				{
-					"filename": "icon - keyWhole.png",
+					"filename": "icon - plate.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1200,8 +1137,8 @@
 						"h": 80
 					},
 					"frame": {
-						"x": 526,
-						"y": 800,
+						"x": 1877,
+						"y": 622,
 						"w": 80,
 						"h": 80
 					}
@@ -1221,8 +1158,8 @@
 						"h": 80
 					},
 					"frame": {
-						"x": 480,
-						"y": 1807,
+						"x": 1877,
+						"y": 702,
 						"w": 80,
 						"h": 80
 					}
@@ -1242,8 +1179,197 @@
 						"h": 80
 					},
 					"frame": {
-						"x": 560,
-						"y": 1807,
+						"x": 1932,
+						"y": 240,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - keyWhole.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1932,
+						"y": 320,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - empty.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1880,
+						"y": 400,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - donutPlated.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1880,
+						"y": 480,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - donut.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1880,
+						"y": 999,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "iconBattery.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1882,
+						"y": 907,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "iconZot.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1925,
+						"y": 782,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "eyeOff.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1880,
+						"y": 1079,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "eyeOn.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1787,
+						"y": 1122,
+						"w": 80,
+						"h": 80
+					}
+				},
+				{
+					"filename": "icon - selected.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 80
+					},
+					"frame": {
+						"x": 1867,
+						"y": 1159,
 						"w": 80,
 						"h": 80
 					}
@@ -1263,8 +1389,8 @@
 						"h": 56
 					},
 					"frame": {
-						"x": 1224,
-						"y": 1857,
+						"x": 1824,
+						"y": 324,
 						"w": 80,
 						"h": 56
 					}
@@ -1284,8 +1410,8 @@
 						"h": 58
 					},
 					"frame": {
-						"x": 1789,
-						"y": 1669,
+						"x": 526,
+						"y": 827,
 						"w": 62,
 						"h": 58
 					}
@@ -1305,8 +1431,8 @@
 						"h": 58
 					},
 					"frame": {
-						"x": 1384,
-						"y": 1808,
+						"x": 1880,
+						"y": 560,
 						"w": 62,
 						"h": 58
 					}
@@ -1326,8 +1452,8 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1384,
-						"y": 1866,
+						"x": 1802,
+						"y": 999,
 						"w": 66,
 						"h": 40
 					}
@@ -1347,14 +1473,14 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1001,
-						"y": 1785,
+						"x": 1419,
+						"y": 1588,
 						"w": 66,
 						"h": 40
 					}
 				},
 				{
-					"filename": "tableEmpty.png",
+					"filename": "tableKey.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1368,8 +1494,8 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 1304,
-						"y": 1888,
+						"x": 1579,
+						"y": 1558,
 						"w": 70,
 						"h": 26
 					}
@@ -1389,14 +1515,14 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 1785,
-						"y": 390,
+						"x": 1925,
+						"y": 862,
 						"w": 70,
 						"h": 26
 					}
 				},
 				{
-					"filename": "tableKey.png",
+					"filename": "tableEmpty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1410,8 +1536,8 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 1450,
-						"y": 1889,
+						"x": 1942,
+						"y": 560,
 						"w": 70,
 						"h": 26
 					}
@@ -1431,10 +1557,199 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 1001,
-						"y": 1891,
+						"x": 1942,
+						"y": 586,
 						"w": 70,
 						"h": 26
+					}
+				},
+				{
+					"filename": "farzot-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 588,
+						"y": 827,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 588,
+						"y": 859,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1963,
+						"y": 1600,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1963,
+						"y": 1632,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1963,
+						"y": 1664,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1630,
+						"y": 382,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1681,
+						"y": 382,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-8.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1605,
+						"y": 1370,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1656,
+						"y": 1370,
+						"w": 51,
+						"h": 32
 					}
 				},
 				{
@@ -1452,31 +1767,31 @@
 						"h": 34
 					},
 					"frame": {
-						"x": 1316,
-						"y": 1577,
+						"x": 1877,
+						"y": 782,
 						"w": 34,
 						"h": 34
 					}
 				},
 				{
-					"filename": "pointer.png",
+					"filename": "pointer3.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
 						"w": 26,
-						"h": 26
+						"h": 28
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
 						"w": 26,
-						"h": 26
+						"h": 28
 					},
 					"frame": {
-						"x": 1855,
-						"y": 390,
+						"x": 1560,
+						"y": 830,
 						"w": 26,
-						"h": 26
+						"h": 28
 					}
 				},
 				{
@@ -1494,8 +1809,8 @@
 						"h": 15
 					},
 					"frame": {
-						"x": 1374,
-						"y": 1906,
+						"x": 526,
+						"y": 885,
 						"w": 26,
 						"h": 15
 					}
@@ -1515,8 +1830,8 @@
 						"h": 15
 					},
 					"frame": {
-						"x": 1400,
-						"y": 1906,
+						"x": 552,
+						"y": 885,
 						"w": 26,
 						"h": 15
 					}
@@ -1536,9 +1851,72 @@
 						"h": 9
 					},
 					"frame": {
-						"x": 1785,
-						"y": 416,
+						"x": 1560,
+						"y": 858,
 						"w": 28,
+						"h": 9
+					}
+				},
+				{
+					"filename": "farZotPostit.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 12,
+						"h": 17
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 12,
+						"h": 17
+					},
+					"frame": {
+						"x": 1868,
+						"y": 999,
+						"w": 12,
+						"h": 17
+					}
+				},
+				{
+					"filename": "farZotPlaced.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 9
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 9
+					},
+					"frame": {
+						"x": 1845,
+						"y": 907,
+						"w": 19,
+						"h": 9
+					}
+				},
+				{
+					"filename": "farZotPlacedReverse.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 9
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 9
+					},
+					"frame": {
+						"x": 1877,
+						"y": 816,
+						"w": 19,
 						"h": 9
 					}
 				}

@@ -38,11 +38,15 @@ export default class Recorder {
     playerName: string;
     timeStamp: string;
 
+    cameraHack: number;
+
     constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
+        cameraHack: number
     ) {
         this.pointerSprite = pointerSprite;
         this.clickSprite = clickSprite;
+        this.cameraHack = cameraHack;
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
@@ -232,7 +236,7 @@ export default class Recorder {
         }
         const str = new TextDecoder().decode(data);
         //console.log("Fetched " + str)
-        this.recordingSize = str.length*10000;
+        this.recordingSize = str.length * 10000;
         return str;
     }
 
@@ -317,16 +321,18 @@ export default class Recorder {
         //}
 
         let pointerTime = scene.time.now - this.oldPointerTime;
-        if (this.oldPointerX != this.pointer.worldX || this.oldPointerY != this.pointer.worldY || pointerTime > 1000 || pointerClicked) {
-            let distanceX = Math.abs(this.pointer.worldX - this.oldPointerX);
-            let distanceY = Math.abs(this.pointer.worldY - this.oldPointerY);
+        if (this.oldPointerX != this.pointer.x || this.oldPointerY != this.pointer.y || pointerTime > 1000 || pointerClicked) {
+
+            let distanceX = Math.abs(this.pointer.x - this.oldPointerX);
+            let distanceY = Math.abs(this.pointer.y - this.oldPointerY);
             // 500 resolution is sufficient?
             if ((distanceX + distanceY > 100) || (pointerTime > 1200) || pointerClicked) {
-                this.oldPointerX = this.pointer.worldX;
-                this.oldPointerY = this.pointer.worldY;
+                this.oldPointerX = this.pointer.x;
+                this.oldPointerY = this.pointer.y;
                 if (!stealthRecord) {
-                    this.pointerSprite.setX(this.pointer.worldX);
-                    this.pointerSprite.setY(this.pointer.worldY);
+
+                this.pointerSprite.setX(this.pointer.x);
+                this.pointerSprite.setY(this.pointer.y - this.cameraHack);
                 }
                 this.oldPointerTime = scene.time.now;
 
@@ -351,14 +357,14 @@ export default class Recorder {
 
     recordPointerAction(action: string, time: number, sceneName: string) {
         if (action != "mousemove") {
-            console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
+            //console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
         }
         this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},%${sceneName}%:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
         if (object == "")
             console.log("ERROR no recorder object specified!")
         this.pointer = scene.input.activePointer;
@@ -371,7 +377,7 @@ export default class Recorder {
     // icons always belong to the main game scene so no need to save it
     recordIconClick(object: string, time: number, scene: Phaser.Scene) {
         this.pointer = scene.input.activePointer;
-        console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
+        //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
         this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
     }
 
@@ -492,9 +498,9 @@ export default class Recorder {
     dumpRecording() {
         const rec = this.recording.split(":");
 
-        rec.forEach((action) => {
-            console.log(`DUMPREC ${action}`)
-        });
+        //rec.forEach((action) => {
+        //    console.log(`DUMPREC ${action}`)
+        //});
 
         let recOut = "";
         //console.log("ACTION COUNT " + rec.length);
@@ -668,7 +674,7 @@ export default class Recorder {
         const recordedClickSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         var recordedClickSpriteScale = 2;
 
-        recordedClickSprite.setX(x); recordedClickSprite.setY(y);
+        recordedClickSprite.setX(x); recordedClickSprite.setY(y - this.cameraHack);
         recordedClickSprite.setDepth(999);
 
         if (x == this.prevClickX && y == this.prevClickY) {
