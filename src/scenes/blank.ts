@@ -8,6 +8,7 @@ let myUI: PlayerUI;
 let slots: Slots;
 let recorder: Recorder;
 
+
 let roomReturnWall: number; // return here from other scene back button
 
 let viewWall = 0; // production start at 0
@@ -28,6 +29,7 @@ export class Blank extends Phaser.Scene {
     }
 
     create() {
+        console.log(_SCENENAME + " create")
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
@@ -37,6 +39,7 @@ export class Blank extends Phaser.Scene {
 
         slots = myUI.getSlots();
         recorder = slots.recorder;
+        const thisscene = this;
 
         ////////////// SCENE IMPLEMENTATION - CREATE //////////////
         // Scene is room...
@@ -58,9 +61,17 @@ export class Blank extends Phaser.Scene {
                 viewWall = 3;
         });
         backButton.on('pointerdown', () => {
-            console.log(`${_SCENENAME} Back!`);
-            console.log("Return from closeup?");
+            recorder.recordObjectDown(backButton.name, thisscene);
             viewWall = previousWall;
+
+            console.log(`${_SCENENAME} Back!`);
+
+            backButton.removeInteractive(); // fix up the cursor displayed on main scene
+/*
+            this.scene.moveUp("PlayGame");
+            this.scene.sleep();
+            this.scene.wake("PlayGame");            
+*/            
         });
 
         // Generic.. use either left/right or back
@@ -94,7 +105,8 @@ export class Blank extends Phaser.Scene {
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
         }
-
+        
+        backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
         // Record any movement or clicks
         if (recorder.getMode() == "record")
             recorder.checkPointer(this);

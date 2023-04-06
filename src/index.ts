@@ -10,11 +10,13 @@ import PlayerUI from './scenes/playerUI';
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
 import { ZotTable } from './scenes/zotTable';
-//}
 
 import { Four } from './scenes/four';
 import { Five } from './scenes/five';
 import { RoomTwo } from './scenes/roomTwo';
+import { Clue2 } from './scenes/clue2';
+import { TwoWay } from './scenes/twoWay';
+//}
 
 
 //import { Recorder } from './scenes/recorder';
@@ -94,7 +96,7 @@ let gameConfig = {
         ]
     },
 
-    scene: [PlayerUI, BootGame, PlayGame, ZotTable, Four, Five, RoomTwo]
+    scene: [PlayerUI, BootGame, PlayGame, ZotTable, Four, Five, RoomTwo, Clue2, TwoWay]
 };
 
 
@@ -130,7 +132,7 @@ if (testingFour) {
             ]
         },
         //scene: [BootGame, PlayGame, ZotTable, Four, Five]
-        scene: [PlayerUI, BootGame, RoomTwo]
+        scene: [PlayerUI, BootGame, RoomTwo, TwoWay]
     };
 }
 

@@ -183,7 +183,15 @@ export class ZotTable extends Phaser.Scene {
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer
+
+                //console.log("--> remove postit!")
+                let selectedThing = slots.getSelected();
+                //console.log("postit check " + selectedThing.thing)
+                slots.clearItem("objPostit");
+                if (selectedThing.thing == "objPostit")
+                    slots.clearSelect();
                 slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
+
             }
             if (!keyTaken) {
                 console.log("can take it")
@@ -361,26 +369,22 @@ export class ZotTable extends Phaser.Scene {
             7: drawerOpen, green
             8: drawerOpen, off
             */
-            //console.log("viewing " + viewWall)
+            console.log("viewing " + viewWall)
             if (viewWall == 0 || viewWall == 2) {
-                //console.log("front view")
+                console.log("front view")
                 if (drawerOpen > 0) {
-                    //console.log("drawer open, green"); mainRoomBoxState = 6+drawerOpen;
+                    console.log("drawer open, green"); mainRoomBoxState = 6+drawerOpen;
                 } else {
-                    //console.log("state=" + zotDrawerState) // 0=off, 1=yellow, 2=green/red
+                    console.log("state=" + zotDrawerState) // 0=off, 1=yellow, 2=green/red
                     mainRoomBoxState = zotDrawerState;
                     if (viewWall == 2)
                         mainRoomBoxState += 3;
                 }
             } else {
-                //console.log("back view"); mainRoomBoxState = 6; // could be battery, it's fine, we don't exit when zoomed in
+                console.log("back view"); mainRoomBoxState = 6; // could be battery, it's fine, we don't exit when zoomed in
             }
             //console.log("main room state: " + mainRoomBoxState)
             this.registry.set('boxColor', mainRoomBoxState);
-
-
-
-
 
             currentWall = viewWall;
             updateWall = false;

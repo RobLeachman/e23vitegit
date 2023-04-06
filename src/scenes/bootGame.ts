@@ -94,6 +94,12 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.webp');
                 this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.webp');
                 this.load.image('wallHint', 'assets/backgrounds/invroom - help1 - background.webp');
+                this.load.image('wall3doorOpen', 'assets/backgrounds/invroom - room - southOpen.webp');
+
+                this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
+                this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
+                this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
+                this.load.image('room2 west', 'assets/backgrounds/room2 - west.webp');
 
                 this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.webp');
                 this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.webp');
@@ -110,6 +116,12 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.webp');
                 this.load.image('altobjKeyA', 'assets/backgrounds/invroom - altobj - keyA.webp');
                 this.load.image('altobjKeyB', 'assets/backgrounds/invroom - altobj - keyB.webp');
+
+                this.load.image('objRedKeyA', 'assets/backgrounds/invroom - obj - redKeyA.webp');
+                this.load.image('objRedKeyB', 'assets/backgrounds/invroom - obj - redKeyB.webp');
+                this.load.image('altobjRedKeyA', 'assets/backgrounds/invroom - altobj - redKeyA.webp');
+                this.load.image('altobjRedKeyB', 'assets/backgrounds/invroom - altobj - redKeyB.webp');
+
                 this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.webp');
                 this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.webp');
                 this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.webp');
@@ -120,13 +132,11 @@ export class BootGame extends Phaser.Scene {
 
                 this.load.image('objPostit', 'assets/backgrounds/room2 - obj - postit.webp');
                 this.load.image('altobjPostit', 'assets/backgrounds/room2 - altobj - postit.webp');
+                this.load.image('objRedKey', 'assets/backgrounds/clue2 - obj - redkey.webp');
+                this.load.image('altobjRedKey', 'assets/backgrounds/clue2 - altobj - redkey.webp');
 
                 this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
-                this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
-                this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
-                this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
-                this.load.image('room2 west', 'assets/backgrounds/room2 - west.webp');
                 this.load.image('zotTableOff', 'assets/backgrounds/newzot - off.webp');
                 this.load.image('zotTableBack', 'assets/backgrounds/newzot - back.webp');
                 this.load.image('zotTableOffFlipped', 'assets/backgrounds/newzot - flip - off.webp');
@@ -134,6 +144,13 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('zotBatteryClosed', 'assets/backgrounds/newzot - battery - closed.webp');
                 this.load.image('zotBatteryEmpty', 'assets/backgrounds/newzot - battery - empty.webp');
                 this.load.image('zotBatteryPlaced', 'assets/backgrounds/newzot - battery - placed.webp');
+
+                this.load.image('clue2 closed', 'assets/backgrounds/clue2 - closed.webp');
+                this.load.image('clue2 left', 'assets/backgrounds/clue2 - left.webp');
+                this.load.image('clue2 open', 'assets/backgrounds/clue2 - open.webp');
+                this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
+                this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
+                this.load.image('twoway - open', 'assets/backgrounds/twoway - open.webp');
 
                 this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 

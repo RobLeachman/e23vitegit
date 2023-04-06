@@ -80,6 +80,13 @@ class InvItem {
                 }
             }
             if (this.allSlots.combining == "bad combine:") { // if the above combinations aren't the thing
+                var good1 = "objRedKeyA"; var good2 = "objRedKeyB"; var goodNew = "objRedKey";
+                if ((firstItem == good1 && secondItem == good2) ||
+                    (firstItem == good2 && secondItem == good1)) {
+                    this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
+                }
+            }
+            if (this.allSlots.combining == "bad combine:") { // if the above combinations aren't the thing
                 var good1 = "objKnife"; var good2 = "objMelonWhole"; var goodNew = "objMelonHalf";
                 if ((firstItem == good1 && secondItem == good2)) {
                     this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
@@ -178,7 +185,9 @@ export default class Slots {
     }
 
     addIcon(iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
-        //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
+        console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
+        if (iconSpriteName == undefined)
+            console.log("ERROR undefined icon add")
         // show the clue on the first actual item icon, not the empty fakes
         // only show it the first time
         if (objectView != "fake" && objectView != "objRoach" && !this.hasInspected) {

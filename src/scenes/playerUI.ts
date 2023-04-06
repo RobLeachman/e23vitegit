@@ -186,12 +186,12 @@ export default class PlayerUI extends Phaser.Scene {
 
     create() {
         var camera = this.cameras.main;
-        camera.setPosition(0,cameraHack);
+        camera.setPosition(0, cameraHack);
 
         console.log("scale size")
         const mySize = this.scale.parentSize;
-        console.log(mySize.height*4)
-        console.log(1280-mySize.height*4)        
+        console.log(mySize.height * 4)
+        console.log(1280 - mySize.height * 4)
 
         let hostname = location.hostname;
         /*
@@ -307,7 +307,7 @@ export default class PlayerUI extends Phaser.Scene {
         keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0).setDepth(1).setVisible(false);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
-            slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
+            slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA");
             haveHalfKey = true;
 
             uiObjectViewDirty = true;
@@ -654,6 +654,16 @@ export default class PlayerUI extends Phaser.Scene {
 
                 objectImage.destroy();
                 objectImage = this.add.image(0, 0, "objKeyWhole").setOrigin(0, 0);
+
+            } else if (slots.combining.split(':')[3] == "objRedKey") {
+                slots.inventoryViewObj = "objRedKey";
+                slots.inventoryViewAlt = "altobjRedKey";
+                slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.selectItem(slots.combining.split(':')[3]);
+
+                objectImage.destroy();
+                objectImage = this.add.image(0, 0, "objRedKey").setOrigin(0, 0);
+
             } else {
                 slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", slotRepl); // it is a bug
             }

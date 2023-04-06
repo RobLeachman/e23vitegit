@@ -70,6 +70,36 @@
       "folder": ""
     },
     {
+      "name": "clue2 button stuck.png",
+      "path": "D:/src/e23/src/assets/packed/clue2 button stuck.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-button-mask.png",
+      "path": "D:/src/e23/src/assets/packed/clue2-button-mask.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-closed.png",
+      "path": "D:/src/e23/src/assets/packed/clue2-closed.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-left.png",
+      "path": "D:/src/e23/src/assets/packed/clue2-left.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-open.png",
+      "path": "D:/src/e23/src/assets/packed/clue2-open.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-right.png",
+      "path": "D:/src/e23/src/assets/packed/clue2-right.png",
+      "folder": ""
+    },
+    {
       "name": "doorMask.png",
       "path": "D:/src/e23/src/assets/packed/doorMask.png",
       "folder": ""
@@ -245,6 +275,21 @@
       "folder": ""
     },
     {
+      "name": "icon - red key.png",
+      "path": "D:/src/e23/src/assets/packed/icon - red key.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - red keyA.png",
+      "path": "D:/src/e23/src/assets/packed/icon - red keyA.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - red keyB.png",
+      "path": "D:/src/e23/src/assets/packed/icon - red keyB.png",
+      "folder": ""
+    },
+    {
       "name": "icon - roach.png",
       "path": "D:/src/e23/src/assets/packed/icon - roach.png",
       "folder": ""
@@ -375,13 +420,18 @@
       "folder": ""
     },
     {
-      "name": "pointer.png",
-      "path": "D:/src/e23/src/assets/packed/pointer.png",
+      "name": "pointer3.png",
+      "path": "D:/src/e23/src/assets/packed/pointer3.png",
       "folder": ""
     },
     {
       "name": "pointerClicked.png",
       "path": "D:/src/e23/src/assets/packed/pointerClicked.png",
+      "folder": ""
+    },
+    {
+      "name": "red key half.png",
+      "path": "D:/src/e23/src/assets/packed/red key half.png",
       "folder": ""
     },
     {
@@ -422,6 +472,41 @@
     {
       "name": "twoDoorMask.png",
       "path": "D:/src/e23/src/assets/packed/twoDoorMask.png",
+      "folder": ""
+    },
+    {
+      "name": "twoWaySolved.png",
+      "path": "D:/src/e23/src/assets/packed/twoWaySolved.png",
+      "folder": ""
+    },
+    {
+      "name": "twoWaySolvedWest.png",
+      "path": "D:/src/e23/src/assets/packed/twoWaySolvedWest.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-button-mask.png",
+      "path": "D:/src/e23/src/assets/packed/twoway-button-mask.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-center.png",
+      "path": "D:/src/e23/src/assets/packed/twoway-center.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-key.png",
+      "path": "D:/src/e23/src/assets/packed/twoway-key.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-left.png",
+      "path": "D:/src/e23/src/assets/packed/twoway-left.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-right.png",
+      "path": "D:/src/e23/src/assets/packed/twoway-right.png",
       "folder": ""
     },
     {
@@ -485,7 +570,7 @@
     "trimMode": "trim",
     "alphaThreshold": "0",
     "detectIdentical": true,
-    "packer": "OptimalPacker",
-    "packerMethod": "Automatic"
+    "packer": "MaxRectsPacker",
+    "packerMethod": "SmartArea"
   }
 }

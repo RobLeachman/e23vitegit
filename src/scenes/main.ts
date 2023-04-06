@@ -59,7 +59,7 @@ let myUI: PlayerUI;
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
 
-var viewWall = 2; // production start at 0
+var viewWall = 0; // production start at 0
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -71,6 +71,7 @@ const obj = new Array();
 const altObj = new Array();
 const tableView = new Array();
 const closeView = new Array();
+const clue2states = new Array();
 
 var leftButton: Phaser.GameObjects.Sprite;
 var rightButton: Phaser.GameObjects.Sprite;
@@ -90,16 +91,17 @@ var fiveOpen: Phaser.GameObjects.Sprite;
 var fiveBatt: Phaser.GameObjects.Sprite;
 var twoDoorMask: Phaser.GameObjects.Sprite;
 
-var zotTableMask: Phaser.GameObjects.Sprite;
-var boxZot: Phaser.GameObjects.Sprite;
-var zotBoxColorYellow: Phaser.GameObjects.Sprite;
-var zotBoxColorGreen: Phaser.GameObjects.Sprite;
+var clue2Mask: Phaser.GameObjects.Sprite;
+
+let twoDoorUnlockedWall: Phaser.GameObjects.Image;
 
 var tableState = 0;
 
 var egress = false;
 
-let zotTableInit = true;
+let clue2Init = true;
+let clue2state = 0;
+let twoDoorUnlocked = false;
 
 var fiveInit = true;
 var twoInit = true;
@@ -159,7 +161,6 @@ export class PlayGame extends Phaser.Scene {
         //console.log("PARSED")
         //console.log(recIn);
 
-
         if (recInCheck == recorder.checksum(recIn)) {
             myText.text = "success";
             recorder.saveCookies(output);
@@ -194,6 +195,7 @@ export class PlayGame extends Phaser.Scene {
             //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
             //slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
             //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
+            //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
             slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
 
             myText.text = "off";
@@ -325,7 +327,7 @@ export class PlayGame extends Phaser.Scene {
                 slots.clearAll();
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
-                zotTableMask.setVisible(false);
+                clue2Mask.setVisible(false);
                 doorMask.setVisible(false);
                 battMask.setVisible(false);
 
@@ -361,11 +363,6 @@ export class PlayGame extends Phaser.Scene {
             if (viewWall == 9)
                 previousWall = 2;
 
-
-            boxZot.setDepth(-1);
-            zotBoxColorYellow.setDepth(-1);
-            zotBoxColorGreen.setDepth(-1);
-
             if (viewWall == 0) {
                 this.add.sprite(542, 650, 'atlas', tableView[tableState]).setOrigin(0, 0);
             }
@@ -393,15 +390,20 @@ export class PlayGame extends Phaser.Scene {
                 doorMask.input.cursor = 'pointer';
             }
 
-            zotTableMask.setVisible(false);
-            if (viewWall == 1)
-                zotTableMask.setVisible(true); zotTableMask.setDepth(100); zotTableMask.setInteractive({ cursor: 'pointer' });
+            clue2Mask.setVisible(false);
+            if (viewWall == 1) {
+                clue2Mask.setVisible(true); clue2Mask.setDepth(100); clue2Mask.setInteractive({ cursor: 'pointer' });
+                this.add.sprite(343, 595, 'atlas', clue2states[clue2state]).setOrigin(0, 0);
+            }
 
             hintMask.setVisible(false);
             twoDoorMask.setVisible(false);
+            twoDoorUnlockedWall.setVisible(false)
             if (viewWall == 2) {
                 hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' });
                 twoDoorMask.setVisible(true); twoDoorMask.setDepth(100); twoDoorMask.setInteractive({ cursor: 'pointer' });
+                if (twoDoorUnlocked)
+                    twoDoorUnlockedWall.setVisible(true)
             }
 
             fiveMask.setVisible(false);
@@ -436,6 +438,9 @@ export class PlayGame extends Phaser.Scene {
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
         //console.log(`main registry update ${key}`)
 
+        if (key == "clue2state") {
+            clue2state = data;
+        }
 
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
@@ -578,23 +583,19 @@ export class PlayGame extends Phaser.Scene {
             viewWall = 4; roomReturnWall = 4;
         });
 
-        zotTableMask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("zotTableMask");
-        recorder.addMaskSprite('zotTableMask', zotTableMask);
-        zotTableMask.on('pointerdown', () => {
+        clue2Mask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("clue2Mask");
+        recorder.addMaskSprite('clue2Mask', clue2Mask);
+        clue2Mask.on('pointerdown', () => {
             roomReturnWall = 1;
-            if (zotTableInit) {
-                zotTableInit = false;
-                this.scene.launch("ZotTable", { slots: slots })
+            if (clue2Init) {
+                clue2Init = false;
+                this.scene.launch("Clue2", { slots: slots })
                 this.scene.sleep();
             } else {
-                this.scene.wake("ZotTable");
+                this.scene.wake("Clue2");
                 this.scene.sleep();
             }
         });
-
-        boxZot = this.add.sprite(382, 650, 'atlas', 'boxZot.png').setOrigin(0, 0);
-        zotBoxColorYellow = this.add.sprite(354, 657, 'atlas', 'boxColorYellow.png').setOrigin(0, 0);
-        zotBoxColorGreen = this.add.sprite(354, 657, 'atlas', 'boxColorGreen.png').setOrigin(0, 0);
 
         battMask = this.add.sprite(320, 926, 'atlas', 'battMask.png').setName("battMask").setOrigin(0, 0);
         recorder.addMaskSprite('battMask', battMask);
@@ -603,7 +604,7 @@ export class PlayGame extends Phaser.Scene {
             updateWall = true;
         });
 
-        
+
         fiveOpen = this.add.sprite(500, 652, 'atlas', 'fiveOpen.png').setOrigin(0, 0).setVisible(false).setDepth(100);
         fiveBatt = this.add.sprite(500, 652, 'atlas', 'fiveBatt.png').setOrigin(0, 0).setVisible(false).setDepth(100);
 
@@ -624,16 +625,31 @@ export class PlayGame extends Phaser.Scene {
         twoDoorMask = this.add.sprite(235, 381, 'atlas', 'twoDoorMask.png').setName('twoDoorMask').setOrigin(0, 0);
         recorder.addMaskSprite('twoDoorMask', twoDoorMask);
         twoDoorMask.on('pointerdown', () => {
-            roomReturnWall = 0;
-            if (twoInit) {
-                twoInit = false;
-                this.scene.launch("RoomTwo");
-                this.scene.sleep();
-            } else {
-                this.scene.wake("RoomTwo");
-                this.scene.sleep();
+            let transit = false;
+            let selectedThing = slots.getSelected();
+            if (selectedThing.thing == "objRedKey") {
+                console.log("unlock red!");
+                slots.clearItem("objRedKey");
+                slots.clearSelect();
+                twoDoorUnlocked = true;
+                transit = true;
+            }
+            if (twoDoorUnlocked)
+                transit = true;
+            if (transit) {
+                roomReturnWall = 0;
+                if (twoInit) {
+                    twoInit = false;
+                    this.scene.launch("RoomTwo");
+                    this.scene.sleep();
+                } else {
+                    this.scene.wake("RoomTwo");
+                    this.scene.sleep();
+                }
             }
         });
+
+        twoDoorUnlockedWall = this.add.image(0, 0, 'wall3doorOpen').setOrigin(0, 0).setDepth(1).setVisible(false);
 
         doorMask = this.add.sprite(274, 398, 'atlas', 'doorMask.png').setName("doorMask").setOrigin(0, 0);
         recorder.addMaskSprite('doorMask', doorMask);
@@ -688,7 +704,6 @@ export class PlayGame extends Phaser.Scene {
         walls[8] = "wallWinner";
         walls[9] = "wallHint";
 
-
         icons[0] = "icon - donut.png";
         icons[1] = "icon - plate.png";
         icons[2] = "icon - keyB.png";
@@ -734,5 +749,9 @@ export class PlayGame extends Phaser.Scene {
         closeView[2] = "closeKey.png"
         closeView[3] = "closeEmpty.png"
 
+        clue2states[0] = "clue2-closed.png";
+        clue2states[1] = "clue2-left.png";
+        clue2states[2] = "clue2-open.png";
+        clue2states[3] = "clue2-right.png";
     }
 }

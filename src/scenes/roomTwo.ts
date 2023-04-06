@@ -21,15 +21,21 @@ let twoDoorMask: Phaser.GameObjects.Sprite;
 let leftButton: Phaser.GameObjects.Sprite;
 let rightButton: Phaser.GameObjects.Sprite;
 let backButton: Phaser.GameObjects.Sprite;
+let twoWaySolved: Phaser.GameObjects.Sprite;
+let twoWaySolvedWest: Phaser.GameObjects.Sprite;
 
 let fourInit = true;
 
 let zotTableInit = true;
 let zotTableMask: Phaser.GameObjects.Sprite;
 
+let twoWayInit = true;
+let twoWayMask: Phaser.GameObjects.Sprite;
+
 let boxHasZot = false;
 let boxPostitTaken = false;
 let zotBoxColor = 0;
+let twoWayIsSolved = false
 
 let farZots = new Array();
 let farZotPlaced: Phaser.GameObjects.Sprite;
@@ -49,20 +55,20 @@ export class RoomTwo extends Phaser.Scene {
         this.scene.bringToTop("PlayerUI");
         myUI.setActiveScene(_SCENENAME);
         var camera = this.cameras.main;
-        camera.setPosition(0, myUI.getCameraHack());        
+        camera.setPosition(0, myUI.getCameraHack());
 
         slots = myUI.getSlots();
         recorder = slots.recorder;
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 
-        ////////////// SCENE IMPLEMENTATION - CREATE //////////////
+        twoWaySolved = this.add.sprite(431, 598, 'atlas', 'twoWaySolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
+        twoWaySolvedWest = this.add.sprite(0, 632, 'atlas', 'twoWaySolvedWest.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         fourSolved = this.add.sprite(450, 457, 'atlas', 'newFourSolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
 
         fourMask = this.add.sprite(450, 457, 'atlas', 'newFourMask.png').setName('fourMask').setOrigin(0, 0).setDepth(1);
         recorder.addMaskSprite('fourMask', fourMask);
         fourMask.on('pointerdown', () => {
-
             roomReturnWall = 1;
             if (fourInit) {
                 fourInit = false;
@@ -96,6 +102,21 @@ export class RoomTwo extends Phaser.Scene {
             }
         });
 
+        twoWayMask = this.add.sprite(410, 610, 'atlas', 'newzotTableMask.png').setOrigin(0, 0).setName("twoWayMask");
+        recorder.addMaskSprite('twoWayMask', twoWayMask);
+        twoWayMask.on('pointerdown', () => {
+            //console.log("go two way")
+
+            roomReturnWall = 0;
+            if (twoWayInit) {
+                twoWayInit = false;
+                this.scene.launch("TwoWay", { slots: slots })
+                this.scene.sleep();
+            } else {
+                this.scene.wake("TwoWay");
+                this.scene.sleep();
+            }
+        });
 
         leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton").setDepth(1);
         recorder.addMaskSprite('leftButton', leftButton);
@@ -154,6 +175,9 @@ export class RoomTwo extends Phaser.Scene {
             currentWall = viewWall;
             updateWall = false;
 
+            twoWaySolved.setVisible(false)
+            twoWaySolvedWest.setVisible(false)
+
             walls[previousWall].setVisible(false);
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
@@ -161,6 +185,9 @@ export class RoomTwo extends Phaser.Scene {
             fourMask.setVisible(false)
             fourSolved.setVisible(false);
             if (viewWall == 1) {
+                if (twoWayIsSolved)
+                    twoWaySolvedWest.setVisible(true)
+
                 if (myUI.getFourSolved())
                     fourSolved.setVisible(true).setDepth(1);
                 fourMask.setVisible(true); fourMask.setInteractive({ cursor: 'pointer' });
@@ -172,12 +199,12 @@ export class RoomTwo extends Phaser.Scene {
             }
             farZotPlaced.setVisible(false);
             farZotPlacedReverse.setVisible(false);
-            farZotPostit.setVisible(false);                        
+            farZotPostit.setVisible(false);
             if (viewWall == 0) {
+                if (twoWayIsSolved)
+                    twoWaySolved.setVisible(true)
                 zotTableMask.setVisible(true); zotTableMask.setDepth(100); zotTableMask.setInteractive({ cursor: 'pointer' });
-
                 farZots[zotBoxColor].setVisible(true);
-
                 if (boxHasZot) {
                     if (zotBoxColor == 1 || zotBoxColor == 2)
                         farZotPlaced.setVisible(true);
@@ -186,6 +213,8 @@ export class RoomTwo extends Phaser.Scene {
                 }
                 if (zotBoxColor == 6 && !boxPostitTaken)
                     farZotPostit.setVisible(true);
+                twoWayMask.setVisible(true); twoWayMask.setDepth(100); twoWayMask.setInteractive({ cursor: 'pointer' });
+
             }
 
             twoDoorMask.setVisible(false)
@@ -218,6 +247,11 @@ export class RoomTwo extends Phaser.Scene {
         }
         if (key == "boxColor") {
             zotBoxColor = data;
+            //console.log(`new box color: ${zotBoxColor}`)
+        }
+        if (key == "twoWaySolved") {
+            //console.log(data)
+            twoWayIsSolved = data;
         }
 
         if (key == "replayObject") {

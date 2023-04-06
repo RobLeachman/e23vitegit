@@ -626,7 +626,7 @@ export default class Recorder {
         // Firestore
         // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
         uploadString(this.storageRef, recOut).then((snapshot) => {
-            console.log('Uploaded recording!');
+            //console.log('Uploaded recording!');
         });
     }
 
