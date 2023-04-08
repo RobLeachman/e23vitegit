@@ -4,9 +4,11 @@ import Recorder from "../objects/recorder"
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let debugInput = true; // display pastebox for input of debug data
 let useCookieRecordings = false; // use cookies not the cloud
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
+let debugInput = true; // display pastebox for input of debug data
+if (location.hostname != "localhost")
+    debugInput = false;
 
 const cameraHack = 0;
 
@@ -252,7 +254,7 @@ export default class PlayerUI extends Phaser.Scene {
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
         });
 
-        eyeButton = this.add.sprite(15, 1120, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0).setDepth(1);
+        eyeButton = this.add.sprite(15, 1070, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0).setDepth(1);
         recorder.addMaskSprite('eyeButton', eyeButton);
         eyeButton.setVisible(true); eyeButton.setInteractive({ cursor: 'pointer' });
 
@@ -392,7 +394,7 @@ export default class PlayerUI extends Phaser.Scene {
             if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
                 replaying = true;
             if (debugInput && !replaying) {
-                myText.text = "debugger file load";
+                myText.text = "status";
                 pasteBox.text = "pasteit";
             } else {
                 myText.text = "off";
@@ -591,7 +593,7 @@ export default class PlayerUI extends Phaser.Scene {
             // special hidden key on back of plate logic stuff
             foundHalfKey = false;
             if (viewIt.objectView == "objPlate" && flipIt) {
-                console.log("discovered key!")
+                //console.log("discovered key!")
                 foundHalfKey = true;
             }
             if (haveHalfKey && viewIt.objectViewAlt == "altobjPlateKey") {

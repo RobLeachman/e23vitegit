@@ -32,6 +32,8 @@ let isOpen = false;
 let showLeft = -1;
 let showRight = -1;
 
+let tone:Phaser.Sound.BaseSound;
+
 let sequence = [-1, -1, -1, -1, -1, -1, -1, -1]; // L R R R L L R L
 
 const walls = new Array();
@@ -62,6 +64,9 @@ export class TwoWay extends Phaser.Scene {
 
         this.registry.set('twoWaySolved', false);
 
+
+
+
         backButtonTwoWay = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButtonTwoWay").setDepth(1);
         recorder.addMaskSprite('backButtonTwoWay', backButtonTwoWay);
 
@@ -86,6 +91,8 @@ export class TwoWay extends Phaser.Scene {
             sequence.shift();
             sequence.push(1);
 
+            tone.play();
+
             checkWin = true;
         });
         leftButtonMask.setVisible(true); leftButtonMask.setInteractive({ cursor: 'pointer' });
@@ -97,6 +104,7 @@ export class TwoWay extends Phaser.Scene {
             rightButton.setVisible(true);
             sequence.shift();
             sequence.push(2);
+            tone.play();
             checkWin = true;
         });
         rightButtonMask.setVisible(true); rightButtonMask.setInteractive({ cursor: 'pointer' });
@@ -194,6 +202,7 @@ export class TwoWay extends Phaser.Scene {
     preload() {
         walls[0] = this.add.image(0, 0, "twoway - closed").setOrigin(0, 0).setVisible(false);
         walls[1] = this.add.image(0, 0, "twoway - open").setOrigin(0, 0).setVisible(false);
+        tone = this.sound.add("tone1", { loop: false });
     }
 
     // @ts-ignore

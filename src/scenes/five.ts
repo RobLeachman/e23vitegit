@@ -155,7 +155,7 @@ export class Five extends Phaser.Scene {
         this.compartmentOpen = this.add.sprite(53, 886, 'atlas', 'fivewordsBattery.png').setOrigin(0, 0).setVisible(false);
         this.compartmentEmpty = this.add.sprite(53, 886, 'atlas', 'fivewordsEmpty.png').setOrigin(0, 0).setVisible(false);
 
-        if (this.thePlayerName == "qqq")
+        if (this.thePlayerName == "norandom")
             this.panels[0] = new WordPanel(this, 0, 'noshuffle')
         else
             this.panels[0] = new WordPanel(this, 0, 'when')
@@ -185,7 +185,7 @@ export class Five extends Phaser.Scene {
             this.panels[idx].addWord(word)
         });
 
-        if (this.thePlayerName != "qqq") {
+        if (this.thePlayerName != "norandom") {
             for (let i = 0; i < 256; i++)
 
                 this.panels[seededRNG.between(0, 4)].shuffle()

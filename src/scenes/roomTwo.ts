@@ -214,12 +214,18 @@ export class RoomTwo extends Phaser.Scene {
                 if (twoWayIsSolved)
                     twoWaySolved.setVisible(true)
                 zotTableMask.setVisible(true); zotTableMask.setDepth(100); zotTableMask.setInteractive({ cursor: 'pointer' });
+                let box9hack = false;
+                if (zotBoxColor == 9) {
+                    zotBoxColor = 6;
+                    box9hack = true;
+                }
                 farZots[zotBoxColor].setVisible(true);
                 if (boxHasZot) {
                     if (zotBoxColor == 1 || zotBoxColor == 2)
                         farZotPlaced.setVisible(true);
-                    else if (zotBoxColor == 6)
+                    else if (zotBoxColor == 6 && box9hack) {
                         farZotPlacedReverse.setVisible(true);
+                    }
                 }
                 if (zotBoxColor == 6 && !boxPostitTaken)
                     farZotPostit.setVisible(true);

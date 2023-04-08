@@ -396,7 +396,7 @@ export default class Recorder {
     async getRecording() {
         let recordingIn = await this.fetchRecording(this.getRecordingFilename());
         //console.log("CLOUD RECORDING IN");
-        console.log(recordingIn);
+        //console.log(recordingIn);
         return this.parseRecording(recordingIn);
     }
 

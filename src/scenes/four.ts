@@ -130,7 +130,7 @@ export class Four extends Phaser.Scene {
             }
         }
         // Pick and swap two random tiles. Always swap once.
-        if (this.thePlayerName != "qqq") {
+        if (this.thePlayerName != "norandom") {
             for (let z = 0; z < 50; z++) {
                 const x1 = seededRNG.between(0, 3); const y1 = seededRNG.between(0, 3);
                 const x2 = seededRNG.between(0, 3); const y2 = seededRNG.between(0, 3);
@@ -257,7 +257,7 @@ export class Four extends Phaser.Scene {
     // @ts-ignore
     // no clue what parent is
     registryUpdate(parent: Phaser.Game, key: string, data: string) {
-        console.log("----------FOUR reg check " + data)
+        //console.log("----------FOUR reg check " + data)
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];

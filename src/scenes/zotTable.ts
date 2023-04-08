@@ -167,7 +167,7 @@ export class ZotTable extends Phaser.Scene {
         zotBottomMask = this.add.sprite(238, 439, 'atlas', 'newzotBottomMask.png').setName("zotBottomMask").setOrigin(0, 0);
         recorder.addMaskSprite('zotBottomMask', zotBottomMask);
         zotBottomMask.on('pointerdown', () => {
-            console.log("bottom mask return to " + viewWall)
+            //console.log("bottom mask return to " + viewWall)
             backStack.push(viewWall)
             viewWall = 7;
         });
@@ -196,7 +196,7 @@ export class ZotTable extends Phaser.Scene {
                     slots.selectItem(selectedThing.thing);
             }
             if (!keyTaken) {
-                console.log("can take it")
+                //console.log("can take it")
                 drawerOpen = 1; // drawer is open and key is displayed
             }
             updateWall = true;
@@ -242,7 +242,7 @@ export class ZotTable extends Phaser.Scene {
 
 
         this.events.on('wake', () => {
-            console.log("zot awakes")
+            //console.log("zot awakes")
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
             myUI.setActiveScene("ZotTable");
@@ -370,20 +370,27 @@ export class ZotTable extends Phaser.Scene {
             6: back
             7: drawerOpen, green
             8: drawerOpen, off
+            9: back, flipped... need a hack since I missed this one
             */
-            //console.log("viewing " + viewWall)
+            console.log("viewing " + viewWall)
             if (viewWall == 0 || viewWall == 2) {
                 //console.log("front view")
                 if (drawerOpen > 0) {
-                    //console.log("drawer open, green"); mainRoomBoxState = 6+drawerOpen;
+                    //console.log("drawer open, green"); 
+                    mainRoomBoxState = 6 + drawerOpen;
                 } else {
                     //console.log("state=" + zotDrawerState) // 0=off, 1=yellow, 2=green/red
                     mainRoomBoxState = zotDrawerState;
-                    if (viewWall == 2)
+                    if (viewWall == 2) {
                         mainRoomBoxState += 3;
+                    }
                 }
             } else {
-                //console.log("back view"); mainRoomBoxState = 6; // could be battery, it's fine, we don't exit when zoomed in
+                //console.log("back view");
+                if (viewWall == 3)
+                    mainRoomBoxState = 6; // could be battery, it's fine, we don't exit when zoomed in
+                else
+                    mainRoomBoxState = 9;
             }
             //console.log("main room state: " + mainRoomBoxState)
             this.registry.set('boxColor', mainRoomBoxState);

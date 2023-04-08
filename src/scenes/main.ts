@@ -6,10 +6,8 @@
  * - Icon interface clues
  * 
  * - 3x3 slider puzzle
- * - 4x4 picture puzzle
  * - Rework hints
  * -- show question mark when stuck
- * - Sound
  * - Fireworks on winner screen
  * - Fade scene in
  * - Screen shake on bad guess
@@ -17,9 +15,7 @@
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
  */
 
-/*
- * ********** make eyeball bigger!!
- */
+
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
@@ -29,6 +25,8 @@ import PlayerUI from './playerUI';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
 let myUI: PlayerUI;
+let slots: Slots;
+let recorder: Recorder;
 
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
@@ -80,9 +78,7 @@ let twoDoorUnlocked = false;
 var fiveInit = true;
 var twoInit = true;
 
-var slots: Slots;
-
-var recorder: Recorder;
+let doorLocked: Phaser.Sound.BaseSound;
 var viewportText: any;                                     //??
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
@@ -119,14 +115,16 @@ export class PlayGame extends Phaser.Scene {
 
         if (myText.text == "init") {
 
-            //console.log("BONUS TEST ZOTS")
-            //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
-            //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
-            //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
-            //slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
-            //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
-            //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
-            slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
+            if (location.hostname == "localhost") {
+                //console.log("BONUS TEST ZOTS")
+                slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
+                //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+                //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
+                //slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
+                //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
+                slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
+            }
 
             myText.text = "off";
             myText.resize(0, 0);
@@ -549,7 +547,7 @@ export class PlayGame extends Phaser.Scene {
             let transit = false;
             let selectedThing = slots.getSelected();
             if (selectedThing.thing == "objRedKey") {
-                console.log("unlock red!");
+                //console.log("unlock red!");
                 slots.clearItem("objRedKey");
                 slots.clearSelect();
                 twoDoorUnlocked = true;
@@ -567,6 +565,8 @@ export class PlayGame extends Phaser.Scene {
                     this.scene.wake("RoomTwo");
                     this.scene.sleep();
                 }
+            } else {
+                doorLocked.play();
             }
         });
 
@@ -585,6 +585,8 @@ export class PlayGame extends Phaser.Scene {
                 //slots.clearItem(this, "objKeyWhole");
                 slots.clearItem("objKeyWhole");
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
+            } else {
+                doorLocked.play();
             }
         });
 
@@ -613,6 +615,9 @@ export class PlayGame extends Phaser.Scene {
 
 
     preload() {
+        //console.log("MAIN preload")
+
+        doorLocked = this.sound.add("doorLocked", { loop: false });
 
         walls[0] = "wall1";
         walls[1] = "wall2";

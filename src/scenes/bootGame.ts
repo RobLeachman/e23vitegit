@@ -54,7 +54,7 @@ export class BootGame extends Phaser.Scene {
     }
 
     preload() {
-        //console.log("BOOT")
+        //console.log("BOOT preload")
         splashScreen = this.add.image(0, 0, 'splash').setOrigin(0, 0);
 
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
@@ -75,6 +75,9 @@ export class BootGame extends Phaser.Scene {
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
         this.load.image('playButton', 'assets/sprites/playButton.png');
+        this.load.audio("tone1", ["assets/sounds/tone1.mp3"]);
+        this.load.audio("doorLocked", ["assets/sounds/12739__leady__locked-door-ATTRIBUTION.wav"]);
+
 
         if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {
