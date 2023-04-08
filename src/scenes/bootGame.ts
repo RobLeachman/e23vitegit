@@ -75,9 +75,11 @@ export class BootGame extends Phaser.Scene {
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
         this.load.image('playButton', 'assets/sprites/playButton.png');
-        this.load.audio("tone1", ["assets/sounds/tone1.mp3"]);
-        this.load.audio("doorLocked", ["assets/sounds/12739__leady__locked-door-ATTRIBUTION.wav"]);
 
+        this.load.audio('sfx', [
+            'assets/audio/soundSheet1.ogg',
+            'assets/audio/soundSheet1.mp3'
+        ]); 
 
         if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {

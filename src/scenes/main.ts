@@ -78,7 +78,6 @@ let twoDoorUnlocked = false;
 var fiveInit = true;
 var twoInit = true;
 
-let doorLocked: Phaser.Sound.BaseSound;
 var viewportText: any;                                     //??
 var viewportPointer: Phaser.GameObjects.Sprite;
 var viewportPointerClick: Phaser.GameObjects.Sprite;
@@ -566,7 +565,7 @@ export class PlayGame extends Phaser.Scene {
                     this.scene.sleep();
                 }
             } else {
-                doorLocked.play();
+                this.sound.play('sfx', { name: 'doorLocked', start: 3, duration: .5 });
             }
         });
 
@@ -586,7 +585,8 @@ export class PlayGame extends Phaser.Scene {
                 slots.clearItem("objKeyWhole");
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
             } else {
-                doorLocked.play();
+                this.sound.play('sfx', { name: 'doorLocked', start: 3, duration: .5 });
+
             }
         });
 
@@ -615,10 +615,6 @@ export class PlayGame extends Phaser.Scene {
 
 
     preload() {
-        //console.log("MAIN preload")
-
-        doorLocked = this.sound.add("doorLocked", { loop: false });
-
         walls[0] = "wall1";
         walls[1] = "wall2";
         walls[2] = "wall3";
