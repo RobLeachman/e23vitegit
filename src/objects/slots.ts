@@ -101,6 +101,7 @@ class InvItem {
         } else {
             // Update selection sprite (top or bottom row) and note this item is selected
             //console.log("Click-Select " + this.name)
+            // selectItem duplicates this code TODO fix
             this.allSlots.selectedIcon.x = 112 + this.index * 83;
             this.allSlots.selectedIcon.setY(1078);
             if (this.index > 5) {
@@ -237,13 +238,16 @@ export default class Slots {
     selectItem(objName: string) {
         // Find the selected item
         //console.log("select item: " + objName)
-        var k = -1;
+        let k = -1;
         for (k = 0; k < 12; k++) {
             if (this.slotArray[k].iconSprite.name == objName) {
                 break;
             }
         }
+        if (k == 12)
+            return -1;
         this.selectedIcon.setX(112 + k * 83);
+        this.selectedIcon.setY(1078);
         if (k > 5) {
             this.selectedIcon.setX(112 + (k - 6) * 83)
             this.selectedIcon.setY(1161)

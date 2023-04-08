@@ -199,6 +199,7 @@ export default class PlayerUI extends Phaser.Scene {
         console.log(1280 - mySize.height * 4);
 
         const randomSeed = Math.random().toString();
+        //const randomSeed = "0.123"
         seededRNG = new Phaser.Math.RandomDataGenerator([randomSeed]);
 
         let hostname = location.hostname;
@@ -412,6 +413,8 @@ export default class PlayerUI extends Phaser.Scene {
                         theRecording = await recorder.getRecording();
                 }
                 //console.log("UI recording= " + theRecording);
+                //console.log("reseed random " + recorder.getRNGSeed())
+
                 seededRNG = new Phaser.Math.RandomDataGenerator([recorder.getRNGSeed()]);
 
                 // Prep recording stack for replay

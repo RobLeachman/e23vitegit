@@ -183,15 +183,17 @@ export class ZotTable extends Phaser.Scene {
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer
+                slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
 
                 //console.log("--> remove postit!")
                 let selectedThing = slots.getSelected();
-                //console.log("postit check " + selectedThing.thing)
-                slots.clearItem("objPostit");
-                if (selectedThing.thing == "objPostit")
-                    slots.clearSelect();
-                slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
-
+                //console.log(selectedThing.thing + " was selected")
+                const havePostit = slots.selectItem("objPostit");
+                if (havePostit > -1)
+                    slots.clearItem("objPostit");
+                slots.clearSelect();
+                if (selectedThing.thing != "objPostit" && selectedThing.thing != "")
+                    slots.selectItem(selectedThing.thing);
             }
             if (!keyTaken) {
                 console.log("can take it")

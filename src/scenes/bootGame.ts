@@ -8,7 +8,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
 //const skipClickToStart = true; const skipCloud = true;
-const skipClickToStart = false; const skipCloud = true;
+const skipClickToStart = false; const skipCloud = false;
 
 const testingNewRoom = false;
 const skipBackgroundsLoad = false;
