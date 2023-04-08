@@ -7,6 +7,8 @@ let myUI: PlayerUI;
 let recorder: Recorder;
 let slots: Slots;
 
+let seededRNG: Phaser.Math.RandomDataGenerator;
+
 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run        
@@ -75,8 +77,9 @@ class WordPanel {
     }
 
     shuffle() {
-        const x1 = Phaser.Math.Between(1, this.words.length - 1);
-        const x2 = Phaser.Math.Between(1, this.words.length - 1);
+        const x1 = seededRNG.between(1, this.words.length - 1);
+        const x2 = seededRNG.between(1, this.words.length - 1);
+
         const word1 = this.words[x1];
         const word2 = this.words[x2];
 
@@ -112,9 +115,10 @@ export class Five extends Phaser.Scene {
 
         this.thePlayerName = data.playerName;
 
+        seededRNG = myUI.getSeededRNG();
+
         ////////////// RECORDER - CAPTURE //////////////
 
-        // Capture clicks on object masks from this scene
         slots = data.slots;
         recorder = slots.recorder;
         const thisscene = this;
@@ -123,7 +127,7 @@ export class Five extends Phaser.Scene {
 
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
-            console.log("FIVE mask click " + (gameObject as Phaser.GameObjects.Sprite).name)
+            //console.log("FIVE mask click " + (gameObject as Phaser.GameObjects.Sprite).name)
             if ((gameObject as Phaser.GameObjects.Sprite).name == "fiveWordsMask") {
                 //console.log("special panels handles it")
             } else
@@ -183,7 +187,8 @@ export class Five extends Phaser.Scene {
 
         if (this.thePlayerName != "qqq") {
             for (let i = 0; i < 256; i++)
-                this.panels[Phaser.Math.Between(0, 4)].shuffle()
+
+                this.panels[seededRNG.between(0, 4)].shuffle()
         }
 
         this.fiveBackButton = this.add.sprite(300, 925, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("fiveBackButton");
@@ -198,7 +203,7 @@ export class Five extends Phaser.Scene {
         });
 
         this.events.on('wake', () => {
-            console.log("Five awakes")
+            //console.log("Five awakes")
         });
 
         this.panels[0].shuffle();

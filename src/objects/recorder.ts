@@ -10,11 +10,15 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 //import { getStorage, ref, uploadString } from "firebase/storage";
 // "Just to add more options to the puzzle: you can use a serverless realtime database (serverless, gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
 
-const minDelayFastMode = 100;
+const minDelayFastMode = 10;
 const debuggingDumpRecordingOut = false;
 const debugDisplayFastSteps = false;
+const debugDisplayRecordedActions = false;
+const debugDisplayRecordedSteps = false; // display each recorded mask click
+
 let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
+let recordedRNGSeed: string;
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -39,10 +43,12 @@ export default class Recorder {
     timeStamp: string;
 
     cameraHack: number;
+    randomSeed: string;
 
     constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
-        cameraHack: number
+        cameraHack: number,
+        randomSeed: string
     ) {
         this.pointerSprite = pointerSprite;
         this.clickSprite = clickSprite;
@@ -50,6 +56,7 @@ export default class Recorder {
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
+        this.randomSeed = randomSeed;
 
 
         /************
@@ -257,6 +264,10 @@ export default class Recorder {
 
     addMaskSprite(key: string, sprite: Phaser.GameObjects.Sprite) {
         //console.log(`registered mask ${key} ${sprite}`)
+        const testDupe = this.spriteMap.get(key);
+        if (testDupe != undefined) {
+            throw ("ERROR duplicate mask sprite! " + key)
+        }
         this.spriteMap.set(key, sprite);
     }
     getMaskSprite(key: string) {
@@ -331,8 +342,8 @@ export default class Recorder {
                 this.oldPointerY = this.pointer.y;
                 if (!stealthRecord) {
 
-                this.pointerSprite.setX(this.pointer.x);
-                this.pointerSprite.setY(this.pointer.y - this.cameraHack);
+                    this.pointerSprite.setX(this.pointer.x);
+                    this.pointerSprite.setY(this.pointer.y - this.cameraHack);
                 }
                 this.oldPointerTime = scene.time.now;
 
@@ -364,7 +375,8 @@ export default class Recorder {
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
-        //console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
+        if (debugDisplayRecordedActions)
+            console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
         if (object == "")
             console.log("ERROR no recorder object specified!")
         this.pointer = scene.input.activePointer;
@@ -388,31 +400,6 @@ export default class Recorder {
         return this.parseRecording(recordingIn);
     }
 
-    parseRecording(recordingIn: string) {
-        const recordingChecksum = recordingIn.split('?')[0];
-        // @ts-ignore
-        // with luck will need version checking later
-        const recordingVersion = recordingIn.split('?')[2];
-        const recordingDataCompressed = recordingIn.split('?')[1];
-        let recIn = recordingDataCompressed
-        let re = /mousemove,/g; recIn = recIn.replace(re, "#");
-        re = /#/g; recIn = recIn.replace(re, "mousemove,");
-        re = /!/g; recIn = recIn.replace(re, "mouseclick,");
-        re = /=/g; recIn = recIn.replace(re, "object=");
-        re = /\-/g; recIn = recIn.replace(re, "icon=");
-        re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
-        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");
-        re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
-
-        if (recordingChecksum == this.checksum(recIn)) {
-            //console.log("-->Good recording " + recIn);
-        } else {
-            console.log("ERROR: RECORDING CKSUM, CAN'T THROW ERROR SINCE NO WAY TO CLEAR")
-            //throw new Error('recording cksum error');
-        }
-        return recIn;
-    }
-
     getRecordingFromCookies() {
         let recordingIn = "not loaded";
         let cookieNumber = -1;
@@ -431,10 +418,56 @@ export default class Recorder {
             return "no cookies"
     }
 
+    parseRecording(recordingIn: string) {
+        const recordingChecksum = recordingIn.split('?')[0];
+        // @ts-ignore
+        // with luck will need version checking later
+        const recordingVersion = recordingIn.split('?')[2];
+        recordedRNGSeed = recordingVersion.split('-')[0];
+        //console.log("parse version: " + recordingVersion.split('-')[1]);
+
+        const recordingDataCompressed = recordingIn.split('?')[1];
+        let recIn = recordingDataCompressed
+        let re = /mousemove,/g; recIn = recIn.replace(re, "#");
+        re = /#/g; recIn = recIn.replace(re, "mousemove,");
+        re = /!/g; recIn = recIn.replace(re, "mouseclick,");
+        re = /=/g; recIn = recIn.replace(re, "object=");
+        re = /\-/g; recIn = recIn.replace(re, "icon=");
+        re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
+        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");
+        re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
+        re = /\%D\%/g; recIn = recIn.replace(re, "\%RoomTwo\%");
+        re = /\%E\%/g; recIn = recIn.replace(re, "\%Clue2\%");
+        re = /\%F\%/g; recIn = recIn.replace(re, "\%TwoWay\%");
+        re = /\%G\%/g; recIn = recIn.replace(re, "\%Four\%");
+        re = /\%H\%/g; recIn = recIn.replace(re, "\%Five\%");
+        re = /\%I\%/g; recIn = recIn.replace(re, "\%PlayerUI\%");
+
+        if (recordingChecksum == this.checksum(recIn)) {
+            //console.log("-->Good recording " + recIn);
+            if (debugDisplayRecordedSteps) {
+                const debugRecording = recIn.split(':');
+                debugRecording.forEach((action) => {
+                    if (action.split(',')[0] != "mousemove" && action.split(',')[0] != "mouseclick")
+                        console.log(`DBGREC ${action}`)
+                });
+            }
+
+        } else {
+            console.log("ERROR: RECORDING CKSUM, CAN'T THROW ERROR SINCE NO WAY TO CLEAR")
+            //throw new Error('recording cksum error');
+        }
+        return recIn;
+    }
+
+    getRNGSeed() {
+        return recordedRNGSeed;
+    }
+
     makeFast(recordingSlow: string, speedSteps: number) {
         let fast = "";
         const actionString = recordingSlow.split(":");
-        //console.log("recorder action count=" + actionString.length)
+        console.log("Recorder action count=" + actionString.length)
         let fastSteps = actionString.length;
         if (speedSteps > 0) {
             console.log(`will skip ${speedSteps} before going back to perfect play`);
@@ -458,42 +491,6 @@ export default class Recorder {
         });
         return fast;
     }
-
-    // ENTIRELY OBSOLETE
-    /*
-    getFormattedRecording(maxLineLength: number) {
-        let recIn = this.getRecording();
-        let recOut = "";
-
-        let re = /mousemove,/g; recOut = recIn.replace(re, "#");
-        re = /mouseclick,/g; recOut = recOut.replace(re, "!");
-        re = /object=/g; recOut = recOut.replace(re, "=");
-        re = /icon=/g; recOut = recOut.replace(re, "\-");
-        re = /\%PlayGame\%/g; recOut = recOut.replace(re, "\%A\%");
-        re = /\%ZotTable\%/g; recOut = recOut.replace(re, "\%B\%");
-        re = /\%BootGame\%/g; recOut = recOut.replace(re, "\%C\%");
-
-        let inStr = recOut;
-        let out: string = "";
-
-        while (inStr.length > 0) {
-            if (inStr.length == recOut.length) {
-                out = out + inStr.substring(0, maxLineLength - 9) + "\n";
-                inStr = inStr.substring(maxLineLength - 9,);
-            } else {
-                out = out + inStr.substring(0, maxLineLength) + "\n";
-                inStr = inStr.substring(maxLineLength,);
-            }
-        }
-
-        recOut = "\n\n\n\n\n\n____________\n____________\n____________\n" + this.checksum(recIn) + "?" + out + "?v1\n___________";
-
-        //console.log("RECORDED")
-        //console.log(recIn)
-
-        return recOut;
-    }
-    */
 
     dumpRecording() {
         const rec = this.recording.split(":");
@@ -616,8 +613,14 @@ export default class Recorder {
         re = /\%PlayGame\%/g; recOut = recOut.replace(re, "\%A\%");
         re = /\%ZotTable\%/g; recOut = recOut.replace(re, "\%B\%");
         re = /\%BootGame\%/g; recOut = recOut.replace(re, "\%C\%");
+        re = /\%RoomTwo\%/g; recOut = recOut.replace(re, "\%D\%");
+        re = /\%Clue2\%/g; recOut = recOut.replace(re, "\%E\%");
+        re = /\%TwoWay\%/g; recOut = recOut.replace(re, "\%F\%");
+        re = /\%Four\%/g; recOut = recOut.replace(re, "\%G\%");
+        re = /\%Five\%/g; recOut = recOut.replace(re, "\%H\%");
+        re = /\%PlayerUI\%/g; recOut = recOut.replace(re, "\%I\%");
 
-        recOut = this.checksum(recording) + "?" + recOut + "?v1";
+        recOut = this.checksum(recording) + "?" + recOut + "?" + this.randomSeed + "-v1";
         //console.log("RECORDING OUT " + recOut);
         if (usingRecordingCookies) {
             this.saveCookies(recOut);

@@ -15,14 +15,14 @@ let currentWall = -1;
 let previousWall = 0;
 let updateWall = false;
 
-let backButton: Phaser.GameObjects.Sprite;
+let backButtonTwoWay: Phaser.GameObjects.Sprite;
 let leftButton: Phaser.GameObjects.Sprite;
 let rightButton: Phaser.GameObjects.Sprite;
 let centerButton: Phaser.GameObjects.Sprite;
 let leftButtonMask: Phaser.GameObjects.Sprite;
 let rightButtonMask: Phaser.GameObjects.Sprite;
 let centerButtonMask: Phaser.GameObjects.Sprite;
-let keyMask: Phaser.GameObjects.Sprite;
+let keyMaskTwoWay: Phaser.GameObjects.Sprite;
 let keyImage: Phaser.GameObjects.Sprite;
 
 let checkWin = false;
@@ -52,24 +52,31 @@ export class TwoWay extends Phaser.Scene {
         slots = myUI.getSlots();
         recorder = slots.recorder;
         const thisscene = this;
+        
+        // Record all clicks on this scene
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });  
+        this.registry.events.on('changedata', this.registryUpdate, this);              
 
         this.registry.set('twoWaySolved', false);
 
-        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton").setDepth(1);
-        recorder.addMaskSprite('backButton', backButton);
+        backButtonTwoWay = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButtonTwoWay").setDepth(1);
+        recorder.addMaskSprite('backButtonTwoWay', backButtonTwoWay);
 
-        backButton.on('pointerdown', () => {
-            recorder.recordObjectDown(backButton.name, thisscene); // must record, won't be captured by global method
+        backButtonTwoWay.on('pointerdown', () => {
+            recorder.recordObjectDown(backButtonTwoWay.name, thisscene); // must record, won't be captured by global method
             viewWall = previousWall;
 
-            backButton.removeInteractive(); // fix up the cursor displayed on main scene
+            backButtonTwoWay.removeInteractive(); // fix up the cursor displayed on main scene
 
             this.scene.moveUp("RoomTwo");
             this.scene.sleep();
             this.scene.wake("RoomTwo");
 
         });
-        backButton.setVisible(true); backButton.setInteractive({ cursor: 'pointer' });
+        backButtonTwoWay.setVisible(true); backButtonTwoWay.setInteractive({ cursor: 'pointer' });
 
         leftButtonMask = this.add.sprite(215, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("leftButtonMask").setDepth(1);
         recorder.addMaskSprite('leftButtonMask', leftButtonMask);
@@ -106,13 +113,13 @@ export class TwoWay extends Phaser.Scene {
             checkWin = true;
             this.registry.set('twoWaySolved', true);
         });
-        keyMask = this.add.sprite(290, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("keyMask").setDepth(1);
-        recorder.addMaskSprite('keyMask', keyMask);
-        keyMask.on('pointerdown', () => {
+        keyMaskTwoWay = this.add.sprite(290, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("keyMaskTwoWay").setDepth(1);
+        recorder.addMaskSprite('keyMaskTwoWay', keyMaskTwoWay);
+        keyMaskTwoWay.on('pointerdown', () => {
             console.log("key take");
             tookKey = true;
             checkWin = true;
-            keyMask.setVisible(false);
+            keyMaskTwoWay.setVisible(false);
             keyImage.setVisible(false);
             slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
         });
@@ -144,7 +151,7 @@ export class TwoWay extends Phaser.Scene {
             walls[previousWall].setVisible(false);
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
-            backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
+            backButtonTwoWay.setVisible(true); backButtonTwoWay.setDepth(1); backButtonTwoWay.setInteractive({ cursor: 'pointer' });
         }
 
         if (showLeft > 0) { 
@@ -174,7 +181,7 @@ export class TwoWay extends Phaser.Scene {
                 sequence = [];
             }
             if (isOpen && !tookKey) {
-                keyMask.setVisible(true); keyMask.setInteractive({ cursor: 'pointer' });
+                keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
                 keyImage.setVisible(true);
             }
         }

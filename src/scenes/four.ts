@@ -6,6 +6,7 @@ import Recorder from "../objects/recorder"
 let myUI: PlayerUI;
 var recorder: Recorder;
 var slots: Slots;
+let seededRNG: Phaser.Math.RandomDataGenerator;
 
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
@@ -99,6 +100,8 @@ export class Four extends Phaser.Scene {
         recorder = slots.recorder;
         const thisscene = this;
 
+        seededRNG = myUI.getSeededRNG();
+
         this.registry.events.on('changedata', this.registryUpdate, this);
 
         this.thePlayerName = data.playerName;
@@ -129,8 +132,8 @@ export class Four extends Phaser.Scene {
         // Pick and swap two random tiles. Always swap once.
         if (this.thePlayerName != "qqq") {
             for (let z = 0; z < 50; z++) {
-                const x1 = Phaser.Math.Between(0, 3); const y1 = Phaser.Math.Between(0, 3);
-                const x2 = Phaser.Math.Between(0, 3); const y2 = Phaser.Math.Between(0, 3);
+                const x1 = seededRNG.between(0, 3); const y1 = seededRNG.between(0, 3);
+                const x2 = seededRNG.between(0, 3); const y2 = seededRNG.between(0, 3);
                 this.swapTiles(x1, y1, x2, y2, this.tileMap);
             }
         }

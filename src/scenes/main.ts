@@ -18,33 +18,7 @@
  */
 
 /*
- * ROOM 1
- *   donut plate -> zot, half key
- *   green box -> half key (battery, zot)
- *   4x4
- *   five words -> battery
- * .....
- * ROOM 1
- *   donut plate -> zot, half key
- *   five words
- *   2-way clue panel -> red key
- *   ... red key
- * 
- * ROOM 2 (red key)
- *   4x4
- *   green box
- *   2-way puzzle -> half key
- * 
- * 1) get red key from 2-way clue panel
- * 2) open middle
- * 3) get clue from 4x4
- * 4) back to first, solve 5-words, get battery
- * 5) get zot
- * 6) back to middle, solve green box, get half key
- * 7) solve 2-way, get half key
- * *
- * ********** make eyeball bigger
- * 
+ * ********** make eyeball bigger!!
  */
 import 'phaser';
 import Slots from "../objects/slots"
@@ -128,56 +102,12 @@ export class PlayGame extends Phaser.Scene {
         super("PlayGame");
     }
 
-    parseRecording(input: string) {
-        let output = input;
-
-        let re = /\_/g; output = output.replace(re, "");
-        re = /\n/g; output = output.replace(re, "");
-        //re = /\w/g; output = output.replace(re, "");
-
-        //console.log(output);
-
-        let recInCheck = output.split('?')[0];
-        //console.log("cksum in " + recInCheck)
-
-        // @ts-ignore
-        // with luck will need version checking later
-        let recInVersion = output.split('?')[2];
-        let recIn = output.split('?')[1];
-        //console.log("REC IN " + recIn)
-        if (recIn === undefined) {
-            myText.text = "ERROR";
-            return;
-        }
-        re = /mousemove,/g; recIn = recIn.replace(re, "#");
-        re = /#/g; recIn = recIn.replace(re, "mousemove,");
-        re = /!/g; recIn = recIn.replace(re, "mouseclick,");
-        re = /=/g; recIn = recIn.replace(re, "object=");
-        re = /\-/g; recIn = recIn.replace(re, "icon=");
-        re = /\%A\%/g; recIn = recIn.replace(re, "\%PlayGame\%");
-        re = /\%B\%/g; recIn = recIn.replace(re, "\%ZotTable\%");
-        re = /\%C\%/g; recIn = recIn.replace(re, "\%BootGame\%");
-
-        //console.log("PARSED")
-        //console.log(recIn);
-
-        if (recInCheck == recorder.checksum(recIn)) {
-            myText.text = "success";
-            recorder.saveCookies(output);
-        } else {
-            myText.text = "error";
-            //console.log("cksum in   " + (recorder.checksum(recIn)))
-            //console.log("cksum calc " + recInCheck)
-        }
-    }
-
     async getRecording(filename: string) {
         console.log("TEST GET IT")
         const theRecording = await recorder.fetchRecording(filename);
         console.log("TEST GOT IT " + theRecording)
         return theRecording;
     }
-
 
     async update() {
         //console.log("main update")
@@ -201,15 +131,6 @@ export class PlayGame extends Phaser.Scene {
             myText.text = "off";
             myText.resize(0, 0);
             myPaste.resize(0, 0);
-        }
-
-
-        if (myText.text != "init" &&
-            myText.text != "off" &&
-            myText.text != "error" &&
-            myText.text != "success" &&
-            myText.text != "debugger file load") {
-            this.parseRecording(myText.text)
         }
 
         if (myPaste.text != "pasteit" && myPaste.text != "init") {
@@ -445,12 +366,12 @@ export class PlayGame extends Phaser.Scene {
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
+            //console.log(`--> main replay ${spriteScene} ${spriteName}`)
             if (spriteScene == "PlayGame") {
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
         }
-
     }
 
     create(data: {

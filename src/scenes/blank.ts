@@ -39,7 +39,16 @@ export class Blank extends Phaser.Scene {
 
         slots = myUI.getSlots();
         recorder = slots.recorder;
+
+        this.registry.events.on('changedata', this.registryUpdate, this);
+
+        // Record all clicks on this scene
         const thisscene = this;
+
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });
 
         ////////////// SCENE IMPLEMENTATION - CREATE //////////////
         // Scene is room...
@@ -67,11 +76,11 @@ export class Blank extends Phaser.Scene {
             console.log(`${_SCENENAME} Back!`);
 
             backButton.removeInteractive(); // fix up the cursor displayed on main scene
-/*
-            this.scene.moveUp("PlayGame");
-            this.scene.sleep();
-            this.scene.wake("PlayGame");            
-*/            
+            /*
+                        this.scene.moveUp("PlayGame");
+                        this.scene.sleep();
+                        this.scene.wake("PlayGame");            
+            */
         });
 
         // Generic.. use either left/right or back
@@ -105,7 +114,7 @@ export class Blank extends Phaser.Scene {
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
         }
-        
+
         backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
         // Record any movement or clicks
         if (recorder.getMode() == "record")

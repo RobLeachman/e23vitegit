@@ -185,7 +185,7 @@ export default class Slots {
     }
 
     addIcon(iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
-        console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
+        //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
         if (iconSpriteName == undefined)
             console.log("ERROR undefined icon add")
         // show the clue on the first actual item icon, not the empty fakes

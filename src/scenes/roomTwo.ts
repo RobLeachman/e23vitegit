@@ -17,10 +17,10 @@ let updateWall = false;
 
 let fourMask: Phaser.GameObjects.Sprite;
 let fourSolved: Phaser.GameObjects.Sprite;
-let twoDoorMask: Phaser.GameObjects.Sprite;
-let leftButton: Phaser.GameObjects.Sprite;
-let rightButton: Phaser.GameObjects.Sprite;
-let backButton: Phaser.GameObjects.Sprite;
+let twoDoorMask2: Phaser.GameObjects.Sprite;
+let leftButton2: Phaser.GameObjects.Sprite;
+let rightButton2: Phaser.GameObjects.Sprite;
+let backButton2: Phaser.GameObjects.Sprite;
 let twoWaySolved: Phaser.GameObjects.Sprite;
 let twoWaySolvedWest: Phaser.GameObjects.Sprite;
 
@@ -62,6 +62,14 @@ export class RoomTwo extends Phaser.Scene {
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 
+        // Record all clicks on this scene
+        let thisscene = this;
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });
+
+
         twoWaySolved = this.add.sprite(431, 598, 'atlas', 'twoWaySolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         twoWaySolvedWest = this.add.sprite(0, 632, 'atlas', 'twoWaySolvedWest.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         fourSolved = this.add.sprite(450, 457, 'atlas', 'newFourSolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
@@ -80,12 +88,13 @@ export class RoomTwo extends Phaser.Scene {
             }
         });
 
-        twoDoorMask = this.add.sprite(235, 381, 'atlas', 'twoDoorMask.png').setName('twoDoorMask').setOrigin(0, 0).setDepth(1);
-        recorder.addMaskSprite('twoDoorMask', twoDoorMask);
-        twoDoorMask.on('pointerdown', () => {
+        twoDoorMask2 = this.add.sprite(235, 381, 'atlas', 'twoDoorMask.png').setName('twoDoorMask2').setOrigin(0, 0).setDepth(1);
+        recorder.addMaskSprite('twoDoorMask2', twoDoorMask2);
+        twoDoorMask2.on('pointerdown', () => {
             roomReturnWall = 0;
-            this.scene.wake("PlayGame");
+            this.scene.moveUp("PlayGame");
             this.scene.sleep();
+            this.scene.wake("PlayGame");
         });
 
         zotTableMask = this.add.sprite(102, 608, 'atlas', 'newzotTableMask.png').setOrigin(0, 0).setName("zotTableMask");
@@ -118,33 +127,33 @@ export class RoomTwo extends Phaser.Scene {
             }
         });
 
-        leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton").setDepth(1);
-        recorder.addMaskSprite('leftButton', leftButton);
-        rightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton").setDepth(1);
-        recorder.addMaskSprite('rightButton', rightButton);
-        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton").setDepth(1);
-        recorder.addMaskSprite('backButton', backButton);
+        leftButton2 = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton2").setDepth(1);
+        recorder.addMaskSprite('leftButton2', leftButton2);
+        rightButton2 = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton2").setDepth(1);
+        recorder.addMaskSprite('rightButton2', rightButton2);
+        backButton2 = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton2").setDepth(1);
+        recorder.addMaskSprite('backButton2', backButton2);
 
-        rightButton.on('pointerdown', () => {
+        rightButton2.on('pointerdown', () => {
             viewWall++;
             if (viewWall > 3)
                 viewWall = 0;
         });
-        leftButton.on('pointerdown', () => {
+        leftButton2.on('pointerdown', () => {
             viewWall--;
             if (viewWall < 0)
                 viewWall = 3;
         });
-        backButton.on('pointerdown', () => {
+        backButton2.on('pointerdown', () => {
             console.log(`${_SCENENAME} Back!`);
             console.log("Return from closeup?");
             viewWall = previousWall;
         });
 
-        leftButton.setVisible(true); leftButton.setInteractive({ cursor: 'pointer' });
-        rightButton.setVisible(true); rightButton.setInteractive({ cursor: 'pointer' });
+        leftButton2.setVisible(true); leftButton2.setInteractive({ cursor: 'pointer' });
+        rightButton2.setVisible(true); rightButton2.setInteractive({ cursor: 'pointer' });
         // Generic back not needed for this room
-        backButton.setVisible(false)
+        backButton2.setVisible(false)
 
         for (let i = 0; i < 9; i++) {
             const fz = "farzot-" + i + ".png"
@@ -177,6 +186,7 @@ export class RoomTwo extends Phaser.Scene {
 
             twoWaySolved.setVisible(false)
             twoWaySolvedWest.setVisible(false)
+            twoWayMask.setVisible(false);
 
             walls[previousWall].setVisible(false);
             walls[viewWall].setVisible(true);
@@ -217,9 +227,9 @@ export class RoomTwo extends Phaser.Scene {
 
             }
 
-            twoDoorMask.setVisible(false)
+            twoDoorMask2.setVisible(false);
             if (viewWall == 2) {
-                twoDoorMask.setVisible(true); twoDoorMask.setInteractive({ cursor: 'pointer' });
+                twoDoorMask2.setVisible(true); twoDoorMask2.setInteractive({ cursor: 'pointer' });
             }
         }
 
@@ -237,7 +247,7 @@ export class RoomTwo extends Phaser.Scene {
 
     // @ts-ignore
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
-        console.log(`${_SCENENAME} registry update ${key}`)
+        //console.log(`${_SCENENAME} registry update ${key}`)
 
         if (key == "boxHasZot") {
             boxHasZot = data;

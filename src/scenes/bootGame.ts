@@ -7,12 +7,10 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true; const skipCloud = true;
-//const skipClickToStart = false; const skipCloud = false;
+//const skipClickToStart = true; const skipCloud = true;
+const skipClickToStart = false; const skipCloud = true;
 
-// Revive this
 const testingNewRoom = false;
-
 const skipBackgroundsLoad = false;
 
 let myUI: PlayerUI;

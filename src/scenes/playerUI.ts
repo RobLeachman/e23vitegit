@@ -6,7 +6,7 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
 let debugInput = true; // display pastebox for input of debug data
 let useCookieRecordings = false; // use cookies not the cloud
-const recorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
+const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
 const cameraHack = 0;
 
@@ -63,6 +63,8 @@ const minDelayReplay = 10;
 let lastKeyDebouncer = "";
 let mainReplayRequest = "no key just pressed";
 
+let seededRNG = new Phaser.Math.RandomDataGenerator;
+
 let sceneUI: Phaser.Scene;
 let scenePlayGame: Phaser.Scene;
 let sceneZotTable: Phaser.Scene;
@@ -70,10 +72,13 @@ let sceneFour: Phaser.Scene;
 let sceneFive: Phaser.Scene;
 
 
-
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
+    }
+
+    getSeededRNG() {
+        return seededRNG;
     }
 
     setActiveScene(theScene: string) {
@@ -188,10 +193,13 @@ export default class PlayerUI extends Phaser.Scene {
         var camera = this.cameras.main;
         camera.setPosition(0, cameraHack);
 
-        console.log("scale size")
+        console.log("scale size");
         const mySize = this.scale.parentSize;
-        console.log(mySize.height * 4)
-        console.log(1280 - mySize.height * 4)
+        console.log(mySize.height * 4);
+        console.log(1280 - mySize.height * 4);
+
+        const randomSeed = Math.random().toString();
+        seededRNG = new Phaser.Math.RandomDataGenerator([randomSeed]);
 
         let hostname = location.hostname;
         /*
@@ -223,7 +231,7 @@ export default class PlayerUI extends Phaser.Scene {
         //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
         interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
 
-        recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack);
+        recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack, randomSeed);
         slots = new Slots(this, iconSelected, recorder);
 
         plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton").setDepth(1).setVisible(false);
@@ -404,10 +412,11 @@ export default class PlayerUI extends Phaser.Scene {
                         theRecording = await recorder.getRecording();
                 }
                 //console.log("UI recording= " + theRecording);
+                seededRNG = new Phaser.Math.RandomDataGenerator([recorder.getRNGSeed()]);
 
                 // Prep recording stack for replay
                 if (recorder.getReplaySpeed() == "fast") {
-                    theRecording = recorder.makeFast(theRecording, recorderPlayPerfectSkip);
+                    theRecording = recorder.makeFast(theRecording, debugRecorderPlayPerfectSkip);
                 }
                 const actionString = theRecording.split(":");
                 //console.log("stack prepped, count=" + actionString.length )
@@ -480,6 +489,8 @@ export default class PlayerUI extends Phaser.Scene {
                         case "PlayerUI":
                             recorder.showClick(sceneUI, actions[0][1], actions[0][2]);
                             break;
+
+                        /***** all clicks are on UI layer now! */
                         case "PlayGame":
                             recorder.showClick(scenePlayGame, actions[0][1], actions[0][2]);
                             break;

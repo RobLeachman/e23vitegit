@@ -65,6 +65,8 @@ console.log('assetsDPR = ', assetsDPR);
 console.log('WIDTH = ', WIDTH);
 console.log('HEIGHT = ', HEIGHT);
 */
+
+
 let gameConfig = {
     type: Phaser.WEBGL,
     //type: Phaser.CANVAS,
@@ -79,6 +81,7 @@ let gameConfig = {
     dom: {
         createContainer: true
     },
+    
     disableContextMenu: true, // ready for right-click if needed
     //autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
 
@@ -115,6 +118,7 @@ if (testingFour) {
         dom: {
             createContainer: true
         },
+
         disableContextMenu: true, // ready for right-click if needed
         //autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
         //autoCenter: Phaser.Scale.CENTER_BOTH,     // needed for fullscreen?

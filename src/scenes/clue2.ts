@@ -15,7 +15,7 @@ let currentWall = -1;
 let previousWall = 0;
 let updateWall = false;
 
-let backButton: Phaser.GameObjects.Sprite;
+let clue2backButton: Phaser.GameObjects.Sprite;
 let pushButtonMask: Phaser.GameObjects.Sprite;
 let stuckButton: Phaser.GameObjects.Sprite;
 let redKeyMask: Phaser.GameObjects.Sprite;
@@ -46,13 +46,19 @@ export class Clue2 extends Phaser.Scene {
         const thisscene = this;
         this.registry.set('clue2state', 0);
 
-        backButton = this.add.sprite(300, 875 + 15, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton").setDepth(1);
-        recorder.addMaskSprite('backButton', backButton);
+        // Record all clicks on this scene
+        // @ts-ignore   pointer is unused until we get fancy...
+        this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+        });
+        this.registry.events.on('changedata', this.registryUpdate, this);
 
-        backButton.on('pointerdown', () => {
+        clue2backButton = this.add.sprite(300, 875 + 15, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("clue2backButton").setDepth(1);
+        recorder.addMaskSprite('clue2backButton', clue2backButton);
+        clue2backButton.on('pointerdown', () => {
             viewWall = previousWall;
-            recorder.recordObjectDown(backButton.name, thisscene); // must record, won't be captured by global method
-            backButton.removeInteractive(); // fix up the cursor displayed on main scene
+            recorder.recordObjectDown(clue2backButton.name, thisscene); // must record, won't be captured by global method
+            clue2backButton.removeInteractive(); // fix up the cursor displayed on main scene
 
             this.scene.moveUp("PlayGame");
             this.scene.sleep();
@@ -61,7 +67,6 @@ export class Clue2 extends Phaser.Scene {
 
         pushButtonMask = this.add.sprite(240, 672, 'atlas', 'clue2-button-mask.png').setOrigin(0, 0).setName("pushButtonMask").setDepth(1);
         recorder.addMaskSprite('pushButtonMask', pushButtonMask);
-
         pushButtonMask.on('pointerdown', () => {
             position++;
             if (position > sequence.length - 1)
@@ -75,14 +80,12 @@ export class Clue2 extends Phaser.Scene {
         redKeyMask = this.add.sprite(125, 460, 'atlas', 'clue2-button-mask.png').setOrigin(0, 0).setName("redKeyMask").setDepth(1);
         recorder.addMaskSprite('redKeyMask', redKeyMask);
         redKeyMask.on('pointerdown', () => {
-            redKey.setVisible(false);
             keyTaken = true;
-            stuckButton.setVisible(false);
-            redKeyMask.removeInteractive();
             slots.addIcon("icon - red keyB.png", "objRedKeyB", "altobjRedKeyB");
             updateWall = true;
+            redKey.setVisible(false);
+            stuckButton.setVisible(false);
         });
-
         redKeyMask.setVisible(true); redKeyMask.setInteractive({ cursor: 'pointer' });
         redKey = this.add.sprite(296, 556, 'atlas', 'red key half.png').setOrigin(0, 0).setDepth(1).setVisible(false);
 
@@ -119,7 +122,7 @@ export class Clue2 extends Phaser.Scene {
             walls[previousWall].setVisible(false);
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
-            backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
+            clue2backButton.setVisible(true); clue2backButton.setDepth(1); clue2backButton.setInteractive({ cursor: 'pointer' });
         }
 
         // Record any movement or clicks
@@ -137,7 +140,6 @@ export class Clue2 extends Phaser.Scene {
     // @ts-ignore
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
         //console.log(`${_SCENENAME} registry update ${key}`)
-
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
