@@ -50,7 +50,7 @@ export class RoomTwo extends Phaser.Scene {
     }
 
     create() {
-        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        //myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI.setActiveScene(_SCENENAME);
@@ -72,7 +72,10 @@ export class RoomTwo extends Phaser.Scene {
 
         twoWaySolved = this.add.sprite(431, 598, 'atlas', 'twoWaySolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         twoWaySolvedWest = this.add.sprite(0, 632, 'atlas', 'twoWaySolvedWest.png').setOrigin(0, 0).setVisible(false).setDepth(1);
-        fourSolved = this.add.sprite(450, 457, 'atlas', 'newFourSolved.png').setOrigin(0, 0).setVisible(false).setDepth(1);
+        if (myUI.getFourWayPuzzle() == "BigTime")
+            fourSolved = this.add.sprite(450, 457, 'atlas', 'newFourSolved.png').setOrigin(0, 0).setVisible(false).setDepth(1); //BIG TIME
+        else
+            fourSolved = this.add.sprite(450, 457, 'atlas', 'fourSolved_shock.png').setOrigin(0, 0).setVisible(false).setDepth(1);
 
         fourMask = this.add.sprite(450, 457, 'atlas', 'newFourMask.png').setName('fourMask').setOrigin(0, 0).setDepth(1);
         recorder.addMaskSprite('fourMask', fourMask);
@@ -245,8 +248,13 @@ export class RoomTwo extends Phaser.Scene {
     }
 
     preload() {
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        if (myUI.getFourWayPuzzle() == "BigTime") {
+            walls[1] = this.add.image(0, 0, "room2 west-BigTime").setOrigin(0, 0).setVisible(false);
+        } else {
+            walls[1] = this.add.image(0, 0, "room2 west-Shock").setOrigin(0, 0).setVisible(false);
+        }
         walls[0] = this.add.image(0, 0, "room2 south").setOrigin(0, 0).setVisible(false);
-        walls[1] = this.add.image(0, 0, "room2 west").setOrigin(0, 0).setVisible(false);
         walls[2] = this.add.image(0, 0, "room2 north").setOrigin(0, 0).setVisible(false);
         walls[3] = this.add.image(0, 0, "room2 east").setOrigin(0, 0).setVisible(false);
     }

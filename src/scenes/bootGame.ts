@@ -79,7 +79,7 @@ export class BootGame extends Phaser.Scene {
         this.load.audio('sfx', [
             'assets/audio/soundSheet1.ogg',
             'assets/audio/soundSheet1.mp3'
-        ]); 
+        ]);
 
         if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {
@@ -102,7 +102,6 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
                 this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
                 this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
-                this.load.image('room2 west', 'assets/backgrounds/room2 - west.webp');
 
                 this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.webp');
                 this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.webp');
@@ -157,10 +156,26 @@ export class BootGame extends Phaser.Scene {
 
                 this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
+                // can't instantiate UI yet?
+                /*
+                if (myUI.getFourWayPuzzle() == "BigTime") {
+                    this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
+                } else {
+                    this.load.image('fourArtWhole', 'assets/backgrounds/four_pg3a.webp');                    
+                }
+
+                this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
+
+                */
                 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
                 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
                 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
-                this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
+                //this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
+                this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
+                this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
+                this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
+                this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
+
                 this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
                 this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
                 this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');

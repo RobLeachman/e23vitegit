@@ -10,7 +10,11 @@ let debugInput = true; // display pastebox for input of debug data
 if (location.hostname != "localhost")
     debugInput = false;
 
-const cameraHack = 0;
+let cameraHack = 0;
+
+const fourWayPuzzle = "Shock" // BigTime or Shock?
+//const fourWayPuzzle = "BigTime" // BigTime or Shock?
+
 
 let invBar: Phaser.GameObjects.Sprite;
 let interfaceClueFull: Phaser.GameObjects.Sprite;
@@ -81,6 +85,10 @@ export default class PlayerUI extends Phaser.Scene {
 
     getSeededRNG() {
         return seededRNG;
+    }
+
+    getFourWayPuzzle() {
+        return fourWayPuzzle;
     }
 
     setActiveScene(theScene: string) {
@@ -192,6 +200,9 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     create() {
+        if (this.sys.game.device.browser.mobileSafari)
+            cameraHack = -100;
+
         var camera = this.cameras.main;
         camera.setPosition(0, cameraHack);
 
@@ -205,21 +216,24 @@ export default class PlayerUI extends Phaser.Scene {
         seededRNG = new Phaser.Math.RandomDataGenerator([randomSeed]);
 
         let hostname = location.hostname;
-        /*
         console.log(hostname);
 
-        // Nice clean text at top of screen...
-        const mobileTest = this.make.text({
-            x: 5,
-            y: 5,
-            text: 'Host=' + hostname,
-            style: {
-                font: '20px Verdana',
-                //fill: '#ffffff'
-            }
-        });
-        mobileTest.setDepth(1000)
-        */
+
+        // Debug line above inventory
+        if (true) {
+            const mobileTest = this.make.text({
+                x: 5,
+                y: 1045,
+                text: 'Hostname:' + hostname + "  Safari:" + this.sys.game.device.browser.mobileSafari + " ver " + this.sys.game.device.browser.safariVersion,
+                style: {
+                    font: '18px Verdana',
+                    //fill: '#ffffff'
+                }
+            });
+            //console.log(this.sys.game.device.browser)
+            mobileTest.setDepth(99)
+        }
+
 
         if (hostname != "localhost")
             useCookieRecordings = false;

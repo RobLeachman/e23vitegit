@@ -12,7 +12,9 @@ let seededRNG: Phaser.Math.RandomDataGenerator;
 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run        
-const winPhrase = "so much larger than life";
+//const winPhrase = "so much larger than life";
+let winPhrase = "cover me when I run";
+const winPhrase_bigTime = "so much larger than life"
 
 class WordPanel {
     scene: Phaser.Scene;
@@ -164,6 +166,9 @@ export class Five extends Phaser.Scene {
         this.panels[3] = new WordPanel(this, 3, 'it')
         this.panels[4] = new WordPanel(this, 4, 'happens')
 
+        if (myUI.getFourWayPuzzle() == "BigTime") {
+            winPhrase = winPhrase_bigTime;
+        }
         const phrase1words = winPhrase.split(' ');
         phrase1words.forEach((word, idx) => {
             this.panels[idx].addWord(word)

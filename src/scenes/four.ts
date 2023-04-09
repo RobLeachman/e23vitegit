@@ -11,9 +11,9 @@ let seededRNG: Phaser.Math.RandomDataGenerator;
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
-const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
+let youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+const youtubeID_BigTime = 'PBAl9cchQac' // Big Time... so much larger than life
 //const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
-//const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
 //const youtubeID = 'VjEq-r2agqc' // Don't Give Up... we were wanted all along
 
 let bugz = false;
@@ -69,12 +69,16 @@ export class Four extends Phaser.Scene {
     }
 
     spinTheRecord() {
+        let theYoutube = youtubeID;
+        if (myUI.getFourWayPuzzle() == "BigTime")
+            theYoutube = youtubeID_BigTime
+
         this.videoBackground.setVisible(true);
         const ytConfig = {
             x: 50, y: 620, // not sure what these do even
             width: undefined,
             height: undefined,
-            videoId: youtubeID,
+            videoId: theYoutube,
             autoPlay: true,
             controls: false,
             keyboardControl: true,
@@ -96,6 +100,11 @@ export class Four extends Phaser.Scene {
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
 
+        let artWhole = 'fourArtWhole-BigTime'
+        if (myUI.getFourWayPuzzle() == "Shock") {
+            artWhole = 'fourArtWhole-Shock'
+        }
+
         slots = data.slots;
         recorder = slots.recorder;
         const thisscene = this;
@@ -109,7 +118,7 @@ export class Four extends Phaser.Scene {
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
         this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false);
-        this.artWhole = this.add.image(13 + 28, 250 + 28, 'fourArtWhole').setOrigin(0, 0).setDepth(1000).setVisible(false);
+        this.artWhole = this.add.image(13 + 28, 250 + 28, artWhole).setOrigin(0, 0).setDepth(1000).setVisible(false);
 
         this.tileMap = new Map();
         for (let i = 0; i < 4; i++) {
@@ -117,7 +126,7 @@ export class Four extends Phaser.Scene {
                 const k = i.toString() + ':' + j.toString();
                 //const tileArt = this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, this.spriteNames[j][i]).setOrigin(0, 0)
 
-                const tileArt = this.add.sprite(0, 0, 'fourArtWhole').setOrigin(0, 0)
+                const tileArt = this.add.sprite(0, 0, artWhole).setOrigin(0, 0)
                 tileArt.setCrop(i * 160, j * 160, 160, 160);
                 tileArt.setOrigin(.25 * i, .25 * j);
                 tileArt.setX((13 + 28) + i * 160)
