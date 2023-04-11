@@ -7,8 +7,8 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-//const skipClickToStart = true; const skipCloud = true;
-const skipClickToStart = false; const skipCloud = false;
+const skipClickToStart = true; const skipCloud = true;
+//const skipClickToStart = false; const skipCloud = false;
 
 const testingNewRoom = false;
 const skipBackgroundsLoad = false;
@@ -275,6 +275,7 @@ export class BootGame extends Phaser.Scene {
                 // this messes with roach replay... hmm
                 //recorder.setMode("idle")
             } else {
+                //console.log("record by default...")
                 recorder.setMode("record")
             }
 

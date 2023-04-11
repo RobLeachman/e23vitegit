@@ -87,7 +87,7 @@ export class Clue2 extends Phaser.Scene {
             stuckButton.setVisible(false);
             //console.log("clue 2 position " + position)
             position = 6; // even more tricky, at the cost of an invalid pattern the first time
-
+            myUI.didGoal('takeKeyFromTeal');
         });
         redKeyMask.setVisible(true); redKeyMask.setInteractive({ cursor: 'pointer' });
         redKey = this.add.sprite(296, 556, 'atlas', 'red key half.png').setOrigin(0, 0).setDepth(1).setVisible(false);
@@ -120,6 +120,7 @@ export class Clue2 extends Phaser.Scene {
                 pushButtonMask.removeInteractive();
                 redKeyMask.setVisible(true);
                 redKey.setVisible(true);
+                myUI.didGoal('openTeal');
             }
 
             walls[previousWall].setVisible(false);

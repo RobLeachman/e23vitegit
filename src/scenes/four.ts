@@ -241,6 +241,7 @@ export class Four extends Phaser.Scene {
             }
             if (winner) {
                 myUI.setFourSolved(true);
+                myUI.didGoal('solveFour');
                 this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
                 this.spinTheRecord();
             }

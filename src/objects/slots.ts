@@ -61,8 +61,16 @@ class InvItem {
         });
         //console.log("click index " + this.index + " previous " + prevItem + " combining:" + this.allSlots.combining);
         if (this.allSlots.combining == "trying") {
-            let firstItem = this.allSlots.slotArray[prevItem].objView;
-            let secondItem = this.allSlots.slotArray[this.index].objView;
+            let firstItem;
+            let secondItem;
+            //console.log(`PREVITEM ${prevItem}`)
+            if (prevItem < 0) { // no previous selection
+                firstItem = "cannot combine";
+                secondItem = "nothing was selected"
+            } else {
+                firstItem = this.allSlots.slotArray[prevItem].objView;
+                secondItem = this.allSlots.slotArray[this.index].objView;
+            }
 
             this.allSlots.combining = "bad combine:";
             //console.log(`try to combine ${firstItem} with ${secondItem}`);
@@ -92,7 +100,7 @@ class InvItem {
                     this.allSlots.combining = "good combine:" + firstItem + ":" + secondItem + ":" + goodNew;
                 }
             }
-            if (this.allSlots.combining == "bad combine:") {
+            if (this.allSlots.combining == "bad combine:" && secondItem != "nothing was selected") {
                 //console.log("failed combine")
                 // reselect the item since we turned it off above
                 this.allSlots.slotArray[prevItem].selected = true;

@@ -2,8 +2,6 @@
  * An escape room coded in Phaser.
  * - Sign in with GitHub
  * 
- * - Count clicks, verify valid save
- * - Icon interface clues
  * 
  * - 3x3 slider puzzle
  * - Rework hints
@@ -13,7 +11,35 @@
  * - Screen shake on bad guess
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
- */
+
+** fix eye            
+** click/inspect clue on first icon, not BOJ
+** five words - you cannot solve this yet
+** clue wall
+** clue bot
+** spin five words at init
+** discord webhook
+** setting screen
+** music
+** more sound effects
+** animation
+   sprite
+   video clip 
+     https://rexrainbow.github.io/phaser3-rex-notes/docs/site/video/ 
+     https://phaser.io/examples/v3/view/game-objects/video/play-video
+** itch.io
+** patreon
+    pop up at BOJ
+    banner
+    like https://gammafp.com/tool/animator/
+** PWA
+** supabase
+** cache youtube video
+** full splash screen
+** save game
+** timer
+
+*/
 
 
 import 'phaser';
@@ -31,7 +57,7 @@ let recorder: Recorder;
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
 
-var viewWall = 0; // production start at 0
+var viewWall = 2; // production start at 2
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -225,6 +251,8 @@ export class PlayGame extends Phaser.Scene {
                 while (fadeClicks-- > 0) {
                     recorder.fadeClick();
                 }
+
+                recorder.setFourSolved(myUI.getFourWayPuzzle()); // bake for a week
 
                 currentWall = viewWall;
                 updateWall = false;
@@ -453,11 +481,13 @@ export class PlayGame extends Phaser.Scene {
             viewWall++;
             if (viewWall > 3)
                 viewWall = 0;
+            myUI.didGoal('searchAndSolve');
         });
         leftButton.on('pointerdown', () => {
             viewWall--;
             if (viewWall < 0)
                 viewWall = 3;
+            myUI.didGoal('searchAndSolve');
         });
         backButton.on('pointerdown', () => {
             //console.log("back to " + previousWall)
@@ -486,6 +516,10 @@ export class PlayGame extends Phaser.Scene {
                 else
                     slots.addIcon(icons[tableState], obj[tableState], altObj[tableState]); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
+                if (tableState == 1)
+                    myUI.didGoal('pickUpPlate')
+                if (tableState == 2)
+                    myUI.didGoal('getZot');
                 tableState++;
                 if (tableState > 2) {
                     this.input.setDefaultCursor('default');
@@ -499,6 +533,7 @@ export class PlayGame extends Phaser.Scene {
         recorder.addMaskSprite('tableMask', tableMask);
         tableMask.on('pointerdown', () => {
             viewWall = 4; roomReturnWall = 4;
+            myUI.didGoal('searchDonutTable');
         });
 
         clue2Mask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("clue2Mask");
@@ -555,6 +590,7 @@ export class PlayGame extends Phaser.Scene {
             if (twoDoorUnlocked)
                 transit = true;
             if (transit) {
+                myUI.didGoal('enterSecond');
                 roomReturnWall = 0;
                 if (twoInit) {
                     twoInit = false;

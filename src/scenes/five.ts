@@ -32,18 +32,25 @@ class WordPanel {
         this.mask = scene.add.sprite(50, 270 + (this.location * 127), 'atlas', 'fivewordsMask.png').setOrigin(0, 0).setName("fiveWordsMask");
         this.word = this.scene.make.text({
             x: 80,
-            y: 265 + (this.location * 127),
+            y: 265 + this.location * 127,
             text: 'init',
-            style: {
-                font: '80px Verdana',
-                //fill: '#ffffff'
-            }
+            //style: {
+            //    //fill: '#ffffff'
+            //}
         });
         this.words[0] = word;
         this.selectedWord = word;
         this.word.setText(this.words[0]);
+
+        this.word.setStyle({ font: '80px Verdana' })
+
         const width = this.word.getBottomRight().x - 80;
         this.word.setX((720 - width) / 2);
+
+        // top is 265 (section offset) + location * 127, at 80px final size
+        const height = this.word.getBottomRight().y - (265 + this.location * 127);
+        const center = (265 + this.location * 127) + 47;
+        this.word.setY(center - height / 2);
 
         this.mask.setInteractive({ cursor: 'pointer' });
         this.mask.on('pointerdown', () => {
@@ -150,6 +157,7 @@ export class Five extends Phaser.Scene {
                 this.panels[i].winPanelOff();
             }
             slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            myUI.didGoal('getBattery');
         });
         this.compartmentMask.setVisible(false);
         this.compartmentMask.setInteractive({ cursor: 'pointer' });
@@ -192,7 +200,6 @@ export class Five extends Phaser.Scene {
 
         if (this.thePlayerName != "norandom") {
             for (let i = 0; i < 256; i++)
-
                 this.panels[seededRNG.between(0, 4)].shuffle()
         }
 
@@ -209,7 +216,14 @@ export class Five extends Phaser.Scene {
 
         this.events.on('wake', () => {
             //console.log("Five awakes")
+            if (myUI.getFourSolved()) {
+                myUI.didGoal('solveFive');
+            }
         });
+
+        if (myUI.getFourSolved()) {
+            myUI.didGoal('solveFive');
+        }
 
         this.panels[0].shuffle();
     }
@@ -226,11 +240,14 @@ export class Five extends Phaser.Scene {
                 myUI.setFiveState(1);
                 this.compartmentOpen.setVisible(true);
                 this.compartmentMask.setVisible(true);
+                myUI.didGoal('getFourClue');
             }
         }
         if (recorder.getMode() == "record")
             recorder.checkPointer(this);
     }
+
+
 
     ////////////// RECORDER REGISTRY //////////////
 

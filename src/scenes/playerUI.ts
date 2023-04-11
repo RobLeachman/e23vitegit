@@ -12,9 +12,8 @@ if (location.hostname != "localhost")
 
 let cameraHack = 0;
 
-const fourWayPuzzle = "Shock" // BigTime or Shock?
-//const fourWayPuzzle = "BigTime" // BigTime or Shock?
-
+let fourWayPuzzle = "BigTime" // BigTime or Shock?
+//const fourWayPuzzle = "Shock" // BigTime or Shock?
 
 let invBar: Phaser.GameObjects.Sprite;
 let interfaceClueFull: Phaser.GameObjects.Sprite;
@@ -78,9 +77,48 @@ let sceneFour: Phaser.Scene;
 let sceneFive: Phaser.Scene;
 
 
+let needNewClue = true;
+let clueText: Phaser.GameObjects.Text
+
+let clueMap = new Map<string, string>(); // clue key, clue text
+let clueObjective = new Map<string, boolean>();
+clueMap.set("searchAndSolve", "Search around, solve all the puzzles, escape the room") // until clicked an arrow
+clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
+clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
+clueMap.set("searchPlate", "Search the plate"); // 3 until see the key
+clueMap.set("takeKeyFromPlate", "Take half red key from plate"); // 4 until took the key
+clueMap.set("openTeal", "Open the Teal Box"); // 5 until box is open
+clueMap.set("takeKeyFromTeal", "Pick up half red key from teal box"); // 6 until took the key
+clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
+clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
+clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
+clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
+clueMap.set("getFourClue", "Get clue from 4x4 puzzle"); // 11 until 5x5 is solved
+clueMap.set("getBattery", "Get battery"); // 12 until took the battery
+clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
+clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
+clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
+clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
+clueMap.set("getTealClue", "Get Two-Way clue from Teal Mystery box"); // 17 until two-way solved
+clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
+clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
+clueMap.set("exit", "Escape!"); // 20 until win
+clueMap.set("win", "Winner!"); // 20 until win
+
+
+for (let key of clueMap.keys()) {
+    clueObjective.set(key, false);
+}
+
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
+    }
+
+    didGoal(objective: string) {
+        console.log("GOAL COMPLETE! " + objective)
+        clueObjective.set(objective, true);
+        needNewClue = true;
     }
 
     getSeededRNG() {
@@ -206,17 +244,17 @@ export default class PlayerUI extends Phaser.Scene {
         var camera = this.cameras.main;
         camera.setPosition(0, cameraHack);
 
-        console.log("scale size");
-        const mySize = this.scale.parentSize;
-        console.log(mySize.height * 4);
-        console.log(1280 - mySize.height * 4);
+        //console.log("scale size");
+        //const mySize = this.scale.parentSize;
+        //console.log(mySize.height * 4);
+        //console.log(1280 - mySize.height * 4);
 
         const randomSeed = Math.random().toString();
         //const randomSeed = "0.123"
         seededRNG = new Phaser.Math.RandomDataGenerator([randomSeed]);
 
         let hostname = location.hostname;
-        console.log(hostname);
+        //console.log(hostname);
 
 
         // Debug line above inventory
@@ -233,7 +271,6 @@ export default class PlayerUI extends Phaser.Scene {
             //console.log(this.sys.game.device.browser)
             mobileTest.setDepth(99)
         }
-
 
         if (hostname != "localhost")
             useCookieRecordings = false;
@@ -334,6 +371,7 @@ export default class PlayerUI extends Phaser.Scene {
         keyMask.on('pointerdown', () => {
             slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA");
             haveHalfKey = true;
+            this.didGoal('takeKeyFromPlate');
 
             uiObjectViewDirty = true;
         });
@@ -371,7 +409,23 @@ export default class PlayerUI extends Phaser.Scene {
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
             recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
-        console.log("UI create recorder mode: " + recorder.getMode())
+        //console.log("UI create recorder mode: " + recorder.getMode())
+
+        //var clueBox = this.add.graphics();
+        //clueBox.fillStyle(0x000000);
+        //clueBox.fillRect(5, 250, 400, 30);
+        clueText = this.make.text({
+            x: 10,
+            y: 208,
+            text: 'clue goes here',
+            style: {
+                font: '24px Verdana',
+                //fill: '#ffffff'
+            }
+        });
+        clueText.setDepth(99);
+        const firstClue = clueMap.get('searchAndSolve')!;
+        clueText.text = firstClue;
 
         this.scene.launch("BootGame")
     }
@@ -438,7 +492,7 @@ export default class PlayerUI extends Phaser.Scene {
                     theRecording = recorder.makeFast(theRecording, debugRecorderPlayPerfectSkip);
                 }
                 const actionString = theRecording.split(":");
-                //console.log("stack prepped, count=" + actionString.length )
+                //console.log("recording stack prepped, count=" + actionString.length )
                 actionString.forEach((action) => {
                     if (action.length > 0) {
                         let splitAction = action.split(',');
@@ -464,6 +518,7 @@ export default class PlayerUI extends Phaser.Scene {
                 pasteBox.setVisible(true);
                 myText.setVisible(true);
                 mainHasStarted = true;
+                //console.log(`main has started, mode=${recorder.getMode()}`)
             }
         }
         if (pasteBox.text != "pasteit" && pasteBox.text != "init") {  // pastebox latch
@@ -490,7 +545,9 @@ export default class PlayerUI extends Phaser.Scene {
 
         ////////////// REPLAY //////////////
         if (mainHasStarted && (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")) {
-            //console.log("replay action:" + actions[0]);
+            if (actions[0][0] != "mousemove" && actions[0][0] != "mouseclick") {
+                //console.log("replay action:" + actions[0]);
+            }
 
             // TRY AGAIN WITH QUICK FIRST ACTION
             //if (nextActionTime < 0) // first replay action
@@ -593,7 +650,6 @@ export default class PlayerUI extends Phaser.Scene {
 
 
         ////////////// INVENTORY UI //////////////
-
         if (slots.getSelectedIndex() != currentSelectedIndex) {
             currentSelectedIndex = slots.getSelectedIndex();
             uiObjectViewDirty = true;
@@ -609,6 +665,7 @@ export default class PlayerUI extends Phaser.Scene {
             if (viewIt.objectView == "objPlate" && flipIt) {
                 //console.log("discovered key!")
                 foundHalfKey = true;
+                this.didGoal('searchPlate')
             }
             if (haveHalfKey && viewIt.objectViewAlt == "altobjPlateKey") {
                 viewIt.objectViewAlt = "altobjPlateEmpty";
@@ -641,7 +698,6 @@ export default class PlayerUI extends Phaser.Scene {
         }
 
         ////////////// INVENTORY COMBINE //////////////
-
         // Can't combine the plate and donut if door is locked
         if (slots.combining.split(':')[3] == "objDonutPlated" && !doorUnlocked) {
             slots.combining = "bad combine:"
@@ -681,6 +737,7 @@ export default class PlayerUI extends Phaser.Scene {
                 slots.inventoryViewAlt = "altobjKeyWhole";
                 slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
+                this.didGoal('assembleYellow');
 
                 objectImage.destroy();
                 objectImage = this.add.image(0, 0, "objKeyWhole").setOrigin(0, 0);
@@ -690,6 +747,7 @@ export default class PlayerUI extends Phaser.Scene {
                 slots.inventoryViewAlt = "altobjRedKey";
                 slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
+                this.didGoal('assembleRed');
 
                 objectImage.destroy();
                 objectImage = this.add.image(0, 0, "objRedKey").setOrigin(0, 0);
@@ -707,6 +765,23 @@ export default class PlayerUI extends Phaser.Scene {
                 showXtime = -1;
                 failed.setX(1000);
             }
+        }
+
+        ////////////// CLUES //////////////
+        if (needNewClue) {
+            let nextObjective: string = "";
+            let foundNext = false;
+            clueObjective.forEach((objectiveCompleted, idx) => {
+                //console.log(`${idx} is ${objectiveCompleted}`)
+                if (!objectiveCompleted && !foundNext) {
+                    nextObjective = idx;
+                    foundNext = true;
+                }
+            });
+            //console.log("next objective is " + nextObjective);
+
+            clueText.text = clueMap.get(nextObjective)!;
+            needNewClue = false;
         }
 
 

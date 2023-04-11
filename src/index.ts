@@ -43,16 +43,16 @@ import { TwoWay } from './scenes/twoWay';
 const DPR = 4; // so it looks nice while testing?
 
 //const { width, height } = window.screen;
-const width = window.innerWidth;
-const height = window.innerHeight;
-console.log(`window width: ${width} height: ${height}`)
+//const width = window.innerWidth;
+//const height = window.innerHeight;
+//console.log(`window width: ${width} height: ${height}`)
 
 // base resolution is 640x480 @4
 //export const WIDTH = Math.round(Math.max(width, height) * DPR);
 //export const HEIGHT = Math.round(Math.min(width, height) * DPR);
 export const WIDTH = 640 * DPR;
 export const HEIGHT = 480 * DPR;
-console.log(`DPR window width: ${WIDTH} height: ${HEIGHT}`)
+//console.log(`DPR window width: ${WIDTH} height: ${HEIGHT}`)
 
 // will be 1, 1.5, 2, 2.5, 3, 3.5 or 4
 //export const assetsDPR = roundHalf(Math.min(Math.max(HEIGHT / 480, 1), 4));

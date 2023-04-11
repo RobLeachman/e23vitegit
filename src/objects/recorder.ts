@@ -297,6 +297,10 @@ export default class Recorder {
         return getCookie("escapeRecorderSpeed");
     };
 
+    setFourSolved(puzzle: string) {
+        setCookie("solvedFour-" +puzzle, "solved", 30); // bake for a month
+    }
+
     getSize() {
         let size = -1;
         if (this.recordingSize)

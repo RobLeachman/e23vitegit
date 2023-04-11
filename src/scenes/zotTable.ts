@@ -184,6 +184,7 @@ export class ZotTable extends Phaser.Scene {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer
                 slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
+                myUI.didGoal('getGreenKey')
 
                 //console.log("--> remove postit!")
                 let selectedThing = slots.getSelected();
@@ -198,6 +199,7 @@ export class ZotTable extends Phaser.Scene {
             if (!keyTaken) {
                 //console.log("can take it")
                 drawerOpen = 1; // drawer is open and key is displayed
+                myUI.didGoal('openGreen')
             }
             updateWall = true;
         });
