@@ -23,6 +23,8 @@ let viewportPointer: Phaser.GameObjects.Sprite;
 let iconSelected: Phaser.GameObjects.Sprite;
 let failed: Phaser.GameObjects.Sprite;
 let interfaceInspect: Phaser.GameObjects.Sprite;
+let interfaceClick: Phaser.GameObjects.Sprite;
+let clickLine: Phaser.GameObjects.Sprite;
 
 var plusButton: Phaser.GameObjects.Sprite;
 var plusModeButton: Phaser.GameObjects.Sprite;
@@ -75,7 +77,6 @@ let scenePlayGame: Phaser.Scene;
 let sceneZotTable: Phaser.Scene;
 let sceneFour: Phaser.Scene;
 let sceneFive: Phaser.Scene;
-
 
 let needNewClue = true;
 let clueText: Phaser.GameObjects.Text
@@ -201,6 +202,9 @@ export default class PlayerUI extends Phaser.Scene {
     }
     showInspectClue() {
         interfaceInspect.setVisible(true);
+        interfaceClick.setVisible(true);
+        clickLine.setVisible(true);
+        clickLine.play("clickLineMoves");
     }
 
     getBonus() {
@@ -232,9 +236,10 @@ export default class PlayerUI extends Phaser.Scene {
         return cameraHack;
     }
 
-    // Must preload initial UI sprites, the only graphic asset used here
+    // Must preload initial UI sprites, the only graphic asset used by UI
     preload() {
-        this.load.atlas('atlas', 'assets/graphics/texture.png', 'assets/graphics/texture.json');
+        this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
+        this.load.spritesheet('animated', 'assets/graphics/animated.png', { frameWidth: 26, frameHeight: 19 });
     }
 
     create() {
@@ -255,6 +260,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         let hostname = location.hostname;
         //console.log(hostname);
+
 
 
         // Debug line above inventory
@@ -282,8 +288,18 @@ export default class PlayerUI extends Phaser.Scene {
         viewportPointer = this.add.sprite(1000, 0, 'atlas', 'pointer3.png').setOrigin(0, 0);
         iconSelected = this.add.sprite(1000, 1078, 'atlas', "icon - selected.png").setOrigin(0, 0).setDepth(1);
         failed = this.add.sprite(1000, 950, 'atlas', 'fail.png').setDepth(1); // 640 is displayed
-        //interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);\
-        interfaceInspect = this.add.sprite(5, 1070, 'atlas', 'interfaceInspect.png').setOrigin(0, 0).setVisible(false);
+
+        interfaceClick = this.add.sprite(15, 1075, 'atlas', 'interface-click-hint.png').setOrigin(0, 0).setVisible(false);
+        interfaceInspect = this.add.sprite(5, 1176, 'atlas', 'interface-inspect.png').setOrigin(0, 0).setVisible(false);
+        clickLine = this.add.sprite(15 + 70, 1075 + 35, "animated").setDepth(1).setVisible(false);
+
+        this.anims.create({
+            key: "clickLineMoves",
+            frameRate: 7,
+            frames: this.anims.generateFrameNumbers("animated", { start: 0, end: 8 }),
+            repeat: -1
+        });
+        clickLine.play("clickLineMoves");
 
         recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack, randomSeed);
         slots = new Slots(this, iconSelected, recorder);
@@ -292,6 +308,8 @@ export default class PlayerUI extends Phaser.Scene {
         plusModeButton = this.add.sprite(80, 950, 'atlas', 'plus - selected.png').setName("plusModeButton").setDepth(1).setVisible(false);
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
+
+        console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
         plusModeButton.on('pointerdown', () => {
             //console.log("combine mode cancelled");
@@ -323,6 +341,8 @@ export default class PlayerUI extends Phaser.Scene {
                 eyeButton.setTexture('eyeButtonOn');
                 eyeButton.setName("eyeButtonOn");
                 interfaceInspect.setVisible(false);
+                interfaceClick.setVisible(false);
+                clickLine.setVisible(false)
 
                 UIbackButton.setVisible(true); UIbackButton.setInteractive({ cursor: 'pointer' });
                 plusButton.setVisible(true); plusButton.setInteractive({ cursor: 'pointer' });

@@ -1,0 +1,636 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "D:\\src\\e23\\src\\assets\\packed",
+  "images": [
+    {
+      "name": "arrowDown.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/arrowDown.png",
+      "folder": ""
+    },
+    {
+      "name": "arrowLeft.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/arrowLeft.png",
+      "folder": ""
+    },
+    {
+      "name": "arrowRight.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/arrowRight.png",
+      "folder": ""
+    },
+    {
+      "name": "backFrontButton1.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/backFrontButton1.png",
+      "folder": ""
+    },
+    {
+      "name": "battMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/battMask.png",
+      "folder": ""
+    },
+    {
+      "name": "battOnFloor.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/battOnFloor.png",
+      "folder": ""
+    },
+    {
+      "name": "boxColorGreen.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/boxColorGreen.png",
+      "folder": ""
+    },
+    {
+      "name": "boxColorYellow.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/boxColorYellow.png",
+      "folder": ""
+    },
+    {
+      "name": "boxZot.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/boxZot.png",
+      "folder": ""
+    },
+    {
+      "name": "closeDonut.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/closeDonut.png",
+      "folder": ""
+    },
+    {
+      "name": "closeEmpty.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/closeEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "closeKey.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/closeKey.png",
+      "folder": ""
+    },
+    {
+      "name": "closePlate.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/closePlate.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2 button stuck.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2 button stuck.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-button-mask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2-button-mask.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-closed.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2-closed.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-left.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2-left.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-open.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2-open.png",
+      "folder": ""
+    },
+    {
+      "name": "clue2-right.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/clue2-right.png",
+      "folder": ""
+    },
+    {
+      "name": "doorMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/doorMask.png",
+      "folder": ""
+    },
+    {
+      "name": "eyeOff.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/eyeOff.png",
+      "folder": ""
+    },
+    {
+      "name": "fail.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fail.png",
+      "folder": ""
+    },
+    {
+      "name": "farZotPlaced.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farZotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "farZotPlacedReverse.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farZotPlacedReverse.png",
+      "folder": ""
+    },
+    {
+      "name": "farZotPostit.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farZotPostit.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-0.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-0.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-1.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-1.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-2.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-2.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-3.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-3.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-4.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-4.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-5.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-5.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-6.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-6.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-7.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-7.png",
+      "folder": ""
+    },
+    {
+      "name": "farzot-8.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/farzot-8.png",
+      "folder": ""
+    },
+    {
+      "name": "fiveBatt.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fiveBatt.png",
+      "folder": ""
+    },
+    {
+      "name": "fiveMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fiveMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fiveOpen.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fiveOpen.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsBattery.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fivewordsBattery.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsCompartmentMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fivewordsCompartmentMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsEmpty.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fivewordsEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "fivewordsMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fivewordsMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fourMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fourMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fourSolved.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fourSolved.png",
+      "folder": ""
+    },
+    {
+      "name": "fourSolved_shock.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/fourSolved_shock.png",
+      "folder": ""
+    },
+    {
+      "name": "hintMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/hintMask.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - donut.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - donut.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - donutPlated.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - donutPlated.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - empty.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - empty.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyA.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - keyA.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyB.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - keyB.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - keyWhole.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - keyWhole.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - plate.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - plate.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - postit2.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - postit2.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - red key.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - red key.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - red keyA.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - red keyA.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - red keyB.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - red keyB.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - roach.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - roach.png",
+      "folder": ""
+    },
+    {
+      "name": "icon - selected.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/icon - selected.png",
+      "folder": ""
+    },
+    {
+      "name": "iconBattery.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/iconBattery.png",
+      "folder": ""
+    },
+    {
+      "name": "iconZot.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/iconZot.png",
+      "folder": ""
+    },
+    {
+      "name": "interface-click-hint.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/interface-click-hint.png",
+      "folder": ""
+    },
+    {
+      "name": "interface-click-static.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/interface-click-static.png",
+      "folder": ""
+    },
+    {
+      "name": "interface-inspect.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/interface-inspect.png",
+      "folder": ""
+    },
+    {
+      "name": "interfaceClueCombine.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/interfaceClueCombine.png",
+      "folder": ""
+    },
+    {
+      "name": "interfaceClueSearch.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/interfaceClueSearch.png",
+      "folder": ""
+    },
+    {
+      "name": "inventory cells.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/inventory cells.png",
+      "folder": ""
+    },
+    {
+      "name": "keyMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/keyMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newFourMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newFourMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newFourSolved.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newFourSolved.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotBottomMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotBottomMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotDrawerMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotDrawerMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlaceMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotPlaceMask.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlaced.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotPlacedFlipped.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotPlacedFlipped.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-empty.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotState-empty.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-green.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotState-green.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-key.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotState-key.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotState-yellow.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotState-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotStateFlipped-red.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotStateFlipped-red.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotStateFlipped-yellow.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotStateFlipped-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "newzotTableMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/newzotTableMask.png",
+      "folder": ""
+    },
+    {
+      "name": "object-maskC.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/object-maskC.png",
+      "folder": ""
+    },
+    {
+      "name": "plus - selected.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/plus - selected.png",
+      "folder": ""
+    },
+    {
+      "name": "plus - unselected.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/plus - unselected.png",
+      "folder": ""
+    },
+    {
+      "name": "pointer.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/pointer.png",
+      "folder": ""
+    },
+    {
+      "name": "pointer2.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/pointer2.png",
+      "folder": ""
+    },
+    {
+      "name": "pointer3.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/pointer3.png",
+      "folder": ""
+    },
+    {
+      "name": "pointerClicked.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/pointerClicked.png",
+      "folder": ""
+    },
+    {
+      "name": "question.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/question.png",
+      "folder": ""
+    },
+    {
+      "name": "red key half.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/red key half.png",
+      "folder": ""
+    },
+    {
+      "name": "tableDonut.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/tableDonut.png",
+      "folder": ""
+    },
+    {
+      "name": "tableEmpty.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/tableEmpty.png",
+      "folder": ""
+    },
+    {
+      "name": "tableKey.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/tableKey.png",
+      "folder": ""
+    },
+    {
+      "name": "tableMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/tableMask.png",
+      "folder": ""
+    },
+    {
+      "name": "tablePlate.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/tablePlate.png",
+      "folder": ""
+    },
+    {
+      "name": "takeMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/takeMask.png",
+      "folder": ""
+    },
+    {
+      "name": "topBottomButton.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/topBottomButton.png",
+      "folder": ""
+    },
+    {
+      "name": "twoDoorMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoDoorMask.png",
+      "folder": ""
+    },
+    {
+      "name": "twoWaySolved.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoWaySolved.png",
+      "folder": ""
+    },
+    {
+      "name": "twoWaySolvedWest.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoWaySolvedWest.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-button-mask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoway-button-mask.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-center.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoway-center.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-key.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoway-key.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-left.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoway-left.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-right.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/twoway-right.png",
+      "folder": ""
+    },
+    {
+      "name": "winner donutPlated.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/winner donutPlated.png",
+      "folder": ""
+    },
+    {
+      "name": "ytPlayButton.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/ytPlayButton.png",
+      "folder": ""
+    },
+    {
+      "name": "zotBatteryMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotBatteryMask.png",
+      "folder": ""
+    },
+    {
+      "name": "zotBottomMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotBottomMask.png",
+      "folder": ""
+    },
+    {
+      "name": "zotDrawerMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotDrawerMask.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPlaced.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPlaced.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPlacedFlipped.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPlacedFlipped.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPostit.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPostit.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPostit2.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPostit2.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPostitFlipped.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPostitFlipped.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPostitFlipped2.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPostitFlipped2.png",
+      "folder": ""
+    },
+    {
+      "name": "zotPostitMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotPostitMask.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-off.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotState-off.png",
+      "folder": ""
+    },
+    {
+      "name": "zotState-yellow.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotState-yellow.png",
+      "folder": ""
+    },
+    {
+      "name": "zotTableMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/zotTableMask.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "texture",
+    "textureFormat": "png",
+    "removeFileExtension": false,
+    "prependFolderName": true,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "D:\\src\\e23\\src\\assets\\packed",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": false,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "OptimalPacker",
+    "packerMethod": "Automatic"
+  }
+}

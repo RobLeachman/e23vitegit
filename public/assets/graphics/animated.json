@@ -1,0 +1,103 @@
+{
+	"textures": [
+		{
+			"image": "animated",
+			"format": "RGBA8888",
+			"size": {
+				"w": 104,
+				"h": 19
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "clickbar1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 19
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					}
+				},
+				{
+					"filename": "clickbar2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 19
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					},
+					"frame": {
+						"x": 26,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					}
+				},
+				{
+					"filename": "clickbar3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 19
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					},
+					"frame": {
+						"x": 52,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					}
+				},
+				{
+					"filename": "clickbar4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 19
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					},
+					"frame": {
+						"x": 78,
+						"y": 0,
+						"w": 26,
+						"h": 19
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://free-tex-packer.com",
+		"version": "0.6.7"
+	}
+}

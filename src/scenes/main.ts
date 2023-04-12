@@ -57,7 +57,7 @@ let recorder: Recorder;
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
 
-var viewWall = 2; // production start at 2
+var viewWall = 0; // production start at 2
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;
@@ -142,7 +142,7 @@ export class PlayGame extends Phaser.Scene {
 
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
-                slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
                 //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
                 //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
                 //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
@@ -252,7 +252,7 @@ export class PlayGame extends Phaser.Scene {
                     recorder.fadeClick();
                 }
 
-                recorder.setFourSolved(myUI.getFourWayPuzzle()); // bake for a week
+                recorder.setFourPuzzleSolvedOnce(myUI.getFourWayPuzzle()); // bake for a week
 
                 currentWall = viewWall;
                 updateWall = false;
