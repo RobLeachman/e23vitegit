@@ -68,7 +68,7 @@ export class Four extends Phaser.Scene {
         selectedTile.art.setX(swapX); selectedTile.art.setY(swapY);
     }
 
-    spinTheRecord() {
+    spinTheRecord(autoplay:boolean) {
         let theYoutube = youtubeID;
         if (myUI.getFourWayPuzzle() == "BigTime")
             theYoutube = youtubeID_BigTime
@@ -79,7 +79,7 @@ export class Four extends Phaser.Scene {
             width: undefined,
             height: undefined,
             videoId: theYoutube,
-            autoPlay: true,
+            autoPlay: autoplay,
             controls: false,
             keyboardControl: true,
             modestBranding: false,
@@ -192,8 +192,8 @@ export class Four extends Phaser.Scene {
         this.ytPlayButton = this.add.sprite(360, 600, 'atlas', 'ytPlayButton.png').setName("ytPlayButton");
         this.ytPlayButton.setVisible(false); this.ytPlayButton.setDepth(1001); this.ytPlayButton.setInteractive({ cursor: 'pointer' });
         this.ytPlayButton.on('pointerdown', () => {
-            this.ytPlayButton.setVisible(false);
-            this.spinTheRecord();
+            this.ytPlayButton.setVisible(true);
+            this.spinTheRecord(false);
         });
 
 
@@ -240,7 +240,7 @@ export class Four extends Phaser.Scene {
                 myUI.setFourSolved(true);
                 myUI.didGoal('solveFour');
                 this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
-                this.spinTheRecord();
+                this.spinTheRecord(false);
             }
 
         } else {

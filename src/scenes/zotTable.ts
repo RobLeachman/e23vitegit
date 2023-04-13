@@ -183,7 +183,8 @@ export class ZotTable extends Phaser.Scene {
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer
-                slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
+                slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA", false);
+                this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
                 myUI.didGoal('getGreenKey')
 
                 //console.log("--> remove postit!")
@@ -236,7 +237,7 @@ export class ZotTable extends Phaser.Scene {
         recorder.addMaskSprite('zotPostitMask', zotPostitMask);
         zotPostitMask.on('pointerdown', () => {
             console.log("pickpost");
-            slots.addIcon("icon - postit2.png", "objPostit", "altobjPostit");
+            slots.addIcon("icon - postit2.png", "objPostit", "altobjPostit", true);
             zotPostitTaken = true;
             this.registry.set('boxPostitTaken', zotPostitTaken);
             updateWall = true;

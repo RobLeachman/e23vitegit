@@ -1879,7 +1879,7 @@
 					}
 				},
 				{
-					"filename": "twoway-center.png",
+					"filename": "two-way-center.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1900,7 +1900,7 @@
 					}
 				},
 				{
-					"filename": "tablePlate.png",
+					"filename": "tableEmpty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1921,7 +1921,7 @@
 					}
 				},
 				{
-					"filename": "tableDonut.png",
+					"filename": "tableKey.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1942,7 +1942,7 @@
 					}
 				},
 				{
-					"filename": "tableEmpty.png",
+					"filename": "tablePlate.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1963,7 +1963,7 @@
 					}
 				},
 				{
-					"filename": "tableKey.png",
+					"filename": "tableDonut.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1984,7 +1984,7 @@
 					}
 				},
 				{
-					"filename": "boxColorGreen.png",
+					"filename": "boxColorYellow.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2005,7 +2005,7 @@
 					}
 				},
 				{
-					"filename": "boxColorYellow.png",
+					"filename": "boxColorGreen.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2026,7 +2026,7 @@
 					}
 				},
 				{
-					"filename": "battOnFloor.png",
+					"filename": "battMask.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2047,7 +2047,7 @@
 					}
 				},
 				{
-					"filename": "battMask.png",
+					"filename": "battOnFloor.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2068,70 +2068,49 @@
 					}
 				},
 				{
-					"filename": "twoway-right.png",
+					"filename": "two-way-left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 34,
+						"w": 33,
 						"h": 57
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 34,
-						"h": 57
-					},
-					"frame": {
-						"x": 1081,
-						"y": 99,
-						"w": 34,
-						"h": 57
-					}
-				},
-				{
-					"filename": "twoway-left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 34,
-						"h": 57
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 34,
+						"w": 33,
 						"h": 57
 					},
 					"frame": {
 						"x": 656,
 						"y": 1781,
-						"w": 34,
+						"w": 33,
 						"h": 57
 					}
 				},
 				{
-					"filename": "twoway-key.png",
+					"filename": "two-way-right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 52,
-						"h": 23
+						"w": 31,
+						"h": 57
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 52,
-						"h": 23
+						"w": 31,
+						"h": 57
 					},
 					"frame": {
-						"x": 1983,
-						"y": 1568,
-						"w": 52,
-						"h": 23
+						"x": 2004,
+						"y": 476,
+						"w": 31,
+						"h": 57
 					}
 				},
 				{
-					"filename": "farzot-3.png",
+					"filename": "farzot-8.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2152,7 +2131,7 @@
 					}
 				},
 				{
-					"filename": "farzot-7.png",
+					"filename": "farzot-5.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2173,7 +2152,7 @@
 					}
 				},
 				{
-					"filename": "farzot-6.png",
+					"filename": "farzot-4.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2194,7 +2173,28 @@
 					}
 				},
 				{
-					"filename": "farzot-5.png",
+					"filename": "farzot-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 51,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 51,
+						"h": 32
+					},
+					"frame": {
+						"x": 1983,
+						"y": 1568,
+						"w": 51,
+						"h": 32
+					}
+				},
+				{
+					"filename": "farzot-3.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2215,7 +2215,7 @@
 					}
 				},
 				{
-					"filename": "farzot-4.png",
+					"filename": "farzot-2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2236,7 +2236,7 @@
 					}
 				},
 				{
-					"filename": "farzot-2.png",
+					"filename": "farzot-6.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2257,7 +2257,7 @@
 					}
 				},
 				{
-					"filename": "farzot-8.png",
+					"filename": "farzot-1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2278,7 +2278,7 @@
 					}
 				},
 				{
-					"filename": "farzot-1.png",
+					"filename": "farzot-0.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2299,24 +2299,24 @@
 					}
 				},
 				{
-					"filename": "farzot-0.png",
+					"filename": "two-way-no-key.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 51,
-						"h": 32
+						"w": 43,
+						"h": 30
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 51,
-						"h": 32
+						"w": 43,
+						"h": 30
 					},
 					"frame": {
-						"x": 1981,
-						"y": 928,
-						"w": 51,
-						"h": 32
+						"x": 1989,
+						"y": 1804,
+						"w": 43,
+						"h": 30
 					}
 				},
 				{
@@ -2356,30 +2356,9 @@
 					},
 					"frame": {
 						"x": 1081,
-						"y": 156,
+						"y": 99,
 						"w": 34,
 						"h": 34
-					}
-				},
-				{
-					"filename": "pointer3.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 26,
-						"h": 28
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 26,
-						"h": 28
-					},
-					"frame": {
-						"x": 1588,
-						"y": 275,
-						"w": 26,
-						"h": 28
 					}
 				},
 				{
@@ -2404,6 +2383,27 @@
 					}
 				},
 				{
+					"filename": "pointer3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 28
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 28
+					},
+					"frame": {
+						"x": 1588,
+						"y": 275,
+						"w": 26,
+						"h": 28
+					}
+				},
+				{
 					"filename": "pointer2.png",
 					"rotated": false,
 					"trimmed": false,
@@ -2422,27 +2422,6 @@
 						"y": 303,
 						"w": 26,
 						"h": 24
-					}
-				},
-				{
-					"filename": "fiveOpen.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 26,
-						"h": 15
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 26,
-						"h": 15
-					},
-					"frame": {
-						"x": 1445,
-						"y": 1585,
-						"w": 26,
-						"h": 15
 					}
 				},
 				{
@@ -2481,14 +2460,35 @@
 						"h": 15
 					},
 					"frame": {
-						"x": 1471,
+						"x": 1445,
 						"y": 1585,
 						"w": 26,
 						"h": 15
 					}
 				},
 				{
-					"filename": "farZotPlacedReverse.png",
+					"filename": "fiveOpen.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 15
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 15
+					},
+					"frame": {
+						"x": 1588,
+						"y": 353,
+						"w": 26,
+						"h": 15
+					}
+				},
+				{
+					"filename": "farZotPlaced.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -2509,7 +2509,7 @@
 					}
 				},
 				{
-					"filename": "farZotPlaced.png",
+					"filename": "farZotPlacedReverse.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {

@@ -156,7 +156,8 @@ export class Five extends Phaser.Scene {
             for (let i = 0; i < 5; i++) {
                 this.panels[i].winPanelOff();
             }
-            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
+            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery",false);
+            this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
             myUI.didGoal('getBattery');
         });
         this.compartmentMask.setVisible(false);

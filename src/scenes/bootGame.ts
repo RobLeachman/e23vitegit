@@ -83,10 +83,10 @@ export class BootGame extends Phaser.Scene {
         ]);
 
         this.load.video('questionSpinning', 'assets/graphics/question_180.mp4', 'canplaythrough', false, true);
+        this.load.video('openIt', 'assets/graphics/openIt_silent.mp4', 'canplaythrough', false, false);
 
         //this.load.video('test', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/video/test.mp4', 'canplaythrough', true, true);        
-          
-
+ 
         if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
@@ -158,7 +158,6 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('clue2 open', 'assets/backgrounds/clue2 - open.webp');
                 this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
                 this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
-                this.load.image('twoway - open', 'assets/backgrounds/twoway - open.webp');
 
                 this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 

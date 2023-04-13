@@ -118,7 +118,6 @@ class InvItem {
             this.selected = true;
             this.allSlots.selectedIndex = this.index;
             myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
-            myUI.hideSpinningQuestion();
         }
     }
 }
@@ -193,7 +192,7 @@ export default class Slots {
         this.slotArray[clickIndex].iconSprite.emit('pointerdown'); // selects the icon at position
     }
 
-    addIcon(iconSpriteName: string, objectView: string, altObjectView: string, spot?: number) {
+    addIcon(iconSpriteName: string, objectView: string, altObjectView: string, sound?: boolean, spot?: number) {
         //console.log(`Adding icon ${iconSpriteName} ${objectView} ${altObjectView}`)
         if (iconSpriteName == undefined)
             console.log("ERROR undefined icon add")
@@ -233,6 +232,10 @@ export default class Slots {
         this.slotArray[i].iconSprite.on('pointerdown', this.slotArray[i].clickIt, this.slotArray[i]);
         this.slotArray[i].objView = objectView;
         this.slotArray[i].altObjView = altObjectView;
+
+        console.log(sound)
+        if (sound)
+            this.scene.sound.play('sfx', { name: 'niceTone', start: 7, duration: 1 });
     }
 
 

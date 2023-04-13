@@ -434,7 +434,8 @@ export default class PlayerUI extends Phaser.Scene {
         keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0).setDepth(1).setVisible(false);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
-            slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA");
+            slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA",false);
+            this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
             haveHalfKey = true;
             this.didGoal('takeKeyFromPlate');
 
@@ -784,11 +785,12 @@ export default class PlayerUI extends Phaser.Scene {
             slots.clearItem(slots.combining.split(':')[1]);
             const slotRepl = slots.selectItem(slots.combining.split(':')[2]); //select the slot of the combine click
             slots.clearItem(slots.combining.split(':')[2]);
+            this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
 
             if (slots.combining.split(':')[3] == "objDonutPlated") {
                 slots.inventoryViewObj = "objDonutPlated";
                 slots.inventoryViewAlt = "altobjDonutPlated";
-                slots.addIcon("icon - donutPlated.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon("icon - donutPlated.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
 
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
@@ -799,7 +801,7 @@ export default class PlayerUI extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
                 slots.inventoryViewObj = "objKeyWhole";
                 slots.inventoryViewAlt = "altobjKeyWhole";
-                slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.didGoal('assembleYellow');
 
@@ -809,7 +811,7 @@ export default class PlayerUI extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objRedKey") {
                 slots.inventoryViewObj = "objRedKey";
                 slots.inventoryViewAlt = "altobjRedKey";
-                slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, slotRepl);
+                slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.didGoal('assembleRed');
 
@@ -817,7 +819,7 @@ export default class PlayerUI extends Phaser.Scene {
                 objectImage = this.add.image(0, 0, "objRedKey").setOrigin(0, 0);
 
             } else {
-                slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", slotRepl); // it is a bug
+                slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", false,slotRepl); // it is a bug
             }
             slots.combining = "";
             plusModeButton.setVisible(false);

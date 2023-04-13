@@ -73,6 +73,7 @@ export class Clue2 extends Phaser.Scene {
                 position = 0;
             viewWall = sequence[position];
             this.registry.set('clue2state', viewWall);
+            this.sound.play('sfx', { name: 'snick', start: 6, duration: .2 });
         });
         pushButtonMask.setVisible(true); pushButtonMask.setInteractive({ cursor: 'pointer' });
         stuckButton = this.add.sprite(240, 672, 'atlas', 'clue2 button stuck.png').setOrigin(0, 0).setDepth(1).setVisible(false);
@@ -81,7 +82,7 @@ export class Clue2 extends Phaser.Scene {
         recorder.addMaskSprite('redKeyMask', redKeyMask);
         redKeyMask.on('pointerdown', () => {
             keyTaken = true;
-            slots.addIcon("icon - red keyB.png", "objRedKeyB", "altobjRedKeyB");
+            slots.addIcon("icon - red keyB.png", "objRedKeyB", "altobjRedKeyB", true);
             updateWall = true;
             redKey.setVisible(false);
             stuckButton.setVisible(false);

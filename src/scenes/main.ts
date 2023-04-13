@@ -137,7 +137,6 @@ export class PlayGame extends Phaser.Scene {
         }
 
         if (myText.text == "init") {
-
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
                 //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
@@ -146,7 +145,7 @@ export class PlayGame extends Phaser.Scene {
                 //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
                 //slots.addIcon("icon - keyA.png", "objKeyA", "altobjKeyA");
                 //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
-                slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
+                slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
             }
 
             myText.text = "off";
@@ -213,7 +212,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log("BRING THE ROACH");
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
-            slots.addIcon(icons[6], obj[6], altObj[6], 11); // roach
+            slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
         }
         if (slots.fakeClicks == 10) {
             recorder.setMode("roachReplay");
@@ -251,6 +250,7 @@ export class PlayGame extends Phaser.Scene {
                 }
 
                 recorder.setFourPuzzleSolvedOnce(myUI.getFourWayPuzzle()); // bake for a week
+                this.sound.play('sfx', { name: 'applause', start: 11, duration: 5 });
 
                 currentWall = viewWall;
                 updateWall = false;
@@ -513,9 +513,9 @@ export class PlayGame extends Phaser.Scene {
         takeMask.on('pointerdown', () => {
             if (tableState < 3) {
                 if (tableState == 2)
-                    slots.addIcon(icons[10], obj[9], altObj[9]); // TODO: renumber the objects, used to be simple:
+                    slots.addIcon(icons[10], obj[9], altObj[9], true); // TODO: renumber the objects, used to be simple:
                 else
-                    slots.addIcon(icons[tableState], obj[tableState], altObj[tableState]); // TODO: get name from sprite
+                    slots.addIcon(icons[tableState], obj[tableState], altObj[tableState], true); // TODO: get name from sprite
                 this.add.sprite(190, 560, closeView[tableState]).setOrigin(0, 0);
                 if (tableState == 1)
                     myUI.didGoal('pickUpPlate')
@@ -632,7 +632,7 @@ export class PlayGame extends Phaser.Scene {
         viewportText.setDepth(3001); // TODO: rationalize the crazy depths!
 
         // Fakey test debug icon
-        slots.addIcon(icons[7], "fake", "fake", 10); // TODO: get name from sprite?!
+        slots.addIcon(icons[7], "fake", "fake", false, 10); // TODO: get name from sprite?!
 
         this.events.on('wake', () => {
             //console.log(`Main awakes! return to ${roomReturnWall}`)
