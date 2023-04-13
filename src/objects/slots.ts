@@ -118,6 +118,7 @@ class InvItem {
             this.selected = true;
             this.allSlots.selectedIndex = this.index;
             myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
+            myUI.hideSpinningQuestion();
         }
     }
 }

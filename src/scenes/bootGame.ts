@@ -74,12 +74,18 @@ export class BootGame extends Phaser.Scene {
         
                 this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
         */
+                this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
         this.load.audio('sfx', [
             'assets/audio/soundSheet1.ogg',
             'assets/audio/soundSheet1.mp3'
         ]);
+
+        this.load.video('questionSpinning', 'assets/graphics/question_180.mp4', 'canplaythrough', false, true);
+
+        //this.load.video('test', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/video/test.mp4', 'canplaythrough', true, true);        
+          
 
         if (!testingNewRoom) {
             if (!skipBackgroundsLoad) {
@@ -96,7 +102,7 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
                 this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.webp');
                 this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.webp');
-                this.load.image('wallHint', 'assets/backgrounds/invroom - help1 - background.webp');
+                this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
                 this.load.image('wall3doorOpen', 'assets/backgrounds/invroom - room - southOpen.webp');
 
                 this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
@@ -421,7 +427,7 @@ export class BootGame extends Phaser.Scene {
             greets4.destroy();
             greets5.destroy();
 
-            myUI.displayInventoryBar(true); myUI.showEye()
+            myUI.displayInventoryBar(true); 
 
             //loadDone.destroy()
             if (testingNewRoom) {

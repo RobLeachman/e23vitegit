@@ -451,6 +451,7 @@ export default class Recorder {
         re = /\%G\%/g; recIn = recIn.replace(re, "\%Four\%");
         re = /\%H\%/g; recIn = recIn.replace(re, "\%Five\%");
         re = /\%I\%/g; recIn = recIn.replace(re, "\%PlayerUI\%");
+        re = /\%J\%/g; recIn = recIn.replace(re, "\%HintBot\%");
 
         if (recordingChecksum == this.checksum(recIn)) {
             //console.log("-->Good recording " + recIn);
@@ -598,7 +599,7 @@ export default class Recorder {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
                 prevTime = action[3];
-                if (debuggingDumpRecordingOut)
+                if (debuggingDumpRecordingOut && action[0] != "mousemove" && action[0] != "mouseclick")
                     console.log(`>> ${action}  time ${action[3]}  elapsed ${elapsed}  scene ${action[4]}`);
                 recOut = recOut.concat(`${action[0]},${action[1]},${action[2]},${elapsed},${action[4]}:`);
             }
@@ -628,6 +629,7 @@ export default class Recorder {
         re = /\%Four\%/g; recOut = recOut.replace(re, "\%G\%");
         re = /\%Five\%/g; recOut = recOut.replace(re, "\%H\%");
         re = /\%PlayerUI\%/g; recOut = recOut.replace(re, "\%I\%");
+        re = /\%HintBot\%/g; recOut = recOut.replace(re, "\%J\%");
 
         recOut = this.checksum(recording) + "?" + recOut + "?" + this.randomSeed + "-v1";
         //console.log("RECORDING OUT " + recOut);

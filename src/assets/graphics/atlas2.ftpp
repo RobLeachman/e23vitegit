@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "D:\\src\\e23\\public\\assets\\graphics",
+  "images": [
+    {
+      "name": "fourPieceFrame.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/fourPieceFrame.png",
+      "folder": ""
+    },
+    {
+      "name": "fourPieceMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/fourPieceMask.png",
+      "folder": ""
+    },
+    {
+      "name": "fourPieceSelected.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/fourPieceSelected.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "atlas2",
+    "textureFormat": "png",
+    "removeFileExtension": false,
+    "prependFolderName": true,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "D:\\src\\e23\\public\\assets\\graphics",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": false,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "OptimalPacker",
+    "packerMethod": "Automatic"
+  }
+}

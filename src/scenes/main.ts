@@ -4,18 +4,16 @@
  * 
  * 
  * - 3x3 slider puzzle
- * - Rework hints
- * -- show question mark when stuck
+  * -- show question mark when stuck
  * - Fireworks on winner screen
- * - Fade scene in
- * - Screen shake on bad guess
+  * - Screen shake on bad guess
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
-** fix eye            
-** click/inspect clue on first icon, not BOJ
+
+** 4x4 background should be gray not white
 ** five words - you cannot solve this yet
-** clue wall
+
 ** clue bot
 ** spin five words at init
 ** discord webhook
@@ -81,7 +79,7 @@ var takeMask: Phaser.GameObjects.Sprite;
 var tableMask: Phaser.GameObjects.Sprite;
 var doorMask: Phaser.GameObjects.Sprite;
 
-var hintMask: Phaser.GameObjects.Sprite;
+//var hintMask: Phaser.GameObjects.Sprite; // maybe Ranger picture will be another view?
 var battMask: Phaser.GameObjects.Sprite;
 
 var fiveMask: Phaser.GameObjects.Sprite;
@@ -305,7 +303,7 @@ export class PlayGame extends Phaser.Scene {
                 this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
             }
 
-            // need to build out hint system
+            // ranger view wall? was prototype hint system
             if (viewWall == 9)
                 previousWall = 2;
 
@@ -342,11 +340,11 @@ export class PlayGame extends Phaser.Scene {
                 this.add.sprite(343, 595, 'atlas', clue2states[clue2state]).setOrigin(0, 0);
             }
 
-            hintMask.setVisible(false);
+            //hintMask.setVisible(false); // ranger
             twoDoorMask.setVisible(false);
             twoDoorUnlockedWall.setVisible(false)
             if (viewWall == 2) {
-                hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' });
+                // hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' }); // ranger
                 twoDoorMask.setVisible(true); twoDoorMask.setDepth(100); twoDoorMask.setInteractive({ cursor: 'pointer' });
                 if (twoDoorUnlocked)
                     twoDoorUnlockedWall.setVisible(true)
@@ -498,11 +496,14 @@ export class PlayGame extends Phaser.Scene {
                 viewWall = previousWall;
         });
 
+        /* hintMask is now for Ranger and at the moment obsolete...
+
         hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
         recorder.addMaskSprite('hintMask', hintMask);
         hintMask.on('pointerdown', () => {
             viewWall = 9;
         });
+        */
 
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
@@ -643,6 +644,8 @@ export class PlayGame extends Phaser.Scene {
             updateWall = true;
         });
 
+        this.cameras.main.fadeIn(500);
+
         // Fancy cursors can wait...
         //this.input.setDefaultCursor('url(assets/input/cursors/blue.cur), auto');
         //this.input.setDefaultCursor(
@@ -660,7 +663,7 @@ export class PlayGame extends Phaser.Scene {
         walls[6] = "(item view alt)";
         walls[7] = "wallUnlocked";
         walls[8] = "wallWinner";
-        walls[9] = "wallHint";
+        //walls[9] = "wallHint"; // now maybe ranger close up view?
 
         icons[0] = "icon - donut.png";
         icons[1] = "icon - plate.png";

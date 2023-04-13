@@ -3,11 +3,10 @@ import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
 
-const _SCENENAME = "Blank";
+const _SCENENAME = "HintBot";
 let myUI: PlayerUI;
 let slots: Slots;
 let recorder: Recorder;
-
 
 let roomReturnWall: number; // return here from other scene back button
 
@@ -15,15 +14,15 @@ let viewWall = 0; // production start at 0
 let currentWall = -1;
 let previousWall = 0;
 let updateWall = false;
+let firstClue = true;
 
-let leftButton: Phaser.GameObjects.Sprite;
-let rightButton: Phaser.GameObjects.Sprite;
-let backButton: Phaser.GameObjects.Sprite;
+let hintBackButton: Phaser.GameObjects.Sprite;
+let clueText: Phaser.GameObjects.Text
 
 // Scene is room...
 const walls = new Array();
 
-export class Blank extends Phaser.Scene {
+export class HintBot extends Phaser.Scene {
     constructor() {
         super(_SCENENAME);
     }
@@ -32,15 +31,17 @@ export class Blank extends Phaser.Scene {
         console.log(_SCENENAME + " create")
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
-        this.scene.bringToTop("PlayerUI");
-        myUI.setActiveScene(_SCENENAME);
+        this.scene.sleep(myUI.getActiveScene())
+
+        // this scene can run on top of the UI so we don't let it block like usual
+        //this.scene.bringToTop("PlayerUI");
+        //myUI.setActiveScene(_SCENENAME);
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
 
         slots = myUI.getSlots();
         recorder = slots.recorder;
 
-        // DONT FORGET TO REGISTER THE NEW SCENE IN RECORDER DumpRecording ParseRecording
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
 
@@ -53,51 +54,45 @@ export class Blank extends Phaser.Scene {
         });
 
         ////////////// SCENE IMPLEMENTATION - CREATE //////////////
-        // Scene is room...
-        leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton").setDepth(1);
-        recorder.addMaskSprite('leftButton', leftButton);
-        rightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton").setDepth(1);
-        recorder.addMaskSprite('rightButton', rightButton);
-        backButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButton").setDepth(1);
-        recorder.addMaskSprite('backButton', backButton);
+        hintBackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("hintBackButton").setDepth(1);
+        recorder.addMaskSprite('hintBackButton', hintBackButton);
 
-        rightButton.on('pointerdown', () => {
-            viewWall++;
-            if (viewWall > 3)
-                viewWall = 0;
-        });
-        leftButton.on('pointerdown', () => {
-            viewWall--;
-            if (viewWall < 0)
-                viewWall = 3;
-        });
-        backButton.on('pointerdown', () => {
-            recorder.recordObjectDown(backButton.name, thisscene);
+        hintBackButton.on('pointerdown', () => {
+            recorder.recordObjectDown(hintBackButton.name, thisscene);
             viewWall = previousWall;
 
             console.log(`${_SCENENAME} Back!`);
 
-            backButton.removeInteractive(); // fix up the cursor displayed on main scene
-            /*
-                        this.scene.moveUp("PlayGame");
-                        this.scene.sleep();
-                        this.scene.wake("PlayGame");            
-            */
+            hintBackButton.removeInteractive(); // fix up the cursor displayed on main scene
+            console.log("return to UI: " + myUI.getUIObjectViewOpen() + " return to active: " + myUI.getActiveScene())
+
+            this.scene.moveUp(myUI.getActiveScene());
+            this.scene.sleep();
+            this.scene.wake("PlayerUI")
+            this.scene.wake(myUI.getActiveScene());
         });
 
-        // Generic.. use either left/right or back
-        leftButton.setVisible(true); leftButton.setInteractive({ cursor: 'pointer' });
-        rightButton.setVisible(true); rightButton.setInteractive({ cursor: 'pointer' });
-        backButton.setVisible(true); backButton.setInteractive({ cursor: 'pointer' });
+        hintBackButton.setVisible(true); hintBackButton.setInteractive({ cursor: 'pointer' });
 
         // start from the wall declared in variable init
         updateWall = true;
 
+        clueText = this.make.text({
+            x: 25,
+            y: 350,
+            text: 'clue goes here',
+            style: {
+                font: '30px Verdana',
+                //fill: '#ffffff'
+            }
+        });
+        clueText.setDepth(99);
+  
+
         this.events.on('wake', () => {
             console.log(`${_SCENENAME} awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
-            this.scene.bringToTop("PlayerUI")
-            myUI.setActiveScene(_SCENENAME);
+            this.scene.sleep(myUI.getActiveScene())
 
             // Scene is room...
             viewWall = roomReturnWall;
@@ -115,9 +110,16 @@ export class Blank extends Phaser.Scene {
             walls[previousWall].setVisible(false);
             walls[viewWall].setVisible(true);
             previousWall = viewWall;
+
+            const hintObjective = myUI.getHintObjective();
+            clueText.text = "Right now you should:\n\n" + hintObjective;
+            if (firstClue) {
+                firstClue = false;
+                clueText.text = "The game features a hint system.\n\nNew objective clues become available\nas you progress.\n\n" +clueText.text;              
+            }
         }
 
-        backButton.setVisible(true); backButton.setDepth(1); backButton.setInteractive({ cursor: 'pointer' });
+        hintBackButton.setVisible(true); hintBackButton.setDepth(1); hintBackButton.setInteractive({ cursor: 'pointer' });
         // Record any movement or clicks
         if (recorder.getMode() == "record")
             recorder.checkPointer(this);
@@ -125,10 +127,10 @@ export class Blank extends Phaser.Scene {
 
     preload() {
         // Scene is room...
-        walls[0] = this.add.image(0, 0, "room2 south").setOrigin(0, 0).setVisible(false);
-        walls[1] = this.add.image(0, 0, "room2 west").setOrigin(0, 0).setVisible(false);
-        walls[2] = this.add.image(0, 0, "room2 north").setOrigin(0, 0).setVisible(false);
-        walls[3] = this.add.image(0, 0, "room2 east").setOrigin(0, 0).setVisible(false);
+        walls[0] = this.add.image(0, 0, "wallHint").setOrigin(0, 0).setVisible(false);
+        //walls[1] = this.add.image(0, 0, "room2 west").setOrigin(0, 0).setVisible(false);
+        //walls[2] = this.add.image(0, 0, "room2 north").setOrigin(0, 0).setVisible(false);
+        //walls[3] = this.add.image(0, 0, "room2 east").setOrigin(0, 0).setVisible(false);
     }
 
     // @ts-ignore
@@ -138,6 +140,7 @@ export class Blank extends Phaser.Scene {
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
+            console.log("registry scene:" + spriteName)
             if (spriteScene == _SCENENAME) {
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')

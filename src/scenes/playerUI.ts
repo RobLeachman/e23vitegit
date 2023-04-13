@@ -4,7 +4,7 @@ import Recorder from "../objects/recorder"
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let useCookieRecordings = false; // use cookies not the cloud
+let useCookieRecordings = true; // use cookies not the cloud
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 let debugInput = true; // display pastebox for input of debug data
 if (location.hostname != "localhost")
@@ -25,11 +25,15 @@ let failed: Phaser.GameObjects.Sprite;
 let interfaceInspect: Phaser.GameObjects.Sprite;
 let interfaceClick: Phaser.GameObjects.Sprite;
 let clickLine: Phaser.GameObjects.Sprite;
+let hintQuestion: Phaser.GameObjects.Sprite;
+let hintQuestionGreen: Phaser.GameObjects.Sprite;
+let questionSpinning: Phaser.GameObjects.Video;
 
-var plusButton: Phaser.GameObjects.Sprite;
-var plusModeButton: Phaser.GameObjects.Sprite;
-var eyeButton: Phaser.GameObjects.Sprite;
-var objectMask: Phaser.GameObjects.Sprite;
+let plusButton: Phaser.GameObjects.Sprite;
+let plusModeButton: Phaser.GameObjects.Sprite;
+let eyeButton: Phaser.GameObjects.Sprite;
+let objectMask: Phaser.GameObjects.Sprite;
+let hintButton: Phaser.GameObjects.Sprite;
 
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
@@ -44,6 +48,9 @@ let flipIt = false;
 let hasSearched = false;
 let hasCombined = false;
 let currentSelectedIndex: number;
+
+let hintBotInit = true;
+let hintObjectiveText: string;
 
 // special for key hidden on back of plate
 var keyMask: Phaser.GameObjects.Sprite;
@@ -63,6 +70,7 @@ let theRecording: string;
 let myText: InputText;
 let pasteBox: InputText;
 let mainHasStarted = false;
+let spinQuestionBOJ = true;
 let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
@@ -83,7 +91,7 @@ let clueText: Phaser.GameObjects.Text
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
-clueMap.set("searchAndSolve", "Search around, solve all the puzzles, escape the room") // until clicked an arrow
+clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room") // until clicked an arrow
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
 clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
 clueMap.set("searchPlate", "Search the plate"); // 3 until see the key
@@ -94,13 +102,13 @@ clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
 clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
-clueMap.set("getFourClue", "Get clue from 4x4 puzzle"); // 11 until 5x5 is solved
+clueMap.set("getFourClue", "Get clue from 4x4 puzzle?"); // 11 until 5x5 is solved
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
 clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
 clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
 clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
-clueMap.set("getTealClue", "Get Two-Way clue from Teal Mystery box"); // 17 until two-way solved
+clueMap.set("getTealClue", "Get Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
 clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
 clueMap.set("exit", "Escape!"); // 20 until win
@@ -205,6 +213,7 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceClick.setVisible(true);
         clickLine.setVisible(true);
         clickLine.play("clickLineMoves");
+        this.showEye();
     }
 
     getBonus() {
@@ -235,8 +244,24 @@ export default class PlayerUI extends Phaser.Scene {
     getCameraHack() {
         return cameraHack;
     }
+    hideSpinningQuestion() {
+        questionSpinning.setPaused(true);
+        questionSpinning.setVisible(false)
+        hintQuestion.setVisible(true);
+    }
+    showSpinningQuestion() {
+        //questionSpinning.setPaused(false);
+        //questionSpinning.setVisible(true);
+        hintQuestionGreen.setVisible(true)
+    }
+    getUIObjectViewOpen() {
+        return uiObjectView;
+    }
+    getHintObjective() {
+        return hintObjectiveText;
+    }
 
-    // Must preload initial UI sprites, the only graphic asset used by UI
+    // Must preload a few elements for UI
     preload() {
         this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
         this.load.spritesheet('animated', 'assets/graphics/animated.png', { frameWidth: 26, frameHeight: 19 });
@@ -292,11 +317,13 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceClick = this.add.sprite(15, 1075, 'atlas', 'interface-click-hint.png').setOrigin(0, 0).setVisible(false);
         interfaceInspect = this.add.sprite(5, 1176, 'atlas', 'interface-inspect.png').setOrigin(0, 0).setVisible(false);
         clickLine = this.add.sprite(15 + 70, 1075 + 35, "animated").setDepth(1).setVisible(false);
+        hintQuestion = this.add.sprite(620, 1050, 'atlas', 'questionGray.png').setOrigin(0, 0).setVisible(false);
+        hintQuestionGreen = this.add.sprite(620, 1050, 'atlas', 'questionGreen.png').setDepth(1).setOrigin(0, 0).setVisible(false);
 
         this.anims.create({
             key: "clickLineMoves",
             frameRate: 7,
-            frames: this.anims.generateFrameNumbers("animated", { start: 0, end: 8 }),
+            frames: this.anims.generateFrameNumbers("animated", { start: 0, end: 3 }),
             repeat: -1
         });
         clickLine.play("clickLineMoves");
@@ -325,7 +352,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         eyeButton = this.add.sprite(15, 1070, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0).setDepth(1);
         recorder.addMaskSprite('eyeButton', eyeButton);
-        eyeButton.setVisible(true); eyeButton.setInteractive({ cursor: 'pointer' });
+        eyeButton.setVisible(false); eyeButton.setInteractive({ cursor: 'pointer' });
 
         eyeButton.on('pointerdown', () => {
             //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
@@ -358,6 +385,24 @@ export default class PlayerUI extends Phaser.Scene {
             } else {
                 this.closeObjectUI();
             }
+        });
+
+        hintButton = this.add.sprite(620, 1070, 'atlas', 'hintButtonMask.png').setName("hintButton").setOrigin(0, 0).setDepth(1);
+        recorder.addMaskSprite('hintButton', hintButton);
+        hintButton.setVisible(true); hintButton.setInteractive({ cursor: 'pointer' });
+        hintButton.on('pointerdown', () => {
+            this.hideSpinningQuestion();
+            //console.log("show hint!")
+            hintQuestionGreen.setVisible(false)
+
+            if (hintBotInit) {
+                hintBotInit = false;
+                this.scene.launch("HintBot")
+                this.scene.sleep();
+            } else {
+                this.scene.wake("HintBot");
+                this.scene.sleep();
+            }            
         });
 
         UIbackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("UIbackButton").setDepth(3).setVisible(false);
@@ -436,7 +481,7 @@ export default class PlayerUI extends Phaser.Scene {
         //clueBox.fillRect(5, 250, 400, 30);
         clueText = this.make.text({
             x: 10,
-            y: 208,
+            y: 175,
             text: 'clue goes here',
             style: {
                 font: '24px Verdana',
@@ -444,15 +489,14 @@ export default class PlayerUI extends Phaser.Scene {
             }
         });
         clueText.setDepth(99);
-        const firstClue = clueMap.get('searchAndSolve')!;
-        clueText.text = firstClue;
+        hintObjectiveText = clueMap.get('searchAndSolve')!;
+        clueText.text = hintObjectiveText;
 
         this.scene.launch("BootGame")
     }
 
     async update() {
         //console.log("UI update")
-        //scene.registry.set('replayObject', "zotBackButton:ZotTable");
 
         /* Don't give up on full screen option!
         https://labs.phaser.io/edit.html?src=src/scalemanager/full%20screen%20game.js&v=3.55.2
@@ -788,7 +832,16 @@ export default class PlayerUI extends Phaser.Scene {
         }
 
         ////////////// CLUES //////////////
+        if (mainHasStarted && spinQuestionBOJ) {
+            spinQuestionBOJ = false;
+            questionSpinning = this.add.video(620, 1050, 'questionSpinning').setOrigin(0, 0).setDepth(2);
+            questionSpinning.setLoop(true);
+            questionSpinning.play(true);
+            questionSpinning.setPaused(false);
+        }
+
         if (needNewClue) {
+            const oldClue = clueText.text;
             let nextObjective: string = "";
             let foundNext = false;
             clueObjective.forEach((objectiveCompleted, idx) => {
@@ -800,7 +853,10 @@ export default class PlayerUI extends Phaser.Scene {
             });
             //console.log("next objective is " + nextObjective);
 
-            clueText.text = clueMap.get(nextObjective)!;
+            hintObjectiveText = clueMap.get(nextObjective)!;
+            clueText.text = hintObjectiveText;
+            if (oldClue != clueText.text)
+                this.showSpinningQuestion();
             needNewClue = false;
         }
 

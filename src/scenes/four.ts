@@ -135,7 +135,7 @@ export class Four extends Phaser.Scene {
                 const v = { art: tileArt, origX: i, origY: j };
                 this.tileMap.set(k, v);
 
-                this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, 'atlas', 'fourPieceFrame.png').setOrigin(0, 0).setDepth(1);
+                this.add.sprite((13 + 28) + i * 160, (250 + 28) + j * 160, 'atlas2', 'fourPieceFrame.png').setOrigin(0, 0).setDepth(1);
             }
         }
         // Pick and swap two random tiles. Always swap once.
@@ -148,14 +148,11 @@ export class Four extends Phaser.Scene {
         }
         this.swapTiles(2, 3, 3, 3, this.tileMap);
 
-        // select box displayed
-        //this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y,
-        //    'fourPieceSelected').setOrigin(0, 0);
-        this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y, 'atlas', 'fourPieceSelected.png').setOrigin(0, 0);
+        this.selected = this.add.sprite(13 + 28 + 160 * this.swapSelect.x, 250 + 28 + 160 * this.swapSelect.y, 'atlas2', 'fourPieceSelected.png').setOrigin(0, 0);
         this.selected.x = 1000;
 
         // cover the whole board and then read the coordinates of the click
-        this.selectMask = this.add.sprite(13 + 28, 250 + 28, 'atlas', 'fourPieceMask.png').setOrigin(0, 0);
+        this.selectMask = this.add.sprite(13 + 28, 250 + 28, 'atlas2', 'fourPieceMask.png').setOrigin(0, 0);
         recorder.addMaskSprite('selectMask', this.selectMask);
         this.selectMask.setVisible(true); this.selectMask.setDepth(1); this.selectMask.setInteractive({ cursor: 'pointer' });
 

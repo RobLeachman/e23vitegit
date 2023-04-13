@@ -2,7 +2,7 @@
   "meta": {
     "version": "0.6.7"
   },
-  "savePath": "D:\\src\\e23\\src\\assets\\packed",
+  "savePath": "D:\\src\\e23\\public\\assets\\graphics",
   "images": [
     {
       "name": "arrowDown.png",
@@ -225,6 +225,11 @@
       "folder": ""
     },
     {
+      "name": "hintButtonMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/hintButtonMask.png",
+      "folder": ""
+    },
+    {
       "name": "hintMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed/hintMask.png",
       "folder": ""
@@ -307,11 +312,6 @@
     {
       "name": "interface-click-hint.png",
       "path": "D:/src/e23/src/assets/graphics/packed/interface-click-hint.png",
-      "folder": ""
-    },
-    {
-      "name": "interface-click-static.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/interface-click-static.png",
       "folder": ""
     },
     {
@@ -445,8 +445,13 @@
       "folder": ""
     },
     {
-      "name": "question.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/question.png",
+      "name": "questionGray.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/questionGray.png",
+      "folder": ""
+    },
+    {
+      "name": "questionGreen.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/questionGreen.png",
       "folder": ""
     },
     {
@@ -607,7 +612,7 @@
   ],
   "folders": [],
   "packOptions": {
-    "textureName": "texture",
+    "textureName": "atlas1",
     "textureFormat": "png",
     "removeFileExtension": false,
     "prependFolderName": true,
@@ -618,7 +623,7 @@
     "filter": "none",
     "exporter": "Phaser 3",
     "fileName": "pack-result",
-    "savePath": "D:\\src\\e23\\src\\assets\\packed",
+    "savePath": "D:\\src\\e23\\public\\assets\\graphics",
     "width": 2048,
     "height": 2048,
     "fixedSize": false,
