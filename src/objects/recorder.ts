@@ -41,6 +41,7 @@ export default class Recorder {
     storageRef: StorageReference;
     playerName: string;
     timeStamp: string;
+    myUUID: string;
 
     cameraHack: number;
     randomSeed: string;
@@ -177,6 +178,10 @@ export default class Recorder {
         this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
     }
 
+    getRecordingKey() {
+        return this.myUUID;
+    }
+
     async incrementPlayerCount() {
         const storage = getStorage();
         const countStorageRef = ref(storage, "playerCount.txt");
@@ -250,9 +255,9 @@ export default class Recorder {
     setPlayerName(name: string) {
         this.playerName = name;
         const storage = getStorage();
-        const myUUID = this.playerName + "_" + this.timeStamp;
+        this.myUUID = this.playerName + "_" + this.timeStamp;
         //console.log("Recorder UUID " + myUUID)
-        this.storageRef = ref(storage, 'v1/' + myUUID + '.txt');
+        this.storageRef = ref(storage, 'v1/' + this.myUUID + '.txt');
         if (this.playerName == "qqq")
             stealthRecord = false;
     }
@@ -297,11 +302,11 @@ export default class Recorder {
     };
 
     setFourPuzzleSolvedOnce(puzzle: string) {
-        setCookie("solvedFour-" +puzzle, "solved", 30); // bake for a month
+        setCookie("solvedFour-" + puzzle, "solved", 30); // bake for a month
     }
 
     getFourPuzzleSolvedOnce(puzzle: string) {
-        return getCookie("solvedFour-" +puzzle);
+        return getCookie("solvedFour-" + puzzle);
     }
 
 
