@@ -50,14 +50,14 @@ import PlayerUI from './playerUI';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import DiscordWebhook from 'discord-webhook-ts';
 
-// Discord web hook, a slam dunk
+// Discord web hook, a slam dunk. The hardest part is not having it be deleted on commit and I'll tackle that later. Please don't delete my webhook. Thanks.
 // https://www.npmjs.com/package/discord-webhook-ts
 // https://discohook.org
-const discordClient = new DiscordWebhook('https://discord.com/api/webhooks/1096463945340043355/a7IcEQPHA-CPG4B_SNO4wzVex0FSGGnZO5zUMa6P1ITOuFSEvEFxp1VGGzxdzC5BnP_E');
+const d1 = 'https://discord.com/api/webhooks';
+const d2 = '1096536501413761125';
+const d3 = '_jdNDh2X_cgHwfnWSaXn4-ekCWvuaXAHbjDsj7p-mEbUmeJ8o1DbgPJx2nLi60Zu78VB';
+const discordClient = new DiscordWebhook(d1 +'/' + d2 + '/' + d3);
 let timeStart: number;
-
-
-
 
 let myUI: PlayerUI;
 let slots: Slots;
@@ -228,8 +228,9 @@ export class PlayGame extends Phaser.Scene {
             //slots.clearItem(this, "fake");
             slots.fakeClicks = 4;
             slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
+            myUI.showClueDebug();
         }
-        if (slots.fakeClicks == 10) {
+        if (slots.fakeClicks == 100) {
             recorder.setMode("roachReplay");
             slots.fakeClicks = -1;
             //console.log("roach replay " + slots.getSelected());

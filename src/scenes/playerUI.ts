@@ -94,7 +94,8 @@ let sceneFour: Phaser.Scene;
 let sceneFive: Phaser.Scene;
 
 let needNewClue = true;
-let clueText: Phaser.GameObjects.Text
+let clueText: Phaser.GameObjects.Text;
+let debugHints = false;
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
@@ -500,8 +501,16 @@ export default class PlayerUI extends Phaser.Scene {
         clueText.setDepth(99);
         hintObjectiveText = clueMap.get('searchAndSolve')!;
         clueText.text = hintObjectiveText;
+        if (!debugHints) {
+            clueText.setVisible(false)
+        }
 
         this.scene.launch("BootGame")
+    }
+
+    showClueDebug() {
+        debugHints = true;
+        clueText.setVisible(true);
     }
 
     async update() {
@@ -1005,3 +1014,4 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
 }
+
