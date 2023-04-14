@@ -40,7 +40,6 @@ let stateEyeButton: boolean;
 let stateInterfaceInspect: boolean;
 let stateInterfaceClick: boolean;
 let stateClickLine: boolean;
-let stateHintQuestion: boolean;
 let stateHintQuestionGreen: boolean;
 
 let UIbackButton: Phaser.GameObjects.Sprite;
@@ -110,13 +109,13 @@ clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
 clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
-clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle."); // 11 until 5x5 is solved
+clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle?"); // 11 until 5x5 is solved
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
 clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
 clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
 clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
-clueMap.set("getTealClue", "Get Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
+clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
 clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
 clueMap.set("exit", "Escape!"); // 20 until win
@@ -939,7 +938,6 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     hideHintIcons() {
-        stateHintQuestion = hintQuestion.visible;
         stateHintQuestionGreen = hintQuestionGreen.visible;
         questionSpinning.setVisible(false);
         hintQuestion.setVisible(false);
