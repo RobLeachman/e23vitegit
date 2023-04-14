@@ -11,15 +11,13 @@
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
 
-** 4x4 background should be gray not white
+
+  * 4x4 background should be gray not white
+  * show UI on zoom/pan complete
 
 ** clue bot
-** discord webhook
-https://discord.com/api/webhooks/1096443563514023997/9RmLBfgp_cIDG8qW0mtTKRyu5B-wPf7h0CawCpqWaWaQoVOwXqhhIrfDyanaQu9Bmmt3
-
 ** setting screen
 ** music
-** player name not slugger
 
 ** double-click icon to open it
 ** spin five words at init
@@ -56,6 +54,10 @@ import DiscordWebhook from 'discord-webhook-ts';
 // https://www.npmjs.com/package/discord-webhook-ts
 // https://discohook.org
 const discordClient = new DiscordWebhook('https://discord.com/api/webhooks/1096463945340043355/a7IcEQPHA-CPG4B_SNO4wzVex0FSGGnZO5zUMa6P1ITOuFSEvEFxp1VGGzxdzC5BnP_E');
+let timeStart: number;
+
+
+
 
 let myUI: PlayerUI;
 let slots: Slots;
@@ -267,7 +269,7 @@ export class PlayGame extends Phaser.Scene {
 
                 currentWall = viewWall;
                 updateWall = false;
-                var sentence = "Nice job slugger!\nTry it again for the bonus?\nJust reload the page";
+                var sentence = "Nice job " + recorder.getPlayerName() + "!\nTry it again for the bonus?\nJust reload the page";
                 if (myUI.getBonus()) {
                     this.add.sprite(360, 800, 'atlas', 'winner donutPlated.png');
                     sentence = "You did it :)\n\nThanks for testing!";
@@ -276,6 +278,12 @@ export class PlayGame extends Phaser.Scene {
                     //failed.setX(360); failed.setY(800);
                     this.add.sprite(360, 800, 'atlas', 'fail.png').setDepth(100);
                 }
+
+                const secs = Math.floor((Date.now() - timeStart) / 1000);
+                const minutes = Math.floor(secs / 60);
+                const seconds = secs - minutes * 60;
+                const winTime = minutes + ':' + seconds;
+                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! Time ' + winTime, "", "");
 
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
                 this.add.dom(350, 1100, 'div', style, sentence);
@@ -416,19 +424,43 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
-    sendDiscordWebhook(postTitle: string, postMessage: string) {
-        discordClient.execute({
-            embeds: [
-                {
-                    title: postTitle,
-                    description: postMessage,
-                }
+    sendDiscordWebhook(postTitle: string, postMessage: string, postDataLabel: string, postData: string) {
+        if (postDataLabel.length > 0) {
+            discordClient.execute({
+                embeds: [
+                    {
+                        title: postTitle,
+                        description: postMessage,
+                    },
+                    {
+                        fields: [
+                            {
+                                name: postDataLabel,
+                                value: postData,
+                            }
+                        ]
+                    }
+                ]
+                // @ts-ignore
+            }).then((response) => {
+                //console.log('Successfully sent webhook. ' + response)
+                console.log('Successfully sent webhook')
+            })
+        } else {
+            discordClient.execute({
+                embeds: [
+                    {
+                        title: postTitle,
+                        description: postMessage,
+                    }
+                ]
+                // @ts-ignore
+            }).then((response) => {
+                //console.log('Successfully sent webhook. ' + response)
+                console.log('Successfully sent webhook')
+            })
 
-            ]
-            // @ts-ignore
-        }).then((response) => {
-            console.log('Successfully sent webhook. ' + response)
-        })
+        }
     }
 
     /*
@@ -460,6 +492,7 @@ export class PlayGame extends Phaser.Scene {
 
         mobile = data.mobile;
         //console.log(`main create ${mobile}`)
+        timeStart = Date.now();
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
@@ -506,7 +539,7 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
 
-        this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters');
+        this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
 
         viewportPointer.setDepth(100);
         viewportPointerClick.setDepth(100);
@@ -603,14 +636,14 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 100)
-                cam.zoomTo(1, 100);
+                cam.pan(360, 640, 750)
+                cam.zoomTo(1, 750);
                 myUI.restoreUILayer();
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(120, 500, 100)
-                cam.zoomTo(3.5, 100);
+                cam.pan(120, 500, 500)
+                cam.zoomTo(3.5, 500);
             }
         });
 
