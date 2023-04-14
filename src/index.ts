@@ -20,10 +20,6 @@ import { TwoWay } from './scenes/twoWay';
 //}
 
 
-//import { Recorder } from './scenes/recorder';
-
-//import { TestScene } from './scenes/test';
-
 /*
  * Copied from PDW javascript for use with Escape typescript
  * I went round and round with DPR and such... not required for Escape

@@ -90,8 +90,8 @@ export class BootGame extends Phaser.Scene {
             'assets/audio/soundSheet1.mp3'
         ]);
 
-        this.load.video('questionSpinning', 'assets/graphics/question_180.mp4', 'canplaythrough', false, true);
-        this.load.video('openIt', 'assets/graphics/openIt_silent.mp4', 'canplaythrough', false, false);
+        this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
+        this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
 
         //this.load.video('test', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/video/test.mp4', 'canplaythrough', true, true);        
  

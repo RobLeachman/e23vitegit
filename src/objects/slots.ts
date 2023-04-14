@@ -39,7 +39,6 @@ class InvItem {
 
     clickIt() {
         //console.log(this.name);
-        //console.log((this.iconSprite as Phaser.GameObjects.Sprite).texture.key)
         //this.recorder.recordIconClick(this.name, this.scene);
 
         //console.log("RECORD ICON CLICK!! " + this.name);

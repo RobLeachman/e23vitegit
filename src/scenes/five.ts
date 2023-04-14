@@ -44,11 +44,11 @@ class WordPanel {
 
         this.word.setStyle({ font: '80px Verdana' })
 
-        const width = this.word.getBottomRight().x - 80;
+        const width = this.word.getBottomRight().x! - 80;
         this.word.setX((720 - width) / 2);
 
         // top is 265 (section offset) + location * 127, at 80px final size
-        const height = this.word.getBottomRight().y - (265 + this.location * 127);
+        const height = this.word.getBottomRight().y! - (265 + this.location * 127);
         const center = (265 + this.location * 127) + 47;
         this.word.setY(center - height / 2);
 
@@ -69,7 +69,7 @@ class WordPanel {
         this.selectedWord = this.words[this.wordIndex];
         this.word.setText(this.selectedWord);
         this.word.setX(80)
-        const width = this.word.getBottomRight().x - 80;
+        const width = this.word.getBottomRight().x! - 80;
         this.word.setX((720 - width) / 2);
     }
 

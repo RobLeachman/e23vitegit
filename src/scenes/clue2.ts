@@ -116,7 +116,6 @@ export class Clue2 extends Phaser.Scene {
             stuckButton.setVisible(false);
             redKeyMask.setVisible(false);
             if (viewWall == 2 && !keyTaken) {
-                //console.log("STUCK!")
                 stuckButton.setVisible(true);
                 pushButtonMask.removeInteractive();
                 redKeyMask.setVisible(true);

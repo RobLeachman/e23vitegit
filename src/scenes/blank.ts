@@ -8,7 +8,6 @@ let myUI: PlayerUI;
 let slots: Slots;
 let recorder: Recorder;
 
-
 let roomReturnWall: number; // return here from other scene back button
 
 let viewWall = 0; 

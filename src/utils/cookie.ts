@@ -9,6 +9,7 @@ function setCookie(name:string,value:string,days:number) {
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/;SameSite=Strict";
 }
+
 function getCookie(name:string) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -19,6 +20,7 @@ function getCookie(name:string) {
     }
     return "";
 }
+
 function eraseCookie(name:string) {
     document.cookie = name+'=; Max-Age=-99999999;';
 }

@@ -44,14 +44,18 @@ https://discord.com/api/webhooks/1096443563514023997/9RmLBfgp_cIDG8qW0mtTKRyu5B-
 
 */
 
-
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
 
-//import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
+import DiscordWebhook from 'discord-webhook-ts';
+
+// Discord web hook, a slam dunk
+// https://www.npmjs.com/package/discord-webhook-ts
+// https://discohook.org
+const discordClient = new DiscordWebhook('https://discord.com/api/webhooks/1096463945340043355/a7IcEQPHA-CPG4B_SNO4wzVex0FSGGnZO5zUMa6P1ITOuFSEvEFxp1VGGzxdzC5BnP_E');
 
 let myUI: PlayerUI;
 let slots: Slots;
@@ -342,7 +346,7 @@ export class PlayGame extends Phaser.Scene {
                 tableMask.setVisible(true); tableMask.setDepth(100); tableMask.setInteractive({ cursor: 'pointer' });
                 doorMask.setVisible(true); doorMask.setDepth(100); doorMask.setInteractive({ cursor: 'pointer' });
                 //doorMask.input.cursor = 'url(assets/input/cursors/pen.cur), pointer';
-                doorMask.input.cursor = 'pointer';
+                doorMask.input!.cursor = 'pointer';
             }
 
             clue2Mask.setVisible(false);
@@ -383,9 +387,9 @@ export class PlayGame extends Phaser.Scene {
                 // pointer cursor if stuff remains on table, else default, is how this is done
                 takeMask.setInteractive();
                 if (tableState > 2)
-                    takeMask.input.cursor = 'default';
+                    takeMask.input!.cursor = 'default';
                 else
-                    takeMask.input.cursor = 'pointer';
+                    takeMask.input!.cursor = 'pointer';
             } else {
                 takeMask.setVisible(false);
             }
@@ -412,6 +416,43 @@ export class PlayGame extends Phaser.Scene {
         }
     }
 
+    sendDiscordWebhook(postTitle: string, postMessage: string) {
+        discordClient.execute({
+            embeds: [
+                {
+                    title: postTitle,
+                    description: postMessage,
+                }
+
+            ]
+            // @ts-ignore
+        }).then((response) => {
+            console.log('Successfully sent webhook. ' + response)
+        })
+    }
+
+    /*
+    discordClient.execute({
+        embeds: [
+            {
+                title: 'Test1',
+                description: 'it is alive',
+            },
+            {
+                fields: [
+                    {
+                        name: 'Data',
+                        value: 'field data here',
+                    }
+                ]
+            }
+        ]
+    }).then((response) => {
+        console.log('Successfully sent webhook. ' + response)
+    })   
+    */
+
+
     create(data: {
         mobile: boolean;
         theRecording: string;
@@ -433,6 +474,8 @@ export class PlayGame extends Phaser.Scene {
         if (mobile) {
             console.log("mobile device")
         }
+
+
 
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
@@ -462,6 +505,8 @@ export class PlayGame extends Phaser.Scene {
 
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
+
+        this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters');
 
         viewportPointer.setDepth(100);
         viewportPointerClick.setDepth(100);

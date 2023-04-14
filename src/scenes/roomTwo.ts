@@ -50,7 +50,7 @@ export class RoomTwo extends Phaser.Scene {
     }
 
     create() {
-        //myUI = this.scene.get("PlayerUI") as PlayerUI;
+        //myUI = this.scene.get("PlayerUI") as PlayerUI; // needed in preload to know which wall to use
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI.setActiveScene(_SCENENAME);

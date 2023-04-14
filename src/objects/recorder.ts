@@ -58,7 +58,6 @@ export default class Recorder {
         this.totalClicks = 0;
         this.randomSeed = randomSeed;
 
-
         /************
          // TODO: Add SDKs for Firebase products that you want to use
                 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -637,9 +636,9 @@ export default class Recorder {
         }
 
         // Firestore
-        // @ts-ignore no snapshot for uploadString, or at least don't know how to use it
+        // @ts-ignore no snapshot for uploadString, or at least don't know how to use it...
         uploadString(this.storageRef, recOut).then((snapshot) => {
-            //console.log('Uploaded recording!');
+            console.log('Uploaded recording!');
         });
     }
 

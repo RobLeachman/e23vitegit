@@ -8,7 +8,7 @@ let myUI: PlayerUI;
 let slots: Slots;
 let recorder: Recorder;
 
-let roomReturnWall: number; // return here from other scene back button
+let roomReturnWall: number; // return here from other scene back button...
 
 let viewWall = 0; // production start at 0
 let currentWall = -1;

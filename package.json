@@ -13,8 +13,9 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "discord-webhook-ts": "^5.0.0",
     "firebase": "^9.18.0",
-    "phaser": "^3.55.2",
+    "phaser": "3.60",
     "phaser3-rex-plugins": "^1.1.82"
   }
 }

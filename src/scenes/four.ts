@@ -16,7 +16,7 @@ const youtubeID_BigTime = 'PBAl9cchQac' // Big Time... so much larger than life
 //const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
 //const youtubeID = 'VjEq-r2agqc' // Don't Give Up... we were wanted all along
 
-let bugz = false;
+let bugz = false; // workaround, perhaps not needed at 3.60?
 
 export class Four extends Phaser.Scene {
     rexUI: RexUIPlugin;

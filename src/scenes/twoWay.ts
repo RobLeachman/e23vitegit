@@ -118,7 +118,6 @@ export class TwoWay extends Phaser.Scene {
             checkWin = true;
             this.registry.set('twoWaySolved', true);
             myUI.didGoal('getTealClue');
-
             
             openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
             openIt.play(true)

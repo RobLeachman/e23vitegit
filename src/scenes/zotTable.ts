@@ -20,7 +20,7 @@ walls[1] = "zotTableBack";
 walls[2] = "zotTableOffFlipped";
 walls[3] = "zotTableBackFlipped";
 
-// these regions are so big I suppose won't bother with sprites
+// these regions seemed so big we used walls not sprites
 walls[7] = "zotBatteryClosed";
 walls[8] = "zotBatteryEmpty";
 walls[9] = "zotBatteryPlaced";

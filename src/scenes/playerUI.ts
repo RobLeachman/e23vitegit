@@ -469,7 +469,7 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.setCookieRecorderMode(useCookieRecordings);
 
         if (location.hostname == "localhost") {
-            this.input.keyboard.on('keydown', this.handleKey);
+            this.input.keyboard!.on('keydown', this.handleKey);
         }
 
         scenePlayGame = this.scene.get("PlayGame");
