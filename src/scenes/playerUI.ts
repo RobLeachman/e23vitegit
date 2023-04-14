@@ -1,6 +1,7 @@
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
+import { setCookie, getCookie } from "../utils/cookie";
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
@@ -34,6 +35,13 @@ let plusModeButton: Phaser.GameObjects.Sprite;
 let eyeButton: Phaser.GameObjects.Sprite;
 let objectMask: Phaser.GameObjects.Sprite;
 let hintButton: Phaser.GameObjects.Sprite;
+
+let stateEyeButton: boolean;
+let stateInterfaceInspect: boolean;
+let stateInterfaceClick: boolean;
+let stateClickLine: boolean;
+let stateHintQuestion: boolean;
+let stateHintQuestionGreen: boolean;
 
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
@@ -91,7 +99,7 @@ let clueText: Phaser.GameObjects.Text
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
-clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room") // until clicked an arrow
+clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room!") // until clicked an arrow
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
 clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
 clueMap.set("searchPlate", "Search the plate"); // 3 until see the key
@@ -102,7 +110,7 @@ clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
 clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
-clueMap.set("getFourClue", "Get clue from 4x4 puzzle?"); // 11 until 5x5 is solved
+clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle."); // 11 until 5x5 is solved
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
 clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
@@ -125,7 +133,7 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     didGoal(objective: string) {
-        console.log("GOAL COMPLETE! " + objective)
+        //console.log("GOAL COMPLETE! " + objective)
         clueObjective.set(objective, true);
         needNewClue = true;
     }
@@ -244,16 +252,17 @@ export default class PlayerUI extends Phaser.Scene {
     getCameraHack() {
         return cameraHack;
     }
+    /*
     hideSpinningQuestion() {
         questionSpinning.setPaused(true);
         questionSpinning.setVisible(false)
         hintQuestion.setVisible(true);
     }
-    showSpinningQuestion() {
-        //questionSpinning.setPaused(false);
-        //questionSpinning.setVisible(true);
-        hintQuestionGreen.setVisible(true)
+    */
+    hideGreenQuestion() {
+        hintQuestionGreen.setVisible(false)
     }
+
     getUIObjectViewOpen() {
         return uiObjectView;
     }
@@ -289,7 +298,7 @@ export default class PlayerUI extends Phaser.Scene {
 
 
         // Debug line above inventory
-        if (true) {
+        if (false) {
             const mobileTest = this.make.text({
                 x: 5,
                 y: 1045,
@@ -336,7 +345,7 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
 
-        console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
+        //console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
         plusModeButton.on('pointerdown', () => {
             //console.log("combine mode cancelled");
@@ -369,7 +378,7 @@ export default class PlayerUI extends Phaser.Scene {
                 eyeButton.setName("eyeButtonOn");
                 interfaceInspect.setVisible(false);
                 interfaceClick.setVisible(false);
-                clickLine.setVisible(false)
+                clickLine.setVisible(false);
 
                 UIbackButton.setVisible(true); UIbackButton.setInteractive({ cursor: 'pointer' });
                 plusButton.setVisible(true); plusButton.setInteractive({ cursor: 'pointer' });
@@ -384,6 +393,7 @@ export default class PlayerUI extends Phaser.Scene {
 
             } else {
                 this.closeObjectUI();
+
             }
         });
 
@@ -391,18 +401,14 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('hintButton', hintButton);
         hintButton.setVisible(true); hintButton.setInteractive({ cursor: 'pointer' });
         hintButton.on('pointerdown', () => {
-            this.hideSpinningQuestion();
-            //console.log("show hint!")
-            hintQuestionGreen.setVisible(false)
+            this.hideUILayer();
 
             if (hintBotInit) {
                 hintBotInit = false;
                 this.scene.launch("HintBot")
-                this.scene.sleep();
             } else {
                 this.scene.wake("HintBot");
-                this.scene.sleep();
-            }            
+            }
         });
 
         UIbackButton = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("UIbackButton").setDepth(3).setVisible(false);
@@ -434,7 +440,7 @@ export default class PlayerUI extends Phaser.Scene {
         keyMask = this.add.sprite(315, 540, 'atlas', 'keyMask.png').setName("keyMask").setOrigin(0, 0).setDepth(1).setVisible(false);
         recorder.addMaskSprite('keyMask', keyMask);
         keyMask.on('pointerdown', () => {
-            slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA",false);
+            slots.addIcon("icon - red keyA.png", "objRedKeyA", "altobjRedKeyA", false);
             this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
             haveHalfKey = true;
             this.didGoal('takeKeyFromPlate');
@@ -462,7 +468,10 @@ export default class PlayerUI extends Phaser.Scene {
         pasteBox.setVisible(true)
 
         recorder.setCookieRecorderMode(useCookieRecordings);
-        this.input.keyboard.on('keydown', this.handleKey);
+
+        if (location.hostname == "localhost") {
+            this.input.keyboard.on('keydown', this.handleKey);
+        }
 
         scenePlayGame = this.scene.get("PlayGame");
         sceneZotTable = this.scene.get("ZotTable");
@@ -724,6 +733,7 @@ export default class PlayerUI extends Phaser.Scene {
         if (uiObjectView && uiObjectViewDirty) {
             uiObjectViewDirty = false;
             const viewIt = slots.viewSelected();
+            this.hideHintIcons();
 
             // special hidden key on back of plate logic stuff
             foundHalfKey = false;
@@ -790,7 +800,7 @@ export default class PlayerUI extends Phaser.Scene {
             if (slots.combining.split(':')[3] == "objDonutPlated") {
                 slots.inventoryViewObj = "objDonutPlated";
                 slots.inventoryViewAlt = "altobjDonutPlated";
-                slots.addIcon("icon - donutPlated.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
+                slots.addIcon("icon - donutPlated.png", slots.inventoryViewObj, slots.inventoryViewAlt, false, slotRepl);
 
                 slots.selectItem(slots.combining.split(':')[3]);
                 didBonus = true;
@@ -801,7 +811,7 @@ export default class PlayerUI extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objKeyWhole") {
                 slots.inventoryViewObj = "objKeyWhole";
                 slots.inventoryViewAlt = "altobjKeyWhole";
-                slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
+                slots.addIcon("icon - keyWhole.png", slots.inventoryViewObj, slots.inventoryViewAlt, false, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.didGoal('assembleYellow');
 
@@ -811,7 +821,7 @@ export default class PlayerUI extends Phaser.Scene {
             } else if (slots.combining.split(':')[3] == "objRedKey") {
                 slots.inventoryViewObj = "objRedKey";
                 slots.inventoryViewAlt = "altobjRedKey";
-                slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, false,slotRepl);
+                slots.addIcon("icon - red key.png", slots.inventoryViewObj, slots.inventoryViewAlt, false, slotRepl);
                 slots.selectItem(slots.combining.split(':')[3]);
                 this.didGoal('assembleRed');
 
@@ -819,7 +829,7 @@ export default class PlayerUI extends Phaser.Scene {
                 objectImage = this.add.image(0, 0, "objRedKey").setOrigin(0, 0);
 
             } else {
-                slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", false,slotRepl); // it is a bug
+                slots.addIcon("icon - roach.png", "objRoach", "altobjRoach", false, slotRepl); // it is a bug
             }
             slots.combining = "";
             plusModeButton.setVisible(false);
@@ -858,7 +868,7 @@ export default class PlayerUI extends Phaser.Scene {
             hintObjectiveText = clueMap.get(nextObjective)!;
             clueText.text = hintObjectiveText;
             if (oldClue != clueText.text)
-                this.showSpinningQuestion();
+                hintQuestionGreen.setVisible(true);
             needNewClue = false;
         }
 
@@ -888,6 +898,7 @@ export default class PlayerUI extends Phaser.Scene {
         uiObjectView = false;
 
         objectImage.destroy();
+        this.restoreHintIcons();
 
         slots.combining = ""; // cancel any combine action
         this.turnEyeOff();
@@ -898,6 +909,52 @@ export default class PlayerUI extends Phaser.Scene {
         plusButton.setVisible(false);
         plusModeButton.setVisible(false);
         this.scene.wake(activeSceneName)
+    }
+
+    // From normal (not object) view, hide all the gadgets
+    hideUILayer() {
+        this.hideHintIcons();
+        stateEyeButton = eyeButton.visible;
+        stateInterfaceInspect = interfaceInspect.visible;
+        stateInterfaceClick = interfaceClick.visible;
+        stateClickLine = clickLine.visible;
+
+        eyeButton.setVisible(false);
+        interfaceInspect.setVisible(false);
+        interfaceClick.setVisible(false);
+        clickLine.setVisible(false);
+        invBar.setVisible(false);
+        slots.hideSlots();
+        slots.clearSelect();
+    }
+
+    restoreUILayer() {
+        this.restoreHintIcons();
+        eyeButton.setVisible(stateEyeButton);
+        interfaceInspect.setVisible(stateInterfaceInspect);
+        interfaceClick.setVisible(stateInterfaceClick);
+        clickLine.setVisible(stateClickLine);
+        invBar.setVisible(true);
+        slots.displaySlots();
+    }
+
+    hideHintIcons() {
+        stateHintQuestion = hintQuestion.visible;
+        stateHintQuestionGreen = hintQuestionGreen.visible;
+        questionSpinning.setVisible(false);
+        hintQuestion.setVisible(false);
+        hintQuestionGreen.setVisible(false);
+        hintButton.setVisible(false);
+    }
+
+    restoreHintIcons() {
+        //questionSpinning.setVisible(stateQuestionSpinning);
+        if (hintBotInit)
+            questionSpinning.setVisible(true);
+        //console.log(`hintQuestion ${stateHintQuestion} hintQuestionGreen ${stateHintQuestionGreen}`)
+        hintQuestion.setVisible(true);
+        hintQuestionGreen.setVisible(stateHintQuestionGreen);
+        hintButton.setVisible(true); hintButton.setInteractive({ cursor: 'pointer' });
     }
 
     handleKey(event: KeyboardEvent) {
@@ -930,6 +987,16 @@ export default class PlayerUI extends Phaser.Scene {
                 recorder.setMode("replay")
                 mainReplayRequest = "do the damn replay"
                 window.location.reload();
+                break;
+            case "x":
+                console.log("toggle skip start");
+                const skipStart = getCookie("skipStart");
+                if (skipStart == "skip") {
+                    setCookie("skipStart", "noskip", 30); // bake for a month
+                } else {
+                    setCookie("skipStart", "skip", 30); // bake for a month
+                }
+
                 break;
             case "Escape":
                 //;console.log("quit recorder");

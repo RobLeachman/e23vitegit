@@ -11,7 +11,7 @@ let recorder: Recorder;
 
 let roomReturnWall: number; // return here from other scene back button
 
-let viewWall = 0; // production start at 0
+let viewWall = 0; 
 let currentWall = -1;
 let previousWall = 0;
 let updateWall = false;

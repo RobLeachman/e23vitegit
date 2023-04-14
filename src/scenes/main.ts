@@ -12,19 +12,14 @@
 
 
 ** 4x4 background should be gray not white
-** five words - you cannot solve this yet
 
 ** clue bot
-** spin five words at init
 ** discord webhook
 ** setting screen
 ** music
-** more sound effects
-** animation
-   sprite
-   video clip 
-     https://rexrainbow.github.io/phaser3-rex-notes/docs/site/video/ 
-     https://phaser.io/examples/v3/view/game-objects/video/play-video
+
+** double-click icon to open it
+** spin five words at init
 ** itch.io
 ** patreon
     pop up at BOJ
@@ -34,8 +29,15 @@
 ** supabase
 ** cache youtube video
 ** full splash screen
+    https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
 ** save game
 ** timer
+
+3.60:
+    - no auto fallback, why am I specifying webGL?
+    https://github.com/photonstorm/phaser/blob/master/changelog/3.60/Game.md
+
+
 
 */
 
@@ -74,10 +76,13 @@ var rightButton: Phaser.GameObjects.Sprite;
 var backButton: Phaser.GameObjects.Sprite;
 
 let mobile: boolean;
+let zoomed = false;
 
-var takeMask: Phaser.GameObjects.Sprite;
-var tableMask: Phaser.GameObjects.Sprite;
-var doorMask: Phaser.GameObjects.Sprite;
+let takeMask: Phaser.GameObjects.Sprite;
+let tableMask: Phaser.GameObjects.Sprite;
+let doorMask: Phaser.GameObjects.Sprite;
+let rangerMask: Phaser.GameObjects.Sprite;
+let funzMask: Phaser.GameObjects.Sprite;
 
 //var hintMask: Phaser.GameObjects.Sprite; // maybe Ranger picture will be another view?
 var battMask: Phaser.GameObjects.Sprite;
@@ -132,14 +137,15 @@ export class PlayGame extends Phaser.Scene {
         //console.log("main update")
 
         // did we just hit the keyboard to start replaying?
-        if (this.input.activePointer.rightButtonDown()) {
-            console.log("right mouse button action!");
+        if (this.input.activePointer.rightButtonDown() && location.hostname == "localhost") {
+            console.log("right mouse button action! bounce bounce");
         }
 
         if (myText.text == "init") {
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
-                //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
                 //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
                 //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
                 //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
@@ -267,10 +273,12 @@ export class PlayGame extends Phaser.Scene {
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
                 this.add.dom(350, 1100, 'div', style, sentence);
 
-                myUI.displayInventoryBar(false);
+                myUI.hideUILayer();
                 slots.clearAll();
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
+                rangerMask.setVisible(false);
+                funzMask.setVisible(false);
                 clue2Mask.setVisible(false);
                 doorMask.setVisible(false);
                 battMask.setVisible(false);
@@ -342,12 +350,16 @@ export class PlayGame extends Phaser.Scene {
 
             //hintMask.setVisible(false); // ranger
             twoDoorMask.setVisible(false);
-            twoDoorUnlockedWall.setVisible(false)
+            twoDoorUnlockedWall.setVisible(false);
+            rangerMask.setVisible(false);
+            funzMask.setVisible(false)
             if (viewWall == 2) {
+                rangerMask.setVisible(true); rangerMask.setDepth(100); rangerMask.setInteractive({ cursor: 'pointer' });
+                funzMask.setVisible(true); funzMask.setDepth(100); funzMask.setInteractive({ cursor: 'pointer' });
                 // hintMask.setVisible(true); hintMask.setDepth(100); hintMask.setInteractive({ cursor: 'pointer' }); // ranger
                 twoDoorMask.setVisible(true); twoDoorMask.setDepth(100); twoDoorMask.setInteractive({ cursor: 'pointer' });
                 if (twoDoorUnlocked)
-                    twoDoorUnlockedWall.setVisible(true)
+                    twoDoorUnlockedWall.setVisible(true);
             }
 
             fiveMask.setVisible(false);
@@ -535,6 +547,40 @@ export class PlayGame extends Phaser.Scene {
         tableMask.on('pointerdown', () => {
             viewWall = 4; roomReturnWall = 4;
             myUI.didGoal('searchDonutTable');
+        });
+
+        rangerMask = this.add.sprite(34, 433, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("rangerMask");
+        recorder.addMaskSprite('rangerMask', rangerMask);
+        rangerMask.on('pointerdown', () => {
+            const cam = this.cameras.main;
+            if (zoomed) {
+                zoomed = false;
+                cam.pan(360, 640, 100)
+                cam.zoomTo(1, 100);
+                myUI.restoreUILayer();
+            } else {
+                myUI.hideUILayer();
+                zoomed = true;
+                cam.pan(120, 500, 100)
+                cam.zoomTo(3.5, 100);
+            }
+        });
+
+        funzMask = this.add.sprite(600, 690, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("funzMask");
+        recorder.addMaskSprite('funzMask', funzMask);
+        funzMask.on('pointerdown', () => {
+            const cam = this.cameras.main;
+            if (zoomed) {
+                zoomed = false;
+                cam.pan(360, 640, 500)
+                cam.zoomTo(1, 500);
+                myUI.restoreUILayer();
+            } else {
+                myUI.hideUILayer();
+                zoomed = true;
+                cam.pan(674, 773, 1000)
+                cam.zoomTo(28, 1000);
+            }
         });
 
         clue2Mask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("clue2Mask");

@@ -174,6 +174,14 @@ export default class Slots {
         });
     }
 
+    hideSlots() {
+        this.slotArray.forEach((icon) => {
+            //console.log(icon.iconSprite.name)
+            //icon.iconSprite.setDepth(1); //Test! This doesn't seem to be needed
+            icon.iconSprite.setVisible(false);
+        });
+    }
+
     // Recorder uses this to click an icon
     recordedClickIt(iconName: string) {
         //console.log("DO ICON CLICK " + iconName);
@@ -233,11 +241,9 @@ export default class Slots {
         this.slotArray[i].objView = objectView;
         this.slotArray[i].altObjView = altObjectView;
 
-        console.log(sound)
         if (sound)
             this.scene.sound.play('sfx', { name: 'niceTone', start: 7, duration: 1 });
     }
-
 
     clearSelect() {
         this.selectedIcon.setX(1000);

@@ -144,6 +144,16 @@ export class Five extends Phaser.Scene {
         });
 
         ////////////// SCENE OBJECTS //////////////
+        const noClueText = this.make.text({
+            x: 260,
+            y: 900,
+            text: 'You cannot solve this yet',
+            style: {
+                font: '25px Verdana',
+                color: '#ffff00'
+            }
+        });
+        noClueText.setDepth(99);        
 
         this.add.image(0, 0, 'fiveBackground').setOrigin(0, 0);
         this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setName('compartmentMask').setOrigin(0, 0);
@@ -219,6 +229,7 @@ export class Five extends Phaser.Scene {
             //console.log("Five awakes")
             if (myUI.getFourSolved()) {
                 myUI.didGoal('solveFive');
+                noClueText.setDepth(-1)
             }
         });
 

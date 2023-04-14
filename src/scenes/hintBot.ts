@@ -28,14 +28,10 @@ export class HintBot extends Phaser.Scene {
     }
 
     create() {
-        console.log(_SCENENAME + " create")
-        myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
-        this.scene.sleep(myUI.getActiveScene())
-
-        // this scene can run on top of the UI so we don't let it block like usual
-        //this.scene.bringToTop("PlayerUI");
-        //myUI.setActiveScene(_SCENENAME);
+        this.scene.bringToTop("PlayerUI");
+        myUI = this.scene.get("PlayerUI") as PlayerUI;
+        //myUI.setActiveScene("hints"); // can be called from any scene
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
 
@@ -61,14 +57,15 @@ export class HintBot extends Phaser.Scene {
             recorder.recordObjectDown(hintBackButton.name, thisscene);
             viewWall = previousWall;
 
-            console.log(`${_SCENENAME} Back!`);
+            //console.log(`${_SCENENAME} Back!`);
 
             hintBackButton.removeInteractive(); // fix up the cursor displayed on main scene
-            console.log("return to UI: " + myUI.getUIObjectViewOpen() + " return to active: " + myUI.getActiveScene())
+            //console.log("return to active: " + myUI.getActiveScene())
 
             this.scene.moveUp(myUI.getActiveScene());
             this.scene.sleep();
-            this.scene.wake("PlayerUI")
+            myUI.restoreUILayer();
+            myUI.hideGreenQuestion();
             this.scene.wake(myUI.getActiveScene());
         });
 
@@ -88,11 +85,10 @@ export class HintBot extends Phaser.Scene {
         });
         clueText.setDepth(99);
   
-
         this.events.on('wake', () => {
-            console.log(`${_SCENENAME} awakes! return to ${roomReturnWall}`)
+            //console.log(`${_SCENENAME} awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
-            this.scene.sleep(myUI.getActiveScene())
+            this.scene.bringToTop("PlayerUI");
 
             // Scene is room...
             viewWall = roomReturnWall;
@@ -115,7 +111,7 @@ export class HintBot extends Phaser.Scene {
             clueText.text = "Right now you should:\n\n" + hintObjective;
             if (firstClue) {
                 firstClue = false;
-                clueText.text = "The game features a hint system.\n\nNew objective clues become available\nas you progress.\n\n" +clueText.text;              
+                clueText.text = "The game features a hint system.\n\nNew clues become available\nas you progress.\n\n" +clueText.text;              
             }
         }
 
@@ -135,12 +131,12 @@ export class HintBot extends Phaser.Scene {
 
     // @ts-ignore
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
-        console.log(`${_SCENENAME} registry update ${key}`)
+        //console.log(`${_SCENENAME} registry update ${key}`)
 
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
-            console.log("registry scene:" + spriteName)
+            //console.log("registry scene:" + spriteName)
             if (spriteScene == _SCENENAME) {
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')

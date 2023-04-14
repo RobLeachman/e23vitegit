@@ -7,8 +7,9 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-const skipClickToStart = true; const skipCloud = true;
-//const skipClickToStart = false; const skipCloud = false;
+//const skipClickToStart = true; const skipCloud = true;
+let skipClickToStart = false; 
+let skipCloud = false;
 
 const testingNewRoom = false;
 const skipBackgroundsLoad = false;
@@ -55,6 +56,13 @@ export class BootGame extends Phaser.Scene {
 
     preload() {
         //console.log("BOOT preload")
+
+        const skipStart = getCookie("skipStart");
+        if (skipStart == "skip") {
+            skipClickToStart = true;
+            skipCloud = true;
+        }
+
         splashScreen = this.add.image(0, 0, 'splash').setOrigin(0, 0);
 
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
