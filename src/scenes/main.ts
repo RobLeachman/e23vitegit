@@ -15,8 +15,11 @@
 
 ** clue bot
 ** discord webhook
+https://discord.com/api/webhooks/1096443563514023997/9RmLBfgp_cIDG8qW0mtTKRyu5B-wPf7h0CawCpqWaWaQoVOwXqhhIrfDyanaQu9Bmmt3
+
 ** setting screen
 ** music
+** player name not slugger
 
 ** double-click icon to open it
 ** spin five words at init

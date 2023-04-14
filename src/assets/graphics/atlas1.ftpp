@@ -495,6 +495,26 @@
       "folder": ""
     },
     {
+      "name": "two-way-center.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/two-way-center.png",
+      "folder": ""
+    },
+    {
+      "name": "two-way-left.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/two-way-left.png",
+      "folder": ""
+    },
+    {
+      "name": "two-way-no-key.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/two-way-no-key.png",
+      "folder": ""
+    },
+    {
+      "name": "two-way-right.png",
+      "path": "D:/src/e23/src/assets/graphics/packed/two-way-right.png",
+      "folder": ""
+    },
+    {
       "name": "twoDoorMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed/twoDoorMask.png",
       "folder": ""
@@ -512,26 +532,6 @@
     {
       "name": "twoway-button-mask.png",
       "path": "D:/src/e23/src/assets/graphics/packed/twoway-button-mask.png",
-      "folder": ""
-    },
-    {
-      "name": "twoway-center.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/twoway-center.png",
-      "folder": ""
-    },
-    {
-      "name": "twoway-key.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/twoway-key.png",
-      "folder": ""
-    },
-    {
-      "name": "twoway-left.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/twoway-left.png",
-      "folder": ""
-    },
-    {
-      "name": "twoway-right.png",
-      "path": "D:/src/e23/src/assets/graphics/packed/twoway-right.png",
       "folder": ""
     },
     {
@@ -628,7 +628,7 @@
     "height": 2048,
     "fixedSize": false,
     "powerOfTwo": false,
-    "padding": 0,
+    "padding": 1,
     "extrude": 0,
     "allowRotation": false,
     "allowTrim": false,
