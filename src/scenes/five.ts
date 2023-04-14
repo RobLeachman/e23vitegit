@@ -226,7 +226,7 @@ export class Five extends Phaser.Scene {
         });
 
         this.events.on('wake', () => {
-            //console.log("Five awakes")
+            console.log("Five awakes, four solved=" + myUI.getFourSolved())
             if (myUI.getFourSolved()) {
                 myUI.didGoal('solveFive');
                 noClueText.setDepth(-1)
@@ -235,6 +235,7 @@ export class Five extends Phaser.Scene {
 
         if (myUI.getFourSolved()) {
             myUI.didGoal('solveFive');
+            noClueText.setDepth(-1)
         }
 
         this.panels[0].shuffle();
