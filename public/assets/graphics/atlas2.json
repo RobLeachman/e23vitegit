@@ -4,8 +4,8 @@
 			"image": "atlas2",
 			"format": "RGBA8888",
 			"size": {
-				"w": 642,
-				"h": 804
+				"w": 836,
+				"h": 720
 			},
 			"scale": 1,
 			"frames": [
@@ -31,6 +31,90 @@
 					}
 				},
 				{
+					"filename": "sound.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 230,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 230,
+						"h": 76
+					},
+					"frame": {
+						"x": 1,
+						"y": 643,
+						"w": 230,
+						"h": 76
+					}
+				},
+				{
+					"filename": "music.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 218,
+						"h": 73
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 218,
+						"h": 73
+					},
+					"frame": {
+						"x": 233,
+						"y": 643,
+						"w": 218,
+						"h": 73
+					}
+				},
+				{
+					"filename": "off.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 192,
+						"h": 73
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 192,
+						"h": 73
+					},
+					"frame": {
+						"x": 453,
+						"y": 643,
+						"w": 192,
+						"h": 73
+					}
+				},
+				{
+					"filename": "on.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 192,
+						"h": 73
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 192,
+						"h": 73
+					},
+					"frame": {
+						"x": 643,
+						"y": 1,
+						"w": 192,
+						"h": 73
+					}
+				},
+				{
 					"filename": "fourPieceFrame.png",
 					"rotated": false,
 					"trimmed": false,
@@ -45,8 +129,8 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 1,
-						"y": 643,
+						"x": 643,
+						"y": 76,
 						"w": 160,
 						"h": 160
 					}
@@ -66,8 +150,8 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 163,
-						"y": 643,
+						"x": 643,
+						"y": 238,
 						"w": 160,
 						"h": 160
 					}
@@ -87,8 +171,8 @@
 						"h": 125
 					},
 					"frame": {
-						"x": 325,
-						"y": 643,
+						"x": 643,
+						"y": 400,
 						"w": 154,
 						"h": 125
 					}

@@ -44,10 +44,15 @@ let stateHintQuestionGreen: boolean;
 
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
+let settingsButton: Phaser.GameObjects.Sprite;
 
 let slots: Slots;
 let recorder: Recorder;
+
 let activeSceneName: string;
+let activeSceneNameOld: string;
+let playSound = true;
+let playMusic = true;
 
 let uiObjectView = false;
 let uiObjectViewDirty = false;
@@ -58,14 +63,16 @@ let currentSelectedIndex: number;
 
 let hintBotInit = true;
 let hintObjectiveText: string;
+let settingsInit = true;
+let uiHadSettingsButton = false;
 
 // special for key hidden on back of plate
-var keyMask: Phaser.GameObjects.Sprite;
+let keyMask: Phaser.GameObjects.Sprite;
 let foundHalfKey = false; // enable the key mask when key part is visible
 let haveHalfKey = false; // don't show key part on plate back if already taken
 
 // tricky stuff for combined plate
-var doorUnlocked = false;
+let doorUnlocked = false;
 let didBonus = false;
 
 let showXtime = -1;
@@ -122,6 +129,8 @@ clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembl
 clueMap.set("exit", "Escape!"); // 20 until win
 clueMap.set("win", "Winner!"); // 20 until win
 
+// https://stackoverflow.com/questions/52347756/read-console-log-output-form-javascript
+let consoleStorage: string[] = [];
 
 for (let key of clueMap.keys()) {
     clueObjective.set(key, false);
@@ -130,6 +139,28 @@ for (let key of clueMap.keys()) {
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
+    }
+
+    //loadMusic() {
+    //    musicTrack = this.sound.add('musicTrack', 'assets/audio/testloops2.mp3', {loop:true});
+    //}
+
+    getSoundSetting() {
+        return playSound;
+    }
+
+    getMusicSetting() {
+        return playMusic;
+    }
+
+    toggleSound() {
+        playSound = !playSound;
+        console.log("sound: " + playSound);
+    }
+
+    toggleMusic() {
+        playMusic = !playMusic;
+        console.log("music: " + playMusic);
     }
 
     didGoal(objective: string) {
@@ -270,10 +301,33 @@ export default class PlayerUI extends Phaser.Scene {
         return hintObjectiveText;
     }
 
+    hideSettings() {
+        settingsButton.setVisible(false);
+    }
+
+    showSettingsButton() {
+        settingsButton.setVisible(true); settingsButton.setInteractive({ cursor: 'pointer' });
+    }
+
     // Must preload a few elements for UI
     preload() {
         this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
         this.load.spritesheet('animated', 'assets/graphics/animated.png', { frameWidth: 26, frameHeight: 19 });
+
+
+        // capture console on mobile
+        /*
+        console.log = function (msg) {
+            consoleStorage.push(msg);
+            console.warn(msg); // if you need to print the output
+        }
+        */
+    }
+
+    dumpConsole() {
+        consoleStorage.forEach(msg => {
+            console.log(msg);
+        });
     }
 
     create() {
@@ -345,7 +399,20 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
 
-        //console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
+        console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
+
+        settingsButton = this.add.sprite(360, 950, 'atlas', 'settings.png').setName("leftButton").setDepth(1).setVisible(false);
+        recorder.addMaskSprite('settingsButton', settingsButton);
+        settingsButton.on('pointerdown', () => {
+            this.hideUILayer();
+
+            if (settingsInit) {
+                settingsInit = false;
+                this.scene.launch("Settings")
+            } else {
+                this.scene.wake("Settings");
+            }
+        });
 
         plusModeButton.on('pointerdown', () => {
             //console.log("combine mode cancelled");
@@ -415,6 +482,7 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('UIbackButton', UIbackButton);
         UIbackButton.on('pointerdown', () => {
             this.closeObjectUI();
+
         });
 
         objectMask = this.add.sprite(170, 410, 'atlas', 'object-maskC.png').setOrigin(0, 0).setName("objectMask").setDepth(2).setVisible(false);
@@ -533,6 +601,15 @@ export default class PlayerUI extends Phaser.Scene {
 
         if (mainReplayRequest == "do the damn replay") { // trap if key pressed and not reloaded yet
             return;
+        }
+
+        if (activeSceneName != activeSceneNameOld) {
+            //console.log("scene switch")
+            activeSceneNameOld = activeSceneName;
+            settingsButton.setVisible(false);
+            if (activeSceneName == "PlayGame" || activeSceneName == "RoomTwo") {
+                settingsButton.setVisible(true); settingsButton.setInteractive({ cursor: 'pointer' });
+            }
         }
 
         if (myText.text == "init") {
@@ -739,6 +816,8 @@ export default class PlayerUI extends Phaser.Scene {
         }
 
         if (uiObjectView && uiObjectViewDirty) {
+            uiHadSettingsButton = settingsButton.visible;
+            this.hideSettings();
             uiObjectViewDirty = false;
             const viewIt = slots.viewSelected();
             this.hideHintIcons();
@@ -916,7 +995,10 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceClueFull.setVisible(false);
         plusButton.setVisible(false);
         plusModeButton.setVisible(false);
-        this.scene.wake(activeSceneName)
+        this.scene.wake(activeSceneName);
+        if (uiHadSettingsButton) {
+            this.showSettingsButton();
+        }
     }
 
     // From normal (not object) view, hide all the gadgets
@@ -934,6 +1016,7 @@ export default class PlayerUI extends Phaser.Scene {
         invBar.setVisible(false);
         slots.hideSlots();
         slots.clearSelect();
+        this.hideSettings();
     }
 
     restoreUILayer() {

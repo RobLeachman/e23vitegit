@@ -15,9 +15,11 @@
   * 4x4 background should be gray not white
   * show UI on zoom/pan complete
 
+** finish work to use alternate 4x4
 ** clue bot
-** setting screen
-** music
+
+
+--> Clockify extension
 
 ** double-click icon to open it
 ** spin five words at init
@@ -56,7 +58,7 @@ import DiscordWebhook from 'discord-webhook-ts';
 const d1 = 'https://discord.com/api/webhooks';
 const d2 = '1096536501413761125';
 const d3 = '_jdNDh2X_cgHwfnWSaXn4-ekCWvuaXAHbjDsj7p-mEbUmeJ8o1DbgPJx2nLi60Zu78VB';
-const discordClient = new DiscordWebhook(d1 +'/' + d2 + '/' + d3);
+const discordClient = new DiscordWebhook(d1 + '/' + d2 + '/' + d3);
 let timeStart: number;
 
 let myUI: PlayerUI;
@@ -80,9 +82,9 @@ const tableView = new Array();
 const closeView = new Array();
 const clue2states = new Array();
 
-var leftButton: Phaser.GameObjects.Sprite;
-var rightButton: Phaser.GameObjects.Sprite;
-var backButton: Phaser.GameObjects.Sprite;
+let leftButton: Phaser.GameObjects.Sprite;
+let rightButton: Phaser.GameObjects.Sprite;
+let backButton: Phaser.GameObjects.Sprite;
 
 let mobile: boolean;
 let zoomed = false;
@@ -229,10 +231,14 @@ export class PlayGame extends Phaser.Scene {
             slots.fakeClicks = 4;
             slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
             myUI.showClueDebug();
+            myUI.dumpConsole();
         }
-        if (slots.fakeClicks == 100) {
-            recorder.setMode("roachReplay");
+        if (slots.fakeClicks == 10) {
+            slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
             slots.fakeClicks = -1;
+            /*
+            recorder.setMode("roachReplay");
+            
             //console.log("roach replay " + slots.getSelected());
             let selectedThing = slots.getSelected();
             if (selectedThing.thing == "objRoach") {  /// ROACH REPLAY IS BROKEN
@@ -241,6 +247,7 @@ export class PlayGame extends Phaser.Scene {
                 recorder.setReplaySpeed("perfect")
             }
             window.location.reload();
+            */
         }
 
         ////////////// ROOM VIEW //////////////
@@ -540,7 +547,8 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
 
-        this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
+        if (recorder.getPlayerName() != "qqq")
+            this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
 
         viewportPointer.setDepth(100);
         viewportPointerClick.setDepth(100);
@@ -584,9 +592,10 @@ export class PlayGame extends Phaser.Scene {
         backButton.on('pointerdown', () => {
             //console.log("back to " + previousWall)
             slots.combining = ""; // cancel any combine action
-            if (viewWall == 4) // looking at table
+            if (viewWall == 4) { // looking at table
                 viewWall = 0;
-            else
+                myUI.showSettingsButton();
+            } else
                 viewWall = previousWall;
         });
 
@@ -627,6 +636,7 @@ export class PlayGame extends Phaser.Scene {
         tableMask = this.add.sprite(440, 615, 'atlas', 'tableMask.png').setOrigin(0, 0).setName("tableMask");
         recorder.addMaskSprite('tableMask', tableMask);
         tableMask.on('pointerdown', () => {
+            myUI.hideSettings();
             viewWall = 4; roomReturnWall = 4;
             myUI.didGoal('searchDonutTable');
         });
@@ -640,6 +650,7 @@ export class PlayGame extends Phaser.Scene {
                 cam.pan(360, 640, 750)
                 cam.zoomTo(1, 750);
                 myUI.restoreUILayer();
+                myUI.showSettingsButton();
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
@@ -657,6 +668,8 @@ export class PlayGame extends Phaser.Scene {
                 cam.pan(360, 640, 500)
                 cam.zoomTo(1, 500);
                 myUI.restoreUILayer();
+                myUI.showSettingsButton();
+
             } else {
                 myUI.hideUILayer();
                 zoomed = true;

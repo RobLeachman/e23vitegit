@@ -20,8 +20,28 @@
       "folder": ""
     },
     {
+      "name": "music.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/music.png",
+      "folder": ""
+    },
+    {
+      "name": "off.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/off.png",
+      "folder": ""
+    },
+    {
+      "name": "on.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/on.png",
+      "folder": ""
+    },
+    {
       "name": "rangerMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/rangerMask.png",
+      "folder": ""
+    },
+    {
+      "name": "sound.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/sound.png",
       "folder": ""
     }
   ],

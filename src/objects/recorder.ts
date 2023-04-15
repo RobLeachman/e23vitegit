@@ -455,6 +455,7 @@ export default class Recorder {
         re = /\%H\%/g; recIn = recIn.replace(re, "\%Five\%");
         re = /\%I\%/g; recIn = recIn.replace(re, "\%PlayerUI\%");
         re = /\%J\%/g; recIn = recIn.replace(re, "\%HintBot\%");
+        re = /\%K\%/g; recIn = recIn.replace(re, "\%Settings\%");
 
         if (recordingChecksum == this.checksum(recIn)) {
             //console.log("-->Good recording " + recIn);
@@ -633,6 +634,8 @@ export default class Recorder {
         re = /\%Five\%/g; recOut = recOut.replace(re, "\%H\%");
         re = /\%PlayerUI\%/g; recOut = recOut.replace(re, "\%I\%");
         re = /\%HintBot\%/g; recOut = recOut.replace(re, "\%J\%");
+        re = /\%Settings\%/g; recOut = recOut.replace(re, "\%K\%");
+        
 
         recOut = this.checksum(recording) + "?" + recOut + "?" + this.randomSeed + "-v1";
         //console.log("RECORDING OUT " + recOut);

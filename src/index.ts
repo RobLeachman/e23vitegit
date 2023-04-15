@@ -6,8 +6,9 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 const testingFour = false; // here we just skip loading stuff... but must comment out these too:
 //if (!testingFour) { // ALSO adjust scene config!
 
-import  PlayerUI from './scenes/playerUI';
-import { HintBot} from './scenes/hintBot';
+import PlayerUI from './scenes/playerUI';
+import { Settings } from './scenes/settings';
+import { HintBot } from './scenes/hintBot';
 import { BootGame } from './scenes/bootGame';
 import { PlayGame } from './scenes/main';
 import { ZotTable } from './scenes/zotTable';
@@ -79,7 +80,7 @@ let gameConfig = {
     dom: {
         createContainer: true
     },
-    
+
     disableContextMenu: true, // ready for right-click if needed
     //autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
 
@@ -97,7 +98,7 @@ let gameConfig = {
         ]
     },
 
-    scene: [PlayerUI, HintBot, BootGame, PlayGame, ZotTable, Four, Five, RoomTwo, Clue2, TwoWay]
+    scene: [PlayerUI, Settings, HintBot, BootGame, PlayGame, ZotTable, Four, Five, RoomTwo, Clue2, TwoWay]
 };
 
 
@@ -135,7 +136,7 @@ if (testingFour) {
             ]
         },
         //scene: [BootGame, PlayGame, ZotTable, Four, Five]
-        scene: [PlayerUI, HintBot, BootGame, RoomTwo, TwoWay]
+        scene: [PlayerUI, Settings, HintBot, BootGame]
     };
 }
 

@@ -8,7 +8,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
 //const skipClickToStart = true; const skipCloud = true;
-let skipClickToStart = false; 
+let skipClickToStart = false;
 let skipCloud = false;
 
 const testingNewRoom = false;
@@ -22,13 +22,16 @@ let welcomeBack = false;
 let playerName = "";
 const playerNameCookie = "escape23player1";
 let playerCount = -1;
-let playButtonIsHidden = true;
+let playButtonReady = false;
+let initSplash = true;
 
 let theRecording: string;
 
+let startButton: Phaser.GameObjects.Sprite;
 let playButton: Phaser.GameObjects.Sprite;
 
 let splashScreen: Phaser.GameObjects.Image;
+let regScreen: Phaser.GameObjects.Image;
 let thePlayer: Phaser.GameObjects.Text;
 let greetings: Phaser.GameObjects.Text;
 let greets1: Phaser.GameObjects.Text;
@@ -47,7 +50,7 @@ export class BootGame extends Phaser.Scene {
         super({
             pack: {
                 files: [
-                    { type: 'image', key: 'splash', url: 'assets/backgrounds/splashInit.webp' },
+                    { type: 'image', key: 'frontSplash', url: 'assets/backgrounds/frontSplash.webp' },
                 ]
             },
             key: 'BootGame'
@@ -63,43 +66,68 @@ export class BootGame extends Phaser.Scene {
             skipCloud = true;
         }
 
-        splashScreen = this.add.image(0, 0, 'splash').setOrigin(0, 0);
+        splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
 
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
         this.load.plugin('rexyoutubeplayerplugin', url, true);
 
-        // On the fence about DPI, it all seems just fine...
+        // On the fence about DPI, it all seems just fine... maybe another project?
         //var fontSize = 16*assetsDPR;
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
         //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`});
 
-        /* Need fonts and noise...
+        /* Need fonts?
                 this.load.bitmapFont('gameplay-black', 'assets/fonts/gameplay-1987-black.png', 'assets/fonts/gameplay-1987-bw.fnt');
                 this.load.bitmapFont('gameplay-white', 'assets/fonts/gameplay-1987-white.png', 'assets/fonts/gameplay-1987-bw.fnt');
         
                 this.load.bitmapFont('xolonium-black', 'assets/fonts/Xolonium-Regular-Black-72.png', 'assets/fonts/Xolonium-Regular-Black-72.fnt');
                 this.load.bitmapFont('xolonium-white', 'assets/fonts/Xolonium-Regular-White-72.png', 'assets/fonts/Xolonium-Regular-White-72.fnt');
-        
-                this.load.audio('testNoise', 'assets/sound/41525__Jamius__BigLaser_trimmed.wav');
+
         */
-                this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
+        this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
+        this.load.image('startButton', 'assets/sprites/startButton.png');
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
+        /* will skip if testing...
         this.load.audio('sfx', [
             'assets/audio/soundSheet1.ogg',
             'assets/audio/soundSheet1.mp3'
         ]);
-
         this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
         this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+        */
 
-        //this.load.video('test', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/video/test.mp4', 'canplaythrough', true, true);        
- 
-        if (!testingNewRoom) {
+        //this.load.audio('musicTrack', 'assets/audio/cbl_Escape.mp3');
+        //this.load.setCORS('anonymous');
+        //this.load.audio('musicTrack', 'http://bitblaster.com/banal23/unlicensed/testloops2.mp3');
+        this.load.audio('musicTrack', 'assets/audio/music.mp3', {loop:true});
+
+        if (testingNewRoom) {
+            this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
+            this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
+            this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
+            this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
+            this.load.image('on', 'assets/sprites/on.png');
+            this.load.image('off', 'assets/sprites/off.png');
+
+            this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
+        } else {
+
             if (!skipBackgroundsLoad) {
+                this.load.audio('sfx', [
+                    'assets/audio/soundSheet1.ogg',
+                    'assets/audio/soundSheet1.mp3'
+                ]);
+                this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
+                this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
                 this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
                 this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
+                this.load.image('on', 'assets/sprites/on.png');
+                this.load.image('off', 'assets/sprites/off.png');
+
+                this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
 
                 // used XnConvert to switch to webp, nice!
                 this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
@@ -203,7 +231,7 @@ export class BootGame extends Phaser.Scene {
             var width = this.cameras.main.width;
             var height = this.cameras.main.height;
 
-            const fudge = 30
+            const fudge = -180;
 
             var progressBar = this.add.graphics();
             var progressBox = this.add.graphics();
@@ -243,14 +271,17 @@ export class BootGame extends Phaser.Scene {
             this.load.on('fileprogress', function () {
                 //console.log(file.src);
             });
+            //var cache = this.textures;
+            //var data = cache.get('frontSplash');               
+            //data.destroy();
             this.load.on('complete', function () {
                 //console.log('complete');
-                if (!skipBackgroundsLoad) {
-                    progressBar.destroy();
-                    progressBox.destroy();
-                    loadingText.destroy();
-                    percentText.destroy();
-                }
+
+                // ???? if (!skipBackgroundsLoad) { 
+                progressBar.destroy();
+                progressBox.destroy();
+                loadingText.destroy();
+                percentText.destroy();
             });
             //console.log("boot preload finishes")
         }
@@ -264,9 +295,24 @@ export class BootGame extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2, "playButton").setOrigin(0, 0).setDepth(1);
-        playButton.setVisible(false)
+        // https://rexrainbow.github.io/phaser3-rex-notes/docs/site/audio/#loop
+        this.sound.play('musicTrack', { loop: true });
 
+        const startFudge = -270;
+        startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "startButton").setOrigin(0, 0).setDepth(1);
+        startButton.setVisible(false)
+        startButton.on('pointerdown', () => {
+            console.log("start!");
+            splashScreen.destroy();
+            startButton.setVisible(false);
+            regScreen = this.add.image(0, 0, 'registrationScreen').setOrigin(0, 0);
+            this.showGreetings(playerName);
+            playButtonReady = true;
+            thePlayer.setVisible(true)
+        });
+
+        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "playButton").setOrigin(0, 0).setDepth(1);
+        playButton.setVisible(false)
         playButton.on('pointerdown', () => {
             setCookie(playerNameCookie, playerName, 365); // bake for a year
             recorder.setPlayerName(playerName);
@@ -280,6 +326,7 @@ export class BootGame extends Phaser.Scene {
             greets3.destroy();
             greets4.destroy();
             greets5.destroy();
+            regScreen.destroy();
 
             myUI.displayInventoryBar(true); myUI.showEye()
 
@@ -300,6 +347,7 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         });
+
 
         recorder = myUI.getRecorder();
 
@@ -336,11 +384,161 @@ export class BootGame extends Phaser.Scene {
                 playerName = "Player" + playerCount;
         }
 
-        ////////////// PLAYER NAME //////////////
+        ////////////// GET PLAYER NAME //////////////
+        thePlayer = this.add.text(160, 250, playerName, {
+            fixedWidth: 400,
+            fixedHeight: 100,
+            fontFamily: 'Helvetica',
+            fontSize: '48px',
+            color: '#fff',
+            backgroundColor: 'grey',
+            padding: { x: 20, y: 20 }
+        })
+        thePlayer.setOrigin(0, 0).setVisible(false).setDepth(1);
+
+        thePlayer.setInteractive().on('pointerdown', () => {
+            this.rexUI.edit(thePlayer, {
+                onClose: () => {
+                    // TEST FOR BLANK ENTRY!
+
+                    playerName = (thePlayer as Phaser.GameObjects.Text).text;
+                    playerName = playerName.replace(/[^a-z0-9]/gi, '');
+                    greetings.setText("Thanks for testing, " + playerName + "!");
+                    setCookie(playerNameCookie, playerName, 365); // bake for a year
+                    recorder.setPlayerName(playerName);
+                }
+            })
+        })
+
+
+
+
+
+        /*        
+                let greets = "What can I call you?";
+                if (welcomeBack)
+                    greets = "Welcome back! Change your nick?"
+                greets1 = this.add.text(50, 350, greets, {
+                    //fontFamily: 'Quicksand',
+                    //font: '40px Verdana italic',
+                    fontFamily: 'Helvetica',
+                    fontSize: '30px',
+                    color: '#ff0',
+                });
+                if (welcomeBack)
+                    greets1.setColor('#fff');
+                greets2 = this.add.text(50, 390, 'Nicknames can be letters and numbers only', {
+                    //fontFamily: 'Quicksand',
+                    //font: '40px Verdana italic',
+                    fontFamily: 'Helvetica',
+                    fontSize: '20px',
+                    color: '#fff',
+                })
+                greets3 = this.add.text(50, 875, 'By clicking play you consent to debug telemetry.', {
+                    //fontFamily: 'Quicksand',
+                    //font: '40px Verdana italic',
+                    fontFamily: 'Helvetica',
+                    fontSize: '20px',
+                    color: '#aaa',
+                })
+                greets4 = this.add.text(50, 900, 'Your play will be recorded to improve the quality of my buggy game.', {
+                    //fontFamily: 'Quicksand',
+                    //font: '40px Verdana italic',
+                    fontFamily: 'Helvetica',
+                    fontSize: '20px',
+                    color: '#aaa',
+                })
+                //greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
+                greets5 = this.add.text(50, 925, 'I would love to hear from you! Email escape@bitblaster.com', {
+                    //fontFamily: 'Quicksand',
+                    //font: '40px Verdana italic',
+                    fontFamily: 'Helvetica',
+                    fontSize: '20px',
+                    color: '#fff',
+                })
+        
+                greetings = this.make.text({
+                    x: 50,
+                    y: 815,
+                    text: 'Greetings',
+                    style: {
+                        fontFamily: 'Helvetica',
+                        fontSize: '40px',
+                        fontStyle: 'italic'
+                        //fill: '#ffffff'
+                    },
+        
+                });
+        
+                greetings.setText("Thanks for testing, " + playerName + "!");
+        
+                
+        
+        
+        
+        
+                //thePlayer = this.add.text(320, 150, playerName, {
+                thePlayer = this.add.text(160, 450, playerName, {
+                    fixedWidth: 400,
+                    fixedHeight: 100,
+                    fontFamily: 'Helvetica',
+                    fontSize: '48px',
+                    color: '#fff',
+                    backgroundColor: 'grey',
+                    padding: { x: 20, y: 20 }
+                })
+                thePlayer.setOrigin(0, 0);
+        
+        
+                // https://blog.ourcade.co/posts/2020/phaser-3-add-text-input-rexui/
+                thePlayer.setInteractive().on('pointerdown', () => {
+                    this.rexUI.edit(thePlayer, {
+                        onClose: () => {
+                            // TEST FOR BLANK ENTRY!
+        
+                            playerName = (thePlayer as Phaser.GameObjects.Text).text;
+                            playerName = playerName.replace(/[^a-z0-9]/gi, '');
+                            greetings.setText("Thanks for testing, " + playerName + "!");
+                            setCookie(playerNameCookie, playerName, 365); // bake for a year
+                            recorder.setPlayerName(playerName);
+                        }
+                    })
+                })
+        */
+
+        ////////////// BOOT THE GAME //////////////
+        if (skipClickToStart) {
+            recorder.setPlayerName("qqq");
+            thePlayer.destroy();
+            playButton.destroy();
+            splashScreen.destroy();
+            greetings.destroy();
+            greets1.destroy();
+            greets2.destroy();
+            greets3.destroy();
+            greets4.destroy();
+            greets5.destroy();
+
+            myUI.displayInventoryBar(true);
+
+            //loadDone.destroy()
+            if (testingNewRoom) {
+                this.scene.run("Settings");
+            } else {
+
+                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
+            }
+        }
+    }
+
+    ////////////// GREETINGS TEXT //////////////
+    showGreetings(playerName: string) {
+        const greetsFudge = -200;
+
         let greets = "What can I call you?";
         if (welcomeBack)
             greets = "Welcome back! Change your nick?"
-        greets1 = this.add.text(50, 350, greets, {
+        greets1 = this.add.text(50, 350 + greetsFudge, greets, {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
@@ -349,7 +547,7 @@ export class BootGame extends Phaser.Scene {
         });
         if (welcomeBack)
             greets1.setColor('#fff');
-        greets2 = this.add.text(50, 390, 'Nicknames can be letters and numbers only', {
+        greets2 = this.add.text(50, 390 + greetsFudge, 'Nicknames can be letters and numbers only', {
             //fontFamily: 'Quicksand',
             //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
@@ -379,7 +577,6 @@ export class BootGame extends Phaser.Scene {
             color: '#fff',
         })
 
-
         greetings = this.make.text({
             x: 50,
             y: 815,
@@ -394,65 +591,20 @@ export class BootGame extends Phaser.Scene {
         });
 
         greetings.setText("Thanks for testing, " + playerName + "!");
-
-        //thePlayer = this.add.text(320, 150, playerName, {
-        thePlayer = this.add.text(160, 450, playerName, {
-            fixedWidth: 400,
-            fixedHeight: 100,
-            fontFamily: 'Helvetica',
-            fontSize: '48px',
-            color: '#fff',
-            backgroundColor: 'grey',
-            padding: { x: 20, y: 20 }
-        })
-        thePlayer.setOrigin(0, 0)
-        // https://blog.ourcade.co/posts/2020/phaser-3-add-text-input-rexui/
-        thePlayer.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(thePlayer, {
-                onClose: () => {
-                    // TEST FOR BLANK ENTRY!
-
-                    playerName = (thePlayer as Phaser.GameObjects.Text).text;
-                    playerName = playerName.replace(/[^a-z0-9]/gi, '');
-                    greetings.setText("Thanks for testing, " + playerName + "!");
-                    setCookie(playerNameCookie, playerName, 365); // bake for a year
-                    recorder.setPlayerName(playerName);
-                }
-            })
-        })
-
-        ////////////// BOOT THE GAME //////////////
-        if (skipClickToStart) {
-            recorder.setPlayerName("qqq");
-            thePlayer.destroy();
-            playButton.destroy();
-            splashScreen.destroy();
-            greetings.destroy();
-            greets1.destroy();
-            greets2.destroy();
-            greets3.destroy();
-            greets4.destroy();
-            greets5.destroy();
-
-            myUI.displayInventoryBar(true); 
-
-            //loadDone.destroy()
-            if (testingNewRoom) {
-                this.scene.run("RoomTwo");
-            } else {
-
-                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
-            }
-        }
     }
 
     // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
     update() {
-        if (playButtonIsHidden && !skipClickToStart) {
+        if (initSplash) {
+            initSplash = false;
+            startButton.setInteractive({ cursor: 'pointer' });
+            startButton.setVisible(true);
+        }
+        if (playButtonReady && !skipClickToStart) {
             if (playerCount > -1) {
                 playButton.setInteractive({ cursor: 'pointer' });
                 playButton.setVisible(true)
-                playButtonIsHidden = false;
+                playButtonReady = false;
             }
         }
     }

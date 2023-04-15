@@ -62,6 +62,9 @@ export class HintBot extends Phaser.Scene {
             hintBackButton.removeInteractive(); // fix up the cursor displayed on main scene
             //console.log("return to active: " + myUI.getActiveScene())
 
+            if (myUI.getActiveScene() == "PlayGame" || myUI.getActiveScene() == "RoomTwo")
+                myUI.showSettings();
+
             this.scene.moveUp(myUI.getActiveScene());
             this.scene.sleep();
             myUI.restoreUILayer();

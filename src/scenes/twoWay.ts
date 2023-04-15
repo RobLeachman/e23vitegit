@@ -63,6 +63,9 @@ export class TwoWay extends Phaser.Scene {
 
         this.registry.set('twoWaySolved', false);
 
+        // loading here gets it ready early...
+        openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
+
         backButtonTwoWay = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButtonTwoWay").setDepth(22);
         recorder.addMaskSprite('backButtonTwoWay', backButtonTwoWay);
 
@@ -119,7 +122,7 @@ export class TwoWay extends Phaser.Scene {
             this.registry.set('twoWaySolved', true);
             myUI.didGoal('getTealClue');
             
-            openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
+            //openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
             openIt.play(true)
             openIt.setLoop(false);
             openIt.setPaused(false);
