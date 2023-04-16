@@ -309,6 +309,26 @@ export default class Recorder {
         return getCookie("solvedFour-" + puzzle);
     }
 
+    setSoundMuted(isMuted: boolean) {
+        if (isMuted)
+            setCookie("soundMuted", "muted", 365); // bake for a year
+        else
+            setCookie("soundMuted", "notmuted", 365); // bake for a year
+    }
+    getSoundMuted() {
+        return getCookie("soundMuted");
+    }
+    setMusicMuted(isMuted: boolean) {
+        if (isMuted)
+            setCookie("musicMuted", "muted", 365); // bake for a year
+        else
+            setCookie("musicMuted", "notmuted", 365); // bake for a year
+    }
+    getMusicMuted() {
+        return getCookie("musicMuted");
+    }
+
+
 
     getSize() {
         let size = -1;
@@ -635,7 +655,7 @@ export default class Recorder {
         re = /\%PlayerUI\%/g; recOut = recOut.replace(re, "\%I\%");
         re = /\%HintBot\%/g; recOut = recOut.replace(re, "\%J\%");
         re = /\%Settings\%/g; recOut = recOut.replace(re, "\%K\%");
-        
+
 
         recOut = this.checksum(recording) + "?" + recOut + "?" + this.randomSeed + "-v1";
         //console.log("RECORDING OUT " + recOut);

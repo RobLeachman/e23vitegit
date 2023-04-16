@@ -63,7 +63,7 @@ export class HintBot extends Phaser.Scene {
             //console.log("return to active: " + myUI.getActiveScene())
 
             if (myUI.getActiveScene() == "PlayGame" || myUI.getActiveScene() == "RoomTwo")
-                myUI.showSettings();
+                myUI.showSettingsButton();
 
             this.scene.moveUp(myUI.getActiveScene());
             this.scene.sleep();

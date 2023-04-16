@@ -18,7 +18,6 @@
 ** finish work to use alternate 4x4
 ** clue bot
 
-
 --> Clockify extension
 
 ** double-click icon to open it
@@ -31,7 +30,7 @@
 ** PWA
 ** supabase
 ** cache youtube video
-** full splash screen
+** video splash screen
     https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
 ** save game
 ** timer
@@ -722,13 +721,6 @@ export class PlayGame extends Phaser.Scene {
         twoDoorMask.on('pointerdown', () => {
             let transit = false;
             let selectedThing = slots.getSelected();
-            if (selectedThing.thing == "objRedKey") {
-                //console.log("unlock red!");
-                slots.clearItem("objRedKey");
-                slots.clearSelect();
-                twoDoorUnlocked = true;
-                transit = true;
-            }
             if (twoDoorUnlocked)
                 transit = true;
             if (transit) {
@@ -743,7 +735,17 @@ export class PlayGame extends Phaser.Scene {
                     this.scene.sleep();
                 }
             } else {
-                this.sound.play('sfx', { name: 'doorLocked', start: 3, duration: .5 });
+                if (selectedThing.thing == "objRedKey") {
+                    //console.log("unlock red!");
+                    slots.clearItem("objRedKey");
+                    slots.clearSelect();
+                    twoDoorUnlocked = true;
+                    //transit = true;
+                    this.sound.play('sfx', { name: 'doorUnlocked', start: 18, duration: 1 });
+                    updateWall = true;
+                } else {
+                    this.sound.play('sfx', { name: 'doorLocked', start: 3, duration: .5 });
+                }
             }
         });
 
@@ -762,6 +764,7 @@ export class PlayGame extends Phaser.Scene {
                 //slots.clearItem(this, "objKeyWhole");
                 slots.clearItem("objKeyWhole");
                 slots.clearSelect(); // TODO why not do this automatically on clearItem()??
+                this.sound.play('sfx', { name: 'doorUnlocked', start: 18, duration: 1 });
             } else {
                 this.sound.play('sfx', { name: 'doorLocked', start: 3, duration: .5 });
 
@@ -782,6 +785,10 @@ export class PlayGame extends Phaser.Scene {
             myUI.setActiveScene("PlayGame");
 
             viewWall = roomReturnWall;
+            console.log("return " + viewWall)
+            if (viewWall == 4) {
+                myUI.hideSettings();
+            }
             updateWall = true;
         });
 

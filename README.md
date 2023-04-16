@@ -15,7 +15,7 @@ Hopefully this year's version will be ... Less Banal
 http://bitblaster.com/banal23
 
 
-LICENSE: The game is licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Attribution-NonCommercial 4.0</a> and I hope this will not slow you down using the source code. Always happy to talk (about whatever) hit me up escape at bitblaster.com or find me on Discord Quazar#2311
+LICENSE: The game is licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Attribution-NonCommercial 4.0</a> and if this slows you down please let me know. Always happy to talk (about whatever) hit me up escape at bitblaster.com or find me on Discord Quazar#2311
 
 Now using Vite not Webpack, thank you Kirk M.
 https://saricden.com/how-to-setup-a-phaser-3-project-with-vite

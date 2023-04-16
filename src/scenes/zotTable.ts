@@ -116,7 +116,6 @@ export class ZotTable extends Phaser.Scene {
             }
         });
 
-
         //backFrontButton = this.add.sprite(65, 625, 'backFrontButton'); // forgot setOrigin so fudged this in
         backFrontButton = this.add.sprite(65, 625, 'atlas', 'backFrontButton1.png').setName("backFrontButton");
         recorder.addMaskSprite('backFrontButton', backFrontButton);
@@ -176,10 +175,14 @@ export class ZotTable extends Phaser.Scene {
         recorder.addMaskSprite('zotDrawerMask', zotDrawerMask);
         zotDrawerMask.on('pointerdown', () => {
             //console.log(`open the drawer? state=${zotDrawerState} wall ${viewWall}`)
-            if (viewWall == 2) // tease the drawer but can't open if flipped
+            if (viewWall == 2) { // tease the drawer but can't open if flipped
+                this.sound.play('sfx', { name: 'sadHmm', start: 17, duration: 1 });
                 return;
-            if (zotDrawerState < 2)
+            }
+            if (zotDrawerState < 2) { // need the zot and the battery
+                this.sound.play('sfx', { name: 'sadHmm', start: 17, duration: 1 });
                 return;
+            }
             if (drawerOpen == 1) {
                 keyTaken = true;
                 drawerOpen = 2; // key has been taken from open drawer

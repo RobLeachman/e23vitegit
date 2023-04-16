@@ -18,6 +18,7 @@ let myUI: PlayerUI;
 var recorder: Recorder;
 
 let welcomeBack = false;
+let asyncCreateDone = false;
 
 let playerName = "";
 const playerNameCookie = "escape23player1";
@@ -100,7 +101,7 @@ export class BootGame extends Phaser.Scene {
         //this.load.audio('musicTrack', 'assets/audio/cbl_Escape.mp3');
         //this.load.setCORS('anonymous');
         //this.load.audio('musicTrack', 'http://bitblaster.com/banal23/unlicensed/testloops2.mp3');
-        this.load.audio('musicTrack', 'assets/audio/music.mp3', {loop:true});
+        this.load.audio('musicTrack', 'assets/audio/music.mp3', { loop: true });
 
         if (testingNewRoom) {
             this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
@@ -295,63 +296,23 @@ export class BootGame extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        // https://rexrainbow.github.io/phaser3-rex-notes/docs/site/audio/#loop
-        this.sound.play('musicTrack', { loop: true });
-
-        const startFudge = -270;
-        startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "startButton").setOrigin(0, 0).setDepth(1);
-        startButton.setVisible(false)
-        startButton.on('pointerdown', () => {
-            console.log("start!");
-            splashScreen.destroy();
-            startButton.setVisible(false);
-            regScreen = this.add.image(0, 0, 'registrationScreen').setOrigin(0, 0);
-            this.showGreetings(playerName);
-            playButtonReady = true;
-            thePlayer.setVisible(true)
-        });
-
-        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "playButton").setOrigin(0, 0).setDepth(1);
-        playButton.setVisible(false)
-        playButton.on('pointerdown', () => {
-            setCookie(playerNameCookie, playerName, 365); // bake for a year
-            recorder.setPlayerName(playerName);
-
-            thePlayer.destroy();
-            playButton.destroy();
-            splashScreen.destroy();
-            greetings.destroy();
-            greets1.destroy();
-            greets2.destroy();
-            greets3.destroy();
-            greets4.destroy();
-            greets5.destroy();
-            regScreen.destroy();
-
-            myUI.displayInventoryBar(true); myUI.showEye()
-
-            if (playerName == "qqq" || playerName == "Qqq") {
-                console.log("do not record by default, Quazar")
-                // this messes with roach replay... hmm
-                //recorder.setMode("idle")
-            } else {
-                //console.log("record by default...")
-                recorder.setMode("record")
-            }
-
-            var pointer = this.input.activePointer;
-            if (pointer.wasTouch) {
-                this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
-            }
-            else {
-                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
-            }
-        });
-
-
         recorder = myUI.getRecorder();
 
-        myUI.displayInventoryBar(false); myUI.hideEye();
+        myUI.initMusic();
+
+        if (recorder.getMusicMuted() == "muted") {
+            console.log("BOOT MUTE MUSIC")
+            myUI.setMusicSetting(false);
+        } else {
+            myUI.setMusicSetting(true);
+        }
+
+        if (recorder.getSoundMuted() == "muted") {
+            console.log("BOOT MUTE SOUND")
+            myUI.setSoundSetting(false);
+        } else {
+            myUI.setSoundSetting(true);            
+        }
 
         ////////////// PLAYER NAME REGISTRATION //////////////
         if (skipCloud) {
@@ -410,101 +371,89 @@ export class BootGame extends Phaser.Scene {
             })
         })
 
+        const startFudge = -270;
+        startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "startButton").setOrigin(0, 0).setDepth(1);
+        startButton.setVisible(false)
+        startButton.on('pointerdown', () => {
+            console.log("start!");
+            splashScreen.destroy();
+            startButton.setVisible(false);
+            regScreen = this.add.image(0, 0, 'registrationScreen').setOrigin(0, 0);
+            this.showGreetings(playerName);
+            playButtonReady = true;
+            thePlayer.setVisible(true)
+        });
 
+        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "playButton").setOrigin(0, 0).setDepth(1);
+        playButton.setVisible(false)
+        playButton.on('pointerdown', () => {
+            setCookie(playerNameCookie, playerName, 365); // bake for a year
+            recorder.setPlayerName(playerName);
 
+            thePlayer.destroy();
+            playButton.destroy();
+            splashScreen.destroy();
+            greetings.destroy();
+            greets1.destroy();
+            greets2.destroy();
+            greets3.destroy();
+            greets4.destroy();
+            greets5.destroy();
+            regScreen.destroy();
 
+            myUI.displayInventoryBar(true); myUI.showEye()
 
-        /*        
-                let greets = "What can I call you?";
-                if (welcomeBack)
-                    greets = "Welcome back! Change your nick?"
-                greets1 = this.add.text(50, 350, greets, {
-                    //fontFamily: 'Quicksand',
-                    //font: '40px Verdana italic',
-                    fontFamily: 'Helvetica',
-                    fontSize: '30px',
-                    color: '#ff0',
-                });
-                if (welcomeBack)
-                    greets1.setColor('#fff');
-                greets2 = this.add.text(50, 390, 'Nicknames can be letters and numbers only', {
-                    //fontFamily: 'Quicksand',
-                    //font: '40px Verdana italic',
-                    fontFamily: 'Helvetica',
-                    fontSize: '20px',
-                    color: '#fff',
-                })
-                greets3 = this.add.text(50, 875, 'By clicking play you consent to debug telemetry.', {
-                    //fontFamily: 'Quicksand',
-                    //font: '40px Verdana italic',
-                    fontFamily: 'Helvetica',
-                    fontSize: '20px',
-                    color: '#aaa',
-                })
-                greets4 = this.add.text(50, 900, 'Your play will be recorded to improve the quality of my buggy game.', {
-                    //fontFamily: 'Quicksand',
-                    //font: '40px Verdana italic',
-                    fontFamily: 'Helvetica',
-                    fontSize: '20px',
-                    color: '#aaa',
-                })
-                //greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
-                greets5 = this.add.text(50, 925, 'I would love to hear from you! Email escape@bitblaster.com', {
-                    //fontFamily: 'Quicksand',
-                    //font: '40px Verdana italic',
-                    fontFamily: 'Helvetica',
-                    fontSize: '20px',
-                    color: '#fff',
-                })
-        
-                greetings = this.make.text({
-                    x: 50,
-                    y: 815,
-                    text: 'Greetings',
-                    style: {
-                        fontFamily: 'Helvetica',
-                        fontSize: '40px',
-                        fontStyle: 'italic'
-                        //fill: '#ffffff'
-                    },
-        
-                });
-        
-                greetings.setText("Thanks for testing, " + playerName + "!");
-        
-                
-        
-        
-        
-        
-                //thePlayer = this.add.text(320, 150, playerName, {
-                thePlayer = this.add.text(160, 450, playerName, {
-                    fixedWidth: 400,
-                    fixedHeight: 100,
-                    fontFamily: 'Helvetica',
-                    fontSize: '48px',
-                    color: '#fff',
-                    backgroundColor: 'grey',
-                    padding: { x: 20, y: 20 }
-                })
-                thePlayer.setOrigin(0, 0);
-        
-        
-                // https://blog.ourcade.co/posts/2020/phaser-3-add-text-input-rexui/
-                thePlayer.setInteractive().on('pointerdown', () => {
-                    this.rexUI.edit(thePlayer, {
-                        onClose: () => {
-                            // TEST FOR BLANK ENTRY!
-        
-                            playerName = (thePlayer as Phaser.GameObjects.Text).text;
-                            playerName = playerName.replace(/[^a-z0-9]/gi, '');
-                            greetings.setText("Thanks for testing, " + playerName + "!");
-                            setCookie(playerNameCookie, playerName, 365); // bake for a year
-                            recorder.setPlayerName(playerName);
-                        }
-                    })
-                })
-        */
+            if (playerName == "qqq" || playerName == "Qqq") {
+                console.log("do not record by default, Quazar")
+                // this messes with roach replay... hmm
+                //recorder.setMode("idle")
+            } else {
+                //console.log("record by default...")
+                recorder.setMode("record")
+            }
+
+            var pointer = this.input.activePointer;
+            if (pointer.wasTouch) {
+                this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
+            }
+            else {
+                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
+            }
+            this.sound.play('sfx', { name: 'hmmQuestion', start: 16, duration: 1 });
+        });
+
+        myUI.displayInventoryBar(false); myUI.hideEye();
+
+        ////////////// PLAYER NAME REGISTRATION //////////////
+        if (skipCloud) {
+            theRecording = "NO RECORDING"
+            playerCount = 999;
+            playerName = "Quazar"
+            welcomeBack = true;
+        } else {
+            const recordingFilename = recorder.getRecordingFilename();
+            //console.log("BOOT filename=" + recordingFilename);
+            if (recordingFilename.length > 0)
+                theRecording = await recorder.getRecording();
+            else
+                theRecording = "NO RECORDING";
+            //console.log("BOOT recording= " + theRecording);
+
+            //playerCount = await this.getPlayerCount(); // async call to recorder's increment
+            playerCount = await recorder.incrementPlayerCount();
+
+            let playerCookie = getCookie(playerNameCookie);
+            playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
+
+            // Let the remain the same player number?
+            //if (playerCookie.substring(0, 6) != "Player") {
+            if (playerCookie.length > 0) {
+                playerName = playerCookie;
+                welcomeBack = true;
+            }
+            if (playerName.length < 1)
+                playerName = "Player" + playerCount;
+        }
 
         ////////////// BOOT THE GAME //////////////
         if (skipClickToStart) {
@@ -529,6 +478,8 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
         }
+
+        asyncCreateDone = true;
     }
 
     ////////////// GREETINGS TEXT //////////////
@@ -595,10 +546,12 @@ export class BootGame extends Phaser.Scene {
 
     // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
     update() {
-        if (initSplash) {
-            initSplash = false;
-            startButton.setInteractive({ cursor: 'pointer' });
-            startButton.setVisible(true);
+        if (asyncCreateDone) {
+            if (initSplash) {
+                initSplash = false;
+                startButton.setInteractive({ cursor: 'pointer' });
+                startButton.setVisible(true);
+            }
         }
         if (playButtonReady && !skipClickToStart) {
             if (playerCount > -1) {

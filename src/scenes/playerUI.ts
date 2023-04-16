@@ -51,8 +51,10 @@ let recorder: Recorder;
 
 let activeSceneName: string;
 let activeSceneNameOld: string;
-let playSound = true;
-let playMusic = true;
+let playSound = true; // toggled to true at BOJ unless muted
+let playMusic = false; // toggled to true at BOJ unless muted
+// @ts-ignore
+let music;
 
 let uiObjectView = false;
 let uiObjectViewDirty = false;
@@ -107,27 +109,81 @@ let debugHints = false;
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
 clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room!") // until clicked an arrow
+// Tap the arrows to move right, left, back.
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
+// Look for the table by the door. 
+// It has a donut on it.
+// Click on the table to look at it.
 clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
+// Click the table to look at it.
+// Click the donut to pick it up.
+// Click the plate to pick it up.
 clueMap.set("searchPlate", "Search the plate"); // 3 until see the key
+// Click the plate icon and then the eyeball to inspect the plate.
+// Looking at the plate, click it to look at the back.
 clueMap.set("takeKeyFromPlate", "Take half red key from plate"); // 4 until took the key
+// Click the plate icon and then the eyeball to inspect the plate.
+// Looking at the plate, click it to look at the back.
+// Click the part of the key taped to the plate to pick it up.
 clueMap.set("openTeal", "Open the Teal Box"); // 5 until box is open
+// Find the table with the teal box.
+// Click the table to look at the box.
+// Click the button twice to open the box.
 clueMap.set("takeKeyFromTeal", "Pick up half red key from teal box"); // 6 until took the key
+// Find the table with the teal box, click to look at it.
+// Click the button twice to open the box.
+// Click the part of the key to pick it up.
 clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
+// Click a red key part icon and then the eyeball to inspect it.
+// Click the plus button.
+// Click the other red key part to combine the items and assemble the key.
 clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
+// Find the dark door.
+// Select the red key icon.
+// Click the door to unlock it and again to enter the second room.
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
+// Find the 4x4 puzzle in the second room.
+// Select a piece and then another piece to swap.
+// IT NEEDS TO LOOK LIKE THIS:
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
+// Find the box with 5 words in the first room. 
+// Click the words to spin.
+// Make a 5-word phrase.
 clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle?"); // 11 until 5x5 is solved
+// Watch the 4x4 YouTube for about 30 seconds and listen carefully. Click the words to spin.
+// Listen for a 5-word phrase.
+// "So much larger than life".
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
+// Find the box with 5 words in the first room.
+// Take the battery.
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
+// Find the table that had the donut and plate on it.
+// Take the lightning bolt.
 clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
+// Spin the box back-to-front and top-to-bottom.
+// Put the lighting bolt on the top and the battery on the bottom.
+// Be sure the box is facing up so the drawer will open.
 clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
+// Click the part of the yellow key from the green box to pick it up. 
 clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
+// Find the two-way box in the second room.
+// Click right and left in sequence to open it.
+// Get the clue from the teal box.
 clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
+// Click the button on the teal box until it closes.
+// Click the button and observe which flap moves.
+// Enter the sequence on the red two-way box: L R R R L L R L
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
+// Click the part of the yellow key from the red box to pick it up. 
 clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
+// Click a red key part icon and then the eyeball to inspect it.
+// Click the plus button.
+// Click the other red key part to combine the items and assemble the key.
 clueMap.set("exit", "Escape!"); // 20 until win
-clueMap.set("win", "Winner!"); // 20 until win
+// Unlock the door.
+// Consider the bonus. What could it be? There is a clue on a wall.
+// You can only exit now, or one last thing which was impossible earlier.
+clueMap.set("win", "Winner!"); // 21 chicken dinner
 
 // https://stackoverflow.com/questions/52347756/read-console-log-output-form-javascript
 let consoleStorage: string[] = [];
@@ -145,23 +201,39 @@ export default class PlayerUI extends Phaser.Scene {
     //    musicTrack = this.sound.add('musicTrack', 'assets/audio/testloops2.mp3', {loop:true});
     //}
 
-    getSoundSetting() {
+    getSoundEnabled() {
         return playSound;
     }
-
-    getMusicSetting() {
+    getMusicEnabled() {
         return playMusic;
     }
 
-    toggleSound() {
-        playSound = !playSound;
-        console.log("sound: " + playSound);
+    setSoundSetting(newSetting: boolean) {
+        playSound = newSetting;
+        if (playSound) {
+            recorder.setSoundMuted(false);
+            this.sound.setMute(false);
+        } else {
+            recorder.setSoundMuted(true);
+            this.sound.setMute(true);
+        }
+    }
+    setMusicSetting(newSetting: boolean) {
+        playMusic = newSetting;
+        if (playMusic) {
+            recorder.setMusicMuted(false);
+            // @ts-ignore
+            music.play();            
+        } else {
+            recorder.setMusicMuted(true);
+            // @ts-ignore
+            music.pause();
+        }
+    }
+    initMusic() {
+        music = this.sound.add('musicTrack', { loop: true });        
     }
 
-    toggleMusic() {
-        playMusic = !playMusic;
-        console.log("music: " + playMusic);
-    }
 
     didGoal(objective: string) {
         //console.log("GOAL COMPLETE! " + objective)
@@ -405,6 +477,7 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('settingsButton', settingsButton);
         settingsButton.on('pointerdown', () => {
             this.hideUILayer();
+            this.scene.sleep(activeSceneName);
 
             if (settingsInit) {
                 settingsInit = false;

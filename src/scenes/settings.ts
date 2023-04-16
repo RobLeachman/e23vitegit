@@ -15,6 +15,7 @@ let settingsBackButton: Phaser.GameObjects.Sprite;
 
 let soundButton: Phaser.GameObjects.Sprite;
 let musicButton: Phaser.GameObjects.Sprite;
+let ytWarning: Phaser.GameObjects.Text;
 
 
 export class Settings extends Phaser.Scene {
@@ -22,26 +23,19 @@ export class Settings extends Phaser.Scene {
         super(_SCENENAME);
     }
 
-    hideSettingsScreen() {
-        //soundSprite.setVisible(false);
-        //musicSprite.setVisible(false);
-        //backgroundImage.setVisible(false);
-        
-    }
-
     switchSoundSprites() {
-        if (myUI.getSoundSetting())
+        if (myUI.getSoundEnabled())
             soundButton.setTexture('on')
         else
             soundButton.setTexture('off')
     }
 
     switchMusicSprites() {
-        if (myUI.getMusicSetting())
+        if (myUI.getMusicEnabled())
             musicButton.setTexture('on')
         else
             musicButton.setTexture('off')
-    }    
+    }
 
     create() {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
@@ -86,41 +80,92 @@ export class Settings extends Phaser.Scene {
         this.add.sprite(52, 415, 'atlas2', 'sound.png').setOrigin(0, 0).setDepth(1);
         this.add.sprite(55, 566, 'atlas2', 'music.png').setOrigin(0, 0).setDepth(1);
         soundButton = this.add.sprite(309, 416, 'atlas2', 'on.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
-        musicButton = this.add.sprite(309, 566, 'atlas2', 'off.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
+        musicButton = this.add.sprite(309, 566, 'atlas2', 'on.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
 
         recorder.addMaskSprite('soundButton', soundButton);
         soundButton.on('pointerdown', () => {
-            console.log(`${_SCENENAME} On!`);
-            myUI.toggleSound();
+            ytWarning.setVisible(true);
+
+            if (myUI.getSoundEnabled()) {
+                myUI.setSoundSetting(false);
+            } else {
+                myUI.setSoundSetting(true);                
+            }            
+            if (!myUI.getSoundEnabled()) {
+                myUI.setMusicSetting(false);
+                musicButton.removeInteractive();
+            }
+            else {
+                musicButton.setInteractive({ cursor: 'pointer' });
+                this.sound.play('sfx', { name: 'niceTone', start: 7, duration: 1 });
+            }
             this.switchSoundSprites();
-            if (myUI.getSoundSetting()) {
-                //this.sound.play('sfx', { name: 'niceTone', start: 7, duration: 1 });
-
-                const musicConfig = { loop: false }
-                this.sound.play('musicTrack', musicConfig);
-
-            } else
-                this.sound.stopAll();
-
+            this.switchMusicSprites();
         });
         soundButton.setVisible(true); soundButton.setInteractive({ cursor: 'pointer' });
 
         recorder.addMaskSprite('musicButton', musicButton);
         musicButton.on('pointerdown', () => {
-            console.log(`${_SCENENAME} On!`);
-            myUI.toggleMusic();
+            ytWarning.setVisible(true);
+
+            if (myUI.getMusicEnabled()) {
+                myUI.setMusicSetting(false);
+            } else {
+                myUI.setMusicSetting(true);                
+            }
+
             this.switchMusicSprites();
-            if (myUI.getMusicSetting()) {
-                //this.sound.play('sfx', { name: 'niceTone', start: 7, duration: 1 });
-
-                const musicConfig = { loop: false }
-                this.sound.play('musicTrack', musicConfig);
-
-            } else
-                this.sound.stopAll();
-
         });
         musicButton.setVisible(true); musicButton.setInteractive({ cursor: 'pointer' });
+        if (!myUI.getSoundEnabled()) {
+            myUI.setMusicSetting(false);
+            musicButton.removeInteractive();
+        }
+
+        this.switchMusicSprites();
+        this.switchSoundSprites();
+
+        this.add.text(30, 710, 'Enjoy the music, it is "Escape" by Carbon Based Lifeforms', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '24px',
+            color: '#fff',
+        })
+        this.add.text(30, 750, 'They are super cool and have not told me to take it down. I wanted', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#fff',
+        })
+        this.add.text(30, 775, 'to share the track and the band with you. Check them out on YouTube', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#fff',
+        })
+        this.add.text(30, 800, 'or better, hit their website www.carbonbasedlifeforms.net', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '20px',
+            color: '#fff',
+        })
+
+        ytWarning = this.add.text(30, 1000, 'Note: The YouTube player on 4x4 puzzle is not muted', {
+            //fontFamily: 'Quicksand',
+            //font: '40px Verdana italic',
+            fontFamily: 'Helvetica',
+            fontSize: '28px',
+            color: '#ff0',
+        })
+        ytWarning.setVisible(false);
+        if (!myUI.getSoundEnabled() || !myUI.getMusicEnabled())
+            ytWarning.setVisible(true);
+
+
 
         // start up the background
         updateWall = true;
