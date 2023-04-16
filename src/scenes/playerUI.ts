@@ -10,6 +10,7 @@ const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast st
 let debugInput = true; // display pastebox for input of debug data
 if (location.hostname != "localhost")
     debugInput = false;
+let debugHints = true;
 
 let cameraHack = 0;
 
@@ -55,6 +56,7 @@ let playSound = true; // toggled to true at BOJ unless muted
 let playMusic = false; // toggled to true at BOJ unless muted
 // @ts-ignore
 let music;
+let musicLength: number;
 
 let uiObjectView = false;
 let uiObjectViewDirty = false;
@@ -104,16 +106,19 @@ let sceneFive: Phaser.Scene;
 
 let needNewClue = true;
 let clueText: Phaser.GameObjects.Text;
-let debugHints = false;
+
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
+let spoilerMap = new Map<string, string>(); // clue key, clue text
 clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room!") // until clicked an arrow
-// Tap the arrows to move right, left, back.
+spoilerMap.set("searchAndSolve-1", "Tap the arrows to move right, left, back");
+spoilerMap.set("searchAndSolve-2", "Click/Tap is the only input you will need");
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
-// Look for the table by the door. 
-// It has a donut on it.
-// Click on the table to look at it.
+spoilerMap.set("searchDonutTable-1", "Look for the table by the door.");
+spoilerMap.set("searchDonutTable-2", "It has a donut on it.");
+spoilerMap.set("searchDonutTable-3", "Click on the table to look at it.");
+
 clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
 // Click the table to look at it.
 // Click the donut to pick it up.
@@ -171,7 +176,7 @@ clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is press
 // Get the clue from the teal box.
 clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
 // Click the button on the teal box until it closes.
-// Click the button and observe which flap moves.
+// Click the button and observe which flap moves. LIKE THIS
 // Enter the sequence on the red two-way box: L R R R L L R L
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
 // Click the part of the yellow key from the red box to pick it up. 
@@ -182,7 +187,7 @@ clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembl
 clueMap.set("exit", "Escape!"); // 20 until win
 // Unlock the door.
 // Consider the bonus. What could it be? There is a clue on a wall.
-// You can only exit now, or one last thing which was impossible earlier.
+// You can only exit now, or do one last thing which was impossible earlier.
 clueMap.set("win", "Winner!"); // 21 chicken dinner
 
 // https://stackoverflow.com/questions/52347756/read-console-log-output-form-javascript
@@ -196,10 +201,6 @@ export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
     }
-
-    //loadMusic() {
-    //    musicTrack = this.sound.add('musicTrack', 'assets/audio/testloops2.mp3', {loop:true});
-    //}
 
     getSoundEnabled() {
         return playSound;
@@ -223,7 +224,7 @@ export default class PlayerUI extends Phaser.Scene {
         if (playMusic) {
             recorder.setMusicMuted(false);
             // @ts-ignore
-            music.play();            
+            music.play();
         } else {
             recorder.setMusicMuted(true);
             // @ts-ignore
@@ -231,9 +232,22 @@ export default class PlayerUI extends Phaser.Scene {
         }
     }
     initMusic() {
-        music = this.sound.add('musicTrack', { loop: true });        
+        music = this.sound.add('musicTrack', { loop: true });
+        musicLength = music.duration;
+        if (musicLength < 350) {
+            const musicTest = this.make.text({
+                x: 620,
+                y: 1045,
+                text: 'test music',
+                style: {
+                    font: '18px Verdana',
+                    //fill: '#ffffff'
+                }
+            });
+            //console.log(this.sys.game.device.browser)
+            musicTest.setDepth(99);
+        }
     }
-
 
     didGoal(objective: string) {
         //console.log("GOAL COMPLETE! " + objective)
@@ -421,21 +435,20 @@ export default class PlayerUI extends Phaser.Scene {
         let hostname = location.hostname;
         //console.log(hostname);
 
-
-
         // Debug line above inventory
         if (false) {
             const mobileTest = this.make.text({
                 x: 5,
                 y: 1045,
-                text: 'Hostname:' + hostname + "  Safari:" + this.sys.game.device.browser.mobileSafari + " ver " + this.sys.game.device.browser.safariVersion,
+                text: 'debug it',
                 style: {
                     font: '18px Verdana',
                     //fill: '#ffffff'
                 }
             });
             //console.log(this.sys.game.device.browser)
-            mobileTest.setDepth(99)
+            mobileTest.setDepth(99);
+            mobileTest.text = 'Hostname:' + hostname + "  Safari:" + this.sys.game.device.browser.mobileSafari + " ver " + this.sys.game.device.browser.safariVersion;
         }
 
         if (hostname != "localhost")
@@ -473,7 +486,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
-        settingsButton = this.add.sprite(360, 950, 'atlas', 'settings.png').setName("leftButton").setDepth(1).setVisible(false);
+        settingsButton = this.add.sprite(660, 300, 'atlas', 'settings.png').setName("leftButton").setDepth(1).setVisible(false);
         recorder.addMaskSprite('settingsButton', settingsButton);
         settingsButton.on('pointerdown', () => {
             this.hideUILayer();
@@ -504,7 +517,7 @@ export default class PlayerUI extends Phaser.Scene {
         eyeButton.setVisible(false); eyeButton.setInteractive({ cursor: 'pointer' });
 
         eyeButton.on('pointerdown', () => {
-            //console.log(`EYE CLICK recorder mode= ${recorder.getMode()}`);
+            //console.log(`EYE CLICK recorder mode = ${ recorder.getMode() }`);
             if (recorder.getMode() == "record")
                 recorder.recordObjectDown("eyeButton", this);
 
@@ -715,7 +728,6 @@ export default class PlayerUI extends Phaser.Scene {
                         theRecording = await recorder.getRecording();
                 }
                 //console.log("UI recording= " + theRecording);
-                //console.log("reseed random " + recorder.getRNGSeed())
 
                 seededRNG = new Phaser.Math.RandomDataGenerator([recorder.getRNGSeed()]);
 
@@ -750,7 +762,7 @@ export default class PlayerUI extends Phaser.Scene {
                 pasteBox.setVisible(true);
                 myText.setVisible(true);
                 mainHasStarted = true;
-                //console.log(`main has started, mode=${recorder.getMode()}`)
+                //console.log(`main has started, mode = ${ recorder.getMode() }`)
             }
         }
         if (pasteBox.text != "pasteit" && pasteBox.text != "init") {  // pastebox latch
@@ -839,7 +851,7 @@ export default class PlayerUI extends Phaser.Scene {
                             //console.log("simulating UI " + targetObject)
                             object?.emit('pointerdown')
                         } else {
-                            //console.log(`simulate sprite ${targetObject} on scene ${targetScene}`)
+                            //console.log(`simulate sprite ${ targetObject } on scene ${ targetScene }`)
                             this.registry.set('replayObject', targetObject + ":" + targetScene);
                         }
                     } else if (targetType == "icon") {
@@ -910,7 +922,7 @@ export default class PlayerUI extends Phaser.Scene {
                 keyMask.setVisible(true); keyMask.setDepth(200); keyMask.setInteractive({ cursor: 'pointer' });
             }
 
-            //console.log(`VIEW ${viewIt.objectView} alt ${viewIt.objectViewAlt}`)
+            //console.log(`VIEW ${ viewIt.objectView } alt ${ viewIt.objectViewAlt }`)
             if (objectImage != undefined)
                 objectImage.destroy();
             if (flipIt)
@@ -1017,7 +1029,7 @@ export default class PlayerUI extends Phaser.Scene {
             let nextObjective: string = "";
             let foundNext = false;
             clueObjective.forEach((objectiveCompleted, idx) => {
-                //console.log(`${idx} is ${objectiveCompleted}`)
+                //console.log(`${ idx } is ${ objectiveCompleted }`)
                 if (!objectiveCompleted && !foundNext) {
                     nextObjective = idx;
                     foundNext = true;
@@ -1027,6 +1039,10 @@ export default class PlayerUI extends Phaser.Scene {
 
             hintObjectiveText = clueMap.get(nextObjective)!;
             clueText.text = hintObjectiveText;
+
+            this.doSpoiler();
+
+
             if (oldClue != clueText.text)
                 hintQuestionGreen.setVisible(true);
             needNewClue = false;
@@ -1051,6 +1067,10 @@ export default class PlayerUI extends Phaser.Scene {
                         }
                     }
         */
+    }
+
+    doSpoiler() {
+        console.log("spoiler!")
     }
 
     closeObjectUI() {
@@ -1114,7 +1134,7 @@ export default class PlayerUI extends Phaser.Scene {
         //questionSpinning.setVisible(stateQuestionSpinning);
         if (hintBotInit)
             questionSpinning.setVisible(true);
-        //console.log(`hintQuestion ${stateHintQuestion} hintQuestionGreen ${stateHintQuestionGreen}`)
+        //console.log(`hintQuestion ${ stateHintQuestion } hintQuestionGreen ${ stateHintQuestionGreen }`)
         hintQuestion.setVisible(true);
         hintQuestionGreen.setVisible(stateHintQuestionGreen);
         hintButton.setVisible(true); hintButton.setInteractive({ cursor: 'pointer' });

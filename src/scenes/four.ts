@@ -212,7 +212,6 @@ export class Four extends Phaser.Scene {
                 this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
                 this.ytPlayButton.setVisible(true);
             }
-
         });
     }
 

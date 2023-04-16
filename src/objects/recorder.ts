@@ -20,6 +20,8 @@ let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
 let recordedRNGSeed: string;
 
+let storageFolder = "v1Prod/";
+
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
     pointerSprite: Phaser.GameObjects.Sprite;
@@ -175,7 +177,7 @@ export default class Recorder {
         // Get a reference to the storage service, which is used to create references in your storage bucket
         const storage = getStorage();
 
-        this.storageRef = ref(storage, 'v1/' + myUUID + ".txt");
+        this.storageRef = ref(storage, storageFolder + myUUID + ".txt");
     }
 
     getRecordingKey() {
@@ -235,7 +237,7 @@ export default class Recorder {
     async fetchRecording(filename: string) {
         //console.log("Loading file=" + filename);
         const storage = getStorage();
-        const bucket = ref(storage, 'v1/' + filename);
+        const bucket = ref(storage, storageFolder + filename);
 
         let data;
         try {
@@ -251,13 +253,17 @@ export default class Recorder {
         return str;
     }
 
-    // This only works if we don't reload to start recording...
+    // This only works if we don't reload to start recording while changing name... ?
     setPlayerName(name: string) {
+        if (name == "qqq" || name == "norandom" || name == "Quazar") {
+            storageFolder = "v1Test/";
+        }
+
         this.playerName = name;
         const storage = getStorage();
         this.myUUID = this.playerName + "_" + this.timeStamp;
         //console.log("Recorder UUID " + myUUID)
-        this.storageRef = ref(storage, 'v1/' + this.myUUID + '.txt');
+        this.storageRef = ref(storage, storageFolder + this.myUUID + '.txt');
         if (this.playerName == "qqq")
             stealthRecord = false;
     }

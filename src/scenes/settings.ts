@@ -202,7 +202,7 @@ export class Settings extends Phaser.Scene {
 
     // @ts-ignore
     registryUpdate(parent: Phaser.Game, key: string, data: any) {
-        console.log(`${_SCENENAME} registry update ${key}`)
+        //console.log(`${_SCENENAME} registry update ${key}`)
 
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];

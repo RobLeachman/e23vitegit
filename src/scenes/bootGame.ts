@@ -98,9 +98,10 @@ export class BootGame extends Phaser.Scene {
         this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
         */
 
-        //this.load.audio('musicTrack', 'assets/audio/cbl_Escape.mp3');
+        // CORS?
         //this.load.setCORS('anonymous');
         //this.load.audio('musicTrack', 'http://bitblaster.com/banal23/unlicensed/testloops2.mp3');
+
         this.load.audio('musicTrack', 'assets/audio/music.mp3', { loop: true });
 
         if (testingNewRoom) {
@@ -301,14 +302,14 @@ export class BootGame extends Phaser.Scene {
         myUI.initMusic();
 
         if (recorder.getMusicMuted() == "muted") {
-            console.log("BOOT MUTE MUSIC")
+            //console.log("BOOT MUTE MUSIC")
             myUI.setMusicSetting(false);
         } else {
             myUI.setMusicSetting(true);
         }
 
         if (recorder.getSoundMuted() == "muted") {
-            console.log("BOOT MUTE SOUND")
+            //console.log("BOOT MUTE SOUND")
             myUI.setSoundSetting(false);
         } else {
             myUI.setSoundSetting(true);            
@@ -375,7 +376,6 @@ export class BootGame extends Phaser.Scene {
         startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "startButton").setOrigin(0, 0).setDepth(1);
         startButton.setVisible(false)
         startButton.on('pointerdown', () => {
-            console.log("start!");
             splashScreen.destroy();
             startButton.setVisible(false);
             regScreen = this.add.image(0, 0, 'registrationScreen').setOrigin(0, 0);
@@ -419,7 +419,7 @@ export class BootGame extends Phaser.Scene {
             else {
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
-            this.sound.play('sfx', { name: 'hmmQuestion', start: 16, duration: 1 });
+            //this.sound.play('sfx', { name: 'hmmQuestion', start: 16, duration: 1 });
         });
 
         myUI.displayInventoryBar(false); myUI.hideEye();
@@ -461,12 +461,6 @@ export class BootGame extends Phaser.Scene {
             thePlayer.destroy();
             playButton.destroy();
             splashScreen.destroy();
-            greetings.destroy();
-            greets1.destroy();
-            greets2.destroy();
-            greets3.destroy();
-            greets4.destroy();
-            greets5.destroy();
 
             myUI.displayInventoryBar(true);
 

@@ -114,7 +114,7 @@ export class Five extends Phaser.Scene {
     preload() {
     }
 
-    create(data: { playerName: string, slots: Slots }) {
+    create() {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
@@ -122,15 +122,12 @@ export class Five extends Phaser.Scene {
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
 
-        this.thePlayerName = data.playerName;
-
         seededRNG = myUI.getSeededRNG();
-
-        ////////////// RECORDER - CAPTURE //////////////
-
-        slots = data.slots;
+        slots = myUI.getSlots();
         recorder = slots.recorder;
         const thisscene = this;
+        
+        this.thePlayerName = recorder.getPlayerName();
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 
@@ -226,7 +223,8 @@ export class Five extends Phaser.Scene {
         });
 
         this.events.on('wake', () => {
-            console.log("Five awakes, four solved=" + myUI.getFourSolved())
+            //console.log("Five awakes, four solved=" + myUI.getFourSolved())
+            myUI.setActiveScene("Five");
             if (myUI.getFourSolved()) {
                 myUI.didGoal('solveFive');
                 noClueText.setDepth(-1)

@@ -15,8 +15,17 @@
   * 4x4 background should be gray not white
   * show UI on zoom/pan complete
 
+* pause music during video
+* wait until pan done to restore UI
+* wait until video done to display key
+* recorder offset is wrong
+
+* limit 20 minutes, display time at exit
+
+
+
 ** finish work to use alternate 4x4
-** clue bot
+
 
 --> Clockify extension
 
@@ -708,7 +717,7 @@ export class PlayGame extends Phaser.Scene {
             roomReturnWall = 3;
             if (fiveInit) {
                 fiveInit = false;
-                this.scene.launch("Five", { playerName: recorder.getPlayerName(), slots: slots })
+                this.scene.launch("Five");
                 this.scene.sleep();
             } else {
                 this.scene.wake("Five");
@@ -785,7 +794,6 @@ export class PlayGame extends Phaser.Scene {
             myUI.setActiveScene("PlayGame");
 
             viewWall = roomReturnWall;
-            console.log("return " + viewWall)
             if (viewWall == 4) {
                 myUI.hideSettings();
             }
