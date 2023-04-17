@@ -200,7 +200,7 @@ export class Four extends Phaser.Scene {
         this.events.on('wake', () => {
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
-            myUI.setActiveScene("four");
+            myUI.setActiveScene("Four");
 
             this.fourBackButton.setVisible(true);
             this.fourBackButton.setInteractive({ cursor: 'pointer' }); //<==== HAS NO EFFECT

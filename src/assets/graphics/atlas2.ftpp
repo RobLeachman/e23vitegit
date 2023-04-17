@@ -5,6 +5,11 @@
   "savePath": "D:\\src\\e23\\public\\assets\\graphics",
   "images": [
     {
+      "name": "crossMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/crossMask.png",
+      "folder": ""
+    },
+    {
       "name": "fourPieceFrame.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/fourPieceFrame.png",
       "folder": ""
@@ -35,13 +40,33 @@
       "folder": ""
     },
     {
+      "name": "planterMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/planterMask.png",
+      "folder": ""
+    },
+    {
       "name": "rangerMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/rangerMask.png",
       "folder": ""
     },
     {
+      "name": "smallKey-blank.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/smallKey-blank.png",
+      "folder": ""
+    },
+    {
       "name": "sound.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/sound.png",
+      "folder": ""
+    },
+    {
+      "name": "spoiler panel.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/spoiler panel.png",
+      "folder": ""
+    },
+    {
+      "name": "spoilerMask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/spoilerMask.png",
       "folder": ""
     }
   ],

@@ -6,7 +6,9 @@ import { setCookie, getCookie } from "../utils/cookie";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
 let useCookieRecordings = true; // use cookies not the cloud
+let debugShowReplayActionCount = false;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
+
 let debugInput = true; // display pastebox for input of debug data
 if (location.hostname != "localhost")
     debugInput = false;
@@ -69,6 +71,7 @@ let hintBotInit = true;
 let hintObjectiveText: string;
 let settingsInit = true;
 let uiHadSettingsButton = false;
+let hintIconsHidden = false;
 
 // special for key hidden on back of plate
 let keyMask: Phaser.GameObjects.Sprite;
@@ -92,7 +95,8 @@ let spinQuestionBOJ = true;
 let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
-const minDelayReplay = 10;
+const minDelayReplay = 1;
+let debugReplayActionCounter = 0;
 let lastKeyDebouncer = "";
 let mainReplayRequest = "no key just pressed";
 
@@ -106,89 +110,111 @@ let sceneFive: Phaser.Scene;
 
 let needNewClue = true;
 let clueText: Phaser.GameObjects.Text;
-
+let nextObjective: string = "";
+let spoilerCount = 0;
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
 let spoilerMap = new Map<string, string>(); // clue key, clue text
 clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room!") // until clicked an arrow
 spoilerMap.set("searchAndSolve-1", "Tap the arrows to move right, left, back");
-spoilerMap.set("searchAndSolve-2", "Click/Tap is the only input you will need");
+spoilerMap.set("searchAndSolve-2", "Click/Tap is the only input you will need,\nno gestures");
+
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
 spoilerMap.set("searchDonutTable-1", "Look for the table by the door.");
 spoilerMap.set("searchDonutTable-2", "It has a donut on it.");
 spoilerMap.set("searchDonutTable-3", "Click on the table to look at it.");
 
 clueMap.set("pickUpPlate", "Pick up the plate"); // until picked up plate
-// Click the table to look at it.
-// Click the donut to pick it up.
-// Click the plate to pick it up.
+spoilerMap.set("pickUpPlate-1", "Click on the table to look at it.");
+spoilerMap.set("pickUpPlate-2", "Click the donut to pick it up.");
+spoilerMap.set("pickUpPlate-3", "Click the plate to pick it up.");
+
 clueMap.set("searchPlate", "Search the plate"); // 3 until see the key
-// Click the plate icon and then the eyeball to inspect the plate.
-// Looking at the plate, click it to look at the back.
+spoilerMap.set("searchPlate-1", "Click the plate icon and then the eyeball\nto inspect the plate.");
+spoilerMap.set("searchPlate-2", "Looking at the plate, click it to look\nat the back.");
+
 clueMap.set("takeKeyFromPlate", "Take half red key from plate"); // 4 until took the key
-// Click the plate icon and then the eyeball to inspect the plate.
-// Looking at the plate, click it to look at the back.
-// Click the part of the key taped to the plate to pick it up.
+spoilerMap.set("takeKeyFromPlate-1", "Click the plate icon and then the eyeball\nto inspect the plate.");
+spoilerMap.set("takeKeyFromPlate-2", "Looking at the plate, click it to look\nat the back.");
+spoilerMap.set("takeKeyFromPlate-3", "Click the part of the key taped to the\nplate to pick it up.");
+
 clueMap.set("openTeal", "Open the Teal Box"); // 5 until box is open
-// Find the table with the teal box.
-// Click the table to look at the box.
-// Click the button twice to open the box.
+spoilerMap.set("openTeal-1", "Find the table with the teal box.");
+spoilerMap.set("openTeal-2", "Click the table to look at the box.");
+spoilerMap.set("openTeal-3", "Click the button twice to open the box.");
+
 clueMap.set("takeKeyFromTeal", "Pick up half red key from teal box"); // 6 until took the key
-// Find the table with the teal box, click to look at it.
-// Click the button twice to open the box.
-// Click the part of the key to pick it up.
+spoilerMap.set("takeKeyFromTeal-1", "Find the table with the teal box,\nclick to look at it.");
+spoilerMap.set("takeKeyFromTeal-2", "Click the button twice to open the box.");
+spoilerMap.set("takeKeyFromTeal-3", "Click the part of the key to pick it up.");
+
 clueMap.set("assembleRed", "Assemble red key"); // 7 until assembled the key
-// Click a red key part icon and then the eyeball to inspect it.
-// Click the plus button.
-// Click the other red key part to combine the items and assemble the key.
+spoilerMap.set("assembleRed-1", "Click a key part icon and then\nclick the eyeball to inspect it.");
+spoilerMap.set("assembleRed-2", "Click the plus button.");
+spoilerMap.set("assembleRed-3", "Click the other key part to combine\nthe items and assemble the key.");
+
 clueMap.set("enterSecond", "Enter second room"); // 8 until entered second room
-// Find the dark door.
-// Select the red key icon.
-// Click the door to unlock it and again to enter the second room.
+spoilerMap.set("enterSecond-1", "Find the dark door.");
+spoilerMap.set("enterSecond-2", "Select the red key icon.");
+spoilerMap.set("enterSecond-3", "Click the door to unlock it and\nagain to enter the second room.");
+
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
-// Find the 4x4 puzzle in the second room.
-// Select a piece and then another piece to swap.
-// IT NEEDS TO LOOK LIKE THIS:
+spoilerMap.set("solveFour-1", "Find the 4x4 puzzle in the second room.");
+spoilerMap.set("solveFour-2", "Select a piece and then select another\npiece to swap.");
+spoilerMap.set("solveFour-3", "IT NEEDS TO LOOK LIKE THIS:");
+
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
-// Find the box with 5 words in the first room. 
-// Click the words to spin.
-// Make a 5-word phrase.
+spoilerMap.set("solveFive-1", "Find the box with 5 words in the\nfirst room.");
+spoilerMap.set("solveFive-2", "Click the words to spin.");
+spoilerMap.set("solveFive-3", "Make a 5-word phrase.");
+
 clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle?"); // 11 until 5x5 is solved
-// Watch the 4x4 YouTube for about 30 seconds and listen carefully. Click the words to spin.
-// Listen for a 5-word phrase.
-// "So much larger than life".
+spoilerMap.set("getFourClue-1", "Watch the 4x4 YouTube for about 30 seconds.\nClick the words to spin.");
+spoilerMap.set("getFourClue-2", "Listen for a 5-word phrase.");
+spoilerMap.set("getFourClue-3", '"So much larger than life"');
+
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
-// Find the box with 5 words in the first room.
-// Take the battery.
+spoilerMap.set("getBattery-1", "Find the box with 5 words in the first room.");
+spoilerMap.set("getBattery-2", "Take the battery.");
+
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
-// Find the table that had the donut and plate on it.
-// Take the lightning bolt.
-clueMap.set("openGreen", "Open Perspective box (green)"); // 14 until green box is opened
-// Spin the box back-to-front and top-to-bottom.
-// Put the lighting bolt on the top and the battery on the bottom.
-// Be sure the box is facing up so the drawer will open.
+spoilerMap.set("getZot-1", "Find the table that had the donut and plate on it.");
+spoilerMap.set("getZot-2", "Take the lightning bolt.");
+
+clueMap.set("openGreen", "Open Perspective Box (green)"); // 14 until green box is opened
+spoilerMap.set("openGreen-1", "Spin the box back-to-front and top-to-bottom.");
+spoilerMap.set("openGreen-2", "Put the lighting bolt on the top and the battery on the bottom.");
+spoilerMap.set("openGreen-3", "Be sure the box is facing up so the drawer will open.");
+
 clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
-// Click the part of the yellow key from the green box to pick it up. 
+spoilerMap.set("getGreenKey-1", "Click the part of the yellow key from the green box to pick it up. ");
+
 clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
-// Find the two-way box in the second room.
-// Click right and left in sequence to open it.
-// Get the clue from the teal box.
+spoilerMap.set("openTwoWay-1", "Find the two-way box in the second room.");
+spoilerMap.set("openTwoWay-2", "Click right and left buttons to open.");
+spoilerMap.set("openTwoWay-3", "The teal box displays the sequence.");
+
 clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
-// Click the button on the teal box until it closes.
-// Click the button and observe which flap moves. LIKE THIS
-// Enter the sequence on the red two-way box: L R R R L L R L
+spoilerMap.set("getTealClue-1", "Click the button on the teal box until it closes.");
+spoilerMap.set("getTealClue-2", "Click the button and observe which flap moves. LIKE THIS");
+spoilerMap.set("getTealClue-3", "Enter the sequence on the red two-way box: L R R R L L R L");
+
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
-// Click the part of the yellow key from the red box to pick it up. 
+spoilerMap.set("getTwoWayKey-1", "Click the part of the yellow key from the red box to pick it up. ");
+
 clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
-// Click a red key part icon and then the eyeball to inspect it.
-// Click the plus button.
-// Click the other red key part to combine the items and assemble the key.
+spoilerMap.set("assembleYellow-1", "Click a yellow key part icon and then the eyeball to inspect it.");
+spoilerMap.set("assembleYellow-2", "Click the plus button.");
+spoilerMap.set("assembleYellow-3", "Click the other yellow key part to combine the items and assemble the key.");
+
 clueMap.set("exit", "Escape!"); // 20 until win
-// Unlock the door.
-// Consider the bonus. What could it be? There is a clue on a wall.
-// You can only exit now, or do one last thing which was impossible earlier.
+spoilerMap.set("exit-1", "Unlock the door.");
+spoilerMap.set("exit-2", "Consider the bonus. What could it be? There is a clue on a wall.");
+spoilerMap.set("exit-3", "You can only exit now, or do one last thing which was impossible earlier.");
+
 clueMap.set("win", "Winner!"); // 21 chicken dinner
+spoilerMap.set("win-1", "You did it!");
 
 // https://stackoverflow.com/questions/52347756/read-console-log-output-form-javascript
 let consoleStorage: string[] = [];
@@ -200,6 +226,10 @@ for (let key of clueMap.keys()) {
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
+    }
+
+    timePenalty() {
+        console.log(`Viewed ${++spoilerCount} spoilers`);
     }
 
     getSoundEnabled() {
@@ -740,6 +770,7 @@ export default class PlayerUI extends Phaser.Scene {
                 actionString.forEach((action) => {
                     if (action.length > 0) {
                         let splitAction = action.split(',');
+                        //console.log(`REPLAYING ${splitAction[0]} ${splitAction[3]}`)
                         actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10), splitAction[4]]);
                     }
                 });
@@ -797,6 +828,9 @@ export default class PlayerUI extends Phaser.Scene {
             //if (nextActionTime < 0) // first replay action
             //    nextActionTime = this.time.now + 1000;
             if (this.time.now >= nextActionTime) {
+                if (debugShowReplayActionCount) {
+                    console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`)
+                }
                 let replayAction = actions[0][0];
                 const targetScene = actions[0][4].split('%')[1];
 
@@ -905,7 +939,9 @@ export default class PlayerUI extends Phaser.Scene {
             this.hideSettings();
             uiObjectViewDirty = false;
             const viewIt = slots.viewSelected();
-            this.hideHintIcons();
+
+            if (!hintIconsHidden)
+                this.hideHintIcons();
 
             // special hidden key on back of plate logic stuff
             foundHalfKey = false;
@@ -1025,8 +1061,9 @@ export default class PlayerUI extends Phaser.Scene {
         }
 
         if (needNewClue) {
+            //console.log("need new clue")
             const oldClue = clueText.text;
-            let nextObjective: string = "";
+
             let foundNext = false;
             clueObjective.forEach((objectiveCompleted, idx) => {
                 //console.log(`${ idx } is ${ objectiveCompleted }`)
@@ -1040,11 +1077,14 @@ export default class PlayerUI extends Phaser.Scene {
             hintObjectiveText = clueMap.get(nextObjective)!;
             clueText.text = hintObjectiveText;
 
-            this.doSpoiler();
-
-
-            if (oldClue != clueText.text)
-                hintQuestionGreen.setVisible(true);
+            //console.log(`NEXT CLUE ${oldClue} ${clueText.text} object=${uiObjectView}`)
+            if (oldClue != clueText.text) {
+                if (uiObjectView) {
+                    stateHintQuestionGreen = true;
+                } else {
+                    hintQuestionGreen.setVisible(true);
+                }
+            }
             needNewClue = false;
         }
 
@@ -1069,8 +1109,17 @@ export default class PlayerUI extends Phaser.Scene {
         */
     }
 
-    doSpoiler() {
-        console.log("spoiler!")
+    getSpoilers() {
+        let theSpoilers = "";
+        //console.log("spoiler! " + nextObjective);
+        for (let key of spoilerMap.keys()) {
+            //clueObjective.set(key, false);
+            if (key.split('-')[0] == nextObjective) {
+                //console.log("GET " + spoilerMap.get(key));
+                theSpoilers += spoilerMap.get(key) + ';';
+            }
+        }
+        return theSpoilers;
     }
 
     closeObjectUI() {
@@ -1123,6 +1172,7 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     hideHintIcons() {
+        hintIconsHidden = true;
         stateHintQuestionGreen = hintQuestionGreen.visible;
         questionSpinning.setVisible(false);
         hintQuestion.setVisible(false);
@@ -1131,10 +1181,11 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     restoreHintIcons() {
+        hintIconsHidden = false;
         //questionSpinning.setVisible(stateQuestionSpinning);
         if (hintBotInit)
             questionSpinning.setVisible(true);
-        //console.log(`hintQuestion ${ stateHintQuestion } hintQuestionGreen ${ stateHintQuestionGreen }`)
+        //console.log(`RESTORE hintQuestionGreen ${stateHintQuestionGreen}`)
         hintQuestion.setVisible(true);
         hintQuestionGreen.setVisible(stateHintQuestionGreen);
         hintButton.setVisible(true); hintButton.setInteractive({ cursor: 'pointer' });

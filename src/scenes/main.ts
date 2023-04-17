@@ -19,6 +19,10 @@
 * wait until pan done to restore UI
 * wait until video done to display key
 * recorder offset is wrong
+* upload console to firebase
+* reset firebase project end date
+* spoiler sound
+* nix old Ranger
 
 * limit 20 minutes, display time at exit
 
@@ -76,7 +80,7 @@ let recorder: Recorder;
 let debugUpdateOnce = false;
 let debugPanel = false; // debug panel on top of screen
 
-var viewWall = 0; // production start at 2
+var viewWall = 2; // production start at 2
 var currentWall = -1;
 var previousWall = -1;
 var updateWall = false;

@@ -12,7 +12,7 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 
 const minDelayFastMode = 10;
 const debuggingDumpRecordingOut = false;
-const debugDisplayFastSteps = false;
+const debugDisplayFastSteps = true;
 const debugDisplayRecordedActions = false;
 const debugDisplayRecordedSteps = false; // display each recorded mask click
 
@@ -20,7 +20,7 @@ let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
 let recordedRNGSeed: string;
 
-let storageFolder = "v1Prod/";
+let storageFolder = "v1Test/";
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -164,8 +164,7 @@ export default class Recorder {
         };
 
         // Initialize Firebase
-        // @ts-ignore not sure what I'll do with app
-        const app = initializeApp(firebaseConfig);
+        initializeApp(firebaseConfig);
 
         this.timeStamp = new Date().toISOString();
         //console.log("Recording play at " + this.timeStamp)
@@ -505,6 +504,7 @@ export default class Recorder {
     }
 
     makeFast(recordingSlow: string, speedSteps: number) {
+        let stepCount = 0;
         let fast = "";
         const actionString = recordingSlow.split(":");
         console.log("Recorder action count=" + actionString.length)
@@ -518,13 +518,16 @@ export default class Recorder {
             let delay = thisAction[3];
             if (fastSteps > 0)
                 delay = minDelayFastMode.toString();
+            else
+                delay = "200";
             fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`);
             if (debugDisplayFastSteps) {
-                if (thisAction[0] != "mousemove" && thisAction[0] != "mouseclick") {
+                //if (thisAction[0] != "mousemove" && thisAction[0] != "mouseclick") {
+                if (true) {
                     if (fastSteps > 0)
-                        console.log(`MAKEFAST* ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                        console.log(`MAKEFAST*(${stepCount++}) ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
                     else
-                        console.log(`MAKEFAST  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                        console.log(`MAKEFAST(${stepCount++})  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
                 }
             }
             fastSteps--;

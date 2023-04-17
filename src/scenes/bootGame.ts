@@ -114,6 +114,12 @@ export class BootGame extends Phaser.Scene {
 
             this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
         } else {
+            this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
+            this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
+            this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
+            this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
+            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
+
 
             if (!skipBackgroundsLoad) {
                 this.load.audio('sfx', [
@@ -403,6 +409,9 @@ export class BootGame extends Phaser.Scene {
 
             myUI.displayInventoryBar(true); myUI.showEye()
 
+            // not sure what I want... force cookies if qqq?
+            //recorder.setMode("record");
+            
             if (playerName == "qqq" || playerName == "Qqq") {
                 console.log("do not record by default, Quazar")
                 // this messes with roach replay... hmm
@@ -411,6 +420,7 @@ export class BootGame extends Phaser.Scene {
                 //console.log("record by default...")
                 recorder.setMode("record")
             }
+            
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
