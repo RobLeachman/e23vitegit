@@ -22,7 +22,8 @@
 * upload console to firebase
 * reset firebase project end date
 * spoiler sound
-* nix old Ranger
+* settings mask, smaller
+* spoiler mask
 
 * limit 20 minutes, display time at exit
 
@@ -61,7 +62,6 @@ import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
 
-import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import DiscordWebhook from 'discord-webhook-ts';
 
 // Discord web hook, a slam dunk. The hardest part is not having it be deleted on commit and I'll tackle that later. Please don't delete my webhook. Thanks.
@@ -107,7 +107,6 @@ let doorMask: Phaser.GameObjects.Sprite;
 let rangerMask: Phaser.GameObjects.Sprite;
 let funzMask: Phaser.GameObjects.Sprite;
 
-//var hintMask: Phaser.GameObjects.Sprite; // maybe Ranger picture will be another view?
 var battMask: Phaser.GameObjects.Sprite;
 
 var fiveMask: Phaser.GameObjects.Sprite;
@@ -130,16 +129,10 @@ let twoDoorUnlocked = false;
 var fiveInit = true;
 var twoInit = true;
 
-var viewportText: any;                                     //??
-var viewportPointer: Phaser.GameObjects.Sprite;
-var viewportPointerClick: Phaser.GameObjects.Sprite;
-var pointer: Phaser.Input.Pointer;
+var viewportText: Phaser.GameObjects.Text;
 
+let initMain = true;
 
-let myText: InputText; //TODO: not sure why we need 2 items here
-//let theText: InputText; // text box displayed in the middle of the header
-
-let myPaste: InputText; //TODO: not sure why we need 2 items here
 
 export class PlayGame extends Phaser.Scene {
     //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
@@ -147,13 +140,6 @@ export class PlayGame extends Phaser.Scene {
 
     constructor() {
         super("PlayGame");
-    }
-
-    async getRecording(filename: string) {
-        console.log("TEST GET IT")
-        const theRecording = await recorder.fetchRecording(filename);
-        console.log("TEST GOT IT " + theRecording)
-        return theRecording;
     }
 
     async update() {
@@ -164,7 +150,7 @@ export class PlayGame extends Phaser.Scene {
             console.log("right mouse button action! bounce bounce");
         }
 
-        if (myText.text == "init") {
+        if (initMain) {
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
                 slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
@@ -176,29 +162,25 @@ export class PlayGame extends Phaser.Scene {
                 //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
                 slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
             }
-
-            myText.text = "off";
-            myText.resize(0, 0);
-            myPaste.resize(0, 0);
+            initMain = false;
         }
-
-        if (myPaste.text != "pasteit" && myPaste.text != "init") {
-            const getRec = myPaste.text;
-            myPaste.text = "pasteit";
-
-            console.log("lets fetch " + getRec)
-            const theRecording = await this.getRecording(getRec)
-            console.log("we fetched:")
-            console.log(theRecording)
-            if (theRecording == "fail") {
-                myText.text = "ERROR"
-            } else {
-                myText.text = "success"
-                recorder.setRecordingFilename(getRec);
-            }
-        }
-
-        //this.input.keyboard.on('keydown', this.handleKey);
+        /*
+                if (myPaste.text != "pasteit" && myPaste.text != "init") {
+                    const getRec = myPaste.text;
+                    myPaste.text = "pasteit";
+        
+                    console.log("lets fetch " + getRec)
+                    const theRecording = await this.getRecording(getRec)
+                    console.log("we fetched:")
+                    console.log(theRecording)
+                    if (theRecording == "fail") {
+                        myText.text = "ERROR"
+                    } else {
+                        myText.text = "success"
+                        recorder.setRecordingFilename(getRec);
+                    }
+                }
+        */
 
 
         if (debugUpdateOnce) {
@@ -216,8 +198,15 @@ export class PlayGame extends Phaser.Scene {
         //if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
         if (debugPanel) {
             let displayDebugMode = "RECORDING!";
-            if (debugTheRecorder == "replay" || debugTheRecorder == "replayOnce")
+            if (debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
                 displayDebugMode = "REPLAY"
+            }
+            if (debugTheRecorder == "idleNowReplayOnReload" || debugTheRecorder == "idle")
+                displayDebugMode = "IDLE"
+            /*
+
+            var pointer: Phaser.Input.Pointer;
+
             viewportText.setText([
                 'x: ' + pointer.worldX,
                 'y: ' + pointer.worldY,
@@ -226,6 +215,19 @@ export class PlayGame extends Phaser.Scene {
                 '',
                 displayDebugMode + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize()
             ]);
+            */
+
+            if (displayDebugMode == "REPLAY") {
+                viewportText.setText([
+                    displayDebugMode + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize(),
+                    '\nrecorder mode ' + debugTheRecorder
+                ]);
+            } else {
+                viewportText.setText([
+                    displayDebugMode + '   length: ' + recorder.getSize(),
+                    '\nrecorder mode ' + debugTheRecorder
+                ]);
+            }
         }
 
 
@@ -277,8 +279,6 @@ export class PlayGame extends Phaser.Scene {
                 leftButton.setVisible(false);
                 rightButton.setVisible(false);
                 myUI.hideEye();
-                viewportPointer.setDepth(-1);
-                viewportPointerClick.setDepth(-1);
                 let fadeClicks = 10;
                 while (fadeClicks-- > 0) {
                     recorder.fadeClick();
@@ -346,10 +346,6 @@ export class PlayGame extends Phaser.Scene {
                 this.add.image(0, 0, walls[viewWall]).setOrigin(0, 0);
             }
 
-            // ranger view wall? was prototype hint system
-            if (viewWall == 9)
-                previousWall = 2;
-
             if (viewWall == 0) {
                 this.add.sprite(542, 650, 'atlas', tableView[tableState]).setOrigin(0, 0);
             }
@@ -383,7 +379,6 @@ export class PlayGame extends Phaser.Scene {
                 this.add.sprite(343, 595, 'atlas', clue2states[clue2state]).setOrigin(0, 0);
             }
 
-            //hintMask.setVisible(false); // ranger
             twoDoorMask.setVisible(false);
             twoDoorUnlockedWall.setVisible(false);
             rangerMask.setVisible(false);
@@ -528,8 +523,6 @@ export class PlayGame extends Phaser.Scene {
             console.log("mobile device")
         }
 
-
-
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
 
@@ -544,42 +537,27 @@ export class PlayGame extends Phaser.Scene {
         //const playerName = recorder.getPlayerName();
         //console.log("MAIN PLAYER " + playerName);
         //debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
-        viewportPointer = recorder.pointerSprite;
-        viewportPointerClick = recorder.clickSprite;
 
 
         // not sure about any of this in main...
 
-        //console.log("Recorder mode: " + recorder.getMode());
-        if (recorder.getMode() == "idleButReplayAgainSoon")
+        /*
+        viewportPointer = recorder.pointerSprite;
+        viewportPointerClick = recorder.clickSprite;
+
+        if (recorder.getMode() == "idleNowReplayOnReload")
             recorder.setMode("replay")
         if (recorder.getMode() == "roachReplay")
             recorder.setMode("replayOnce")
+        */
 
+        //console.log("Main create recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
 
         if (recorder.getPlayerName() != "qqq")
             this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
 
-        viewportPointer.setDepth(100);
-        viewportPointerClick.setDepth(100);
-        pointer = this.input.activePointer;
-
-        myText = new InputText(this, 300, 100, 300, 100, {
-            type: 'textarea',
-            text: 'init',
-            fontSize: '24px',
-        });
-        //theText = this.add.existing(myText);
-        //this.add.existing(myText);
-
-        myPaste = new InputText(this, 300, 150, 300, 100, {
-            type: 'textarea',
-            text: 'init',
-            fontSize: '24px',
-        });
-        //this.add.existing(myPaste);
 
         //SCENERECORD add to recorder dictionary every sprite that can be clicked 
         leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton");
@@ -610,15 +588,6 @@ export class PlayGame extends Phaser.Scene {
             } else
                 viewWall = previousWall;
         });
-
-        /* hintMask is now for Ranger and at the moment obsolete...
-
-        hintMask = this.add.sprite(110, 446, 'atlas', 'hintMask.png').setName("hintMask").setOrigin(0, 0);
-        recorder.addMaskSprite('hintMask', hintMask);
-        hintMask.on('pointerdown', () => {
-            viewWall = 9;
-        });
-        */
 
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
@@ -823,7 +792,6 @@ export class PlayGame extends Phaser.Scene {
         walls[6] = "(item view alt)";
         walls[7] = "wallUnlocked";
         walls[8] = "wallWinner";
-        //walls[9] = "wallHint"; // now maybe ranger close up view?
 
         icons[0] = "icon - donut.png";
         icons[1] = "icon - plate.png";

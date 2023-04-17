@@ -17,6 +17,8 @@ let clueText: Phaser.GameObjects.Text;
 let objectiveText: Phaser.GameObjects.Text;
 let oldObjective: string;
 
+let showFourSolution: Phaser.GameObjects.Image;
+
 class Spoiler {
     scene: Phaser.Scene;
     spoilerHint: string;
@@ -41,14 +43,8 @@ class Spoiler {
         this.spoilerText.setDepth(1);
 
         this.spoilerBox = this.scene.add.sprite(155, 500 + (index * 100) + 15, 'atlas2', 'spoiler panel.png').setOrigin(0, 0);
-        this.spoilerBox.setAlpha(.5)
-        /*
-        this.spoilerBox = this.scene.add.graphics();
-        this.spoilerBox.fillStyle(0x333333);
-        this.spoilerBox.fillRect(160, 500 + (index * 100) + 15, 520, 60);
-        this.spoilerBox.setAlpha(1);
-        
-        */
+        //this.spoilerBox.setAlpha(.5)
+
         this.spoilerBox.setDepth(2);
         this.spoilerIcon = this.scene.add.sprite(50, 500 + (index * 100), 'atlas', 'smallKey-yellow.png').setOrigin(0, 0).setScale(.5);
     }
@@ -68,6 +64,9 @@ class Spoiler {
         });
         this.spoilerIcon.setTexture('atlas', 'smallKey-gray.png');
     }
+    getSpoiler() {
+        return this.spoilerHint;
+    }
 }
 
 export class HintBot extends Phaser.Scene {
@@ -83,6 +82,7 @@ export class HintBot extends Phaser.Scene {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
+        this.registry.set('Four-specialCase', "yet another wrinkle");
         this.scene.sleep(myUI.getActiveScene()); // can be called from any scene
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
@@ -125,6 +125,11 @@ export class HintBot extends Phaser.Scene {
             //console.log(`there are ${this.spoilerCount} spoilers length ${this.theSpoilers.length}`);
             //console.log(`show spoiler ${this.currentSpoiler}`)
             if (this.currentSpoiler < this.spoilerCount) {
+                this.sound.play('sfx', { name: 'hmmQuestion', start: 16, duration: 1 });
+                const revealed = this.theSpoilers[this.currentSpoiler].getSpoiler();
+                if (revealed == "It needs to look like this:") {
+                    showFourSolution = this.add.image(450, 750, 'fourArtWhole-BigTime').setOrigin(0, 0).setDepth(2).setScale(.36);
+                }
                 this.theSpoilers[this.currentSpoiler].showSpoiler();
                 this.currentSpoiler++;
                 myUI.timePenalty();
@@ -173,14 +178,18 @@ export class HintBot extends Phaser.Scene {
             //console.log(`${_SCENENAME} awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI");
+            this.registry.set('Four-specialCase', "yet another wrinkle");
+
             this.scene.sleep(myUI.getActiveScene()); // can be called from any scene
 
             const hintObjective = myUI.getHintObjective();
             if (hintObjective != oldObjective) {
                 this.newSpoilers();
             }
+
         });
         updateWall = true;
+
     }
 
     newSpoilers() {
@@ -215,6 +224,9 @@ export class HintBot extends Phaser.Scene {
         });
         this.spoilerCount = spoilers.length - 1;
         this.currentSpoiler = 0;
+        if (showFourSolution) {
+            showFourSolution.destroy();
+        }
     }
 
     update() {

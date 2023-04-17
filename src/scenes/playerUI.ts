@@ -5,7 +5,7 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let useCookieRecordings = true; // use cookies not the cloud
+let useCookieRecordings = false; // use cookies not the cloud
 let debugShowReplayActionCount = false;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
@@ -117,8 +117,8 @@ let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
 let spoilerMap = new Map<string, string>(); // clue key, clue text
 clueMap.set("searchAndSolve", "Search around, solve all the puzzles,\nescape the room!") // until clicked an arrow
-spoilerMap.set("searchAndSolve-1", "Tap the arrows to move right, left, back");
-spoilerMap.set("searchAndSolve-2", "Click/Tap is the only input you will need,\nno gestures");
+spoilerMap.set("searchAndSolve-1", "Tap the arrows to move right, left, back.");
+spoilerMap.set("searchAndSolve-2", "Click/Tap is the only input you will need,\nno gestures.");
 
 clueMap.set("searchDonutTable", "Search the donut table") // until looked at table
 spoilerMap.set("searchDonutTable-1", "Look for the table by the door.");
@@ -162,33 +162,33 @@ spoilerMap.set("enterSecond-3", "Click the door to unlock it and\nagain to enter
 clueMap.set("solveFour", "Solve 4x4 puzzle"); // 9 until 4x4 is solved
 spoilerMap.set("solveFour-1", "Find the 4x4 puzzle in the second room.");
 spoilerMap.set("solveFour-2", "Select a piece and then select another\npiece to swap.");
-spoilerMap.set("solveFour-3", "IT NEEDS TO LOOK LIKE THIS:");
+spoilerMap.set("solveFour-3", "It needs to look like this:");
 
 clueMap.set("solveFive", "Solve Five Words puzzle"); // 10 until 5x5 is looked at after 4x4 is solved
-spoilerMap.set("solveFive-1", "Find the box with 5 words in the\nfirst room.");
-spoilerMap.set("solveFive-2", "Click the words to spin.");
-spoilerMap.set("solveFive-3", "Make a 5-word phrase.");
+spoilerMap.set("solveFive-1", "Find the box with 5 words in the\nfirst room. Click the words to spin.");
+spoilerMap.set("solveFive-2", "Make a 5-word phrase.");
+spoilerMap.set("solveFive-3", "Check your short-term memory?");
 
 clueMap.set("getFourClue", "Solve Five Words puzzle.\nGet clue from 4x4 puzzle?"); // 11 until 5x5 is solved
-spoilerMap.set("getFourClue-1", "Watch the 4x4 YouTube for about 30 seconds.\nClick the words to spin.");
+spoilerMap.set("getFourClue-1", "Watch the 4x4 YouTube for about\n30 seconds. Click the words to spin.");
 spoilerMap.set("getFourClue-2", "Listen for a 5-word phrase.");
 spoilerMap.set("getFourClue-3", '"So much larger than life"');
 
 clueMap.set("getBattery", "Get battery"); // 12 until took the battery
-spoilerMap.set("getBattery-1", "Find the box with 5 words in the first room.");
+spoilerMap.set("getBattery-1", "Find the box with 5 words in the\nfirst room.");
 spoilerMap.set("getBattery-2", "Take the battery.");
 
 clueMap.set("getZot", "Get zot from donut table"); // 13 until took the zot
-spoilerMap.set("getZot-1", "Find the table that had the donut and plate on it.");
+spoilerMap.set("getZot-1", "Find the table that had the donut\nand plate on it.");
 spoilerMap.set("getZot-2", "Take the lightning bolt.");
 
 clueMap.set("openGreen", "Open Perspective Box (green)"); // 14 until green box is opened
-spoilerMap.set("openGreen-1", "Spin the box back-to-front and top-to-bottom.");
-spoilerMap.set("openGreen-2", "Put the lighting bolt on the top and the battery on the bottom.");
-spoilerMap.set("openGreen-3", "Be sure the box is facing up so the drawer will open.");
+spoilerMap.set("openGreen-1", "Spin the box back-to-front and\ntop-to-bottom.");
+spoilerMap.set("openGreen-2", "Put the lighting bolt on the top and\nthe battery on the bottom.");
+spoilerMap.set("openGreen-3", "Be sure the box is facing up so\nthe drawer will open.");
 
 clueMap.set("getGreenKey", "Get half yellow key"); // 15 until took the key
-spoilerMap.set("getGreenKey-1", "Click the part of the yellow key from the green box to pick it up. ");
+spoilerMap.set("getGreenKey-1", "Click the part of the yellow key from\nthe green box to pick it up. ");
 
 clueMap.set("openTwoWay", "Open Two-Way box (red)"); // 16 until button is pressed
 spoilerMap.set("openTwoWay-1", "Find the two-way box in the second room.");
@@ -196,22 +196,22 @@ spoilerMap.set("openTwoWay-2", "Click right and left buttons to open.");
 spoilerMap.set("openTwoWay-3", "The teal box displays the sequence.");
 
 clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
-spoilerMap.set("getTealClue-1", "Click the button on the teal box until it closes.");
-spoilerMap.set("getTealClue-2", "Click the button and observe which flap moves. LIKE THIS");
-spoilerMap.set("getTealClue-3", "Enter the sequence on the red two-way box: L R R R L L R L");
+spoilerMap.set("getTealClue-1", "Click the button on the teal box until\nit closes.");
+spoilerMap.set("getTealClue-2", "Click the button and observe which\nflap moves. LIKE THIS");
+spoilerMap.set("getTealClue-3", "Enter the sequence on the red\ntwo-way box: L R R R L L R L");
 
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
-spoilerMap.set("getTwoWayKey-1", "Click the part of the yellow key from the red box to pick it up. ");
+spoilerMap.set("getTwoWayKey-1", "Click the part of the yellow key from\nthe red box to pick it up. ");
 
 clueMap.set("assembleYellow", "Assemble yellow key"); // 19 until key is assembled
-spoilerMap.set("assembleYellow-1", "Click a yellow key part icon and then the eyeball to inspect it.");
+spoilerMap.set("assembleYellow-1", "Click a yellow key part icon\nand then the eyeball to inspect it.");
 spoilerMap.set("assembleYellow-2", "Click the plus button.");
-spoilerMap.set("assembleYellow-3", "Click the other yellow key part to combine the items and assemble the key.");
+spoilerMap.set("assembleYellow-3", "Click the other yellow key part to\ncombine the items and assemble the key.");
 
 clueMap.set("exit", "Escape!"); // 20 until win
 spoilerMap.set("exit-1", "Unlock the door.");
-spoilerMap.set("exit-2", "Consider the bonus. What could it be? There is a clue on a wall.");
-spoilerMap.set("exit-3", "You can only exit now, or do one last thing which was impossible earlier.");
+spoilerMap.set("exit-2", "Consider the bonus. What could it be?\nThere is a clue on a wall.");
+spoilerMap.set("exit-3", "You can only exit now, or do one last\nthing which was impossible earlier.");
 
 clueMap.set("win", "Winner!"); // 21 chicken dinner
 spoilerMap.set("win-1", "You did it!");
@@ -635,20 +635,20 @@ export default class PlayerUI extends Phaser.Scene {
         ////////////// RECORDER INIT //////////////
         //console.log("MAIN PLAYER: " + recorder.getPlayerName());
 
-        myText = new InputText(this, 220, 55, 300, 100, {
+        myText = new InputText(this, 220, 105, 300, 100, {
             type: 'textarea',
             text: 'init',
             fontSize: '24px',
         });
         this.add.existing(myText);
 
-        pasteBox = new InputText(this, 220, 105, 300, 100, {
+        pasteBox = new InputText(this, 220, 55, 300, 100, {
             type: 'textarea',
             text: 'init',
             fontSize: '24px',
         });
         this.add.existing(pasteBox);
-        myText.setVisible(true)
+        myText.setVisible(false)
         pasteBox.setVisible(true)
 
         recorder.setCookieRecorderMode(useCookieRecordings);
@@ -730,7 +730,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         if (myText.text == "init") {
             //console.log("UI Recorder mode: " + recorder.getMode());
-            if (recorder.getMode() == "idleButReplayAgainSoon")
+            if (recorder.getMode() == "idleNowReplayOnReload")
                 recorder.setMode("replay")
 
             let replaying = false;
@@ -738,6 +738,7 @@ export default class PlayerUI extends Phaser.Scene {
                 replaying = true;
             if (debugInput && !replaying) {
                 myText.text = "status";
+                //myText.setVisible(false)
                 pasteBox.text = "pasteit";
             } else {
                 myText.text = "off";
@@ -791,9 +792,9 @@ export default class PlayerUI extends Phaser.Scene {
             const mainStarted = this.scene.isActive("PlayGame");
             if (mainStarted) {
                 pasteBox.setVisible(true);
-                myText.setVisible(true);
+                myText.setVisible(false);
                 mainHasStarted = true;
-                //console.log(`main has started, mode = ${ recorder.getMode() }`)
+                //console.log(`UI started, mode = ${ recorder.getMode() }`)
             }
         }
         if (pasteBox.text != "pasteit" && pasteBox.text != "init") {  // pastebox latch
@@ -804,12 +805,15 @@ export default class PlayerUI extends Phaser.Scene {
             const theRecording = await recorder.fetchRecording(getRec);
 
             console.log("we fetched:")
-            console.log(theRecording)
+            console.log(theRecording);
+            myText.setVisible(true);
             if (theRecording == "fail") {
                 myText.text = "ERROR"
             } else {
-                myText.text = "success"
+                myText.text = "replaying..."
                 recorder.setRecordingFilename(getRec);
+                recorder.setMode("replay")
+                window.location.reload();
             }
         }
 
@@ -904,8 +908,7 @@ export default class PlayerUI extends Phaser.Scene {
                     } else {
                         // need a little hack here so we can set the mode but do replay again on reload
                         //console.log("recording done, reload to try it again")
-                        recorder.setMode("idleButReplayAgainSoon");
-
+                        recorder.setMode("idleNowReplayOnReload");
                     }
 
                     ////////////////viewportText.setDepth(-1);

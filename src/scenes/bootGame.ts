@@ -61,8 +61,7 @@ export class BootGame extends Phaser.Scene {
     preload() {
         //console.log("BOOT preload")
 
-        const skipStart = getCookie("skipStart");
-        if (skipStart == "skip") {
+        if (getCookie("skipStart") == "skip") {
             skipClickToStart = true;
             skipCloud = true;
         }
@@ -305,6 +304,10 @@ export class BootGame extends Phaser.Scene {
 
         recorder = myUI.getRecorder();
 
+        console.log("BOJ recorder mode=" + recorder.getMode());
+        if (recorder.getMode() == "replay")
+            skipClickToStart = true;
+
         myUI.initMusic();
 
         if (recorder.getMusicMuted() == "muted") {
@@ -318,7 +321,7 @@ export class BootGame extends Phaser.Scene {
             //console.log("BOOT MUTE SOUND")
             myUI.setSoundSetting(false);
         } else {
-            myUI.setSoundSetting(true);            
+            myUI.setSoundSetting(true);
         }
 
         ////////////// PLAYER NAME REGISTRATION //////////////
@@ -411,7 +414,7 @@ export class BootGame extends Phaser.Scene {
 
             // not sure what I want... force cookies if qqq?
             //recorder.setMode("record");
-            
+
             if (playerName == "qqq" || playerName == "Qqq") {
                 console.log("do not record by default, Quazar")
                 // this messes with roach replay... hmm
@@ -420,7 +423,7 @@ export class BootGame extends Phaser.Scene {
                 //console.log("record by default...")
                 recorder.setMode("record")
             }
-            
+
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
@@ -429,7 +432,6 @@ export class BootGame extends Phaser.Scene {
             else {
                 this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
             }
-            //this.sound.play('sfx', { name: 'hmmQuestion', start: 16, duration: 1 });
         });
 
         myUI.displayInventoryBar(false); myUI.hideEye();

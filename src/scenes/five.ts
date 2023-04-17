@@ -62,6 +62,7 @@ class WordPanel {
     }
 
     spinPanel() {
+        this.scene.sound.play('sfx', { name: 'snick', start: 6, duration: .2 });
         this.wordIndex++;
         if (this.wordIndex == this.words.length)
             this.wordIndex = 0;

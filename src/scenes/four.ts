@@ -8,6 +8,9 @@ var recorder: Recorder;
 var slots: Slots;
 let seededRNG: Phaser.Math.RandomDataGenerator;
 
+let justReturnedFromHints = false;
+let puzzleWasJustSolved = false;
+
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
@@ -68,7 +71,7 @@ export class Four extends Phaser.Scene {
         selectedTile.art.setX(swapX); selectedTile.art.setY(swapY);
     }
 
-    spinTheRecord(autoplay:boolean) {
+    spinTheRecord(autoplay: boolean) {
         let theYoutube = youtubeID;
         if (myUI.getFourWayPuzzle() == "BigTime")
             theYoutube = youtubeID_BigTime
@@ -183,6 +186,7 @@ export class Four extends Phaser.Scene {
 
             this.fourBackButton.setVisible(false);
             this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
+            puzzleWasJustSolved = false;
 
             this.scene.moveUp("RoomTwo");
             this.scene.sleep();
@@ -207,11 +211,16 @@ export class Four extends Phaser.Scene {
             bugz = true;
 
             if (myUI.getFourSolved()) {
-                this.artWhole.setVisible(true);
+                console.log(`puzzle was just solved ${puzzleWasJustSolved} just returned from hints ${justReturnedFromHints}`)
+                if (!puzzleWasJustSolved)
+                    this.artWhole.setVisible(true);
+                else
+                    this.artWhole.setVisible(!justReturnedFromHints);
                 this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
                 this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
                 this.ytPlayButton.setVisible(true);
             }
+            justReturnedFromHints = false;
         });
     }
 
@@ -225,6 +234,7 @@ export class Four extends Phaser.Scene {
             this.selected.setX(1000)
             // chicken dinner?
             let winner = true;
+            puzzleWasJustSolved = true;
 
             for (let i = 0; i < 4; i++) {
                 for (let j = 0; j < 4; j++) {
@@ -263,7 +273,7 @@ export class Four extends Phaser.Scene {
     // @ts-ignore
     // no clue what parent is
     registryUpdate(parent: Phaser.Game, key: string, data: string) {
-        //console.log("----------FOUR reg check " + data)
+        console.log(`Four registry update ${key}`)
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
@@ -277,6 +287,10 @@ export class Four extends Phaser.Scene {
                     object?.emit('pointerdown')
                 }
             }
+        }
+        if (key == "Four-specialCase") {
+            console.log("yet another special case...")
+            justReturnedFromHints = true;
         }
     }
 }

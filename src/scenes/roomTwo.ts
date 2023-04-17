@@ -133,7 +133,7 @@ export class RoomTwo extends Phaser.Scene {
             }
         });
 
-        crossMask = this.add.sprite(32,351, 'atlas2', 'crossMask.png').setOrigin(0, 0).setName("crossMask");
+        crossMask = this.add.sprite(32, 351, 'atlas2', 'crossMask.png').setOrigin(0, 0).setName("crossMask");
         recorder.addMaskSprite('crossMask', crossMask);
         crossMask.on('pointerdown', () => {
             const cam = this.cameras.main;
@@ -147,12 +147,12 @@ export class RoomTwo extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(145,380, 1000)
+                cam.pan(145, 380, 1000)
                 cam.zoomTo(3.2, 1000);
             }
         });
 
-        plantMask = this.add.sprite(123,678, 'atlas2', 'plantMask.png').setOrigin(0, 0).setName("plantMask");
+        plantMask = this.add.sprite(123, 678, 'atlas2', 'planterMask.png').setOrigin(0, 0).setName("plantMask");
         recorder.addMaskSprite('plantMask', plantMask);
         plantMask.on('pointerdown', () => {
             const cam = this.cameras.main;
@@ -165,10 +165,10 @@ export class RoomTwo extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(194,786, 500)
+                cam.pan(194, 786, 500)
                 cam.zoomTo(3.5, 500);
             }
-        });        
+        });
 
 
         leftButton2 = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton2").setDepth(1);
@@ -241,7 +241,7 @@ export class RoomTwo extends Phaser.Scene {
             if (viewWall == 3) {
                 plantMask.setVisible(true); plantMask.setDepth(100); plantMask.setInteractive({ cursor: 'pointer' });
                 crossMask.setVisible(true); crossMask.setDepth(100); crossMask.setInteractive({ cursor: 'pointer' });
-            }            
+            }
 
             fourMask.setVisible(false)
             fourSolved.setVisible(false);
