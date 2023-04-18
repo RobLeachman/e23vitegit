@@ -24,6 +24,7 @@
 * spoiler sound
 * settings mask, smaller
 * spoiler mask
+* do make secret icon pop objectives on top
 
 * limit 20 minutes, display time at exit
 
@@ -106,6 +107,7 @@ let tableMask: Phaser.GameObjects.Sprite;
 let doorMask: Phaser.GameObjects.Sprite;
 let rangerMask: Phaser.GameObjects.Sprite;
 let funzMask: Phaser.GameObjects.Sprite;
+let rylandMask: Phaser.GameObjects.Sprite;
 
 var battMask: Phaser.GameObjects.Sprite;
 
@@ -313,6 +315,7 @@ export class PlayGame extends Phaser.Scene {
                 takeMask.setVisible(false);
                 tableMask.setVisible(false);
                 rangerMask.setVisible(false);
+                rylandMask.setVisible(false);
                 funzMask.setVisible(false);
                 clue2Mask.setVisible(false);
                 doorMask.setVisible(false);
@@ -392,8 +395,10 @@ export class PlayGame extends Phaser.Scene {
                     twoDoorUnlockedWall.setVisible(true);
             }
 
+            rylandMask.setVisible(false);
             fiveMask.setVisible(false);
             if (viewWall == 3) {
+                rylandMask.setVisible(true); rylandMask.setDepth(100); rylandMask.setInteractive({ cursor: 'pointer' });
                 fiveMask.setVisible(true); fiveMask.setDepth(100); fiveMask.setInteractive({ cursor: 'pointer' });
 
                 const fiveState = myUI.getFiveState();
@@ -639,6 +644,24 @@ export class PlayGame extends Phaser.Scene {
                 cam.zoomTo(3.5, 500);
             }
         });
+
+        rylandMask = this.add.sprite(172,394, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
+        recorder.addMaskSprite('rylandMask', rylandMask);
+        rylandMask.on('pointerdown', () => {
+            const cam = this.cameras.main;
+            if (zoomed) {
+                zoomed = false;
+                cam.pan(360, 640, 750)
+                cam.zoomTo(1, 750);
+                myUI.restoreUILayer();
+                myUI.showSettingsButton();
+            } else {
+                myUI.hideUILayer();
+                zoomed = true;
+                cam.pan(265,495, 500);
+                cam.zoomTo(3.5, 500);
+            }
+        });        
 
         funzMask = this.add.sprite(600, 690, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("funzMask");
         recorder.addMaskSprite('funzMask', funzMask);
