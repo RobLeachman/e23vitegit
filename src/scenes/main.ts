@@ -4,31 +4,31 @@
  * 
  * 
  * - 3x3 slider puzzle
-  * -- show question mark when stuck
  * - Fireworks on winner screen
-  * - Screen shake on bad guess
+ * - 4x4 solver
+ * - flash hint icon when stuck
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
 
 
-  * 4x4 background should be gray not white
-  * show UI on zoom/pan complete
+* --> show completion time on exit
+* --> explain max 15 minutes
+* --> calc time penalty into elapsed, completion
+
+* 4x4 background should be gray not white
+* show UI on zoom/pan complete
+
+* settings mask, smaller settings icon
+* fix secret icon pop objectives on top
 
 * pause music during video
 * wait until pan done to restore UI
 * wait until video done to display key
-* recorder offset is wrong
-* upload console to firebase
+
 * reset firebase project end date
-* spoiler sound
-* settings mask, smaller
-* spoiler mask
-* do make secret icon pop objectives on top
-
-* limit 20 minutes, display time at exit
-
-
+* upload console to firebase
+* recorder offset is wrong
 
 ** finish work to use alternate 4x4
 
@@ -48,7 +48,7 @@
 ** video splash screen
     https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
 ** save game
-** timer
+
 
 3.60:
     - no auto fallback, why am I specifying webGL?
@@ -72,7 +72,7 @@ const d1 = 'https://discord.com/api/webhooks';
 const d2 = '1096536501413761125';
 const d3 = '_jdNDh2X_cgHwfnWSaXn4-ekCWvuaXAHbjDsj7p-mEbUmeJ8o1DbgPJx2nLi60Zu78VB';
 const discordClient = new DiscordWebhook(d1 + '/' + d2 + '/' + d3);
-let timeStart: number;
+
 
 let myUI: PlayerUI;
 let slots: Slots;
@@ -301,11 +301,8 @@ export class PlayGame extends Phaser.Scene {
                     this.add.sprite(360, 800, 'atlas', 'fail.png').setDepth(100);
                 }
 
-                const secs = Math.floor((Date.now() - timeStart) / 1000);
-                const minutes = Math.floor(secs / 60);
-                const seconds = secs - minutes * 60;
-                const winTime = minutes + ':' + seconds;
-                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! Time ' + winTime, "", "");
+
+                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! Time ' + recorder.getWinTime(), "", "");
 
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
                 this.add.dom(350, 1100, 'div', style, sentence);
@@ -512,7 +509,7 @@ export class PlayGame extends Phaser.Scene {
 
         mobile = data.mobile;
         //console.log(`main create ${mobile}`)
-        timeStart = Date.now();
+
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
@@ -645,7 +642,7 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        rylandMask = this.add.sprite(172,394, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
+        rylandMask = this.add.sprite(172, 394, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
         recorder.addMaskSprite('rylandMask', rylandMask);
         rylandMask.on('pointerdown', () => {
             const cam = this.cameras.main;
@@ -658,10 +655,10 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(265,495, 500);
+                cam.pan(265, 495, 500);
                 cam.zoomTo(3.5, 500);
             }
-        });        
+        });
 
         funzMask = this.add.sprite(600, 690, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("funzMask");
         recorder.addMaskSprite('funzMask', funzMask);

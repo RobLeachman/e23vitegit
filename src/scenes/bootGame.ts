@@ -138,6 +138,7 @@ export class BootGame extends Phaser.Scene {
 
                 // used XnConvert to switch to webp, nice!
                 this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
+                this.load.image('timeFail', 'assets/backgrounds/time fail.webp');
 
                 this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
                 this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
@@ -424,6 +425,7 @@ export class BootGame extends Phaser.Scene {
                 recorder.setMode("record")
             }
 
+            recorder.setTimeStart(Date.now());
 
             var pointer = this.input.activePointer;
             if (pointer.wasTouch) {
@@ -476,7 +478,7 @@ export class BootGame extends Phaser.Scene {
 
             myUI.displayInventoryBar(true);
 
-            //loadDone.destroy()
+            recorder.setTimeStart(Date.now());
             if (testingNewRoom) {
                 this.scene.run("Settings");
             } else {

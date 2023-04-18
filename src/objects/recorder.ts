@@ -48,6 +48,9 @@ export default class Recorder {
     cameraHack: number;
     randomSeed: string;
 
+    timeStart: number;
+    elapsedMinutes: number;
+
     constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
         cameraHack: number,
@@ -401,8 +404,29 @@ export default class Recorder {
             pointerClicked = false;
             this.totalClicks++;
             this.dumpRecording();
+
+            let secs = Math.floor((Date.now() - this.timeStart) / 1000);
+            secs = secs * 30;
+            this.elapsedMinutes = Math.floor(secs / 60);
         }
     }
+
+    getElapsedMinutes() {
+        return this.elapsedMinutes;
+    }
+
+    setTimeStart(timeStart: number) {
+        this.timeStart = timeStart;
+    }
+
+    getWinTime() {
+        const secs = Math.floor((Date.now() - this.timeStart) / 1000);
+        const minutes = Math.floor(secs / 60);
+        const seconds = secs - minutes * 60;
+        const winTime = minutes + ':' + seconds;        
+        return winTime;
+    }
+
 
     recordPointerAction(action: string, time: number, sceneName: string) {
         if (action != "mousemove") {

@@ -66,6 +66,9 @@ let flipIt = false;
 let hasSearched = false;
 let hasCombined = false;
 let currentSelectedIndex: number;
+let oldElapsedMinutes = -1;
+const maxTime = 10;
+let timeFail = false;
 
 let hintBotInit = true;
 let hintObjectiveText: string;
@@ -110,6 +113,7 @@ let sceneFive: Phaser.Scene;
 
 let needNewClue = true;
 let clueText: Phaser.GameObjects.Text;
+let timeText: Phaser.GameObjects.Text;
 let nextObjective: string = "";
 let spoilerCount = 0;
 
@@ -425,6 +429,11 @@ export default class PlayerUI extends Phaser.Scene {
         settingsButton.setVisible(true); settingsButton.setInteractive({ cursor: 'pointer' });
     }
 
+    getTimeFail() {
+        return timeFail;
+    }
+
+
     // Must preload a few elements for UI
     preload() {
         this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
@@ -675,11 +684,10 @@ export default class PlayerUI extends Phaser.Scene {
         //clueBox.fillRect(5, 250, 400, 30);
         clueText = this.make.text({
             x: 10,
-            y: 175,
+            y: 105,
             text: 'clue goes here',
             style: {
                 font: '24px Verdana',
-                //fill: '#ffffff'
             }
         });
         clueText.setDepth(99);
@@ -688,6 +696,18 @@ export default class PlayerUI extends Phaser.Scene {
         if (!debugHints) {
             clueText.setVisible(false)
         }
+
+        timeText = this.make.text({
+            x: 10,
+            y: 205,
+            text: 'Only 10 minutes remain',
+            style: {
+                font: '24px Verdana',
+            }
+        });
+
+        timeText.setDepth(99);
+        timeText.setVisible(false);
 
         this.scene.launch("BootGame")
     }
@@ -785,6 +805,39 @@ export default class PlayerUI extends Phaser.Scene {
                 //    console.log(action)
                 //});
             }
+        }
+
+        const elapsed = recorder.getElapsedMinutes();
+        if (elapsed != oldElapsedMinutes && !timeFail) {
+            oldElapsedMinutes = elapsed;
+            const minutesRemaining = maxTime - elapsed;
+            if (minutesRemaining < 6) {
+                timeText.setVisible(true);
+                if (minutesRemaining > 1) {
+                    timeText.text = "Only " + minutesRemaining + " minutes remain";
+                } else {
+                    if (minutesRemaining < 1 && !timeFail) {
+                        console.log("TIME FAIL")
+                        timeFail = true;
+                        timeText.setVisible(false);
+
+                        // Settings is the only modal as we have available so reuse it
+                        this.hideUILayer();
+                        this.scene.sleep(activeSceneName);
+
+                        if (settingsInit) {
+                            settingsInit = false;
+                            this.scene.launch("Settings")
+                        } else {
+                            this.scene.wake("Settings");
+                        }
+
+                    } else {
+                        timeText.text = "Only ONE MINUTE minute remains";
+                    }
+                }
+            }
+
         }
 
         ////////////// RECORDER PASTEBOX //////////////
