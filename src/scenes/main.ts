@@ -13,10 +13,9 @@
 
 
 * --> show completion time on exit
-* --> explain max 15 minutes
 * --> calc time penalty into elapsed, completion
 
-* 4x4 background should be gray not white
+
 * show UI on zoom/pan complete
 
 * settings mask, smaller settings icon
@@ -26,12 +25,13 @@
 * wait until pan done to restore UI
 * wait until video done to display key
 
-* reset firebase project end date
-* upload console to firebase
+* reset firebase project end date!
+
 * recorder offset is wrong
 
 ** finish work to use alternate 4x4
-
+** 4x4 background should be gray not white
+** upload console to firebase
 
 --> Clockify extension
 
@@ -49,13 +49,6 @@
     https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
 ** save game
 
-
-3.60:
-    - no auto fallback, why am I specifying webGL?
-    https://github.com/photonstorm/phaser/blob/master/changelog/3.60/Game.md
-
-
-
 */
 
 import 'phaser';
@@ -65,7 +58,8 @@ import PlayerUI from './playerUI';
 
 import DiscordWebhook from 'discord-webhook-ts';
 
-// Discord web hook, a slam dunk. The hardest part is not having it be deleted on commit and I'll tackle that later. Please don't delete my webhook. Thanks.
+// Discord web hook, a slam dunk. The hardest part is not having it be deleted on commit and I'll tackle that later. 
+// Please don't delete my webhook. Thanks.
 // https://www.npmjs.com/package/discord-webhook-ts
 // https://discohook.org
 const d1 = 'https://discord.com/api/webhooks';
@@ -302,10 +296,13 @@ export class PlayGame extends Phaser.Scene {
                 }
 
 
-                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! Time ' + recorder.getWinTime(), "", "");
+                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! '+recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers', "", "");
 
-                const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Arial';
+                const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Verdana';
                 this.add.dom(350, 1100, 'div', style, sentence);
+
+                const style2 = 'margin: auto; background-color: black; color:#fff; width: 520px; height: 40px; font: 25px Verdana';
+                this.add.dom(10, 200, 'div', style2, 'You won in ' + recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers').setOrigin(0,0);
 
                 myUI.hideUILayer();
                 slots.clearAll();
@@ -557,7 +554,7 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
 
-        if (recorder.getPlayerName() != "qqq")
+        if (recorder.getPlayerName() != "qqq" && recorder.getPlayerName() != "Quazar")
             this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
 
 

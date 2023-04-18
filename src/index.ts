@@ -66,7 +66,7 @@ console.log('HEIGHT = ', HEIGHT);
 
 
 let gameConfig = {
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     //type: Phaser.WEBGL,
     //type: Phaser.CANVAS,
     backgroundColor: '#333333',
@@ -104,7 +104,7 @@ let gameConfig = {
 
 if (testingFour) {
     gameConfig = {
-        type: Phaser.AUTO,
+        type: Phaser.WEBGL,
         //type: Phaser.WEBGL,
         //type: Phaser.CANVAS,
         backgroundColor: '#333333',

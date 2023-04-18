@@ -67,7 +67,7 @@ let hasSearched = false;
 let hasCombined = false;
 let currentSelectedIndex: number;
 let oldElapsedMinutes = -1;
-const maxTime = 10;
+const maxTime = 15;
 let timeFail = false;
 
 let hintBotInit = true;
@@ -101,7 +101,7 @@ let recordingEndedFadeClicks = 0;
 const minDelayReplay = 1;
 let debugReplayActionCounter = 0;
 let lastKeyDebouncer = "";
-let mainReplayRequest = "no key just pressed";
+let mainReplayRequest = "";
 
 let seededRNG = new Phaser.Math.RandomDataGenerator;
 
@@ -115,7 +115,6 @@ let needNewClue = true;
 let clueText: Phaser.GameObjects.Text;
 let timeText: Phaser.GameObjects.Text;
 let nextObjective: string = "";
-let spoilerCount = 0;
 
 let clueMap = new Map<string, string>(); // clue key, clue text
 let clueObjective = new Map<string, boolean>();
@@ -230,10 +229,6 @@ for (let key of clueMap.keys()) {
 export default class PlayerUI extends Phaser.Scene {
     constructor() {
         super("PlayerUI");
-    }
-
-    timePenalty() {
-        console.log(`Viewed ${++spoilerCount} spoilers`);
     }
 
     getSoundEnabled() {
@@ -735,7 +730,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         ////////////// RECORDER PREP //////////////
 
-        if (mainReplayRequest == "do the damn replay") { // trap if key pressed and not reloaded yet
+        if (mainReplayRequest == "replayRequested") { // trap if key pressed and not reloaded yet
             return;
         }
 
@@ -1275,7 +1270,7 @@ export default class PlayerUI extends Phaser.Scene {
             case "`":
                 //console.log("play recording");
                 recorder.setMode("replay")
-                mainReplayRequest = "do the damn replay"
+                mainReplayRequest = "replayRequested"
                 window.location.reload();
                 break;
             case "x":

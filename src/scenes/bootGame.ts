@@ -8,7 +8,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
 //const skipClickToStart = true; const skipCloud = true;
-let skipClickToStart = false;
+let skipClickToStart = true;
 let skipCloud = false;
 
 const testingNewRoom = false;
@@ -25,14 +25,22 @@ const playerNameCookie = "escape23player1";
 let playerCount = -1;
 let playButtonReady = false;
 let initSplash = true;
+let playButtonClicked = false;
+let displayedIntro1 = false;
+let displayedIntro2 = false;
+let introClicked = false;
+let started = false;
 
 let theRecording: string;
 
 let startButton: Phaser.GameObjects.Sprite;
 let playButton: Phaser.GameObjects.Sprite;
+let fakeRightButton: Phaser.GameObjects.Sprite;
 
 let splashScreen: Phaser.GameObjects.Image;
 let regScreen: Phaser.GameObjects.Image;
+let intro1: Phaser.GameObjects.Image;
+let intro2: Phaser.GameObjects.Image;
 let thePlayer: Phaser.GameObjects.Text;
 let greetings: Phaser.GameObjects.Text;
 let greets1: Phaser.GameObjects.Text;
@@ -104,21 +112,13 @@ export class BootGame extends Phaser.Scene {
         this.load.audio('musicTrack', 'assets/audio/music.mp3', { loop: true });
 
         if (testingNewRoom) {
-            this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
-            this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
-            this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
-            this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
-            this.load.image('on', 'assets/sprites/on.png');
-            this.load.image('off', 'assets/sprites/off.png');
-
-            this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
+            // load only minimum requirements for the new scene under development...
         } else {
-            this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
-            this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
+            // load only a few backgrounds while developing/testing a specific change...
+            this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
+            this.load.image('intro1', 'assets/backgrounds/intro1.webp');
+            this.load.image('intro2', 'assets/backgrounds/intro2.webp');
             this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
-            this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
-            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
-
 
             if (!skipBackgroundsLoad) {
                 this.load.audio('sfx', [
@@ -135,6 +135,8 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('off', 'assets/sprites/off.png');
 
                 this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
+                this.load.image('intro1', 'assets/backgrounds/intro1.webp');
+                this.load.image('intro2', 'assets/backgrounds/intro2.webp');
 
                 // used XnConvert to switch to webp, nice!
                 this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
@@ -411,29 +413,7 @@ export class BootGame extends Phaser.Scene {
             greets5.destroy();
             regScreen.destroy();
 
-            myUI.displayInventoryBar(true); myUI.showEye()
-
-            // not sure what I want... force cookies if qqq?
-            //recorder.setMode("record");
-
-            if (playerName == "qqq" || playerName == "Qqq") {
-                console.log("do not record by default, Quazar")
-                // this messes with roach replay... hmm
-                //recorder.setMode("idle")
-            } else {
-                //console.log("record by default...")
-                recorder.setMode("record")
-            }
-
-            recorder.setTimeStart(Date.now());
-
-            var pointer = this.input.activePointer;
-            if (pointer.wasTouch) {
-                this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
-            }
-            else {
-                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
-            }
+            playButtonClicked = true;
         });
 
         myUI.displayInventoryBar(false); myUI.hideEye();
@@ -488,6 +468,33 @@ export class BootGame extends Phaser.Scene {
         }
 
         asyncCreateDone = true;
+    }
+
+    startGame() {
+        myUI.displayInventoryBar(true); myUI.showEye()
+
+        // not sure what I want... force cookies if qqq?
+        //recorder.setMode("record");
+
+        if (playerName == "qqq" || playerName == "Qqq") {
+            console.log("do not record by default, Quazar")
+            // this messes with roach replay... hmm
+            //recorder.setMode("idle")
+        } else {
+            //console.log("record by default...")
+            recorder.setMode("record")
+        }
+
+        recorder.setTimeStart(Date.now());
+
+        var pointer = this.input.activePointer;
+        if (pointer.wasTouch) {
+            this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
+        }
+        else {
+            this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
+        }
+
     }
 
     ////////////// GREETINGS TEXT //////////////
@@ -567,6 +574,41 @@ export class BootGame extends Phaser.Scene {
                 playButton.setVisible(true)
                 playButtonReady = false;
             }
+        }
+        if (playButtonClicked && !displayedIntro1) {
+            displayedIntro1 = true;
+            intro1 = this.add.image(0, 0, 'intro1').setOrigin(0, 0);
+            fakeRightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setDepth(1);
+
+            const scene = this;
+            const doIntroClick = this.introClick;
+            this.cameras.main.fadeIn(500);
+            this.cameras.main.once('camerafadeincomplete', function () {
+                scene.input.on("pointerup", doIntroClick, scene);
+            });
+
+            //this.startGame();
+        }
+        if (introClicked && !displayedIntro2) {
+            displayedIntro2 = true;
+            intro2 = this.add.image(0, 0, 'intro2').setOrigin(0, 0);
+
+            const scene = this;
+            const doFinal = this.finalClick;
+            this.cameras.main.fadeIn(3000);
+            scene.input.on("pointerup", doFinal, scene);
+        }
+    }
+    introClick() {
+        introClicked = true;
+    }
+    finalClick() {
+        if (!started) {
+            started = true;
+            fakeRightButton.destroy();
+            intro1.destroy();
+            intro2.destroy();
+            this.startGame();
         }
     }
 }

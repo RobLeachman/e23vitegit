@@ -50,6 +50,7 @@ export default class Recorder {
 
     timeStart: number;
     elapsedMinutes: number;
+    spoilerCount = 0;
 
     constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
@@ -406,7 +407,13 @@ export default class Recorder {
             this.dumpRecording();
 
             let secs = Math.floor((Date.now() - this.timeStart) / 1000);
-            secs = secs * 30;
+            //secs = secs * 30; //accelerate when testing
+            let spoilerPenalty = 0;
+            if (this.spoilerCount > 0) {
+                spoilerPenalty+= (this.spoilerCount-1) * 30;
+                secs += spoilerPenalty;
+            }
+
             this.elapsedMinutes = Math.floor(secs / 60);
         }
     }
@@ -425,6 +432,22 @@ export default class Recorder {
         const seconds = secs - minutes * 60;
         const winTime = minutes + ':' + seconds;        
         return winTime;
+    }
+
+    getWinTimeWords() {
+        const secs = Math.floor((Date.now() - this.timeStart) / 1000);
+        const minutes = Math.floor(secs / 60);
+        const seconds = secs - minutes * 60;
+        const winTime = minutes + ':' + seconds.toString().padStart(2, '0');        
+        return winTime;
+    }    
+
+    timePenalty() {
+        this.spoilerCount++;
+    }
+
+    getSpoilerCount() {
+        return this.spoilerCount;
     }
 
 

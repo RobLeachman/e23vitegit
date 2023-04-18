@@ -132,7 +132,7 @@ export class HintBot extends Phaser.Scene {
                 }
                 this.theSpoilers[this.currentSpoiler].showSpoiler();
                 this.currentSpoiler++;
-                myUI.timePenalty();
+                recorder.timePenalty();
             }
             if (this.currentSpoiler == this.spoilerCount) {
                 spoilerMask.removeInteractive();
