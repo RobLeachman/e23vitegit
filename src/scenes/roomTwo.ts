@@ -162,11 +162,13 @@ export class RoomTwo extends Phaser.Scene {
                 cam.zoomTo(1, 750);
                 myUI.restoreUILayer();
                 myUI.showSettingsButton();
+                leftButton2.setVisible(true);
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(194, 786, 500)
-                cam.zoomTo(3.5, 500);
+                cam.pan(194, 786, 480)
+                cam.zoomTo(4, 500);
+                leftButton2.setVisible(false);
             }
         });
 
