@@ -9,7 +9,7 @@ let useCookieRecordings = false; // use cookies not the cloud
 let debugShowReplayActionCount = false;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = false; // display pastebox for input of debug data
+let debugInput = true; // display pastebox for input of debug data
 let debugHints = false;
 
 // override hardcoded debug flags in production to be sure they are disabled
@@ -19,7 +19,7 @@ if (location.hostname == "localhost")
 
 if (!localBuild) {
     debugInput = false;
-    debugInput = false;
+    debugHints = false;
 }
 
 let cameraHack = 0;
@@ -71,6 +71,7 @@ let stepVolumeUp = 0;
 let stepVolumeDown = 0;
 let stepVolumeLevel: number;
 let stepVolumeUpTime: number;
+let musicStopped = false;
 
 let uiObjectView = false;
 let uiObjectViewDirty = false;
@@ -103,7 +104,7 @@ let fourSolved = false;
 let fiveState = 0;
 
 let theRecording: string;
-let myText: InputText;
+let pasteResultText: InputText;
 let pasteBox: InputText;
 let mainHasStarted = false;
 let spinQuestionBOJ = true;
@@ -309,6 +310,11 @@ export default class PlayerUI extends Phaser.Scene {
             // @ts-ignore
             music.setVolume(stepVolumeLevel);
         }
+        if (!musicStopped) {
+            musicStopped = true;
+            recorder.setStoppedMusicTime(true);
+            console.log("played music for " + recorder.getMusicPlayTime());
+        }
 
     }
     resumeMusic() {
@@ -321,6 +327,12 @@ export default class PlayerUI extends Phaser.Scene {
             // @ts-ignore
             music.setVolume(stepVolumeLevel);
         }
+    }
+    getMusicPlayTime() {
+        if (!musicStopped)
+            return "never turned off"
+        else
+            return recorder.getMusicPlayTime();
     }
 
     didGoal(objective: string) {
@@ -688,12 +700,12 @@ export default class PlayerUI extends Phaser.Scene {
         ////////////// RECORDER INIT //////////////
         //console.log("MAIN PLAYER: " + recorder.getPlayerName());
 
-        myText = new InputText(this, 220, 105, 300, 100, {
+        pasteResultText = new InputText(this, 220, 105, 300, 100, {
             type: 'textarea',
             text: 'init',
             fontSize: '24px',
         });
-        this.add.existing(myText);
+        this.add.existing(pasteResultText);
 
         pasteBox = new InputText(this, 220, 55, 300, 100, {
             type: 'textarea',
@@ -701,7 +713,7 @@ export default class PlayerUI extends Phaser.Scene {
             fontSize: '24px',
         });
         this.add.existing(pasteBox);
-        myText.setVisible(false)
+        pasteResultText.setVisible(false)
         pasteBox.setVisible(true)
 
         recorder.setCookieRecorderMode(useCookieRecordings);
@@ -779,7 +791,6 @@ export default class PlayerUI extends Phaser.Scene {
         */
 
         ////////////// RECORDER PREP //////////////
-
         if (mainReplayRequest == "replayRequested") { // trap if key pressed and not reloaded yet
             return;
         }
@@ -793,7 +804,7 @@ export default class PlayerUI extends Phaser.Scene {
             }
         }
 
-        if (myText.text == "init") {
+        if (pasteResultText.text == "init") {
             //console.log("UI Recorder mode: " + recorder.getMode());
             if (recorder.getMode() == "idleNowReplayOnReload")
                 recorder.setMode("replay")
@@ -801,14 +812,12 @@ export default class PlayerUI extends Phaser.Scene {
             let replaying = false;
             if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
                 replaying = true;
+            pasteResultText.setVisible(false);
             if (debugInput && !replaying) {
-                myText.text = "status";
-                //myText.setVisible(false)
+                pasteResultText.text = "status";
                 pasteBox.text = "pasteit";
             } else {
-                myText.text = "off";
-                //theText.resize(0, 0);
-                myText.setVisible(false);
+                pasteResultText.text = "off";
                 pasteBox.setVisible(false);
             }
 
@@ -889,8 +898,9 @@ export default class PlayerUI extends Phaser.Scene {
         if (!mainHasStarted) {
             const mainStarted = this.scene.isActive("PlayGame");
             if (mainStarted) {
-                pasteBox.setVisible(true);
-                myText.setVisible(false);
+                if (debugInput)
+                    pasteBox.setVisible(true);
+                pasteResultText.setVisible(false);
                 mainHasStarted = true;
                 //console.log(`UI started, mode = ${ recorder.getMode() }`)
             }
@@ -904,11 +914,11 @@ export default class PlayerUI extends Phaser.Scene {
 
             console.log("we fetched:")
             console.log(theRecording);
-            myText.setVisible(true);
+            pasteResultText.setVisible(true);
             if (theRecording == "fail") {
-                myText.text = "ERROR"
+                pasteResultText.text = "ERROR"
             } else {
-                myText.text = "replaying..."
+                pasteResultText.text = "replaying..."
                 recorder.setRecordingFilename(getRec);
                 recorder.setMode("replay")
                 window.location.reload();
@@ -976,13 +986,10 @@ export default class PlayerUI extends Phaser.Scene {
                     //////////////
                     if (targetType == "object") {
 
-                        //console.log("check target scene: " + targetScene)
-
                         // TODO Need to check unmapped objects
                         let object = recorder.getMaskSprite(targetObject);
                         //console.log("recorder replay object " + object)
 
-                        // if (object?.scene.sys.settings.key != "PlayGame") {
                         if (object?.scene === this) {
                             //console.log("simulating UI " + targetObject)
                             object?.emit('pointerdown')

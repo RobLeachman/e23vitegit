@@ -111,13 +111,40 @@ var viewportText: Phaser.GameObjects.Text;
 let initMain = true;
 
 
+
+
+const tints = [ 0xff4136, 0xff4136, 0xff4136, 0xff4136, 0xff4136, 0xff4136, 0xff4136, 0xff4136 ];
+const emitterConfig = {
+  alpha: { start: 1, end: 0, ease: "Quad.easeOut" },
+  angle: { start: 0, end: 360, steps: 100 },
+  blendMode: "SCREEN",
+  frequency: -1,
+  gravityY: 128,
+  lifespan: 3000,
+  on: false,
+  quantity: 500,
+  reserve: 500,
+  rotate: 45,
+  speed: { min: 128, max: 256 }
+};
+
+const { Between, FloatBetween, RadToDeg } = Phaser.Math;
+const { GetRandom } = Phaser.Utils.Array;
+
+// @ts-ignore
+let fireworks, renderTexture;
+
+
 export class PlayGame extends Phaser.Scene {
     constructor() {
         super("PlayGame");
     }
 
-    async update() {
+    //@ts-ignore
+    async update(time, delta) {
         //console.log("main update")
+        //@ts-ignore
+        renderTexture.fill(0, 0.01 * delta).draw(fireworks);        
 
         // did we just hit the keyboard to start replaying?
         if (this.input.activePointer.rightButtonDown() && location.hostname == "localhost") {
@@ -253,10 +280,8 @@ export class PlayGame extends Phaser.Scene {
                     this.add.sprite(360, 800, 'atlas', 'fail.png').setDepth(100);
                 }
 
-                this.sendDiscordWebhook('Winner', 
-                  recorder.getPlayerName() + '  escaped! ' + recorder.getWinTimeWords() + 
-                    ' with ' + recorder.getSpoilerCount() + ' spoilers' +
-                    ' (' + myUI.getMusicPlayTime() + ')', "", "");
+
+                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! ' + recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers', "", "");
 
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Verdana';
                 this.add.dom(350, 1100, 'div', style, sentence);
@@ -733,6 +758,49 @@ export class PlayGame extends Phaser.Scene {
             }
             updateWall = true;
         });
+    
+        renderTexture = this.add
+          .renderTexture(0, 0, 1024, 768)
+          .setOrigin(0, 0)
+          .setBlendMode("ADD");
+      
+        fireworks = this.make.particles({ key: "__WHITE" }, false);
+      
+        //const emitter1 = fireworks.createEmitter(emitterConfig);
+        //const emitter2 = fireworks.createEmitter(emitterConfig);
+        //const emitter3 = fireworks.createEmitter(emitterConfig);
+        const emitter1 = fireworks.createEmitter();
+        const emitter2 = fireworks.createEmitter();
+        const emitter3 = fireworks.createEmitter();
+
+      
+        this.time.addEvent({
+          delay: 3000,
+          startAt: Between(0, 3000),
+          repeat: -1,
+          callback: () => {
+            this.updateEmitter(emitter1);
+          }
+        });
+      
+        this.time.addEvent({
+          delay: 4000,
+          startAt: Between(0, 4000),
+          repeat: -1,
+          callback: () => {
+            this.updateEmitter(emitter2);
+          }
+        });
+      
+        this.time.addEvent({
+          delay: 5000,
+          startAt: Between(0, 5000),
+          repeat: -1,
+          callback: () => {
+            this.updateEmitter(emitter3);
+          }
+        });
+
 
         this.cameras.main.fadeIn(500);
 
@@ -804,4 +872,32 @@ export class PlayGame extends Phaser.Scene {
         clue2states[2] = "clue2-open.png";
         clue2states[3] = "clue2-right.png";
     }
+
+    
+    init() {
+      const stars = this.textures.createCanvas("stars", 1024, 768);
+      const ctx = stars!.getContext();
+      //const { black, white } = colors.cssColors;
+    
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, 1024, 768);
+      ctx.fillStyle = "#fff";
+    
+      let i = 1024;
+      while (i-- > 0) {
+        ctx.globalAlpha = FloatBetween(0, 1);
+        ctx.fillRect(Between(0, 1023), Between(0, 767), 1, 1);
+      }
+    
+      stars!.refresh();
+    }
+
+   
+    //@ts-ignore
+    updateEmitter(emitter) {
+      emitter
+        .setPosition(1024 * FloatBetween(0.25, 0.75), 768 * FloatBetween(0, 0.5))
+        .setTint(GetRandom(tints))
+        .explode();
+    }    
 }

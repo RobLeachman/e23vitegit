@@ -23,6 +23,8 @@ let recordedPlayername: string;
 
 let storageFolder = "v1Test/";
 
+let musicPlayTime = 0;
+
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
     pointerSprite: Phaser.GameObjects.Sprite;
@@ -410,6 +412,7 @@ export default class Recorder {
             this.totalClicks++;
             this.dumpRecording();
 
+            // calculate elapsed time on every click
             let secs = Math.floor((Date.now() - this.timeStart) / 1000);
             //secs = secs * 30; //accelerate when testing
             let spoilerPenalty = 0;
@@ -417,7 +420,6 @@ export default class Recorder {
                 spoilerPenalty += (this.spoilerCount - 1) * 30;
                 secs += spoilerPenalty;
             }
-
             this.elapsedMinutes = Math.floor(secs / 60);
         }
     }
@@ -431,7 +433,27 @@ export default class Recorder {
     }
 
     getWinTimeWords() {
-        const secs = Math.floor((Date.now() - this.timeStart) / 1000);
+        const seconds = Math.floor((Date.now() - this.timeStart) / 1000);
+        return this.getFormattedTime(seconds);
+    }
+
+    setStoppedMusicTime(hadStarted: boolean) {
+        if (!hadStarted)
+            musicPlayTime = -1;
+        else
+            musicPlayTime = Math.floor((Date.now() - this.timeStart) / 1000);
+    }
+
+    getMusicPlayTime() {
+        if (musicPlayTime == 0)
+            return "never"
+        else if (musicPlayTime < 0)
+            return "muted"
+        else
+            return this.getFormattedTime(musicPlayTime)
+    }
+
+    getFormattedTime(secs: number) {
         const minutes = Math.floor(secs / 60);
         const seconds = secs - minutes * 60;
         const winTime = minutes + ':' + seconds.toString().padStart(2, '0');

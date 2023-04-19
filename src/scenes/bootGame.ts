@@ -381,6 +381,7 @@ export class BootGame extends Phaser.Scene {
             if (recorder.getMusicMuted() == "muted") {
                 //console.log("BOOT MUTE MUSIC")
                 myUI.setMusicSetting(false);
+                recorder.setStoppedMusicTime(false);
             } else {
                 myUI.setMusicSetting(true);
             }

@@ -78,7 +78,6 @@ export class Settings extends Phaser.Scene {
         settingsBackButton.on('pointerdown', () => {
             recorder.recordObjectDown(settingsBackButton.name, thisscene);
 
-            console.log(`${_SCENENAME} Back!`);
             myUI.showSettingsButton();
 
             this.scene.moveUp(myUI.getActiveScene());
@@ -119,6 +118,7 @@ export class Settings extends Phaser.Scene {
         musicButton.on('pointerdown', () => {
             ytWarning.setVisible(true);
 
+            // went round and round with this. Now it would work to use a toggle in UI... TODO fix
             if (myUI.getMusicEnabled()) {
                 myUI.setMusicSetting(false);
             } else {
