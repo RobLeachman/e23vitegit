@@ -10,9 +10,9 @@
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
+* include music play time in discord hook
 
 * reset firebase project end date!
-* recorder offset is wrong
 
 ** finish work to use alternate 4x4
 ** upload console to firebase
@@ -32,7 +32,6 @@
 ** save game
 
 */
-
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
@@ -113,9 +112,6 @@ let initMain = true;
 
 
 export class PlayGame extends Phaser.Scene {
-    //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
-    //rexInputText: InputText; // Declare scene property 'rexInputText' as InputText type
-
     constructor() {
         super("PlayGame");
     }
@@ -280,6 +276,8 @@ export class PlayGame extends Phaser.Scene {
                 fiveMask.setVisible(false);
                 fiveOpen.setVisible(false);
                 fiveBatt.setVisible(false);
+
+                myUI.pauseMusic();
 
                 updateWall = false;
                 viewWall = currentWall;

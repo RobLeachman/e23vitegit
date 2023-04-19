@@ -71,11 +71,6 @@ export class BootGame extends Phaser.Scene {
             skipClickToStart = true;
             skipCloud = true;
         }
-        if (location.hostname != "localhost") {
-            skipClickToStart = false;
-            skipCloud = false;
-        }
-
 
         splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
 
@@ -305,18 +300,22 @@ export class BootGame extends Phaser.Scene {
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         //var camera = this.cameras.main;
         //camera.setPosition(0,-240); // didn't fudge the camera but instead repositioned everything in better spot, for now
-
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        recorder = myUI.getRecorder();
+        if (!myUI.getLocalBuild()) {
+            skipClickToStart = false;
+            skipCloud = false;
+        }
 
+        recorder = myUI.getRecorder();
         //console.log("Boot BOJ recorder mode=" + recorder.getMode());
         if (recorder.getMode() == "replay")
             skipClickToStart = true;
 
-        myUI.initMusic();
 
+
+        myUI.initMusic();
         if (recorder.getSoundMuted() == "muted") {
             //console.log("BOOT MUTE SOUND")
             myUI.setSoundSetting(false);

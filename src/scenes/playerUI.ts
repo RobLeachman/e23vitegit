@@ -9,12 +9,18 @@ let useCookieRecordings = false; // use cookies not the cloud
 let debugShowReplayActionCount = false;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
-let debugInput = true; // display pastebox for input of debug data
-if (location.hostname != "localhost")
-    debugInput = false;
+let debugInput = false; // display pastebox for input of debug data
 let debugHints = false;
-if (location.hostname != "localhost")
+
+// override hardcoded debug flags in production to be sure they are disabled
+let localBuild = false;
+if (location.hostname == "localhost")
+    localBuild = true;
+
+if (!localBuild) {
     debugInput = false;
+    debugInput = false;
+}
 
 let cameraHack = 0;
 
@@ -237,6 +243,10 @@ export default class PlayerUI extends Phaser.Scene {
         super("PlayerUI");
     }
 
+    getLocalBuild() {
+        return localBuild;
+    }
+
     getSoundEnabled() {
         return playSound;
     }
@@ -283,7 +293,7 @@ export default class PlayerUI extends Phaser.Scene {
             });
             //console.log(this.sys.game.device.browser)
             musicTest.setDepth(99);
-            if (location.hostname != "localhost")
+            if (!localBuild)
                 musicTest.setY(400)
         }
     }
@@ -520,7 +530,7 @@ export default class PlayerUI extends Phaser.Scene {
             mobileTest.text = 'Hostname:' + hostname + "  Safari:" + this.sys.game.device.browser.mobileSafari + " ver " + this.sys.game.device.browser.safariVersion;
         }
 
-        if (hostname != "localhost")
+        if (!localBuild)
             useCookieRecordings = false;
 
         invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0).setVisible(false).setDepth(1);
@@ -696,7 +706,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         recorder.setCookieRecorderMode(useCookieRecordings);
 
-        if (location.hostname == "localhost") {
+        if (localBuild) {
             this.input.keyboard!.on('keydown', this.handleKey);
         }
 
@@ -725,9 +735,10 @@ export default class PlayerUI extends Phaser.Scene {
             }
         });
         clueText.setDepth(99);
+        clueText.setVisible(false);
         hintObjectiveText = clueMap.get('searchAndSolve')!;
         clueText.text = hintObjectiveText;
-        if (!debugHints) {
+        if (debugHints) {
             clueText.setVisible(false)
         }
 
@@ -797,8 +808,8 @@ export default class PlayerUI extends Phaser.Scene {
             } else {
                 myText.text = "off";
                 //theText.resize(0, 0);
-                myText.resize(0, 0);
-                pasteBox.resize(0, 0);
+                myText.setVisible(false);
+                pasteBox.setVisible(false);
             }
 
             theRecording = "NO RECORDING";
@@ -1167,7 +1178,6 @@ export default class PlayerUI extends Phaser.Scene {
             hintObjectiveText = clueMap.get(nextObjective)!;
             clueText.text = hintObjectiveText;
 
-            //console.log(`NEXT CLUE ${oldClue} ${clueText.text} object=${uiObjectView}`)
             if (oldClue != clueText.text) {
                 if (uiObjectView) {
                     stateHintQuestionGreen = true;
