@@ -49,6 +49,7 @@ class InvItem {
             this.allSlots.fakeClicks++;
             return;
         }
+        myUI.hideClickClue();
 
         let prevItem = -1;
         this.allSlots.slotArray.forEach((icon, idx) => {

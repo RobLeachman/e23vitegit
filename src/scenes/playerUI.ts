@@ -12,7 +12,9 @@ const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast st
 let debugInput = true; // display pastebox for input of debug data
 if (location.hostname != "localhost")
     debugInput = false;
-let debugHints = true;
+let debugHints = false;
+if (location.hostname != "localhost")
+    debugInput = false;
 
 let cameraHack = 0;
 
@@ -59,6 +61,10 @@ let playMusic = false; // toggled to true at BOJ unless muted
 // @ts-ignore
 let music;
 let musicLength: number;
+let stepVolumeUp = 0;
+let stepVolumeDown = 0;
+let stepVolumeLevel: number;
+let stepVolumeUpTime: number;
 
 let uiObjectView = false;
 let uiObjectViewDirty = false;
@@ -253,11 +259,13 @@ export default class PlayerUI extends Phaser.Scene {
         if (playMusic) {
             recorder.setMusicMuted(false);
             // @ts-ignore
+            music.setVolume(.1);
+            // @ts-ignore
             music.play();
+            this.resumeMusic();
         } else {
             recorder.setMusicMuted(true);
-            // @ts-ignore
-            music.pause();
+            this.pauseMusic();
         }
     }
     initMusic() {
@@ -270,11 +278,38 @@ export default class PlayerUI extends Phaser.Scene {
                 text: 'test music',
                 style: {
                     font: '18px Verdana',
-                    //fill: '#ffffff'
+                    color: 'yellow'
                 }
             });
             //console.log(this.sys.game.device.browser)
             musicTest.setDepth(99);
+            if (location.hostname != "localhost")
+                musicTest.setY(400)
+        }
+    }
+    pauseMusic() {
+        if (stepVolumeDown != 0 || stepVolumeUp != 0) {
+            //console.log("********JITTER*******") // if they goof with the settings and want it off, force it off
+            // @ts-ignore
+            music.pause();
+        } else {
+            stepVolumeDown = 10;
+            stepVolumeLevel = .95;
+            stepVolumeUpTime = this.time.now + 50;
+            // @ts-ignore
+            music.setVolume(stepVolumeLevel);
+        }
+
+    }
+    resumeMusic() {
+        if (playMusic) {
+            // @ts-ignore
+            music.resume();
+            stepVolumeUp = 10;
+            stepVolumeLevel = 0;
+            stepVolumeUpTime = this.time.now + 150;
+            // @ts-ignore
+            music.setVolume(stepVolumeLevel);
         }
     }
 
@@ -368,6 +403,10 @@ export default class PlayerUI extends Phaser.Scene {
         clickLine.setVisible(true);
         clickLine.play("clickLineMoves");
         this.showEye();
+    }
+    hideClickClue() {
+        interfaceClick.setVisible(false);
+        clickLine.setVisible(false);
     }
 
     getBonus() {
@@ -520,7 +559,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
-        settingsButton = this.add.sprite(660, 300, 'atlas', 'settings.png').setName("leftButton").setDepth(1).setVisible(false);
+        settingsButton = this.add.sprite(655, 310, 'atlas', 'settings1.png').setName("leftButton").setDepth(1).setVisible(false);
         recorder.addMaskSprite('settingsButton', settingsButton);
         settingsButton.on('pointerdown', () => {
             this.hideUILayer();
@@ -1137,6 +1176,23 @@ export default class PlayerUI extends Phaser.Scene {
                 }
             }
             needNewClue = false;
+        }
+        if (stepVolumeUp > 0 && this.time.now > stepVolumeUpTime) {
+            stepVolumeUp--;
+            stepVolumeUpTime = this.time.now + 150;
+            stepVolumeLevel += .1;
+            // @ts-ignore
+            music.setVolume(stepVolumeLevel);
+        }
+        if (stepVolumeDown > 0 && this.time.now > stepVolumeUpTime) {
+            stepVolumeDown--;
+            stepVolumeUpTime = this.time.now + 50;
+            stepVolumeLevel -= .1;
+            // @ts-ignore
+            music.setVolume(stepVolumeLevel);
+            if (stepVolumeLevel < .1)
+                // @ts-ignore
+                music.pause();
         }
 
 

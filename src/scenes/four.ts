@@ -10,6 +10,7 @@ let seededRNG: Phaser.Math.RandomDataGenerator;
 
 let justReturnedFromHints = false;
 let puzzleWasJustSolved = false;
+let didPauseMusic = false;
 
 import YoutubePlayer from 'phaser3-rex-plugins/plugins/youtubeplayer.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
@@ -188,14 +189,20 @@ export class Four extends Phaser.Scene {
             this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
             puzzleWasJustSolved = false;
 
+            if (didPauseMusic)
+                myUI.resumeMusic();
+
             this.scene.moveUp("RoomTwo");
             this.scene.sleep();
             this.scene.wake("RoomTwo");
         });
 
-        this.ytPlayButton = this.add.sprite(360, 600, 'atlas', 'ytPlayButton.png').setName("ytPlayButton");
+        this.ytPlayButton = this.add.sprite(360, 600, 'atlas', 'ytPlayButton.png').setName("ytPlayButton").setScale(1.1);
         this.ytPlayButton.setVisible(false); this.ytPlayButton.setDepth(1001); this.ytPlayButton.setInteractive({ cursor: 'pointer' });
         this.ytPlayButton.on('pointerdown', () => {
+            //console.log("YT PLAY")
+            myUI.pauseMusic();
+            didPauseMusic = true;
             this.ytPlayButton.setVisible(true);
             this.spinTheRecord(false);
         });
@@ -211,7 +218,7 @@ export class Four extends Phaser.Scene {
             bugz = true;
 
             if (myUI.getFourSolved()) {
-                console.log(`puzzle was just solved ${puzzleWasJustSolved} just returned from hints ${justReturnedFromHints}`)
+                //console.log(`puzzle was just solved ${puzzleWasJustSolved} just returned from hints ${justReturnedFromHints}`)
                 if (!puzzleWasJustSolved)
                     this.artWhole.setVisible(true);
                 else
@@ -219,6 +226,7 @@ export class Four extends Phaser.Scene {
                 this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
                 this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
                 this.ytPlayButton.setVisible(true);
+                myUI.pauseMusic();
             }
             justReturnedFromHints = false;
         });
@@ -249,6 +257,8 @@ export class Four extends Phaser.Scene {
                 myUI.setFourSolved(true);
                 myUI.didGoal('solveFour');
                 this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
+                myUI.pauseMusic();
+                didPauseMusic = true;
                 this.spinTheRecord(false);
             }
 

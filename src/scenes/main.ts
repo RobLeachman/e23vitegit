@@ -11,30 +11,12 @@
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
 
-
-* --> show completion time on exit
-* --> calc time penalty into elapsed, completion
-
-
-* show UI on zoom/pan complete
-
-* settings mask, smaller settings icon
-* fix secret icon pop objectives on top
-
-* pause music during video
-* wait until pan done to restore UI
-* wait until video done to display key
-
 * reset firebase project end date!
-
 * recorder offset is wrong
 
 ** finish work to use alternate 4x4
-** 4x4 background should be gray not white
 ** upload console to firebase
-
---> Clockify extension
-
+** 4x4 background should be gray not white
 ** double-click icon to open it
 ** spin five words at init
 ** itch.io
@@ -296,13 +278,13 @@ export class PlayGame extends Phaser.Scene {
                 }
 
 
-                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! '+recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers', "", "");
+                this.sendDiscordWebhook('Winner', recorder.getPlayerName() + '  escaped! ' + recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers', "", "");
 
                 const style = 'margin: auto; background-color: black; color:white; width: 520px; height: 100px; font: 40px Verdana';
                 this.add.dom(350, 1100, 'div', style, sentence);
 
                 const style2 = 'margin: auto; background-color: black; color:#fff; width: 520px; height: 40px; font: 25px Verdana';
-                this.add.dom(10, 200, 'div', style2, 'You won in ' + recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers').setOrigin(0,0);
+                this.add.dom(10, 200, 'div', style2, 'You won in ' + recorder.getWinTimeWords() + ' with ' + recorder.getSpoilerCount() + ' spoilers').setOrigin(0, 0);
 
                 myUI.hideUILayer();
                 slots.clearAll();
@@ -629,8 +611,10 @@ export class PlayGame extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, 750)
                 cam.zoomTo(1, 750);
-                myUI.restoreUILayer();
-                myUI.showSettingsButton();
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    myUI.restoreUILayer();
+                    myUI.showSettingsButton();
+                });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
@@ -639,20 +623,22 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
-        rylandMask = this.add.sprite(172, 394, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
+        rylandMask = this.add.sprite(220, 379, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
         recorder.addMaskSprite('rylandMask', rylandMask);
         rylandMask.on('pointerdown', () => {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 750)
-                cam.zoomTo(1, 750);
-                myUI.restoreUILayer();
-                myUI.showSettingsButton();
+                cam.pan(360, 640, 500)
+                cam.zoomTo(1, 500);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    myUI.restoreUILayer();
+                    myUI.showSettingsButton();
+                });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(265, 495, 500);
+                cam.pan(314, 475, 500);
                 cam.zoomTo(3.5, 500);
             }
         });
@@ -663,16 +649,17 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 500)
-                cam.zoomTo(1, 500);
-                myUI.restoreUILayer();
-                myUI.showSettingsButton();
-
+                cam.pan(360, 640, 750)
+                cam.zoomTo(1, 750);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    myUI.restoreUILayer();
+                    myUI.showSettingsButton();
+                });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(674, 773, 1000)
-                cam.zoomTo(28, 1000);
+                cam.pan(674, 773, 1200)
+                cam.zoomTo(28, 1200);
             }
         });
 

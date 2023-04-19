@@ -141,14 +141,15 @@ export class RoomTwo extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, 500)
                 cam.zoomTo(1, 500);
-                myUI.restoreUILayer();
-                myUI.showSettingsButton();
-
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    myUI.restoreUILayer();
+                    myUI.showSettingsButton();
+                });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(145, 380, 1000)
-                cam.zoomTo(3.2, 1000);
+                cam.pan(145, 380, 500)
+                cam.zoomTo(3.2, 500);
             }
         });
 
@@ -160,13 +161,15 @@ export class RoomTwo extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, 750)
                 cam.zoomTo(1, 750);
-                myUI.restoreUILayer();
-                myUI.showSettingsButton();
-                leftButton2.setVisible(true);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    myUI.restoreUILayer();
+                    myUI.showSettingsButton();
+                    leftButton2.setVisible(true);
+                });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(194, 786, 480)
+                cam.pan(194, 786, 500)
                 cam.zoomTo(4, 500);
                 leftButton2.setVisible(false);
             }

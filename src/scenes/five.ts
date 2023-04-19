@@ -127,7 +127,7 @@ export class Five extends Phaser.Scene {
         slots = myUI.getSlots();
         recorder = slots.recorder;
         const thisscene = this;
-        
+
         this.thePlayerName = recorder.getPlayerName();
 
         this.registry.events.on('changedata', this.registryUpdate, this);
@@ -151,7 +151,7 @@ export class Five extends Phaser.Scene {
                 color: '#ffff00'
             }
         });
-        noClueText.setDepth(99);        
+        noClueText.setDepth(99);
 
         this.add.image(0, 0, 'fiveBackground').setOrigin(0, 0);
         this.compartmentMask = this.add.sprite(53, 886, 'atlas', 'fivewordsCompartmentMask.png').setName('compartmentMask').setOrigin(0, 0);
@@ -164,7 +164,7 @@ export class Five extends Phaser.Scene {
             for (let i = 0; i < 5; i++) {
                 this.panels[i].winPanelOff();
             }
-            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery",false);
+            slots.addIcon("iconBattery.png", "objBattery", "altobjBattery", false);
             this.sound.play('sfx', { name: 'winTone', start: 9, duration: 2 });
             myUI.didGoal('getBattery');
         });
@@ -253,6 +253,7 @@ export class Five extends Phaser.Scene {
                 this.compartmentOpen.setVisible(true);
                 this.compartmentMask.setVisible(true);
                 myUI.didGoal('getFourClue');
+                myUI.didGoal('solveFive');
             }
         }
         if (recorder.getMode() == "record")

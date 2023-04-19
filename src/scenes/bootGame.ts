@@ -8,7 +8,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
 //const skipClickToStart = true; const skipCloud = true;
-let skipClickToStart = true;
+let skipClickToStart = false;
 let skipCloud = false;
 
 const testingNewRoom = false;
@@ -73,6 +73,11 @@ export class BootGame extends Phaser.Scene {
             skipClickToStart = true;
             skipCloud = true;
         }
+        if (location.hostname != "localhost") {
+            skipClickToStart = false;
+            skipCloud = false;
+        }
+
 
         splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
 
@@ -307,18 +312,11 @@ export class BootGame extends Phaser.Scene {
 
         recorder = myUI.getRecorder();
 
-        console.log("BOJ recorder mode=" + recorder.getMode());
+        //console.log("Boot BOJ recorder mode=" + recorder.getMode());
         if (recorder.getMode() == "replay")
             skipClickToStart = true;
 
         myUI.initMusic();
-
-        if (recorder.getMusicMuted() == "muted") {
-            //console.log("BOOT MUTE MUSIC")
-            myUI.setMusicSetting(false);
-        } else {
-            myUI.setMusicSetting(true);
-        }
 
         if (recorder.getSoundMuted() == "muted") {
             //console.log("BOOT MUTE SOUND")
@@ -394,6 +392,12 @@ export class BootGame extends Phaser.Scene {
             this.showGreetings(playerName);
             playButtonReady = true;
             thePlayer.setVisible(true)
+            if (recorder.getMusicMuted() == "muted") {
+                //console.log("BOOT MUTE MUSIC")
+                myUI.setMusicSetting(false);
+            } else {
+                myUI.setMusicSetting(true);
+            }
         });
 
         playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "playButton").setOrigin(0, 0).setDepth(1);
