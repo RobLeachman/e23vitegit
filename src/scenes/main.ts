@@ -142,24 +142,6 @@ export class PlayGame extends Phaser.Scene {
             }
             initMain = false;
         }
-        /*
-                if (myPaste.text != "pasteit" && myPaste.text != "init") {
-                    const getRec = myPaste.text;
-                    myPaste.text = "pasteit";
-        
-                    console.log("lets fetch " + getRec)
-                    const theRecording = await this.getRecording(getRec)
-                    console.log("we fetched:")
-                    console.log(theRecording)
-                    if (theRecording == "fail") {
-                        myText.text = "ERROR"
-                    } else {
-                        myText.text = "success"
-                        recorder.setRecordingFilename(getRec);
-                    }
-                }
-        */
-
 
         if (debugUpdateOnce) {
             debugUpdateOnce = false;
@@ -169,9 +151,7 @@ export class PlayGame extends Phaser.Scene {
 
         }
 
-
         ////////////// MAIN SCENE RECORDER DEBUGGER TEXT //////////////
-
         let debugTheRecorder = recorder.getMode();
         //if (debugging || debugTheRecorder == "record" || debugTheRecorder == "replay" || debugTheRecorder == "replayOnce") {
         if (debugPanel) {
@@ -483,12 +463,9 @@ export class PlayGame extends Phaser.Scene {
 
     create(data: {
         mobile: boolean;
-        theRecording: string;
     }) {
-
         mobile = data.mobile;
         //console.log(`main create ${mobile}`)
-
 
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         this.scene.bringToTop();
@@ -499,7 +476,7 @@ export class PlayGame extends Phaser.Scene {
 
         slots = myUI.getSlots();
 
-        // will be important later...
+        // may be important later...
         if (mobile) {
             console.log("mobile device")
         }
@@ -507,7 +484,6 @@ export class PlayGame extends Phaser.Scene {
         this.registry.events.on('changedata', this.registryUpdate, this);
         this.registry.set('replayObject', "0:init"); // need to seed the function in create, won't work without
 
-        // SCENERECORD: Capture all mask clicks on this scene
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -515,23 +491,6 @@ export class PlayGame extends Phaser.Scene {
         });
 
         recorder = slots.recorder;
-        //const playerName = recorder.getPlayerName();
-        //console.log("MAIN PLAYER " + playerName);
-        //debugInput = (playerName == "qqq" || playerName == "Qqq" || playerName == "INIT");
-
-
-        // not sure about any of this in main...
-
-        /*
-        viewportPointer = recorder.pointerSprite;
-        viewportPointerClick = recorder.clickSprite;
-
-        if (recorder.getMode() == "idleNowReplayOnReload")
-            recorder.setMode("replay")
-        if (recorder.getMode() == "roachReplay")
-            recorder.setMode("replayOnce")
-        */
-
         //console.log("Main create recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
@@ -539,8 +498,6 @@ export class PlayGame extends Phaser.Scene {
         if (recorder.getPlayerName() != "qqq" && recorder.getPlayerName() != "Quazar")
             this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
 
-
-        //SCENERECORD add to recorder dictionary every sprite that can be clicked 
         leftButton = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton");
         recorder.addMaskSprite('leftButton', leftButton);
         rightButton = this.add.sprite(640, 950, 'atlas', 'arrowRight.png').setName("rightButton");

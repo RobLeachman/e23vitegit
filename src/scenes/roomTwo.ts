@@ -86,7 +86,7 @@ export class RoomTwo extends Phaser.Scene {
             roomReturnWall = 1;
             if (fourInit) {
                 fourInit = false;
-                this.scene.launch("Four", { slots: slots, playerName: recorder.getPlayerName() })
+                this.scene.launch("Four", { slots: slots })
                 this.scene.sleep();
             } else {
                 this.scene.wake("Four");

@@ -378,7 +378,7 @@ export class ZotTable extends Phaser.Scene {
             8: drawerOpen, off
             9: back, flipped... need a hack since I missed this one
             */
-            console.log("viewing " + viewWall)
+            //console.log("viewing " + viewWall)
             if (viewWall == 0 || viewWall == 2) {
                 //console.log("front view")
                 if (drawerOpen > 0) {

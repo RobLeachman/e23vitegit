@@ -31,8 +31,6 @@ let displayedIntro2 = false;
 let introClicked = false;
 let started = false;
 
-let theRecording: string;
-
 let startButton: Phaser.GameObjects.Sprite;
 let playButton: Phaser.GameObjects.Sprite;
 let fakeRightButton: Phaser.GameObjects.Sprite;
@@ -209,6 +207,7 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('clue2 open', 'assets/backgrounds/clue2 - open.webp');
                 this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
                 this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
+                this.load.image('clue2 hint', 'assets/backgrounds/two way sequence.webp');
 
                 this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
@@ -327,27 +326,15 @@ export class BootGame extends Phaser.Scene {
 
         ////////////// PLAYER NAME REGISTRATION //////////////
         if (skipCloud) {
-            theRecording = "NO RECORDING"
             playerCount = 999;
             playerName = "Quazar"
             welcomeBack = true;
         } else {
-            const recordingFilename = recorder.getRecordingFilename();
-            //console.log("BOOT filename=" + recordingFilename);
-            if (recordingFilename.length > 0)
-                theRecording = await recorder.getRecording();
-            else
-                theRecording = "NO RECORDING";
-            //console.log("BOOT recording= " + theRecording);
-
-            //playerCount = await this.getPlayerCount(); // async call to recorder's increment
             playerCount = await recorder.incrementPlayerCount();
 
             let playerCookie = getCookie(playerNameCookie);
             playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
 
-            // Let the remain the same player number?
-            //if (playerCookie.substring(0, 6) != "Player") {
             if (playerCookie.length > 0) {
                 playerName = playerCookie;
                 welcomeBack = true;
@@ -422,37 +409,6 @@ export class BootGame extends Phaser.Scene {
 
         myUI.displayInventoryBar(false); myUI.hideEye();
 
-        ////////////// PLAYER NAME REGISTRATION //////////////
-        if (skipCloud) {
-            theRecording = "NO RECORDING"
-            playerCount = 999;
-            playerName = "Quazar"
-            welcomeBack = true;
-        } else {
-            const recordingFilename = recorder.getRecordingFilename();
-            //console.log("BOOT filename=" + recordingFilename);
-            if (recordingFilename.length > 0)
-                theRecording = await recorder.getRecording();
-            else
-                theRecording = "NO RECORDING";
-            //console.log("BOOT recording= " + theRecording);
-
-            //playerCount = await this.getPlayerCount(); // async call to recorder's increment
-            playerCount = await recorder.incrementPlayerCount();
-
-            let playerCookie = getCookie(playerNameCookie);
-            playerCookie = playerCookie.replace(/[^a-z0-9]/gi, ''); // no shenanigans
-
-            // Let the remain the same player number?
-            //if (playerCookie.substring(0, 6) != "Player") {
-            if (playerCookie.length > 0) {
-                playerName = playerCookie;
-                welcomeBack = true;
-            }
-            if (playerName.length < 1)
-                playerName = "Player" + playerCount;
-        }
-
         ////////////// BOOT THE GAME //////////////
         if (skipClickToStart) {
             recorder.setPlayerName("qqq");
@@ -467,7 +423,7 @@ export class BootGame extends Phaser.Scene {
                 this.scene.run("Settings");
             } else {
 
-                this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
+                this.scene.run("PlayGame", { mobile: false });
             }
         }
 
@@ -493,10 +449,10 @@ export class BootGame extends Phaser.Scene {
 
         var pointer = this.input.activePointer;
         if (pointer.wasTouch) {
-            this.scene.run("PlayGame", { mobile: true, theRecording: theRecording });
+            this.scene.run("PlayGame", { mobile: true });
         }
         else {
-            this.scene.run("PlayGame", { mobile: false, theRecording: theRecording });
+            this.scene.run("PlayGame", { mobile: false });
         }
 
     }

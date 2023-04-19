@@ -128,7 +128,12 @@ export class Five extends Phaser.Scene {
         recorder = slots.recorder;
         const thisscene = this;
 
+        // duplicated in four, should all go in recorder...
         this.thePlayerName = recorder.getPlayerName();
+        let recordedName = recorder.getRecordedPlayerName();
+        if (recordedName != undefined)
+            this.thePlayerName = recordedName;
+
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 

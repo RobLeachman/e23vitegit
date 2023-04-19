@@ -12,13 +12,14 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 
 const minDelayFastMode = 10;
 const debuggingDumpRecordingOut = false;
-const debugDisplayFastSteps = true;
+const debugDisplayFastSteps = false;
 const debugDisplayRecordedActions = false;
 const debugDisplayRecordedSteps = false; // display each recorded mask click
 
 let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
 let recordedRNGSeed: string;
+let recordedPlayername: string;
 
 let storageFolder = "v1Test/";
 
@@ -46,7 +47,7 @@ export default class Recorder {
     myUUID: string;
 
     cameraHack: number;
-    randomSeed: string;
+    RNGSeed: string;
 
     timeStart: number;
     elapsedMinutes: number;
@@ -55,7 +56,7 @@ export default class Recorder {
     constructor(pointerSprite: Phaser.GameObjects.Sprite,
         clickSprite: Phaser.GameObjects.Sprite,
         cameraHack: number,
-        randomSeed: string
+        RNGSeed: string
     ) {
         this.pointerSprite = pointerSprite;
         this.clickSprite = clickSprite;
@@ -63,7 +64,7 @@ export default class Recorder {
         this.oldPointerX = 0; this.oldPointerY = 0;
         this.recording = "";
         this.totalClicks = 0;
-        this.randomSeed = randomSeed;
+        this.RNGSeed = RNGSeed;
 
         /************
          // TODO: Add SDKs for Firebase products that you want to use
@@ -185,6 +186,9 @@ export default class Recorder {
 
     getRecordingKey() {
         return this.myUUID;
+    }
+    getRecordedPlayerName() {
+        return recordedPlayername;
     }
 
     async incrementPlayerCount() {
@@ -410,7 +414,7 @@ export default class Recorder {
             //secs = secs * 30; //accelerate when testing
             let spoilerPenalty = 0;
             if (this.spoilerCount > 0) {
-                spoilerPenalty+= (this.spoilerCount-1) * 30;
+                spoilerPenalty += (this.spoilerCount - 1) * 30;
                 secs += spoilerPenalty;
             }
 
@@ -426,21 +430,13 @@ export default class Recorder {
         this.timeStart = timeStart;
     }
 
-    getWinTime() {
-        const secs = Math.floor((Date.now() - this.timeStart) / 1000);
-        const minutes = Math.floor(secs / 60);
-        const seconds = secs - minutes * 60;
-        const winTime = minutes + ':' + seconds;        
-        return winTime;
-    }
-
     getWinTimeWords() {
         const secs = Math.floor((Date.now() - this.timeStart) / 1000);
         const minutes = Math.floor(secs / 60);
         const seconds = secs - minutes * 60;
-        const winTime = minutes + ':' + seconds.toString().padStart(2, '0');        
+        const winTime = minutes + ':' + seconds.toString().padStart(2, '0');
         return winTime;
-    }    
+    }
 
     timePenalty() {
         this.spoilerCount++;
@@ -449,7 +445,6 @@ export default class Recorder {
     getSpoilerCount() {
         return this.spoilerCount;
     }
-
 
     recordPointerAction(action: string, time: number, sceneName: string) {
         if (action != "mousemove") {
@@ -479,6 +474,8 @@ export default class Recorder {
     }
 
     async getRecording() {
+        recordedPlayername = this.getRecordingFilename().split('_')[0];
+        //console.log("load from cloud: " + this.getRecordingFilename() + " player " + recordedPlayername);
         let recordingIn = await this.fetchRecording(this.getRecordingFilename());
         //console.log("CLOUD RECORDING IN");
         //console.log(recordingIn);
@@ -554,7 +551,8 @@ export default class Recorder {
         let stepCount = 0;
         let fast = "";
         const actionString = recordingSlow.split(":");
-        console.log("Recorder action count=" + actionString.length)
+        if (debugDisplayFastSteps)
+            console.log("Recorder action count=" + actionString.length)
         let fastSteps = actionString.length;
         if (speedSteps > 0) {
             console.log(`will skip ${speedSteps} before going back to perfect play`);
@@ -712,8 +710,7 @@ export default class Recorder {
         re = /\%HintBot\%/g; recOut = recOut.replace(re, "\%J\%");
         re = /\%Settings\%/g; recOut = recOut.replace(re, "\%K\%");
 
-
-        recOut = this.checksum(recording) + "?" + recOut + "?" + this.randomSeed + "-v1";
+        recOut = this.checksum(recording) + "?" + recOut + "?" + this.RNGSeed + "-v1";
         //console.log("RECORDING OUT " + recOut);
         if (usingRecordingCookies) {
             this.saveCookies(recOut);

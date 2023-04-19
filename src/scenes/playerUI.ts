@@ -205,9 +205,9 @@ spoilerMap.set("openTwoWay-2", "Click right and left buttons to open.");
 spoilerMap.set("openTwoWay-3", "The teal box displays the sequence.");
 
 clueMap.set("getTealClue", "Open Two-Way box (red)\nGet Two-Way clue from Teal Mystery box?"); // 17 until two-way solved
-spoilerMap.set("getTealClue-1", "Click the button on the teal box until\nit closes.");
-spoilerMap.set("getTealClue-2", "Click the button and observe which\nflap moves. LIKE THIS");
-spoilerMap.set("getTealClue-3", "Enter the sequence on the red\ntwo-way box: L R R R L L R L");
+spoilerMap.set("getTealClue-1", "Click the button on the teal box until\nit closes. Click and observe.");
+spoilerMap.set("getTealClue-2", "Observe which flap moves. Like this:");
+spoilerMap.set("getTealClue-3", "Enter the sequence: L R R R L L R L");
 
 clueMap.set("getTwoWayKey", "Get half yellow key"); // 18 until key is taken
 spoilerMap.set("getTwoWayKey-1", "Click the part of the yellow key from\nthe red box to pick it up. ");
@@ -501,10 +501,6 @@ export default class PlayerUI extends Phaser.Scene {
         //console.log(mySize.height * 4);
         //console.log(1280 - mySize.height * 4);
 
-        const randomSeed = Math.random().toString();
-        //const randomSeed = "0.123"
-        seededRNG = new Phaser.Math.RandomDataGenerator([randomSeed]);
-
         let hostname = location.hostname;
         //console.log(hostname);
 
@@ -549,7 +545,11 @@ export default class PlayerUI extends Phaser.Scene {
         });
         clickLine.play("clickLineMoves");
 
-        recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack, randomSeed);
+        const RNGSeed = Math.random().toString();
+        //const RNGSeed = "0.123"
+        seededRNG = new Phaser.Math.RandomDataGenerator([RNGSeed]);
+
+        recorder = new Recorder(viewportPointer, viewportPointerClick, cameraHack, RNGSeed);
         slots = new Slots(this, iconSelected, recorder);
 
         plusButton = this.add.sprite(80, 950, 'atlas', 'plus - unselected.png').setName("plusButton").setDepth(1).setVisible(false);

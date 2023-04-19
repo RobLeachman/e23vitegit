@@ -96,7 +96,7 @@ export class Four extends Phaser.Scene {
     }
 
 
-    create(data: { slots: Slots, playerName: string }) {
+    create(data: { slots: Slots }) {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
@@ -113,11 +113,17 @@ export class Four extends Phaser.Scene {
         recorder = slots.recorder;
         const thisscene = this;
 
+        // copied from five, should all go in recorder...
+        this.thePlayerName = recorder.getPlayerName();
+        let recordedName = recorder.getRecordedPlayerName();
+        if (recordedName != undefined)
+            this.thePlayerName = recordedName;
+
+
+
         seededRNG = myUI.getSeededRNG();
 
         this.registry.events.on('changedata', this.registryUpdate, this);
-
-        this.thePlayerName = data.playerName;
 
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
@@ -283,7 +289,7 @@ export class Four extends Phaser.Scene {
     // @ts-ignore
     // no clue what parent is
     registryUpdate(parent: Phaser.Game, key: string, data: string) {
-        console.log(`Four registry update ${key}`)
+        //console.log(`Four registry update ${key}`)
         if (key == "replayObject") {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
@@ -299,7 +305,7 @@ export class Four extends Phaser.Scene {
             }
         }
         if (key == "Four-specialCase") {
-            console.log("yet another special case...")
+            //console.log("yet another special case...")
             justReturnedFromHints = true;
         }
     }

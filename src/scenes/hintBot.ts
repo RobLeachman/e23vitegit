@@ -18,6 +18,7 @@ let objectiveText: Phaser.GameObjects.Text;
 let oldObjective: string;
 
 let showFourSolution: Phaser.GameObjects.Image;
+let showTwoSolution: Phaser.GameObjects.Image;
 
 class Spoiler {
     scene: Phaser.Scene;
@@ -130,6 +131,8 @@ export class HintBot extends Phaser.Scene {
                 if (revealed == "It needs to look like this:") {
                     showFourSolution = this.add.image(450, 750, 'fourArtWhole-BigTime').setOrigin(0, 0).setDepth(2).setScale(.36);
                 }
+                if (revealed == "Observe which flap moves. Like this:")
+                    showTwoSolution = this.add.image(450, 750, 'clue2 hint').setOrigin(0, 0).setDepth(2).setScale(.36);
                 this.theSpoilers[this.currentSpoiler].showSpoiler();
                 this.currentSpoiler++;
                 recorder.timePenalty();
@@ -224,6 +227,9 @@ export class HintBot extends Phaser.Scene {
         });
         this.spoilerCount = spoilers.length - 1;
         this.currentSpoiler = 0;
+        if (showTwoSolution) {
+            showTwoSolution.destroy();
+        }
         if (showFourSolution) {
             showFourSolution.destroy();
         }
