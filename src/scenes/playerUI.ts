@@ -313,7 +313,6 @@ export default class PlayerUI extends Phaser.Scene {
         if (!musicStopped) {
             musicStopped = true;
             recorder.setStoppedMusicTime(true);
-            console.log("played music for " + recorder.getMusicPlayTime());
         }
 
     }

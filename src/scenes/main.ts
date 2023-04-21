@@ -10,10 +10,14 @@
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
-* include music play time in discord hook
+* include play count in discord hook
+* check for file load failure
+* don't give away two-way clue in objectives
+* turning music off in settings isn't the same as pause during video play
 
 * reset firebase project end date!
 
+** save game
 ** finish work to use alternate 4x4
 ** upload console to firebase
 ** 4x4 background should be gray not white
@@ -29,7 +33,7 @@
 ** cache youtube video
 ** video splash screen
     https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
-** save game
+
 
 */
 import 'phaser';

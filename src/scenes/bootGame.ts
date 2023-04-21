@@ -30,6 +30,7 @@ let displayedIntro1 = false;
 let displayedIntro2 = false;
 let introClicked = false;
 let started = false;
+let fileError = false;
 
 let startButton: Phaser.GameObjects.Sprite;
 let playButton: Phaser.GameObjects.Sprite;
@@ -74,6 +75,77 @@ export class BootGame extends Phaser.Scene {
 
         splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
 
+        //this.load.on('loaderror', this.fileLoadError)
+
+        this.load.on('loaderror', (file: Phaser.Loader.File) => {
+
+
+            if (!fileError) {
+                fileError = true;
+                console.log(`ERROR LOADING FILE ${file.key} ${file.url}`);
+                
+                const failBox = this.add.graphics();
+                failBox.fillStyle(0x440000);
+                failBox.fillRect(0, 0, 720, 1280);
+                
+                this.make.text({
+                    x: 50,
+                    y: 100,
+                    text: 'STARTUP ERROR',
+                    style: {
+                        font: '36px Verdana',
+                        color: 'white'
+                    }
+                });
+                // @ts-ignore need to bind "this" somehow
+                this.make.text({
+                    x: 50,
+                    y: 200,
+                    text: 'Loaded 10 locks but only 9 keys!',
+                    style: {
+                        font: '36px Verdana',
+                        color: 'white'
+                    }
+                });
+                // @ts-ignore need to bind "this" somehow
+                this.make.text({
+                    x: 50,
+                    y: 250,
+                    text: 'Please reload the game :-(',
+                    style: {
+                        font: '36px Verdana',
+                        color: 'yellow'
+                    }
+                });
+                // @ts-ignore need to bind "this" somehow
+                this.make.text({
+                    x: 50,
+                    y: 300,
+                    text: 'and drop me a note if it does not work escape@bitblaster.com',
+                    style: {
+                        font: '20px Verdana',
+                        color: 'white'
+                    }
+                });
+            }
+        });
+
+
+
+        // https://medium.com/@heshramsis/simplifying-security-using-environment-variables-in-vite-js-38b9dfe9b8a7
+        const version = import.meta.env.VITE_VERSION;
+        console.log(version)
+
+        this.make.text({
+            x: 650,
+            y: 20,
+            text: 'v.' + version,
+            style: {
+                font: '18px Verdana',
+                color: 'white'
+            }
+        });
+
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
         this.load.plugin('rexyoutubeplayerplugin', url, true);
 
@@ -117,6 +189,9 @@ export class BootGame extends Phaser.Scene {
             this.load.image('intro1', 'assets/backgrounds/intro1.webp');
             this.load.image('intro2', 'assets/backgrounds/intro2.webp');
             this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
+            this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
+            // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
+            this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');            
 
             if (!skipBackgroundsLoad) {
                 this.load.audio('sfx', [
@@ -124,7 +199,10 @@ export class BootGame extends Phaser.Scene {
                     'assets/audio/soundSheet1.mp3'
                 ]);
                 this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
+                // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
                 this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+                //const openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
+                this.load.image('vid1', 'assets/backgrounds/watchTheYoutube.webp');
 
                 this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
                 this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
@@ -203,10 +281,15 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
                 this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
                 this.load.image('clue2 hint', 'assets/backgrounds/two way sequence.webp');
+                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');                
 
-                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
+                // cannot instantiate UI yet, so would need to load all, or do later...
+                this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
+                //this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
+                this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
+                //this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
 
-                // can't instantiate UI yet?
+
                 /*
                 if (myUI.getFourWayPuzzle() == "BigTime") {
                     this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
@@ -216,19 +299,15 @@ export class BootGame extends Phaser.Scene {
 
                 this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
 
-                */
                 //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
                 //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
                 //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
                 //this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
-                this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
-                this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
-                this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
-                this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
+                */
 
                 this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
                 this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
-                this.load.image('watchTheVideo', 'assets/backgrounds/watchTheYoutube.webp');
+                
             }
 
             //let windowHeight = window.innerHeight;
@@ -277,8 +356,21 @@ export class BootGame extends Phaser.Scene {
                 progressBar.fillRect(width / 2 - 160, height / 2 - 50 + fudge, 300 * value, 30);
             });
 
-            this.load.on('fileprogress', function () {
+            var assetText = this.make.text({
+                x: width / 2,
+                y: height / 2 + 50+fudge-50,
+                text: '',
+                style: {
+                    font: '18px monospace',
+                    color: 'white'
+                }
+            });
+            assetText.setOrigin(0.5, 0.5);            
+
+            //@ts-ignore
+            this.load.on('fileprogress', function (file) {
                 //console.log(file.src);
+                assetText.setText('Loading ' + file.key);
             });
             //var cache = this.textures;
             //var data = cache.get('frontSplash');               
@@ -291,12 +383,15 @@ export class BootGame extends Phaser.Scene {
                 progressBox.destroy();
                 loadingText.destroy();
                 percentText.destroy();
+                assetText.destroy();
             });
             //console.log("boot preload finishes")
         }
     }
 
     async create() {
+        if (fileError)
+            return;
         myUI = this.scene.get("PlayerUI") as PlayerUI;
         //var camera = this.cameras.main;
         //camera.setPosition(0,-240); // didn't fudge the camera but instead repositioned everything in better spot, for now
@@ -521,6 +616,8 @@ export class BootGame extends Phaser.Scene {
 
     // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
     update() {
+        if (fileError)
+            return;
         if (asyncCreateDone) {
             if (initSplash) {
                 initSplash = false;

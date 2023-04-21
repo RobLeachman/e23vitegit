@@ -127,7 +127,7 @@ export class Four extends Phaser.Scene {
 
         this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
         this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
-        this.videoBackground = this.add.image(0, 0, 'watchTheVideo').setOrigin(0.0).setDepth(2).setVisible(false);
+        this.videoBackground = this.add.image(0, 0, 'vid1').setOrigin(0.0).setDepth(2).setVisible(false);
         this.artWhole = this.add.image(13 + 28, 250 + 28, artWhole).setOrigin(0, 0).setDepth(1000).setVisible(false);
 
         this.tileMap = new Map();

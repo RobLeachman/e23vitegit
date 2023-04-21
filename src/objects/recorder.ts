@@ -450,7 +450,7 @@ export default class Recorder {
         else if (musicPlayTime < 0)
             return "muted"
         else
-            return this.getFormattedTime(musicPlayTime)
+            return "music off after " + this.getFormattedTime(musicPlayTime)
     }
 
     getFormattedTime(secs: number) {
