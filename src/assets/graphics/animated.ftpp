@@ -5,23 +5,43 @@
   "savePath": "D:\\src\\e23\\public\\assets\\graphics",
   "images": [
     {
-      "name": "clickbar1.png",
-      "path": "D:/src/e23/src/assets/graphics/animated/clickbar1.png",
+      "name": "2way-anim0003.png",
+      "path": "D:/src/e23/public/assets/backgrounds/2way-anim0003.png",
       "folder": ""
     },
     {
-      "name": "clickbar2.png",
-      "path": "D:/src/e23/src/assets/graphics/animated/clickbar2.png",
+      "name": "2way-anim0002.png",
+      "path": "D:/src/e23/public/assets/backgrounds/2way-anim0002.png",
       "folder": ""
     },
     {
-      "name": "clickbar3.png",
-      "path": "D:/src/e23/src/assets/graphics/animated/clickbar3.png",
+      "name": "2way-anim0001.png",
+      "path": "D:/src/e23/public/assets/backgrounds/2way-anim0001.png",
       "folder": ""
     },
     {
-      "name": "clickbar4.png",
-      "path": "D:/src/e23/src/assets/graphics/animated/clickbar4.png",
+      "name": "2way-anim0000.png",
+      "path": "D:/src/e23/public/assets/backgrounds/2way-anim0000.png",
+      "folder": ""
+    },
+    {
+      "name": "clickbar0000.png",
+      "path": "D:/src/e23/src/assets/graphics/animated/clickbar0000.png",
+      "folder": ""
+    },
+    {
+      "name": "clickbar0001.png",
+      "path": "D:/src/e23/src/assets/graphics/animated/clickbar0001.png",
+      "folder": ""
+    },
+    {
+      "name": "clickbar0002.png",
+      "path": "D:/src/e23/src/assets/graphics/animated/clickbar0002.png",
+      "folder": ""
+    },
+    {
+      "name": "clickbar0003.png",
+      "path": "D:/src/e23/src/assets/graphics/animated/clickbar0003.png",
       "folder": ""
     }
   ],
@@ -43,14 +63,14 @@
     "height": 2048,
     "fixedSize": false,
     "powerOfTwo": false,
-    "padding": 0,
+    "padding": 1,
     "extrude": 0,
-    "allowRotation": false,
-    "allowTrim": false,
+    "allowRotation": true,
+    "allowTrim": true,
     "trimMode": "trim",
     "alphaThreshold": "0",
     "detectIdentical": true,
-    "packer": "MaxRectsPacker",
-    "packerMethod": "Square"
+    "packer": "OptimalPacker",
+    "packerMethod": "Automatic"
   }
 }

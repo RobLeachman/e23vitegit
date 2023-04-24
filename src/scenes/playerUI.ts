@@ -41,6 +41,8 @@ let hintQuestion: Phaser.GameObjects.Sprite;
 let hintQuestionGreen: Phaser.GameObjects.Sprite;
 let questionSpinning: Phaser.GameObjects.Video;
 
+
+
 let plusButton: Phaser.GameObjects.Sprite;
 let plusModeButton: Phaser.GameObjects.Sprite;
 let eyeButton: Phaser.GameObjects.Sprite;
@@ -422,7 +424,7 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceInspect.setVisible(true);
         interfaceClick.setVisible(true);
         clickLine.setVisible(true);
-        clickLine.play("clickLineMoves");
+        clickLine.play('clickLine');
         this.showEye();
     }
     hideClickClue() {
@@ -492,8 +494,7 @@ export default class PlayerUI extends Phaser.Scene {
     // Must preload a few elements for UI
     preload() {
         this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
-        this.load.spritesheet('animated', 'assets/graphics/animated.png', { frameWidth: 26, frameHeight: 19 });
-
+        this.load.atlas('animated', 'assets/graphics/animated.png', 'assets/graphics/animated.json');
 
         // capture console on mobile
         /*
@@ -544,6 +545,9 @@ export default class PlayerUI extends Phaser.Scene {
         if (!localBuild)
             useCookieRecordings = false;
 
+        this.anims.create({ key: 'clickLine', frames: this.anims.generateFrameNames('animated', { prefix: 'clickbar', suffix: '.png', end: 3, zeroPad: 4 }), repeat: -1, frameRate: 7 });
+        this.anims.create({ key: 'openItAnim', frames: this.anims.generateFrameNames('animated', { prefix: '2way-anim', suffix: '.png', end: 3, zeroPad: 4 }), repeat: 0, frameRate: 7 });
+
         invBar = this.add.sprite(109, 1075, 'atlas', 'inventory cells.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         interfaceClueFull = this.add.sprite(485, 774, 'atlas', 'interfaceClueSearch.png').setOrigin(0, 0).setVisible(false).setDepth(1);
         interfaceClueCombine = this.add.sprite(17, 305, 'atlas', 'interfaceClueCombine.png').setOrigin(0, 0).setVisible(false).setDepth(1);
@@ -555,16 +559,9 @@ export default class PlayerUI extends Phaser.Scene {
         interfaceClick = this.add.sprite(15, 1075, 'atlas', 'interface-click-hint.png').setOrigin(0, 0).setVisible(false);
         interfaceInspect = this.add.sprite(5, 1176, 'atlas', 'interface-inspect.png').setOrigin(0, 0).setVisible(false);
         clickLine = this.add.sprite(15 + 70, 1075 + 35, "animated").setDepth(1).setVisible(false);
+
         hintQuestion = this.add.sprite(620, 1050, 'atlas', 'questionGray.png').setOrigin(0, 0).setVisible(false);
         hintQuestionGreen = this.add.sprite(620, 1050, 'atlas', 'questionGreen.png').setDepth(1).setOrigin(0, 0).setVisible(false);
-
-        this.anims.create({
-            key: "clickLineMoves",
-            frameRate: 7,
-            frames: this.anims.generateFrameNumbers("animated", { start: 0, end: 3 }),
-            repeat: -1
-        });
-        clickLine.play("clickLineMoves");
 
         const RNGSeed = Math.random().toString();
         //const RNGSeed = "0.123"
@@ -1163,9 +1160,13 @@ export default class PlayerUI extends Phaser.Scene {
             spinQuestionBOJ = false;
             questionSpinning = this.add.video(620, 1050, 'questionSpinning').setOrigin(0, 0).setDepth(2);
             questionSpinning.setLoop(true);
-            questionSpinning.play(true);
             questionSpinning.setPaused(false);
+
+            if (!questionSpinning.isPlaying()) {
+                hintQuestionGreen.setVisible(true);
+            }
         }
+
 
         if (needNewClue) {
             //console.log("need new clue")

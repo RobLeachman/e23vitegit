@@ -4,8 +4,8 @@
 			"image": "atlas2",
 			"format": "RGBA8888",
 			"size": {
-				"w": 916,
-				"h": 995
+				"w": 830,
+				"h": 1079
 			},
 			"scale": 1,
 			"frames": [
@@ -94,6 +94,27 @@
 					}
 				},
 				{
+					"filename": "begButton.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 367,
+						"h": 84
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 367,
+						"h": 84
+					},
+					"frame": {
+						"x": 1,
+						"y": 705,
+						"w": 367,
+						"h": 84
+					}
+				},
+				{
 					"filename": "crossMask.png",
 					"rotated": false,
 					"trimmed": false,
@@ -150,31 +171,10 @@
 						"h": 290
 					},
 					"frame": {
-						"x": 825,
-						"y": 200,
+						"x": 370,
+						"y": 705,
 						"w": 90,
 						"h": 290
-					}
-				},
-				{
-					"filename": "fourPieceFrame.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 160,
-						"h": 160
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 160,
-						"h": 160
-					},
-					"frame": {
-						"x": 755,
-						"y": 594,
-						"w": 160,
-						"h": 160
 					}
 				},
 				{
@@ -192,8 +192,29 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 755,
-						"y": 756,
+						"x": 1,
+						"y": 791,
+						"w": 160,
+						"h": 160
+					}
+				},
+				{
+					"filename": "fourPieceFrame.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 160,
+						"h": 160
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 160,
+						"h": 160
+					},
+					"frame": {
+						"x": 163,
+						"y": 791,
 						"w": 160,
 						"h": 160
 					}
@@ -214,7 +235,7 @@
 					},
 					"frame": {
 						"x": 1,
-						"y": 705,
+						"y": 953,
 						"w": 154,
 						"h": 125
 					}
@@ -234,8 +255,8 @@
 						"h": 76
 					},
 					"frame": {
-						"x": 1,
-						"y": 918,
+						"x": 157,
+						"y": 997,
 						"w": 230,
 						"h": 76
 					}
@@ -255,30 +276,9 @@
 						"h": 73
 					},
 					"frame": {
-						"x": 233,
-						"y": 918,
+						"x": 389,
+						"y": 997,
 						"w": 218,
-						"h": 73
-					}
-				},
-				{
-					"filename": "on.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 192,
-						"h": 73
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 192,
-						"h": 73
-					},
-					"frame": {
-						"x": 453,
-						"y": 918,
-						"w": 192,
 						"h": 73
 					}
 				},
@@ -297,8 +297,29 @@
 						"h": 73
 					},
 					"frame": {
-						"x": 647,
-						"y": 918,
+						"x": 609,
+						"y": 779,
+						"w": 192,
+						"h": 73
+					}
+				},
+				{
+					"filename": "on.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 192,
+						"h": 73
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 192,
+						"h": 73
+					},
+					"frame": {
+						"x": 609,
+						"y": 854,
 						"w": 192,
 						"h": 73
 					}

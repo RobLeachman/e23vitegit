@@ -5,6 +5,11 @@
   "savePath": "D:\\src\\e23\\public\\assets\\graphics",
   "images": [
     {
+      "name": "begButton.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/begButton.png",
+      "folder": ""
+    },
+    {
       "name": "crossMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/crossMask.png",
       "folder": ""

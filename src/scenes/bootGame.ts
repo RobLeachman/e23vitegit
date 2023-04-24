@@ -10,9 +10,12 @@ import { setCookie, getCookie } from "../utils/cookie";
 //const skipClickToStart = true; const skipCloud = true;
 let skipClickToStart = false;
 let skipCloud = false;
-
-const testingNewRoom = false;
 const skipBackgroundsLoad = false;
+
+let testingNewRoom = import.meta.env.VITE_TESTING_NEW_ROOM;
+if (location.hostname != "localhost") {
+    testingNewRoom = "FALSE"
+}
 
 let myUI: PlayerUI;
 var recorder: Recorder;
@@ -78,20 +81,18 @@ export class BootGame extends Phaser.Scene {
         //this.load.on('loaderror', this.fileLoadError)
 
         this.load.on('loaderror', (file: Phaser.Loader.File) => {
-
-
             if (!fileError) {
                 fileError = true;
                 console.log(`ERROR LOADING FILE ${file.key} ${file.url}`);
-                
+
                 const failBox = this.add.graphics();
                 failBox.fillStyle(0x440000);
                 failBox.fillRect(0, 0, 720, 1280);
-                
+
                 this.make.text({
                     x: 50,
                     y: 100,
-                    text: 'STARTUP ERROR',
+                    text: 'NETWORK ERROR',
                     style: {
                         font: '36px Verdana',
                         color: 'white'
@@ -129,8 +130,6 @@ export class BootGame extends Phaser.Scene {
                 });
             }
         });
-
-
 
         // https://medium.com/@heshramsis/simplifying-security-using-environment-variables-in-vite-js-38b9dfe9b8a7
         const version = import.meta.env.VITE_VERSION;
@@ -181,8 +180,16 @@ export class BootGame extends Phaser.Scene {
 
         this.load.audio('musicTrack', 'assets/audio/music.mp3', { loop: true });
 
-        if (testingNewRoom) {
+
+        if (testingNewRoom == "TRUE") {
             // load only minimum requirements for the new scene under development...
+            this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
+            this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
+            this.load.audio('sfx', [
+                'assets/audio/soundSheet1.ogg'
+            ]);
+            this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+
         } else {
             // load only a few backgrounds while developing/testing a specific change...
             this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
@@ -191,7 +198,7 @@ export class BootGame extends Phaser.Scene {
             this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
             this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
             // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
-            this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');            
+            this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
 
             if (!skipBackgroundsLoad) {
                 this.load.audio('sfx', [
@@ -281,7 +288,7 @@ export class BootGame extends Phaser.Scene {
                 this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
                 this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
                 this.load.image('clue2 hint', 'assets/backgrounds/two way sequence.webp');
-                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');                
+                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
                 // cannot instantiate UI yet, so would need to load all, or do later...
                 this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
@@ -307,7 +314,6 @@ export class BootGame extends Phaser.Scene {
 
                 this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
                 this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
-                
             }
 
             //let windowHeight = window.innerHeight;
@@ -358,14 +364,14 @@ export class BootGame extends Phaser.Scene {
 
             var assetText = this.make.text({
                 x: width / 2,
-                y: height / 2 + 50+fudge-50,
+                y: height / 2 + 50 + fudge - 50,
                 text: '',
                 style: {
                     font: '18px monospace',
                     color: 'white'
                 }
             });
-            assetText.setOrigin(0.5, 0.5);            
+            assetText.setOrigin(0.5, 0.5);
 
             //@ts-ignore
             this.load.on('fileprogress', function (file) {
@@ -514,14 +520,14 @@ export class BootGame extends Phaser.Scene {
             myUI.displayInventoryBar(true);
 
             recorder.setTimeStart(Date.now());
-            if (testingNewRoom) {
-                this.scene.run("Settings");
+
+            if (testingNewRoom == "TRUE") {
+                this.scene.run("RoomTwo");
             } else {
 
                 this.scene.run("PlayGame", { mobile: false });
             }
         }
-
         asyncCreateDone = true;
     }
 

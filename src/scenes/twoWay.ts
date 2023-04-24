@@ -25,6 +25,7 @@ let centerButtonMask: Phaser.GameObjects.Sprite;
 let keyMaskTwoWay: Phaser.GameObjects.Sprite;
 let noKeyImage: Phaser.GameObjects.Sprite;
 let openIt: Phaser.GameObjects.Video;
+let openItAnim: Phaser.GameObjects.Sprite;
 
 let checkWin = false;
 let tookKey = false;
@@ -62,7 +63,7 @@ export class TwoWay extends Phaser.Scene {
 
         this.registry.set('twoWaySolved', false);
 
-        // loading here gets it ready early...
+        // loading here gets it ready early? but can't be sure until we try it
         openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
 
         backButtonTwoWay = this.add.sprite(300, 875, 'atlas', 'arrowDown.png').setOrigin(0, 0).setName("backButtonTwoWay").setDepth(22);
@@ -120,16 +121,20 @@ export class TwoWay extends Phaser.Scene {
             this.registry.set('twoWaySolved', true);
             myUI.didGoal('getTealClue');
 
-            //openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
+            keyMaskTwoWay.setVisible(false);
+
             openIt.setLoop(false);
             openIt.setPaused(false);
-
-            keyMaskTwoWay.setVisible(false)
             openIt.on('complete', () => {
                 keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
             });
 
-            openIt.play(true)
+            if (!openIt.isPlaying()) {
+                openItAnim = this.add.sprite(0, 367, "animated").setDepth(1).setVisible(true).setOrigin(0, 0);
+                openItAnim.play('openItAnim');
+                keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
+            }
+
             this.sound.play('sfx', { name: 'twoWayOpen', start: 4, duration: 2 });
 
         });
@@ -198,7 +203,7 @@ export class TwoWay extends Phaser.Scene {
             checkWin = false;
             const checkWinSeq = JSON.stringify(sequence);
             if (checkWinSeq == '[1,2,2,2,1,1,2,1]') {  // production win L R R R L L R L
-                //if (checkWinSeq == '[-1,-1,-1,-1,-1,-1,-1,1]') {
+                //if (checkWinSeq == '[-1,-1,-1,-1,-1,-1,-1,1]') { // test left
                 leftButtonMask.setVisible(false); showLeft = -1;
                 rightButtonMask.setVisible(false); showRight = -1;
                 leftButton.setVisible(true);

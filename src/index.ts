@@ -3,8 +3,12 @@ import 'phaser';
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
-const testingFour = false; // here we just skip loading stuff... but must comment out these too:
-//if (!testingFour) { // ALSO adjust scene config!
+//const testingNewRoom = false; // here we just skip loading stuff... but must comment out these too:
+let testingNewRoom = import.meta.env.VITE_TESTING_NEW_ROOM;
+if (location.hostname != "localhost") {
+    testingNewRoom = "FALSE"
+}
+
 
 import PlayerUI from './scenes/playerUI';
 import { Settings } from './scenes/settings';
@@ -18,7 +22,7 @@ import { Five } from './scenes/five';
 import { RoomTwo } from './scenes/roomTwo';
 import { Clue2 } from './scenes/clue2';
 import { TwoWay } from './scenes/twoWay';
-//}
+
 
 
 /*
@@ -102,7 +106,8 @@ let gameConfig = {
 };
 
 
-if (testingFour) {
+
+if (testingNewRoom == "TRUE") {
     gameConfig = {
         type: Phaser.WEBGL,
         //type: Phaser.WEBGL,
@@ -135,8 +140,7 @@ if (testingFour) {
             }
             ]
         },
-        //scene: [BootGame, PlayGame, ZotTable, Four, Five]
-        scene: [PlayerUI, Settings, HintBot, BootGame]
+        scene: [PlayerUI, BootGame, RoomTwo, TwoWay]
     };
 }
 

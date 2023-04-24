@@ -5,6 +5,7 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadString, getBytes, StorageReference } from "firebase/storage";
+//import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 
 //import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 //import { getStorage, ref, uploadString } from "firebase/storage";
@@ -169,6 +170,31 @@ export default class Recorder {
             appId: "1:575545476353:web:20671a688f62d9bb388700",
             measurementId: "G-G9X9NTNH1M"
         };
+        /*
+                // Authenticate to Firebase anonymously... I am not worried about the data there
+                const auth = getAuth();
+                signInAnonymously(auth)
+                    .then(() => {
+                        console.log("Firebase good authentication")
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(`Firebase auth error ${errorCode} ${errorMessage}`)
+                    });
+        
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        // User is signed in, see docs for a list of available properties
+                        // https://firebase.google.com/docs/reference/js/firebase.User
+                        const uid = user.uid;
+                        console.log("good login " + uid);
+                    } else {
+                        // User is signed out
+                        // ...
+                    }
+                });
+        */
 
         // Initialize Firebase
         initializeApp(firebaseConfig);

@@ -11,11 +11,8 @@
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
 * include play count in discord hook
-* check for file load failure
 * don't give away two-way clue in objectives
 * turning music off in settings isn't the same as pause during video play
-
-* reset firebase project end date!
 
 ** save game
 ** finish work to use alternate 4x4
@@ -101,7 +98,8 @@ let twoDoorUnlockedWall: Phaser.GameObjects.Image;
 
 var tableState = 0;
 
-var egress = false;
+let egress = false;
+let begButton: Phaser.GameObjects.Sprite;
 
 let clue2Init = true;
 let clue2state = 0;
@@ -257,8 +255,8 @@ export class PlayGame extends Phaser.Scene {
                     this.add.sprite(360, 800, 'atlas', 'fail.png').setDepth(100);
                 }
 
-                this.sendDiscordWebhook('Winner', 
-                  recorder.getPlayerName() + '  escaped! ' + recorder.getWinTimeWords() + 
+                this.sendDiscordWebhook('Winner',
+                    recorder.getPlayerName() + '  escaped! ' + recorder.getWinTimeWords() +
                     ' with ' + recorder.getSpoilerCount() + ' spoilers' +
                     ' (' + myUI.getMusicPlayTime() + ')', "", "");
 
@@ -299,7 +297,8 @@ export class PlayGame extends Phaser.Scene {
                 }
 
                 viewportText.setDepth(-1);
-                return; // that's all we need to do on egress
+                begButton.setVisible(true); backButton.setDepth(11110); backButton.setInteractive();
+                return; // that is all we need to do on egress
             }
 
             // TODO: should not be adding images willy nilly!
@@ -718,6 +717,13 @@ export class PlayGame extends Phaser.Scene {
             }
         });
 
+        begButton = this.add.sprite(172, 947, 'atlas2', 'begButton.png').setOrigin(0, 0).setDepth(3);
+        begButton.on('pointerdown', () => {
+            window.open("https://www.patreon.com/user?u=91737672", "_self");
+        });
+        begButton.setInteractive();
+        begButton.setVisible(false);
+
         // Debugger text
         viewportText = this.add.text(10, 10, '');
         viewportText.setDepth(3001); // TODO: rationalize the crazy depths!
@@ -743,7 +749,8 @@ export class PlayGame extends Phaser.Scene {
         // Fancy cursors can wait...
         //this.input.setDefaultCursor('url(assets/input/cursors/blue.cur), auto');
         //this.input.setDefaultCursor(
-        // "url(" + require("./assets/input/cursors/blue.cur") + "), auto");       
+        // "url(" + require("./assets/input/cursors/blue.cur") + "), auto"); 
+
     }
 
 

@@ -4,13 +4,97 @@
 			"image": "animated",
 			"format": "RGBA8888",
 			"size": {
-				"w": 104,
-				"h": 19
+				"w": 722,
+				"h": 1721
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "clickbar1.png",
+					"filename": "2way-anim0000.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 720,
+						"h": 423
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 720,
+						"h": 423
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 720,
+						"h": 423
+					}
+				},
+				{
+					"filename": "2way-anim0001.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 720,
+						"h": 423
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 720,
+						"h": 423
+					},
+					"frame": {
+						"x": 1,
+						"y": 426,
+						"w": 720,
+						"h": 423
+					}
+				},
+				{
+					"filename": "2way-anim0002.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 720,
+						"h": 423
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 720,
+						"h": 423
+					},
+					"frame": {
+						"x": 1,
+						"y": 851,
+						"w": 720,
+						"h": 423
+					}
+				},
+				{
+					"filename": "2way-anim0003.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 720,
+						"h": 423
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 720,
+						"h": 423
+					},
+					"frame": {
+						"x": 1,
+						"y": 1276,
+						"w": 720,
+						"h": 423
+					}
+				},
+				{
+					"filename": "clickbar0001.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -24,14 +108,14 @@
 						"h": 19
 					},
 					"frame": {
-						"x": 0,
-						"y": 0,
+						"x": 1,
+						"y": 1701,
 						"w": 26,
 						"h": 19
 					}
 				},
 				{
-					"filename": "clickbar2.png",
+					"filename": "clickbar0003.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -45,16 +129,16 @@
 						"h": 19
 					},
 					"frame": {
-						"x": 26,
-						"y": 0,
+						"x": 29,
+						"y": 1701,
 						"w": 26,
 						"h": 19
 					}
 				},
 				{
-					"filename": "clickbar3.png",
+					"filename": "clickbar0002.png",
 					"rotated": false,
-					"trimmed": false,
+					"trimmed": true,
 					"sourceSize": {
 						"w": 26,
 						"h": 19
@@ -62,20 +146,20 @@
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 26,
-						"h": 19
+						"w": 25,
+						"h": 17
 					},
 					"frame": {
-						"x": 52,
-						"y": 0,
-						"w": 26,
-						"h": 19
+						"x": 57,
+						"y": 1701,
+						"w": 25,
+						"h": 17
 					}
 				},
 				{
-					"filename": "clickbar4.png",
+					"filename": "clickbar0000.png",
 					"rotated": false,
-					"trimmed": false,
+					"trimmed": true,
 					"sourceSize": {
 						"w": 26,
 						"h": 19
@@ -83,14 +167,14 @@
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 26,
-						"h": 19
+						"w": 24,
+						"h": 18
 					},
 					"frame": {
-						"x": 78,
-						"y": 0,
-						"w": 26,
-						"h": 19
+						"x": 84,
+						"y": 1701,
+						"w": 24,
+						"h": 18
 					}
 				}
 			]
