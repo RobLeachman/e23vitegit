@@ -207,7 +207,7 @@ export class Four extends Phaser.Scene {
         this.ytPlayButton.setVisible(false); this.ytPlayButton.setDepth(1001); this.ytPlayButton.setInteractive({ cursor: 'pointer' });
         this.ytPlayButton.on('pointerdown', () => {
             //console.log("YT PLAY")
-            myUI.pauseMusic();
+            myUI.pauseMusic(true); // temporary
             didPauseMusic = true;
             this.ytPlayButton.setVisible(true);
             this.spinTheRecord(false);
@@ -232,7 +232,7 @@ export class Four extends Phaser.Scene {
                 this.add.image(0, 0, 'fourBackground').setOrigin(0, 0);
                 this.frame = this.add.sprite(13, 250, 'fourFrame').setOrigin(0, 0);
                 this.ytPlayButton.setVisible(true);
-                myUI.pauseMusic();
+                myUI.pauseMusic(true); // temporary
             }
             justReturnedFromHints = false;
         });
@@ -263,7 +263,7 @@ export class Four extends Phaser.Scene {
                 myUI.setFourSolved(true);
                 myUI.didGoal('solveFour');
                 this.selectMask.setVisible(false); this.selectMask.setInteractive(false); this.selectMask.setDepth(-1);
-                myUI.pauseMusic();
+                myUI.pauseMusic(true); // temporary
                 didPauseMusic = true;
                 this.spinTheRecord(false);
             }

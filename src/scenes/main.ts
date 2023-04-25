@@ -10,10 +10,9 @@
  * 
  * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
 
-* include play count in discord hook
-* don't give away two-way clue in objectives
-* turning music off in settings isn't the same as pause during video play
 
+** don't give away two-way clue in objectives
+** include play count in discord hook
 ** save game
 ** finish work to use alternate 4x4
 ** upload console to firebase
@@ -48,7 +47,6 @@ const d1 = 'https://discord.com/api/webhooks';
 const d2 = '1096536501413761125';
 const d3 = '_jdNDh2X_cgHwfnWSaXn4-ekCWvuaXAHbjDsj7p-mEbUmeJ8o1DbgPJx2nLi60Zu78VB';
 const discordClient = new DiscordWebhook(d1 + '/' + d2 + '/' + d3);
-
 
 let myUI: PlayerUI;
 let slots: Slots;
@@ -281,7 +279,7 @@ export class PlayGame extends Phaser.Scene {
                 fiveOpen.setVisible(false);
                 fiveBatt.setVisible(false);
 
-                myUI.pauseMusic();
+                myUI.pauseMusic(true);
 
                 updateWall = false;
                 viewWall = currentWall;

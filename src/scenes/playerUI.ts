@@ -277,8 +277,8 @@ export default class PlayerUI extends Phaser.Scene {
             music.play();
             this.resumeMusic();
         } else {
-            recorder.setMusicMuted(true);
-            this.pauseMusic();
+            recorder.setMusicMuted(true); // sets cookie for next time
+            this.pauseMusic(false);
         }
     }
     initMusic() {
@@ -300,7 +300,7 @@ export default class PlayerUI extends Phaser.Scene {
                 musicTest.setY(400)
         }
     }
-    pauseMusic() {
+    pauseMusic(temporary: boolean) {
         if (stepVolumeDown != 0 || stepVolumeUp != 0) {
             //console.log("********JITTER*******") // if they goof with the settings and want it off, force it off
             // @ts-ignore
@@ -314,7 +314,8 @@ export default class PlayerUI extends Phaser.Scene {
         }
         if (!musicStopped) {
             musicStopped = true;
-            recorder.setStoppedMusicTime(true);
+            if (!temporary)
+                recorder.setStoppedMusicTime(true);
         }
 
     }
@@ -331,9 +332,9 @@ export default class PlayerUI extends Phaser.Scene {
     }
     getMusicPlayTime() {
         if (!musicStopped)
-            return "never turned off"
+            return "enjoyed music"
         else
-            return recorder.getMusicPlayTime();
+            return recorder.getRecordedMusicPlayTime();
     }
 
     didGoal(objective: string) {
@@ -460,13 +461,7 @@ export default class PlayerUI extends Phaser.Scene {
     getCameraHack() {
         return cameraHack;
     }
-    /*
-    hideSpinningQuestion() {
-        questionSpinning.setPaused(true);
-        questionSpinning.setVisible(false)
-        hintQuestion.setVisible(true);
-    }
-    */
+
     hideGreenQuestion() {
         hintQuestionGreen.setVisible(false)
     }
@@ -1194,6 +1189,8 @@ export default class PlayerUI extends Phaser.Scene {
             }
             needNewClue = false;
         }
+
+        // fancy fading volume controls
         if (stepVolumeUp > 0 && this.time.now > stepVolumeUpTime) {
             stepVolumeUp--;
             stepVolumeUpTime = this.time.now + 150;

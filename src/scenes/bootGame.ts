@@ -10,7 +10,6 @@ import { setCookie, getCookie } from "../utils/cookie";
 //const skipClickToStart = true; const skipCloud = true;
 let skipClickToStart = false;
 let skipCloud = false;
-const skipBackgroundsLoad = false;
 
 let testingNewRoom = import.meta.env.VITE_TESTING_NEW_ROOM;
 if (location.hostname != "localhost") {
@@ -148,173 +147,136 @@ export class BootGame extends Phaser.Scene {
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
         this.load.plugin('rexyoutubeplayerplugin', url, true);
 
-        // On the fence about DPI, it all seems just fine... maybe another project?
-        //var fontSize = 16*assetsDPR;
-        //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`, fill: '#00ff00' });
-        //this.add.text(10, 10, "Loading...", { font: `${fontSize}px Verdana`});
-
-        /* Need fonts?
-                this.load.bitmapFont('gameplay-black', 'assets/fonts/gameplay-1987-black.png', 'assets/fonts/gameplay-1987-bw.fnt');
-                this.load.bitmapFont('gameplay-white', 'assets/fonts/gameplay-1987-white.png', 'assets/fonts/gameplay-1987-bw.fnt');
-        
-                this.load.bitmapFont('xolonium-black', 'assets/fonts/Xolonium-Regular-Black-72.png', 'assets/fonts/Xolonium-Regular-Black-72.fnt');
-                this.load.bitmapFont('xolonium-white', 'assets/fonts/Xolonium-Regular-White-72.png', 'assets/fonts/Xolonium-Regular-White-72.fnt');
-
-        */
         this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
         this.load.image('startButton', 'assets/sprites/startButton.png');
         this.load.image('playButton', 'assets/sprites/playButton.png');
 
-        /* will skip if testing...
-        this.load.audio('sfx', [
-            'assets/audio/soundSheet1.ogg',
-            'assets/audio/soundSheet1.mp3'
-        ]);
-        this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
-        this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
-        */
 
-        // CORS?
-        //this.load.setCORS('anonymous');
-        //this.load.audio('musicTrack', 'http://bitblaster.com/banal23/unlicensed/testloops2.mp3');
-
-        this.load.audio('musicTrack', 'assets/audio/music.mp3', { loop: true });
-
-
-        if (testingNewRoom == "TRUE") {
+        if (testingNewRoom == "TRUE") { // when developing a new scene, only load minimum requirements
             // load only minimum requirements for the new scene under development...
             this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
             this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
-            this.load.audio('sfx', [
-                'assets/audio/soundSheet1.ogg'
-            ]);
             this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
 
         } else {
-            // load only a few backgrounds while developing/testing a specific change...
-            this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
-            this.load.image('intro1', 'assets/backgrounds/intro1.webp');
-            this.load.image('intro2', 'assets/backgrounds/intro2.webp');
-            this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
+            this.load.audio('musicTrack', [
+                'assets/audio/music.ogg',
+                'assets/audio/music.mp3'
+            ], { loop: true });
+            this.load.audio('sfx', [
+                'assets/audio/soundSheet1.ogg',
+                'assets/audio/soundSheet1.mp3'
+            ]);
             this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
             // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
             this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+            
+            this.load.image('vid1', 'assets/backgrounds/watchTheYoutube.webp');
 
-            if (!skipBackgroundsLoad) {
-                this.load.audio('sfx', [
-                    'assets/audio/soundSheet1.ogg',
-                    'assets/audio/soundSheet1.mp3'
-                ]);
-                this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
-                // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
-                this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
-                //const openIt = this.add.video(0, 241, 'openIt').setOrigin(0, 0).setDepth(2);
-                this.load.image('vid1', 'assets/backgrounds/watchTheYoutube.webp');
+            this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
+            this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
+            this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
+            this.load.image('on', 'assets/sprites/on.png');
+            this.load.image('off', 'assets/sprites/off.png');
 
-                this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
-                this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
-                this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
-                this.load.image('on', 'assets/sprites/on.png');
-                this.load.image('off', 'assets/sprites/off.png');
+            this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
+            this.load.image('intro1', 'assets/backgrounds/intro1.webp');
+            this.load.image('intro2', 'assets/backgrounds/intro2.webp');
 
-                this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
-                this.load.image('intro1', 'assets/backgrounds/intro1.webp');
-                this.load.image('intro2', 'assets/backgrounds/intro2.webp');
+            // used XnConvert to switch to webp, nice!
+            this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
+            this.load.image('timeFail', 'assets/backgrounds/time fail.webp');
 
-                // used XnConvert to switch to webp, nice!
-                this.load.image('myViewport', 'assets/backgrounds/viewport.webp');
-                this.load.image('timeFail', 'assets/backgrounds/time fail.webp');
+            this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
+            this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
+            this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
+            this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
+            this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.webp');
+            this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.webp');
+            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
+            this.load.image('wall3doorOpen', 'assets/backgrounds/invroom - room - southOpen.webp');
 
-                this.load.image('wall1', 'assets/backgrounds/invroom - room - empty.webp');
-                this.load.image('wall2', 'assets/backgrounds/invroom - room - west.webp');
-                this.load.image('wall3', 'assets/backgrounds/invroom - room - south.webp');
-                this.load.image('wall4', 'assets/backgrounds/invroom - room - east.webp');
-                this.load.image('wallUnlocked', 'assets/backgrounds/invroom - room - unlocked.webp');
-                this.load.image('wallWinner', 'assets/backgrounds/invroom - room - winner.webp');
-                this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
-                this.load.image('wall3doorOpen', 'assets/backgrounds/invroom - room - southOpen.webp');
+            this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
+            this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
+            this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
 
-                this.load.image('room2 north', 'assets/backgrounds/room2 - north.webp');
-                this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
-                this.load.image('room2 east', 'assets/backgrounds/room2 - east.webp');
+            this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.webp');
+            this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.webp');
+            this.load.image('objKeyA', 'assets/backgrounds/invroom - obj - keyA.webp');
+            this.load.image('objKeyB', 'assets/backgrounds/invroom - obj - keyB.webp');
+            this.load.image('objKeyWhole', 'assets/backgrounds/invroom - obj - keyWhole.webp');
+            this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.webp');
+            this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.webp');
 
-                this.load.image('objDonut', 'assets/backgrounds/invroom - obj - donut.webp');
-                this.load.image('objPlate', 'assets/backgrounds/invroom - obj - plate.webp');
-                this.load.image('objKeyA', 'assets/backgrounds/invroom - obj - keyA.webp');
-                this.load.image('objKeyB', 'assets/backgrounds/invroom - obj - keyB.webp');
-                this.load.image('objKeyWhole', 'assets/backgrounds/invroom - obj - keyWhole.webp');
-                this.load.image('objDonutPlated', 'assets/backgrounds/invroom - obj - donutPlated.webp');
-                this.load.image('objRoach', 'assets/backgrounds/invroom - obj - roach.webp');
+            this.load.image('objBattery', 'assets/backgrounds/invroom - obj - battery.webp');
+            this.load.image('objZot', 'assets/backgrounds/invroom - obj - zot.webp');
 
-                this.load.image('objBattery', 'assets/backgrounds/invroom - obj - battery.webp');
-                this.load.image('objZot', 'assets/backgrounds/invroom - obj - zot.webp');
+            this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.webp');
+            this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.webp');
+            this.load.image('altobjKeyA', 'assets/backgrounds/invroom - altobj - keyA.webp');
+            this.load.image('altobjKeyB', 'assets/backgrounds/invroom - altobj - keyB.webp');
 
-                this.load.image('altobjDonut', 'assets/backgrounds/invroom - altobj - donut.webp');
-                this.load.image('altobjPlateKey', 'assets/backgrounds/invroom - altobj - plate key.webp');
-                this.load.image('altobjKeyA', 'assets/backgrounds/invroom - altobj - keyA.webp');
-                this.load.image('altobjKeyB', 'assets/backgrounds/invroom - altobj - keyB.webp');
+            this.load.image('objRedKeyA', 'assets/backgrounds/invroom - obj - redKeyA.webp');
+            this.load.image('objRedKeyB', 'assets/backgrounds/invroom - obj - redKeyB.webp');
+            this.load.image('altobjRedKeyA', 'assets/backgrounds/invroom - altobj - redKeyA.webp');
+            this.load.image('altobjRedKeyB', 'assets/backgrounds/invroom - altobj - redKeyB.webp');
 
-                this.load.image('objRedKeyA', 'assets/backgrounds/invroom - obj - redKeyA.webp');
-                this.load.image('objRedKeyB', 'assets/backgrounds/invroom - obj - redKeyB.webp');
-                this.load.image('altobjRedKeyA', 'assets/backgrounds/invroom - altobj - redKeyA.webp');
-                this.load.image('altobjRedKeyB', 'assets/backgrounds/invroom - altobj - redKeyB.webp');
+            this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.webp');
+            this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.webp');
+            this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.webp');
+            this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.webp');
 
-                this.load.image('altobjKeyWhole', 'assets/backgrounds/invroom - altobj - keyWhole.webp');
-                this.load.image('altobjDonutPlated', 'assets/backgrounds/invroom - altobj - donutPlated.webp');
-                this.load.image('altobjRoach', 'assets/backgrounds/invroom - altobj - roach.webp');
-                this.load.image('altobjPlateEmpty', 'assets/backgrounds/invroom - altobj - plate empty.webp');
+            this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
+            this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
 
-                this.load.image('altobjBattery', 'assets/backgrounds/invroom - altobj - battery.webp');
-                this.load.image('altobjZot', 'assets/backgrounds/invroom - altobj - zot.webp');
+            this.load.image('objPostit', 'assets/backgrounds/room2 - obj - postit.webp');
+            this.load.image('altobjPostit', 'assets/backgrounds/room2 - altobj - postit.webp');
+            this.load.image('objRedKey', 'assets/backgrounds/clue2 - obj - redkey.webp');
+            this.load.image('altobjRedKey', 'assets/backgrounds/clue2 - altobj - redkey.webp');
 
-                this.load.image('objPostit', 'assets/backgrounds/room2 - obj - postit.webp');
-                this.load.image('altobjPostit', 'assets/backgrounds/room2 - altobj - postit.webp');
-                this.load.image('objRedKey', 'assets/backgrounds/clue2 - obj - redkey.webp');
-                this.load.image('altobjRedKey', 'assets/backgrounds/clue2 - altobj - redkey.webp');
+            this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
 
-                this.load.image('table', 'assets/backgrounds/invroom - table - empty.webp');
+            this.load.image('zotTableOff', 'assets/backgrounds/newzot - off.webp');
+            this.load.image('zotTableBack', 'assets/backgrounds/newzot - back.webp');
+            this.load.image('zotTableOffFlipped', 'assets/backgrounds/newzot - flip - off.webp');
+            this.load.image('zotTableBackFlipped', 'assets/backgrounds/newzot - flip - back.webp');
+            this.load.image('zotBatteryClosed', 'assets/backgrounds/newzot - battery - closed.webp');
+            this.load.image('zotBatteryEmpty', 'assets/backgrounds/newzot - battery - empty.webp');
+            this.load.image('zotBatteryPlaced', 'assets/backgrounds/newzot - battery - placed.webp');
 
-                this.load.image('zotTableOff', 'assets/backgrounds/newzot - off.webp');
-                this.load.image('zotTableBack', 'assets/backgrounds/newzot - back.webp');
-                this.load.image('zotTableOffFlipped', 'assets/backgrounds/newzot - flip - off.webp');
-                this.load.image('zotTableBackFlipped', 'assets/backgrounds/newzot - flip - back.webp');
-                this.load.image('zotBatteryClosed', 'assets/backgrounds/newzot - battery - closed.webp');
-                this.load.image('zotBatteryEmpty', 'assets/backgrounds/newzot - battery - empty.webp');
-                this.load.image('zotBatteryPlaced', 'assets/backgrounds/newzot - battery - placed.webp');
+            this.load.image('clue2 closed', 'assets/backgrounds/clue2 - closed.webp');
+            this.load.image('clue2 left', 'assets/backgrounds/clue2 - left.webp');
+            this.load.image('clue2 open', 'assets/backgrounds/clue2 - open.webp');
+            this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
+            this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
+            this.load.image('clue2 hint', 'assets/backgrounds/two way sequence.webp');
+            this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
 
-                this.load.image('clue2 closed', 'assets/backgrounds/clue2 - closed.webp');
-                this.load.image('clue2 left', 'assets/backgrounds/clue2 - left.webp');
-                this.load.image('clue2 open', 'assets/backgrounds/clue2 - open.webp');
-                this.load.image('clue2 right', 'assets/backgrounds/clue2 - right.webp');
-                this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
-                this.load.image('clue2 hint', 'assets/backgrounds/two way sequence.webp');
-                this.load.image('fiveBackground', 'assets/backgrounds/5 words box.webp');
+            // cannot instantiate UI yet, so would need to load all, or do later...
+            this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
+            this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
 
-                // cannot instantiate UI yet, so would need to load all, or do later...
-                this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
-                //this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
-                this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
-                //this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
+            /*
+            //this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
+            //this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
 
 
-                /*
-                if (myUI.getFourWayPuzzle() == "BigTime") {
-                    this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
-                } else {
-                    this.load.image('fourArtWhole', 'assets/backgrounds/four_pg3a.webp');                    
-                }
-
+            if (myUI.getFourWayPuzzle() == "BigTime") {
                 this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
-
-                //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
-                //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
-                //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
-                //this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
-                */
-
-                this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
-                this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
+            } else {
+                this.load.image('fourArtWhole', 'assets/backgrounds/four_pg3a.webp');                    
             }
+            this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');                    
+
+            //const graphicPrefix = "pg2"; const youtubeID = 'PBAl9cchQac' // Big Time... so much larger than life
+            //const graphicPrefix = "pg1a"; const youtubeID = 'feZluC5JheM' // The Court... while the pillars all fall
+            //const graphicPrefix = "pg3a"; const youtubeID = 'CnVf1ZoCJSo' // Shock the Monkey... cover me when I run
+            //this.load.image('fourArtWhole', 'assets/backgrounds/four_pg2.webp');
+            */
+
+            this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
+            this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
+
 
             //let windowHeight = window.innerHeight;
             //let windowWidth = window.innerWidth;
@@ -482,7 +444,7 @@ export class BootGame extends Phaser.Scene {
             if (recorder.getMusicMuted() == "muted") {
                 //console.log("BOOT MUTE MUSIC")
                 myUI.setMusicSetting(false);
-                recorder.setStoppedMusicTime(false);
+                recorder.setStoppedMusicTime(false); // never started
             } else {
                 myUI.setMusicSetting(true);
             }

@@ -92,6 +92,8 @@ export class Settings extends Phaser.Scene {
         soundButton = this.add.sprite(309, 416, 'atlas2', 'on.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
         musicButton = this.add.sprite(309, 566, 'atlas2', 'on.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
 
+        // When the sound toggle is clicked, toggle sound off/on and when off, turn music off too. If sound is off
+        // disable the music toggle.
         recorder.addMaskSprite('soundButton', soundButton);
         soundButton.on('pointerdown', () => {
             ytWarning.setVisible(true);
@@ -114,6 +116,7 @@ export class Settings extends Phaser.Scene {
         });
         soundButton.setVisible(true); soundButton.setInteractive({ cursor: 'pointer' });
 
+        // toggle music off/on as indicated and be sure the button is disabled if sound is off
         recorder.addMaskSprite('musicButton', musicButton);
         musicButton.on('pointerdown', () => {
             ytWarning.setVisible(true);

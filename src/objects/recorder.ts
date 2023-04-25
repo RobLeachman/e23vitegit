@@ -470,9 +470,9 @@ export default class Recorder {
             musicPlayTime = Math.floor((Date.now() - this.timeStart) / 1000);
     }
 
-    getMusicPlayTime() {
+    getRecordedMusicPlayTime() {
         if (musicPlayTime == 0)
-            return "never"
+            return "enjoyed music"
         else if (musicPlayTime < 0)
             return "muted"
         else
