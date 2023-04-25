@@ -74,6 +74,9 @@ export class BootGame extends Phaser.Scene {
             skipClickToStart = true;
             skipCloud = true;
         }
+        if (testingSingleRoom == "TRUE") {
+            skipClickToStart = true;
+        }
 
         splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
 

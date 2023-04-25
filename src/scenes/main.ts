@@ -83,8 +83,6 @@ export class PlayGame extends Phaser.Scene {
     }
 
     async update() {
-        //console.log("main update")
-
         // did we just hit the keyboard to start replaying?
         if (this.input.activePointer.rightButtonDown() && location.hostname == "localhost") {
             console.log("right mouse button action! bounce bounce");
@@ -93,8 +91,8 @@ export class PlayGame extends Phaser.Scene {
         if (initMain) {
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
-                //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
-                //slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
+                slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
                 //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
                 //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
                 //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");
@@ -259,6 +257,10 @@ export class PlayGame extends Phaser.Scene {
                     recorder.setMode("idle")
                     //this.showRecording()
                 }
+
+                this.input.on("pointerdown", () => {
+                    window.open("fin.html", "_self");
+                }, this);
 
                 viewportText.setDepth(-1);
                 begButton.setVisible(true); backButton.setDepth(11110); backButton.setInteractive();
@@ -533,7 +535,7 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 750)
+                cam.pan(360, 640, 750);
                 cam.zoomTo(1, 750);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
@@ -542,7 +544,7 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(120, 500, 500)
+                cam.pan(120, 500, 500);
                 cam.zoomTo(3.5, 500);
             }
         });
@@ -683,7 +685,7 @@ export class PlayGame extends Phaser.Scene {
 
         begButton = this.add.sprite(172, 947, 'atlas2', 'begButton.png').setOrigin(0, 0).setDepth(3);
         begButton.on('pointerdown', () => {
-            window.open("https://www.patreon.com/user?u=91737672", "_self");
+            window.open("fin.html", "_self");
         });
         begButton.setInteractive();
         begButton.setVisible(false);

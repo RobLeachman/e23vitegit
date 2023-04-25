@@ -89,11 +89,10 @@ export class Settings extends Phaser.Scene {
 
         soundLabel = this.add.sprite(52, 415, 'atlas2', 'sound.png').setOrigin(0, 0).setDepth(1);
         musicLabel = this.add.sprite(55, 566, 'atlas2', 'music.png').setOrigin(0, 0).setDepth(1);
-        soundButton = this.add.sprite(309, 416, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
-        musicButton = this.add.sprite(309, 566, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
 
         // When the sound toggle is clicked, toggle sound off/on and when off, turn music off too. If sound is off
         // disable the music toggle.
+        soundButton = this.add.sprite(309, 416, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
         recorder.addMaskSprite('soundButton', soundButton);
         soundButton.on('pointerdown', () => {
             ytWarning.setVisible(true);
@@ -117,6 +116,7 @@ export class Settings extends Phaser.Scene {
         soundButton.setVisible(true); soundButton.setInteractive({ cursor: 'pointer' });
 
         // toggle music off/on as indicated and be sure the button is disabled if sound is off
+        musicButton = this.add.sprite(309, 566, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
         recorder.addMaskSprite('musicButton', musicButton);
         musicButton.on('pointerdown', () => {
             ytWarning.setVisible(true);
