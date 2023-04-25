@@ -1,37 +1,3 @@
-/****************
- * An escape room coded in Phaser.
- * - Sign in with GitHub
- * 
- * 
- * - 3x3 slider puzzle
- * - Fireworks on winner screen
- * - 4x4 solver
- * - flash hint icon when stuck
- * 
- * Scratch-off ticket https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-scratch-off-alpha-mask/
-
-
-** don't give away two-way clue in objectives
-** include play count in discord hook
-** save game
-** finish work to use alternate 4x4
-** upload console to firebase
-** 4x4 background should be gray not white
-** double-click icon to open it
-** spin five words at init
-** itch.io
-** patreon
-    pop up at BOJ
-    banner
-    like https://gammafp.com/tool/animator/
-** PWA
-** supabase
-** cache youtube video
-** video splash screen
-    https://phaser.discourse.group/t/play-and-skip-intro-video-phaser-3/10081
-
-
-*/
 import 'phaser';
 import Slots from "../objects/slots"
 import Recorder from "../objects/recorder"
@@ -127,8 +93,8 @@ export class PlayGame extends Phaser.Scene {
         if (initMain) {
             if (location.hostname == "localhost") {
                 //console.log("BONUS TEST ZOTS")
-                slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
-                slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
+                //slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
+                //slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
                 //slots.addIcon("iconZot.png", "objZot", "altobjZot"); // it is the zot
                 //slots.addIcon("iconBattery.png", "objBattery", "altobjBattery");
                 //slots.addIcon("icon - donut.png", "objDonut", "altobjDonut");

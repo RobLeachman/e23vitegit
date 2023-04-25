@@ -41,8 +41,6 @@ let hintQuestion: Phaser.GameObjects.Sprite;
 let hintQuestionGreen: Phaser.GameObjects.Sprite;
 let questionSpinning: Phaser.GameObjects.Video;
 
-
-
 let plusButton: Phaser.GameObjects.Sprite;
 let plusModeButton: Phaser.GameObjects.Sprite;
 let eyeButton: Phaser.GameObjects.Sprite;
@@ -408,12 +406,8 @@ export default class PlayerUI extends Phaser.Scene {
         return slots;
     }
 
-    setEyeTexture(textureName: string) {
-        eyeButton.setTexture(textureName);
-    }
-    turnEyeOff() {
-        eyeButton.setTexture('eyeButton');
-        eyeButton.setName("eyeButton");
+    setEyeTexture() {
+        eyeButton.setTexture('atlas2', 'eyeHint.png');
     }
     hideEye() {
         eyeButton.setVisible(false);
@@ -421,11 +415,13 @@ export default class PlayerUI extends Phaser.Scene {
     showEye() {
         eyeButton.setVisible(true);
     }
-    showInspectClue() {
-        interfaceInspect.setVisible(true);
+    showClickClue() {
         interfaceClick.setVisible(true);
         clickLine.setVisible(true);
         clickLine.play('clickLine');
+    }
+    showInspectClue() {
+        interfaceInspect.setVisible(true);
         this.showEye();
     }
     hideClickClue() {
@@ -489,6 +485,7 @@ export default class PlayerUI extends Phaser.Scene {
     // Must preload a few elements for UI
     preload() {
         this.load.atlas('atlas', 'assets/graphics/atlas1.png', 'assets/graphics/atlas1.json');
+        this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
         this.load.atlas('animated', 'assets/graphics/animated.png', 'assets/graphics/animated.json');
 
         // capture console on mobile
@@ -570,7 +567,7 @@ export default class PlayerUI extends Phaser.Scene {
         recorder.addMaskSprite('plusButton', plusButton);
         recorder.addMaskSprite('plusModeButton', plusModeButton);
 
-        console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
+        //console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
         settingsButton = this.add.sprite(655, 310, 'atlas', 'settings1.png').setName("leftButton").setDepth(1).setVisible(false);
         recorder.addMaskSprite('settingsButton', settingsButton);
@@ -598,7 +595,7 @@ export default class PlayerUI extends Phaser.Scene {
             plusModeButton.setVisible(true); plusModeButton.setDepth(110); plusModeButton.setInteractive({ cursor: 'pointer' });;
         });
 
-        eyeButton = this.add.sprite(15, 1070, 'atlas', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0).setDepth(1);
+        eyeButton = this.add.sprite(15, 1070, 'atlas2', 'eyeOff.png').setName("eyeButton").setOrigin(0, 0).setDepth(1);
         recorder.addMaskSprite('eyeButton', eyeButton);
         eyeButton.setVisible(false); eyeButton.setInteractive({ cursor: 'pointer' });
 
@@ -613,7 +610,7 @@ export default class PlayerUI extends Phaser.Scene {
                 //console.log("**** selected thing=" + selectedThing.thing)
                 if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
                     return;
-                eyeButton.setTexture('eyeButtonOn');
+                eyeButton.setTexture('atlas2','eyeOn.png');
                 eyeButton.setName("eyeButtonOn");
                 interfaceInspect.setVisible(false);
                 interfaceClick.setVisible(false);
@@ -1162,7 +1159,6 @@ export default class PlayerUI extends Phaser.Scene {
             }
         }
 
-
         if (needNewClue) {
             //console.log("need new clue")
             const oldClue = clueText.text;
@@ -1251,7 +1247,9 @@ export default class PlayerUI extends Phaser.Scene {
         this.restoreHintIcons();
 
         slots.combining = ""; // cancel any combine action
-        this.turnEyeOff();
+        eyeButton.setTexture('atlas2','eyeOff.png');
+        eyeButton.setName("eyeButton");
+
         UIbackButton.setVisible(false);
         objectMask.setVisible(false);
         interfaceClueCombine.setVisible(false);

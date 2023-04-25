@@ -4,8 +4,8 @@
 			"image": "atlas2",
 			"format": "RGBA8888",
 			"size": {
-				"w": 830,
-				"h": 1079
+				"w": 957,
+				"h": 1125
 			},
 			"scale": 1,
 			"frames": [
@@ -45,8 +45,8 @@
 						"h": 197
 					},
 					"frame": {
-						"x": 643,
-						"y": 1,
+						"x": 1,
+						"y": 643,
 						"w": 186,
 						"h": 197
 					}
@@ -66,10 +66,52 @@
 						"h": 180
 					},
 					"frame": {
-						"x": 643,
-						"y": 200,
+						"x": 1,
+						"y": 842,
 						"w": 180,
 						"h": 180
+					}
+				},
+				{
+					"filename": "playButton.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 320,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 320,
+						"h": 100
+					},
+					"frame": {
+						"x": 1,
+						"y": 1024,
+						"w": 320,
+						"h": 100
+					}
+				},
+				{
+					"filename": "startButton.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 320,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 320,
+						"h": 100
+					},
+					"frame": {
+						"x": 183,
+						"y": 842,
+						"w": 320,
+						"h": 100
 					}
 				},
 				{
@@ -87,8 +129,8 @@
 						"h": 60
 					},
 					"frame": {
-						"x": 1,
-						"y": 643,
+						"x": 183,
+						"y": 944,
 						"w": 520,
 						"h": 60
 					}
@@ -108,8 +150,8 @@
 						"h": 84
 					},
 					"frame": {
-						"x": 1,
-						"y": 705,
+						"x": 189,
+						"y": 643,
 						"w": 367,
 						"h": 84
 					}
@@ -129,8 +171,8 @@
 						"h": 134
 					},
 					"frame": {
-						"x": 523,
-						"y": 643,
+						"x": 505,
+						"y": 729,
 						"w": 230,
 						"h": 134
 					}
@@ -151,7 +193,7 @@
 					},
 					"frame": {
 						"x": 643,
-						"y": 382,
+						"y": 1,
 						"w": 129,
 						"h": 210
 					}
@@ -171,8 +213,8 @@
 						"h": 290
 					},
 					"frame": {
-						"x": 370,
-						"y": 705,
+						"x": 643,
+						"y": 213,
 						"w": 90,
 						"h": 290
 					}
@@ -192,8 +234,8 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 1,
-						"y": 791,
+						"x": 643,
+						"y": 505,
 						"w": 160,
 						"h": 160
 					}
@@ -213,8 +255,8 @@
 						"h": 160
 					},
 					"frame": {
-						"x": 163,
-						"y": 791,
+						"x": 735,
+						"y": 213,
 						"w": 160,
 						"h": 160
 					}
@@ -234,8 +276,8 @@
 						"h": 125
 					},
 					"frame": {
-						"x": 1,
-						"y": 953,
+						"x": 735,
+						"y": 375,
 						"w": 154,
 						"h": 125
 					}
@@ -255,10 +297,73 @@
 						"h": 76
 					},
 					"frame": {
-						"x": 157,
-						"y": 997,
+						"x": 189,
+						"y": 729,
 						"w": 230,
 						"h": 76
+					}
+				},
+				{
+					"filename": "eyeOff.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 90,
+						"h": 180
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 90,
+						"h": 180
+					},
+					"frame": {
+						"x": 774,
+						"y": 1,
+						"w": 90,
+						"h": 180
+					}
+				},
+				{
+					"filename": "eyeOn.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 90,
+						"h": 180
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 90,
+						"h": 180
+					},
+					"frame": {
+						"x": 866,
+						"y": 1,
+						"w": 90,
+						"h": 180
+					}
+				},
+				{
+					"filename": "eyeHint.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 90,
+						"h": 180
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 90,
+						"h": 180
+					},
+					"frame": {
+						"x": 705,
+						"y": 865,
+						"w": 90,
+						"h": 180
 					}
 				},
 				{
@@ -276,14 +381,14 @@
 						"h": 73
 					},
 					"frame": {
-						"x": 389,
-						"y": 997,
+						"x": 737,
+						"y": 667,
 						"w": 218,
 						"h": 73
 					}
 				},
 				{
-					"filename": "off.png",
+					"filename": "toggleOff.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -297,14 +402,14 @@
 						"h": 73
 					},
 					"frame": {
-						"x": 609,
-						"y": 779,
+						"x": 505,
+						"y": 865,
 						"w": 192,
 						"h": 73
 					}
 				},
 				{
-					"filename": "on.png",
+					"filename": "toggleOn.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -318,10 +423,31 @@
 						"h": 73
 					},
 					"frame": {
-						"x": 609,
-						"y": 854,
+						"x": 737,
+						"y": 742,
 						"w": 192,
 						"h": 73
+					}
+				},
+				{
+					"filename": "twoway-buttonCenter-mask.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 84,
+						"h": 149
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 84,
+						"h": 149
+					},
+					"frame": {
+						"x": 805,
+						"y": 502,
+						"w": 84,
+						"h": 149
 					}
 				}
 			]

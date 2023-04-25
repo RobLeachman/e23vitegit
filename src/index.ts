@@ -4,11 +4,10 @@ import InputText from 'phaser3-rex-plugins/plugins/inputtext.js'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
 //const testingNewRoom = false; // here we just skip loading stuff... but must comment out these too:
-let testingNewRoom = import.meta.env.VITE_TESTING_NEW_ROOM;
+let testingNewRoom = import.meta.env.VITE_TESTING_SINGLE_ROOM;
 if (location.hostname != "localhost") {
     testingNewRoom = "FALSE"
 }
-
 
 import PlayerUI from './scenes/playerUI';
 import { Settings } from './scenes/settings';
@@ -140,7 +139,7 @@ if (testingNewRoom == "TRUE") {
             }
             ]
         },
-        scene: [PlayerUI, BootGame, RoomTwo, TwoWay]
+        scene: [PlayerUI, BootGame, Settings]
     };
 }
 

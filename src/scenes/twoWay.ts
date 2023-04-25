@@ -8,11 +8,6 @@ let myUI: PlayerUI;
 let slots: Slots;
 let recorder: Recorder;
 
-let roomReturnWall: number; // return here from other scene back button
-
-let viewWall = 0;
-let currentWall = -1;
-let previousWall = 0;
 let updateWall = false;
 
 let backButtonTwoWay: Phaser.GameObjects.Sprite;
@@ -28,14 +23,13 @@ let openIt: Phaser.GameObjects.Video;
 let openItAnim: Phaser.GameObjects.Sprite;
 
 let checkWin = false;
+let didWin = false;
 let tookKey = false;
 
 let showLeft = -1;
 let showRight = -1;
 
 let sequence = [-1, -1, -1, -1, -1, -1, -1, -1]; // L R R R L L R L, see update() for check
-
-const walls = new Array();
 
 export class TwoWay extends Phaser.Scene {
     constructor() {
@@ -71,7 +65,6 @@ export class TwoWay extends Phaser.Scene {
 
         backButtonTwoWay.on('pointerdown', () => {
             recorder.recordObjectDown(backButtonTwoWay.name, thisscene); // must record, won't be captured by global method
-            viewWall = previousWall;
 
             backButtonTwoWay.removeInteractive(); // fix up the cursor displayed on main scene
 
@@ -82,7 +75,7 @@ export class TwoWay extends Phaser.Scene {
         });
         backButtonTwoWay.setVisible(true); backButtonTwoWay.setInteractive({ cursor: 'pointer' });
 
-        leftButtonMask = this.add.sprite(215, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("leftButtonMask").setDepth(1);
+        leftButtonMask = this.add.sprite(169, 593, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("leftButtonMask").setDepth(1);
         recorder.addMaskSprite('leftButtonMask', leftButtonMask);
         leftButtonMask.on('pointerdown', () => {
             showLeft = this.time.now;
@@ -95,7 +88,7 @@ export class TwoWay extends Phaser.Scene {
         });
         leftButtonMask.setVisible(true); leftButtonMask.setInteractive({ cursor: 'pointer' });
 
-        rightButtonMask = this.add.sprite(367, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("rightButtonMask").setDepth(1);
+        rightButtonMask = this.add.sprite(429, 593, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("rightButtonMask").setDepth(1);
         recorder.addMaskSprite('rightButtonMask', rightButtonMask);
         rightButtonMask.on('pointerdown', () => {
             showRight = this.time.now;
@@ -109,35 +102,40 @@ export class TwoWay extends Phaser.Scene {
         });
         rightButtonMask.setVisible(true); rightButtonMask.setInteractive({ cursor: 'pointer' });
 
-        centerButtonMask = this.add.sprite(290, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("centerButtonMask").setDepth(1);
+        centerButtonMask = this.add.sprite(329, 593, 'atlas2', 'twoway-buttonCenter-mask.png').setOrigin(0, 0).setName("centerButtonMask").setDepth(1);
         recorder.addMaskSprite('centerButtonMask', centerButtonMask);
         centerButtonMask.on('pointerdown', () => {
-            viewWall = 0;
-            leftButton.setVisible(false)
-            rightButton.setVisible(false)
-            centerButton.setVisible(false)
-            centerButtonMask.setVisible(false)
-            checkWin = true;
-            this.registry.set('twoWaySolved', true);
-            myUI.didGoal('getTealClue');
+            if (didWin) {
+                leftButton.setVisible(false)
+                rightButton.setVisible(false)
+                centerButton.setVisible(false)
+                centerButtonMask.setVisible(false)
+                checkWin = true;
+                this.registry.set('twoWaySolved', true);
+                myUI.didGoal('getTealClue');
 
-            keyMaskTwoWay.setVisible(false);
+                keyMaskTwoWay.setVisible(false);
 
-            openIt.setLoop(false);
-            openIt.setPaused(false);
-            openIt.on('complete', () => {
-                keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
-            });
+                openIt.setLoop(false);
+                openIt.setPaused(false);
+                openIt.on('complete', () => {
+                    keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
+                });
 
-            if (!openIt.isPlaying()) {
-                openItAnim = this.add.sprite(0, 367, "animated").setDepth(1).setVisible(true).setOrigin(0, 0);
-                openItAnim.play('openItAnim');
-                keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
+                if (!openIt.isPlaying()) {
+                    openItAnim = this.add.sprite(0, 367, "animated").setDepth(1).setVisible(true).setOrigin(0, 0);
+                    openItAnim.play('openItAnim');
+                    keyMaskTwoWay.setVisible(true); keyMaskTwoWay.setInteractive({ cursor: 'pointer' });
+                }
+
+                this.sound.play('sfx', { name: 'twoWayOpen', start: 4, duration: 2 });
+            } else {
+                this.sound.play('sfx', { name: 'sadHmm', start: 17, duration: 1 });
             }
 
-            this.sound.play('sfx', { name: 'twoWayOpen', start: 4, duration: 2 });
-
         });
+        centerButtonMask.setVisible(true); centerButtonMask.setInteractive({ cursor: 'pointer' });
+
         keyMaskTwoWay = this.add.sprite(290, 604, 'atlas', 'twoway-button-mask.png').setOrigin(0, 0).setName("keyMaskTwoWay").setDepth(1);
         recorder.addMaskSprite('keyMaskTwoWay', keyMaskTwoWay);
         keyMaskTwoWay.on('pointerdown', () => {
@@ -164,21 +162,15 @@ export class TwoWay extends Phaser.Scene {
             this.scene.bringToTop("PlayerUI")
             myUI.setActiveScene(_SCENENAME);
 
-            viewWall = roomReturnWall;
             updateWall = true;
         });
     }
 
     update() {
         // could simplify this, but why
-        if ((viewWall != currentWall || updateWall)) {
-            roomReturnWall = viewWall;
-            currentWall = viewWall;
+        if (updateWall) {
             updateWall = false;
 
-            walls[previousWall].setVisible(false);
-            walls[viewWall].setVisible(true);
-            previousWall = viewWall;
             backButtonTwoWay.setVisible(true); backButtonTwoWay.setInteractive({ cursor: 'pointer' });
 
             if (tookKey)
@@ -204,12 +196,14 @@ export class TwoWay extends Phaser.Scene {
             const checkWinSeq = JSON.stringify(sequence);
             if (checkWinSeq == '[1,2,2,2,1,1,2,1]') {  // production win L R R R L L R L
                 //if (checkWinSeq == '[-1,-1,-1,-1,-1,-1,-1,1]') { // test left
-                leftButtonMask.setVisible(false); showLeft = -1;
-                rightButtonMask.setVisible(false); showRight = -1;
                 leftButton.setVisible(true);
                 rightButton.setVisible(true);
                 centerButton.setVisible(true);
-                centerButtonMask.setVisible(true); centerButtonMask.setInteractive({ cursor: 'pointer' });
+                didWin = true;
+
+                leftButtonMask.setVisible(false); showLeft = -1;
+                rightButtonMask.setVisible(false); showRight = -1;
+
                 sequence = [];
             }
         }
@@ -220,7 +214,7 @@ export class TwoWay extends Phaser.Scene {
     }
 
     preload() {
-        walls[0] = this.add.image(0, 0, "twoway - closed").setOrigin(0, 0).setVisible(false); // always zero
+        this.add.image(0, 0, "twoway - closed").setOrigin(0, 0);
     }
 
     // @ts-ignore

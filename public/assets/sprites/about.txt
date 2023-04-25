@@ -1,0 +1,7 @@
+What could be simpler? Toss a sprite in this directory and then add it:
+
+this.load.image('startButton', 'assets/sprites/startButton.png');
+this.add.sprite(x,y, "startButton").setOrigin(0, 0);
+
+... but this game uses sprite atlas so these lines aren't present (anymore)
+

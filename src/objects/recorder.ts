@@ -22,7 +22,7 @@ let usingRecordingCookies = false; // relies on setter
 let recordedRNGSeed: string;
 let recordedPlayername: string;
 
-let storageFolder = "v1Test/";
+let storageFolder = "v1Prod/";
 
 let musicPlayTime = 0;
 

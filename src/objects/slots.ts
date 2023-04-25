@@ -50,6 +50,8 @@ class InvItem {
             return;
         }
         myUI.hideClickClue();
+        if (!this.allSlots.hasInspected)
+            myUI.showInspectClue();
 
         let prevItem = -1;
         this.allSlots.slotArray.forEach((icon, idx) => {
@@ -117,7 +119,7 @@ class InvItem {
             }
             this.selected = true;
             this.allSlots.selectedIndex = this.index;
-            myUI.setEyeTexture('eyeHint'); // add a little reminder hint flair
+            myUI.setEyeTexture(); // add a little reminder hint flair
         }
     }
 }
@@ -207,7 +209,7 @@ export default class Slots {
         // show the clue on the first actual item icon, not the empty fakes
         // only show it the first time
         if (objectView != "fake" && objectView != "objRoach" && !this.hasInspected) {
-            myUI.showInspectClue();
+            myUI.showClickClue();
         }
         let i = -1;
         this.slotArray.forEach((icon, idx) => {

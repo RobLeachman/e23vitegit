@@ -11,9 +11,9 @@ import { setCookie, getCookie } from "../utils/cookie";
 let skipClickToStart = false;
 let skipCloud = false;
 
-let testingNewRoom = import.meta.env.VITE_TESTING_NEW_ROOM;
+let testingSingleRoom = import.meta.env.VITE_TESTING_SINGLE_ROOM;
 if (location.hostname != "localhost") {
-    testingNewRoom = "FALSE"
+    testingSingleRoom = "FALSE"
 }
 
 let myUI: PlayerUI;
@@ -132,12 +132,11 @@ export class BootGame extends Phaser.Scene {
 
         // https://medium.com/@heshramsis/simplifying-security-using-environment-variables-in-vite-js-38b9dfe9b8a7
         const version = import.meta.env.VITE_VERSION;
-        console.log(version)
 
         this.make.text({
             x: 650,
             y: 20,
-            text: 'v.' + version,
+            text: 'v ' + version,
             style: {
                 font: '18px Verdana',
                 color: 'white'
@@ -147,16 +146,18 @@ export class BootGame extends Phaser.Scene {
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexyoutubeplayerplugin.min.js';
         this.load.plugin('rexyoutubeplayerplugin', url, true);
 
-        this.load.atlas('atlas2', 'assets/graphics/atlas2.png', 'assets/graphics/atlas2.json');
-        this.load.image('startButton', 'assets/sprites/startButton.png');
-        this.load.image('playButton', 'assets/sprites/playButton.png');
-
-
-        if (testingNewRoom == "TRUE") { // when developing a new scene, only load minimum requirements
+        if (testingSingleRoom == "TRUE") { // when developing a new scene, only load minimum requirements
             // load only minimum requirements for the new scene under development...
-            this.load.image('room2 south', 'assets/backgrounds/room2 - south.webp');
-            this.load.image('twoway - closed', 'assets/backgrounds/twoway - closed.webp');
-            this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
+            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp'); 
+            this.load.audio('musicTrack', [
+                'assets/audio/music.ogg',
+                'assets/audio/music.mp3'
+            ], { loop: true });
+            this.load.audio('sfx', [
+                'assets/audio/soundSheet1.ogg',
+                'assets/audio/soundSheet1.mp3'
+            ]); 
+                                 
 
         } else {
             this.load.audio('musicTrack', [
@@ -170,14 +171,11 @@ export class BootGame extends Phaser.Scene {
             this.load.video('questionSpinning', 'assets/graphics/question_180.mp4');
             // https://www.veed.io/tools/video-compressor/mp4-compressor - 43% compression!
             this.load.video('openIt', 'assets/graphics/openIt_silent.mp4');
-            
+
             this.load.image('vid1', 'assets/backgrounds/watchTheYoutube.webp');
 
-            this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
-            this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
-            this.load.image('eyeHint', 'assets/sprites/eyeHint.png');
-            this.load.image('on', 'assets/sprites/on.png');
-            this.load.image('off', 'assets/sprites/off.png');
+            //this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
+            //this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
 
             this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
             this.load.image('intro1', 'assets/backgrounds/intro1.webp');
@@ -376,8 +374,6 @@ export class BootGame extends Phaser.Scene {
         if (recorder.getMode() == "replay")
             skipClickToStart = true;
 
-
-
         myUI.initMusic();
         if (recorder.getSoundMuted() == "muted") {
             //console.log("BOOT MUTE SOUND")
@@ -420,10 +416,13 @@ export class BootGame extends Phaser.Scene {
         thePlayer.setInteractive().on('pointerdown', () => {
             this.rexUI.edit(thePlayer, {
                 onClose: () => {
-                    // TEST FOR BLANK ENTRY!
-
                     playerName = (thePlayer as Phaser.GameObjects.Text).text;
                     playerName = playerName.replace(/[^a-z0-9]/gi, '');
+
+                    // test for blank entry
+                    if (playerName.length < 1)
+                        playerName = "Player" + playerCount;
+
                     greetings.setText("Thanks for testing, " + playerName + "!");
                     setCookie(playerNameCookie, playerName, 365); // bake for a year
                     recorder.setPlayerName(playerName);
@@ -432,7 +431,7 @@ export class BootGame extends Phaser.Scene {
         })
 
         const startFudge = -270;
-        startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "startButton").setOrigin(0, 0).setDepth(1);
+        startButton = this.add.sprite(width / 2 - 10 - 160, height / 2 + startFudge, "atlas2", "startButton.png").setOrigin(0, 0).setDepth(1);
         startButton.setVisible(false)
         startButton.on('pointerdown', () => {
             splashScreen.destroy();
@@ -450,7 +449,7 @@ export class BootGame extends Phaser.Scene {
             }
         });
 
-        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "playButton").setOrigin(0, 0).setDepth(1);
+        playButton = this.add.sprite(width / 2 - 10 - 160, height / 2 - 175, "atlas2", "playButton.png").setOrigin(0, 0).setDepth(1);
         playButton.setVisible(false)
         playButton.on('pointerdown', () => {
             setCookie(playerNameCookie, playerName, 365); // bake for a year
@@ -483,8 +482,8 @@ export class BootGame extends Phaser.Scene {
 
             recorder.setTimeStart(Date.now());
 
-            if (testingNewRoom == "TRUE") {
-                this.scene.run("RoomTwo");
+            if (testingSingleRoom == "TRUE") {
+                this.scene.run("Settings");
             } else {
 
                 this.scene.run("PlayGame", { mobile: false });

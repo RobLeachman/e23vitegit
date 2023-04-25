@@ -15,6 +15,21 @@
       "folder": ""
     },
     {
+      "name": "eyeHint.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/eyeHint.png",
+      "folder": ""
+    },
+    {
+      "name": "eyeOff.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/eyeOff.png",
+      "folder": ""
+    },
+    {
+      "name": "eyeOn.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/eyeOn.png",
+      "folder": ""
+    },
+    {
       "name": "fourPieceFrame.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/fourPieceFrame.png",
       "folder": ""
@@ -35,18 +50,13 @@
       "folder": ""
     },
     {
-      "name": "off.png",
-      "path": "D:/src/e23/src/assets/graphics/packed2/off.png",
-      "folder": ""
-    },
-    {
-      "name": "on.png",
-      "path": "D:/src/e23/src/assets/graphics/packed2/on.png",
-      "folder": ""
-    },
-    {
       "name": "planterMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/planterMask.png",
+      "folder": ""
+    },
+    {
+      "name": "playButton.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/playButton.png",
       "folder": ""
     },
     {
@@ -77,6 +87,26 @@
     {
       "name": "spoilerMask.png",
       "path": "D:/src/e23/src/assets/graphics/packed2/spoilerMask.png",
+      "folder": ""
+    },
+    {
+      "name": "startButton.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/startButton.png",
+      "folder": ""
+    },
+    {
+      "name": "toggleOff.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/toggleOff.png",
+      "folder": ""
+    },
+    {
+      "name": "toggleOn.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/toggleOn.png",
+      "folder": ""
+    },
+    {
+      "name": "twoway-buttonCenter-mask.png",
+      "path": "D:/src/e23/src/assets/graphics/packed2/twoway-buttonCenter-mask.png",
       "folder": ""
     }
   ],

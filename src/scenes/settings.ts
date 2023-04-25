@@ -36,16 +36,16 @@ export class Settings extends Phaser.Scene {
 
     switchSoundSprites() {
         if (myUI.getSoundEnabled())
-            soundButton.setTexture('on')
+            soundButton.setTexture('atlas2', 'toggleOn.png')
         else
-            soundButton.setTexture('off')
+            soundButton.setTexture('atlas2', 'toggleOff.png')
     }
 
     switchMusicSprites() {
         if (myUI.getMusicEnabled())
-            musicButton.setTexture('on')
+            musicButton.setTexture('atlas2', 'toggleOn.png')
         else
-            musicButton.setTexture('off')
+            musicButton.setTexture('atlas2', 'toggleOff.png')
     }
 
     create() {
@@ -89,8 +89,8 @@ export class Settings extends Phaser.Scene {
 
         soundLabel = this.add.sprite(52, 415, 'atlas2', 'sound.png').setOrigin(0, 0).setDepth(1);
         musicLabel = this.add.sprite(55, 566, 'atlas2', 'music.png').setOrigin(0, 0).setDepth(1);
-        soundButton = this.add.sprite(309, 416, 'atlas2', 'on.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
-        musicButton = this.add.sprite(309, 566, 'atlas2', 'on.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
+        soundButton = this.add.sprite(309, 416, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("soundButton").setDepth(1);
+        musicButton = this.add.sprite(309, 566, 'atlas2', 'toggleOn.png').setOrigin(0, 0).setName("musicButton").setDepth(1);
 
         // When the sound toggle is clicked, toggle sound off/on and when off, turn music off too. If sound is off
         // disable the music toggle.
@@ -185,7 +185,6 @@ export class Settings extends Phaser.Scene {
         failMode = myUI.getTimeFail();
 
         this.events.on('wake', () => {
-            console.log(`${_SCENENAME} awakes!`)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
 
@@ -195,7 +194,6 @@ export class Settings extends Phaser.Scene {
     }
 
     update() {
-        ////////////// SCENE IMPLEMENTATION - UPDATE //////////////
         if ((updateWall)) {
             updateWall = false;
 
