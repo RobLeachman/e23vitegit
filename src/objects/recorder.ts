@@ -26,6 +26,9 @@ let storageFolder = "v1Prod/";
 
 let musicPlayTime = 0;
 
+let panZoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
+
+
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
     pointerSprite: Phaser.GameObjects.Sprite;
@@ -595,6 +598,10 @@ export default class Recorder {
         return recordedRNGSeed;
     }
 
+    getPanZoomSpeeds() {
+        return panZoomSpeed;
+    }
+
     makeFast(recordingSlow: string, speedSteps: number) {
         let stepCount = 0;
         let fast = "";
@@ -625,6 +632,8 @@ export default class Recorder {
             }
             fastSteps--;
         });
+
+        panZoomSpeed = {zoomSlow: 50, zoomMedium: 50, zoomFast: 50};
         return fast;
     }
 

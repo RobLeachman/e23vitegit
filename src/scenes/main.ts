@@ -76,6 +76,7 @@ var viewportText: Phaser.GameObjects.Text;
 
 let initMain = true;
 
+let zoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
 
 export class PlayGame extends Phaser.Scene {
     constructor() {
@@ -363,6 +364,8 @@ export class PlayGame extends Phaser.Scene {
             const spriteScene = data.split(':')[1];
             //console.log(`--> main replay ${spriteScene} ${spriteName}`)
             if (spriteScene == "PlayGame") {
+                zoomSpeed = recorder.getPanZoomSpeeds();
+                
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
@@ -463,6 +466,8 @@ export class PlayGame extends Phaser.Scene {
         //console.log("Main create recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
+        
+        zoomSpeed = recorder.getPanZoomSpeeds();
 
         if (recorder.getPlayerName() != "qqq" && recorder.getPlayerName() != "Quazar")
             this.sendDiscordWebhook('Another victim locked in the room!', recorder.getPlayerName() + ' enters', "Recording", recorder.getRecordingKey() + '.txt');
@@ -535,8 +540,8 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 750);
-                cam.zoomTo(1, 750);
+                cam.pan(360, 640, zoomSpeed.zoomMedium);
+                cam.zoomTo(1, zoomSpeed.zoomMedium);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
@@ -544,8 +549,8 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(120, 500, 500);
-                cam.zoomTo(3.5, 500);
+                cam.pan(120, 500, zoomSpeed.zoomSlow);
+                cam.zoomTo(3.5, zoomSpeed.zoomSlow);
             }
         });
 
@@ -555,8 +560,8 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 500)
-                cam.zoomTo(1, 500);
+                cam.pan(360, 640, zoomSpeed.zoomSlow);
+                cam.zoomTo(1, zoomSpeed.zoomSlow);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
@@ -564,8 +569,8 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(314, 475, 500);
-                cam.zoomTo(3.5, 500);
+                cam.pan(314, 475, zoomSpeed.zoomSlow);
+                cam.zoomTo(3.5, zoomSpeed.zoomSlow);
             }
         });
 
@@ -575,8 +580,8 @@ export class PlayGame extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 750)
-                cam.zoomTo(1, 750);
+                cam.pan(360, 640, zoomSpeed.zoomMedium);
+                cam.zoomTo(1, zoomSpeed.zoomMedium);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
@@ -584,8 +589,8 @@ export class PlayGame extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(674, 773, 1200)
-                cam.zoomTo(28, 1200);
+                cam.pan(674, 773, zoomSpeed.zoomFast);
+                cam.zoomTo(28, zoomSpeed.zoomFast);
             }
         });
 

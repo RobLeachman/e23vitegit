@@ -47,6 +47,8 @@ let farZotPostit: Phaser.GameObjects.Sprite;
 
 const walls = new Array();
 
+let zoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
+
 export class RoomTwo extends Phaser.Scene {
     constructor() {
         super(_SCENENAME);
@@ -62,6 +64,7 @@ export class RoomTwo extends Phaser.Scene {
 
         slots = myUI.getSlots();
         recorder = slots.recorder;
+        zoomSpeed = recorder.getPanZoomSpeeds();
 
         this.registry.events.on('changedata', this.registryUpdate, this);
 
@@ -139,8 +142,8 @@ export class RoomTwo extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 500)
-                cam.zoomTo(1, 500);
+                cam.pan(360, 640, zoomSpeed.zoomSlow);
+                cam.zoomTo(1, zoomSpeed.zoomSlow);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
@@ -148,8 +151,8 @@ export class RoomTwo extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(145, 380, 500)
-                cam.zoomTo(3.2, 500);
+                cam.pan(145, 380, zoomSpeed.zoomSlow);
+                cam.zoomTo(3.2, zoomSpeed.zoomSlow);
             }
         });
 
@@ -159,8 +162,8 @@ export class RoomTwo extends Phaser.Scene {
             const cam = this.cameras.main;
             if (zoomed) {
                 zoomed = false;
-                cam.pan(360, 640, 750)
-                cam.zoomTo(1, 750);
+                cam.pan(360, 640, zoomSpeed.zoomMedium);
+                cam.zoomTo(1, zoomSpeed.zoomMedium);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
@@ -169,8 +172,8 @@ export class RoomTwo extends Phaser.Scene {
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
-                cam.pan(194, 786, 500)
-                cam.zoomTo(4, 500);
+                cam.pan(194, 786, zoomSpeed.zoomSlow);
+                cam.zoomTo(4, zoomSpeed.zoomSlow);
                 leftButton2.setVisible(false);
             }
         });
@@ -335,6 +338,8 @@ export class RoomTwo extends Phaser.Scene {
             const spriteName = data.split(':')[0];
             const spriteScene = data.split(':')[1];
             if (spriteScene == _SCENENAME) {
+                zoomSpeed = recorder.getPanZoomSpeeds();
+                
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
