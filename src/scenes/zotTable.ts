@@ -239,7 +239,6 @@ export class ZotTable extends Phaser.Scene {
         zotPostitMask = this.add.sprite(265, 616, 'atlas', 'zotPostitMask.png').setName("zotPostitMask").setOrigin(0, 0).setDepth(3);
         recorder.addMaskSprite('zotPostitMask', zotPostitMask);
         zotPostitMask.on('pointerdown', () => {
-            console.log("pickpost");
             slots.addIcon("icon - postit2.png", "objPostit", "altobjPostit", true);
             zotPostitTaken = true;
             this.registry.set('boxPostitTaken', zotPostitTaken);

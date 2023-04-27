@@ -26,7 +26,7 @@ let storageFolder = "v1Prod/";
 
 let musicPlayTime = 0;
 
-let panZoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
+let panZoomSpeed = { zoomSlow: 500, zoomMedium: 750, zoomFast: 1200 };
 
 
 export default class Recorder {
@@ -294,7 +294,7 @@ export default class Recorder {
     // This only works if we don't reload to start recording while changing name... ?
     setPlayerName(name: string) {
         if (name == "qqq" || name == "norandom" || name == "Quazar") {
-            storageFolder = "v1Test/";
+            storageFolder = "v1Prod/";
         }
 
         this.playerName = name;
@@ -633,7 +633,7 @@ export default class Recorder {
             fastSteps--;
         });
 
-        panZoomSpeed = {zoomSlow: 50, zoomMedium: 50, zoomFast: 50};
+        panZoomSpeed = { zoomSlow: 50, zoomMedium: 50, zoomFast: 50 };
         return fast;
     }
 

@@ -80,7 +80,7 @@ let hasSearched = false;
 let hasCombined = false;
 let currentSelectedIndex: number;
 let oldElapsedMinutes = -1;
-const maxTime = 15;
+const maxTime = 59;
 let timeFail = false;
 
 let hintBotInit = true;
@@ -610,7 +610,7 @@ export default class PlayerUI extends Phaser.Scene {
                 //console.log("**** selected thing=" + selectedThing.thing)
                 if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
                     return;
-                eyeButton.setTexture('atlas2','eyeOn.png');
+                eyeButton.setTexture('atlas2', 'eyeOn.png');
                 eyeButton.setName("eyeButtonOn");
                 interfaceInspect.setVisible(false);
                 interfaceClick.setVisible(false);
@@ -1247,7 +1247,7 @@ export default class PlayerUI extends Phaser.Scene {
         this.restoreHintIcons();
 
         slots.combining = ""; // cancel any combine action
-        eyeButton.setTexture('atlas2','eyeOff.png');
+        eyeButton.setTexture('atlas2', 'eyeOff.png');
         eyeButton.setName("eyeButton");
 
         UIbackButton.setVisible(false);
