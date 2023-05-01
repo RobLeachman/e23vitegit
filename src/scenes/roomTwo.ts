@@ -144,15 +144,21 @@ export class RoomTwo extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, zoomSpeed.zoomSlow);
                 cam.zoomTo(1, zoomSpeed.zoomSlow);
+                crossMask.setVisible(false);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
+                    crossMask.setVisible(true);
                 });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
                 cam.pan(145, 380, zoomSpeed.zoomSlow);
                 cam.zoomTo(3.2, zoomSpeed.zoomSlow);
+                crossMask.setVisible(false);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    crossMask.setVisible(true);
+                });
             }
         });
 
@@ -164,9 +170,11 @@ export class RoomTwo extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, zoomSpeed.zoomMedium);
                 cam.zoomTo(1, zoomSpeed.zoomMedium);
+                plantMask.setVisible(false);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
+                    plantMask.setVisible(true);
                     leftButton2.setVisible(true);
                 });
             } else {
@@ -175,6 +183,10 @@ export class RoomTwo extends Phaser.Scene {
                 cam.pan(194, 786, zoomSpeed.zoomSlow);
                 cam.zoomTo(4, zoomSpeed.zoomSlow);
                 leftButton2.setVisible(false);
+                plantMask.setVisible(false);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    plantMask.setVisible(true);
+                });                
             }
         });
 

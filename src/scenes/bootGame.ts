@@ -151,7 +151,7 @@ export class BootGame extends Phaser.Scene {
 
         if (testingSingleRoom == "TRUE") { // when developing a new scene, only load minimum requirements
             // load only minimum requirements for the new scene under development...
-            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp'); 
+            this.load.image('wallHint', 'assets/backgrounds/invroom - help - background.webp');
             this.load.audio('musicTrack', [
                 'assets/audio/music.ogg',
                 'assets/audio/music.mp3'
@@ -159,8 +159,8 @@ export class BootGame extends Phaser.Scene {
             this.load.audio('sfx', [
                 'assets/audio/soundSheet1.ogg',
                 'assets/audio/soundSheet1.mp3'
-            ]); 
-                                 
+            ]);
+
 
         } else {
             this.load.audio('musicTrack', [
@@ -438,7 +438,7 @@ export class BootGame extends Phaser.Scene {
         startButton.setVisible(false)
         startButton.on('pointerdown', () => {
             splashScreen.destroy();
-            startButton.setVisible(false);
+            startButton.destroy();
             regScreen = this.add.image(0, 0, 'registrationScreen').setOrigin(0, 0);
             this.showGreetings(playerName);
             playButtonReady = true;
@@ -480,10 +480,11 @@ export class BootGame extends Phaser.Scene {
             thePlayer.destroy();
             playButton.destroy();
             splashScreen.destroy();
+            startButton.destroy();
 
             myUI.displayInventoryBar(true);
 
-            recorder.setTimeStart(Date.now());
+            recorder.setTimeStart(this.time.now);
 
             if (testingSingleRoom == "TRUE") {
                 this.scene.run("Settings");
@@ -510,7 +511,7 @@ export class BootGame extends Phaser.Scene {
             recorder.setMode("record")
         }
 
-        recorder.setTimeStart(Date.now());
+        recorder.setTimeStart(this.time.now);
 
         var pointer = this.input.activePointer;
         if (pointer.wasTouch) {
@@ -591,8 +592,10 @@ export class BootGame extends Phaser.Scene {
         if (asyncCreateDone) {
             if (initSplash) {
                 initSplash = false;
-                startButton.setInteractive({ cursor: 'pointer' });
-                startButton.setVisible(true);
+                if (!skipClickToStart) {
+                    startButton.setInteractive({ cursor: 'pointer' });
+                    startButton.setVisible(true);
+                }
             }
         }
         if (playButtonReady && !skipClickToStart) {

@@ -76,11 +76,13 @@ export class Settings extends Phaser.Scene {
         recorder.addMaskSprite('settingsBackButton', settingsBackButton);
 
         settingsBackButton.on('pointerdown', () => {
-            recorder.recordObjectDown(settingsBackButton.name, thisscene);
+            // we usually have to force this but not here, not sure why...
+            //recorder.recordObjectDown(settingsBackButton.name, thisscene);
 
             myUI.showSettingsButton();
 
             this.scene.moveUp(myUI.getActiveScene());
+            console.log("sleep settings")
             this.scene.sleep();
             myUI.restoreUILayer();
             this.scene.wake(myUI.getActiveScene());

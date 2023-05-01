@@ -138,7 +138,7 @@ export class PlayGame extends Phaser.Scene {
 
             if (displayDebugMode == "REPLAY") {
                 viewportText.setText([
-                    displayDebugMode + '  time: ' + Math.floor(this.time.now) + '   length: ' + recorder.getSize(),
+                    displayDebugMode + '  time: ' + recorder.getRecordedPlaytime() + '   length: ' + recorder.getSize(),
                     '\nrecorder mode ' + debugTheRecorder
                 ]);
             } else {
@@ -542,15 +542,21 @@ export class PlayGame extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, zoomSpeed.zoomMedium);
                 cam.zoomTo(1, zoomSpeed.zoomMedium);
+                rangerMask.setVisible(false);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
+                    rangerMask.setVisible(true);
                 });
             } else {
-                myUI.hideUILayer();
+                myUI.hideUILayer(); // includes hiding settings
                 zoomed = true;
                 cam.pan(120, 500, zoomSpeed.zoomSlow);
                 cam.zoomTo(3.5, zoomSpeed.zoomSlow);
+                rangerMask.setVisible(false);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    rangerMask.setVisible(true);
+                });                
             }
         });
 
@@ -562,15 +568,21 @@ export class PlayGame extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, zoomSpeed.zoomSlow);
                 cam.zoomTo(1, zoomSpeed.zoomSlow);
+                rylandMask.setVisible(false);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
+                    rylandMask.setVisible(true);
                 });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
                 cam.pan(314, 475, zoomSpeed.zoomSlow);
                 cam.zoomTo(3.5, zoomSpeed.zoomSlow);
+                rylandMask.setVisible(false);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    rylandMask.setVisible(true);
+                });
             }
         });
 
@@ -582,15 +594,21 @@ export class PlayGame extends Phaser.Scene {
                 zoomed = false;
                 cam.pan(360, 640, zoomSpeed.zoomMedium);
                 cam.zoomTo(1, zoomSpeed.zoomMedium);
+                funzMask.setVisible(false);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
                     myUI.restoreUILayer();
                     myUI.showSettingsButton();
+                    funzMask.setVisible(true);
                 });
             } else {
                 myUI.hideUILayer();
                 zoomed = true;
                 cam.pan(674, 773, zoomSpeed.zoomFast);
                 cam.zoomTo(28, zoomSpeed.zoomFast);
+                funzMask.setVisible(false);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                    funzMask.setVisible(true);
+                });
             }
         });
 
@@ -703,7 +721,7 @@ export class PlayGame extends Phaser.Scene {
         slots.addIcon(icons[7], "fake", "fake", false, 10); // TODO: get name from sprite?!
 
         this.events.on('wake', () => {
-            //console.log(`Main awakes! return to ${roomReturnWall}`)
+            console.log(`Main awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
             myUI.setActiveScene("PlayGame");

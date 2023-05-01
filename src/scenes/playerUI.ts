@@ -5,8 +5,8 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let useCookieRecordings = false; // use cookies not the cloud
-let debugShowReplayActionCount = false;
+let useCookieRecordings = true; // use cookies not the cloud
+let debugShowReplayActionCount = true;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
 let debugInput = true; // display pastebox for input of debug data
@@ -103,6 +103,7 @@ let showXtime = -1;
 let fourSolved = false;
 let fiveState = 0;
 
+const replayBootTime = 5000; // give the game time to start before replaying
 let theRecording: string;
 let pasteResultText: InputText;
 let pasteBox: InputText;
@@ -256,6 +257,8 @@ export default class PlayerUI extends Phaser.Scene {
     }
 
     setSoundSetting(newSetting: boolean) {
+        if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
+            return;
         playSound = newSetting;
         if (playSound) {
             recorder.setSoundMuted(false);
@@ -266,6 +269,8 @@ export default class PlayerUI extends Phaser.Scene {
         }
     }
     setMusicSetting(newSetting: boolean) {
+        if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
+            return;
         playMusic = newSetting;
         if (playMusic) {
             recorder.setMusicMuted(false);
@@ -569,7 +574,7 @@ export default class PlayerUI extends Phaser.Scene {
 
         //console.log(`Solved four: ${recorder.getFourPuzzleSolvedOnce(fourWayPuzzle)}`);
 
-        settingsButton = this.add.sprite(655, 310, 'atlas', 'settings1.png').setName("leftButton").setDepth(1).setVisible(false);
+        settingsButton = this.add.sprite(655, 310, 'atlas', 'settings1.png').setName("settingsButton").setDepth(1).setVisible(false);
         recorder.addMaskSprite('settingsButton', settingsButton);
         settingsButton.on('pointerdown', () => {
             this.hideUILayer();
@@ -798,8 +803,9 @@ export default class PlayerUI extends Phaser.Scene {
                 recorder.setMode("replay")
 
             let replaying = false;
-            if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
+            if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
                 replaying = true;
+            }
             pasteResultText.setVisible(false);
             if (debugInput && !replaying) {
                 pasteResultText.text = "status";
@@ -833,14 +839,13 @@ export default class PlayerUI extends Phaser.Scene {
                 actionString.forEach((action) => {
                     if (action.length > 0) {
                         let splitAction = action.split(',');
-                        //console.log(`REPLAYING ${splitAction[0]} ${splitAction[3]}`)
+                        //console.log(`REPLAYING ${splitAction[0]} delay ${splitAction[3]}`)
+                        // action, x, y, delay, scene
                         actions.push([splitAction[0], parseInt(splitAction[1], 10), parseInt(splitAction[2], 10), parseInt(splitAction[3], 10), splitAction[4]]);
                     }
                 });
                 actions = actions.slice(1); // drop the first element, just used to instantiate the array
-                nextActionTime = actions[0][3]; // the first action will fire when the current timer reaches this
-                //console.log("FIRST ACTION: " + nextActionTime)
-                //nextActionTime = -1; // the first action might not start for quite awhile, includes boot time fiddling with name  
+                nextActionTime = actions[0][3]+replayBootTime; // the first action will fire when the current timer reaches this
 
                 //console.log("Recording action dump:");
                 //actions.forEach((action) => {
@@ -886,7 +891,10 @@ export default class PlayerUI extends Phaser.Scene {
         if (!mainHasStarted) {
             const mainStarted = this.scene.isActive("PlayGame");
             if (mainStarted) {
-                if (debugInput)
+                if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
+                    pasteBox.setVisible(false);
+                    this.sound.setMute(true);
+                } else if (debugInput)
                     pasteBox.setVisible(true);
                 pasteResultText.setVisible(false);
                 mainHasStarted = true;
@@ -924,9 +932,6 @@ export default class PlayerUI extends Phaser.Scene {
                 //console.log("replay action:" + actions[0]);
             }
 
-            // TRY AGAIN WITH QUICK FIRST ACTION
-            //if (nextActionTime < 0) // first replay action
-            //    nextActionTime = this.time.now + 1000;
             if (this.time.now >= nextActionTime) {
                 if (debugShowReplayActionCount) {
                     console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`)
@@ -1328,11 +1333,11 @@ export default class PlayerUI extends Phaser.Scene {
                 window.location.reload();
                 break;
             case "1":
-                //console.log("fast replay")
+                console.log("fast replay")
                 recorder.setReplaySpeed("fast")
                 break;
             case "2":
-                //console.log("perfect replay")
+                console.log("perfect replay")
                 recorder.setReplaySpeed("perfect")
                 break;
             case "`":

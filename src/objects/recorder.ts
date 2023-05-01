@@ -15,12 +15,14 @@ const minDelayFastMode = 10;
 const debuggingDumpRecordingOut = false;
 const debugDisplayFastSteps = false;
 const debugDisplayRecordedActions = false;
-const debugDisplayRecordedSteps = false; // display each recorded mask click
+const debugDisplayRecordedSteps = false; // display each recorded mask click when replaying
 
 let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
 let recordedRNGSeed: string;
 let recordedPlayername: string;
+let recordedPlaytime: string;
+
 
 let storageFolder = "v1Prod/";
 
@@ -56,6 +58,7 @@ export default class Recorder {
     RNGSeed: string;
 
     timeStart: number;
+    timeStartGame: number;
     elapsedMinutes: number;
     spoilerCount = 0;
 
@@ -220,6 +223,9 @@ export default class Recorder {
     }
     getRecordedPlayerName() {
         return recordedPlayername;
+    }
+    getRecordedPlaytime() {
+        return recordedPlaytime;
     }
 
     async incrementPlayerCount() {
@@ -457,8 +463,9 @@ export default class Recorder {
         return this.elapsedMinutes;
     }
 
-    setTimeStart(timeStart: number) {
-        this.timeStart = timeStart;
+    setTimeStart(gameTimeStart: number) {
+        this.timeStart = Date.now();
+        this.timeStartGame = gameTimeStart;
     }
 
     getWinTimeWords() {
@@ -498,14 +505,17 @@ export default class Recorder {
     }
 
     recordPointerAction(action: string, time: number, sceneName: string) {
-        if (action != "mousemove") {
-            //console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${time}`)
+        const actionTime = time - this.timeStartGame;
+
+        if (debugDisplayRecordedActions && action != "mousemove") {
+            console.log(`RECORDER ACTION ${action} ${Math.floor(this.pointer.x)}, ${Math.floor(this.pointer.y)} @ ${actionTime}`)
         }
-        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},%${sceneName}%:`);
+        this.recording = this.recording.concat(`${action},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${actionTime},%${sceneName}%:`);
         //console.log("recording so far:");
         //console.log(this.recording)
     }
     recordObjectDown(object: string, scene: Phaser.Scene) {
+        const actionTime = scene.time.now - this.timeStartGame;
         if (debugDisplayRecordedActions)
             console.log(`>>>>>>>>RECORDER OBJECT ${object} SCENE ${scene.sys.settings.key}`);
         if (object == "")
@@ -515,13 +525,14 @@ export default class Recorder {
         if (object == "__MISSING") {
             throw new Error("MISSING OBJECT MASK")
         }
-        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${scene.time.now},%${scene.sys.settings.key}%:`);
+        this.recording = this.recording.concat(`object=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${actionTime},%${scene.sys.settings.key}%:`);
     }
     // icons always belong to the main game scene so no need to save it
-    recordIconClick(object: string, time: number, scene: Phaser.Scene) {
+    recordIconClick(object: string, scene: Phaser.Scene) {
+        const actionTime = scene.time.now - this.timeStartGame;
         this.pointer = scene.input.activePointer;
         //console.log(`RECORDER ICON CLICK ${object} @ ${time}`);
-        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${time},:`);
+        this.recording = this.recording.concat(`icon=${object},${Math.floor(this.pointer.x)},${Math.floor(this.pointer.y)},${actionTime},:`);
     }
 
     async getRecording() {
@@ -555,8 +566,10 @@ export default class Recorder {
         // @ts-ignore
         // with luck will need version checking later
         const recordingVersion = recordingIn.split('?')[2];
+        //console.log(`recording seed ${recordingVersion.split('-')[0]}  version ${recordingVersion.split('-')[1]} playtime ${recordingVersion.split('-')[2]}`)
+
         recordedRNGSeed = recordingVersion.split('-')[0];
-        //console.log("parse version: " + recordingVersion.split('-')[1]);
+        recordedPlaytime = recordingVersion.split('-')[2];
 
         const recordingDataCompressed = recordingIn.split('?')[1];
         let recIn = recordingDataCompressed
@@ -767,7 +780,7 @@ export default class Recorder {
         re = /\%HintBot\%/g; recOut = recOut.replace(re, "\%J\%");
         re = /\%Settings\%/g; recOut = recOut.replace(re, "\%K\%");
 
-        recOut = this.checksum(recording) + "?" + recOut + "?" + this.RNGSeed + "-v1";
+        recOut = this.checksum(recording) + "?" + recOut + "?" + this.RNGSeed + "-v1-" + this.getWinTimeWords();
         //console.log("RECORDING OUT " + recOut);
         if (usingRecordingCookies) {
             this.saveCookies(recOut);

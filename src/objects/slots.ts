@@ -38,12 +38,8 @@ class InvItem {
     }
 
     clickIt() {
-        //console.log(this.name);
-        //this.recorder.recordIconClick(this.name, this.scene);
-
         //console.log("RECORD ICON CLICK!! " + this.name);
-        let time = this.scene.time.now;
-        this.recorder.recordIconClick(this.name, time, this.scene);
+        this.recorder.recordIconClick(this.name, this.scene);
         if (this.name == "fake") {
             //console.log("FAKE")
             this.allSlots.fakeClicks++;
