@@ -25,6 +25,9 @@ dist-ssr
 
 built.tar
 b.sh
+bp.sh
+BAK_bp.sh
+BAK_b.sh
 NOTES*
 cbl_Escape*
 .env
