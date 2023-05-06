@@ -13,7 +13,7 @@ import { getStorage, ref, uploadString, getBytes, StorageReference } from "fireb
 
 const minDelayFastMode = 10;
 const debuggingDumpRecordingOut = false;
-const debugDisplayFastSteps = false;
+const debugDisplayFastSteps = false; // display all the actions as delays are rewritten
 const debugDisplayRecordedActions = false;
 const debugDisplayRecordedSteps = false; // display each recorded mask click when replaying
 
@@ -23,13 +23,11 @@ let recordedRNGSeed: string;
 let recordedPlayername: string;
 let recordedPlaytime: string;
 
-
 let storageFolder = "v1Prod/";
 
 let musicPlayTime = 0;
 
 let panZoomSpeed = { zoomSlow: 500, zoomMedium: 750, zoomFast: 1200 };
-
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -628,19 +626,20 @@ export default class Recorder {
         }
         actionString.forEach((action) => {
             let thisAction = action.split(',');
-            let delay = thisAction[3];
+            const origDelay = thisAction[3];
+            let delay;
             if (fastSteps > 0)
                 delay = minDelayFastMode.toString();
             else
-                delay = "200";
+                delay = "100";
             fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`);
             if (debugDisplayFastSteps) {
                 //if (thisAction[0] != "mousemove" && thisAction[0] != "mouseclick") {
                 if (true) {
                     if (fastSteps > 0)
-                        console.log(`MAKEFAST*(${stepCount++}) ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                        console.log(`MAKEFAST*(${stepCount++}) ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}: ${origDelay}`)
                     else
-                        console.log(`MAKEFAST(${stepCount++})  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`)
+                        console.log(`MAKEFAST(${stepCount++})  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}: ${origDelay}`)
                 }
             }
             fastSteps--;

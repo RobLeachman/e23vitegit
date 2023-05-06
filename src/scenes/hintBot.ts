@@ -44,8 +44,7 @@ class Spoiler {
         this.spoilerText.setDepth(1);
 
         this.spoilerBox = this.scene.add.sprite(155, 500 + (index * 100) + 15, 'atlas2', 'spoiler panel.png').setOrigin(0, 0);
-        //this.spoilerBox.setAlpha(.5)
-
+   
         this.spoilerBox.setDepth(2);
         this.spoilerIcon = this.scene.add.sprite(50, 500 + (index * 100), 'atlas', 'smallKey-yellow.png').setOrigin(0, 0).setScale(.5);
     }
@@ -83,7 +82,7 @@ export class HintBot extends Phaser.Scene {
         this.scene.bringToTop();
         this.scene.bringToTop("PlayerUI");
         myUI = this.scene.get("PlayerUI") as PlayerUI;
-        this.registry.set('Four-specialCase', "yet another wrinkle");
+        this.registry.set('Four-specialCase', "yet another wrinkle"); // a hack to control Four's display of solved art
         this.scene.sleep(myUI.getActiveScene()); // can be called from any scene
         var camera = this.cameras.main;
         camera.setPosition(0, myUI.getCameraHack());
@@ -106,7 +105,6 @@ export class HintBot extends Phaser.Scene {
         recorder.addMaskSprite('hintBackButton', hintBackButton);
         hintBackButton.on('pointerdown', () => {
             recorder.recordObjectDown(hintBackButton.name, thisscene);
-
             hintBackButton.removeInteractive(); // fix up the cursor displayed on main scene
 
             if (myUI.getActiveScene() == "PlayGame" || myUI.getActiveScene() == "RoomTwo")
@@ -189,10 +187,8 @@ export class HintBot extends Phaser.Scene {
             if (hintObjective != oldObjective) {
                 this.newSpoilers();
             }
-
         });
         updateWall = true;
-
     }
 
     newSpoilers() {

@@ -9,6 +9,8 @@ let useCookieRecordings = true; // use cookies not the cloud
 let debugShowReplayActionCount = true;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
+const debugZoomEnabled = false;
+
 let debugInput = true; // display pastebox for input of debug data
 let debugHints = false;
 
@@ -23,6 +25,7 @@ if (!localBuild) {
 }
 
 let cameraHack = 0;
+let zoomed = false;
 
 let fourWayPuzzle = "BigTime" // BigTime or Shock?
 //const fourWayPuzzle = "Shock" // BigTime or Shock?
@@ -56,6 +59,7 @@ let stateHintQuestionGreen: boolean;
 let UIbackButton: Phaser.GameObjects.Sprite;
 let objectImage: Phaser.GameObjects.Image;
 let settingsButton: Phaser.GameObjects.Sprite;
+let zoomShield: Phaser.GameObjects.Graphics;
 
 let slots: Slots;
 let recorder: Recorder;
@@ -113,17 +117,12 @@ let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn
 let nextActionTime = 0;
 let recordingEndedFadeClicks = 0;
 const minDelayReplay = 1;
+// @ts-ignore only needed when debugging
 let debugReplayActionCounter = 0;
 let lastKeyDebouncer = "";
 let mainReplayRequest = "";
 
 let seededRNG = new Phaser.Math.RandomDataGenerator;
-
-let sceneUI: Phaser.Scene;
-let scenePlayGame: Phaser.Scene;
-let sceneZotTable: Phaser.Scene;
-let sceneFour: Phaser.Scene;
-let sceneFive: Phaser.Scene;
 
 let needNewClue = true;
 let clueText: Phaser.GameObjects.Text;
@@ -486,6 +485,41 @@ export default class PlayerUI extends Phaser.Scene {
         return timeFail;
     }
 
+    cameraZoom(scene: Phaser.Scene, zoomX: number, zoomY: number, zoomFactor: number,
+        zoomSpeedIn: number, zoomSpeedOut: number,
+        extraSprite?: Phaser.GameObjects.Sprite) {
+        if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce") {
+            if (!debugZoomEnabled) {
+                return;
+            }
+        }
+        const cam = scene.cameras.main;
+        if (zoomed) {
+            zoomed = false;
+            cam.pan(360, 640, zoomSpeedOut);
+            cam.zoomTo(1, zoomSpeedOut);
+            zoomShield.setVisible(true);
+            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                this.restoreUILayer();
+                this.showSettingsButton();
+                zoomShield.setVisible(false);
+                if (extraSprite != undefined)
+                    extraSprite.setVisible(true);
+            });
+        } else {
+            this.hideUILayer();
+            zoomed = true;
+            cam.pan(zoomX, zoomY, zoomSpeedIn);
+            cam.zoomTo(zoomFactor, zoomSpeedIn);
+            zoomShield.setVisible(true);
+            if (extraSprite != undefined)
+                extraSprite.setVisible(false);
+            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
+                zoomShield.setVisible(false);
+            });
+        }
+    }
+
 
     // Must preload a few elements for UI
     preload() {
@@ -609,14 +643,13 @@ export default class PlayerUI extends Phaser.Scene {
             if (recorder.getMode() == "record")
                 recorder.recordObjectDown("eyeButton", this);
 
-            if (eyeButton.name != "eyeButtonOn") {
+            if (!uiObjectView) {
                 //console.log("view selected eyeball")
                 let selectedThing = slots.getSelected();
                 //console.log("**** selected thing=" + selectedThing.thing)
                 if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
                     return;
                 eyeButton.setTexture('atlas2', 'eyeOn.png');
-                eyeButton.setName("eyeButtonOn");
                 interfaceInspect.setVisible(false);
                 interfaceClick.setVisible(false);
                 clickLine.setVisible(false);
@@ -633,6 +666,7 @@ export default class PlayerUI extends Phaser.Scene {
                 uiObjectViewDirty = true;
 
             } else {
+                //console.log("eye closed")
                 this.closeObjectUI();
 
             }
@@ -715,22 +749,14 @@ export default class PlayerUI extends Phaser.Scene {
             this.input.keyboard!.on('keydown', this.handleKey);
         }
 
-        scenePlayGame = this.scene.get("PlayGame");
-        sceneZotTable = this.scene.get("ZotTable");
-        sceneFour = this.scene.get("Four");
-        sceneFive = this.scene.get("Five");
-        sceneUI = this;
-
         let thisscene = this;
         // @ts-ignore   pointer is unused until we get fancy...
         this.input.on('gameobjectdown', function (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
-            recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
+            if (gameObject.name != "zoomShield")
+                recorder.recordObjectDown((gameObject as Phaser.GameObjects.Sprite).name, thisscene);
         });
         //console.log("UI create recorder mode: " + recorder.getMode())
 
-        //var clueBox = this.add.graphics();
-        //clueBox.fillStyle(0x000000);
-        //clueBox.fillRect(5, 250, 400, 30);
         clueText = this.make.text({
             x: 10,
             y: 105,
@@ -758,6 +784,14 @@ export default class PlayerUI extends Phaser.Scene {
 
         timeText.setDepth(99);
         timeText.setVisible(false);
+
+        zoomShield = this.add.graphics().setName("zoomShield").setDepth(5000).setVisible(false);
+        zoomShield.fillStyle(0x000000, 0);
+        zoomShield.fillRect(0, 0, 720, 1280);
+        zoomShield.setInteractive(new Phaser.Geom.Rectangle(0, 0, 720, 1280), Phaser.Geom.Rectangle.Contains);
+        zoomShield.on('pointerdown', () => {
+            //console.log("go full modal while the zoom is running")
+        });
 
         this.scene.launch("BootGame")
     }
@@ -845,7 +879,7 @@ export default class PlayerUI extends Phaser.Scene {
                     }
                 });
                 actions = actions.slice(1); // drop the first element, just used to instantiate the array
-                nextActionTime = actions[0][3]+replayBootTime; // the first action will fire when the current timer reaches this
+                nextActionTime = actions[0][3] + replayBootTime; // the first action will fire when the current timer reaches this
 
                 //console.log("Recording action dump:");
                 //actions.forEach((action) => {
@@ -934,7 +968,11 @@ export default class PlayerUI extends Phaser.Scene {
 
             if (this.time.now >= nextActionTime) {
                 if (debugShowReplayActionCount) {
-                    console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`)
+                    if (actions[0][0] != "mousemove") {
+                        //console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`)
+                    } else {
+                        debugReplayActionCounter++
+                    }
                 }
                 let replayAction = actions[0][0];
                 const targetScene = actions[0][4].split('%')[1];
@@ -942,29 +980,8 @@ export default class PlayerUI extends Phaser.Scene {
                 if (replayAction == "mouseclick") {
                     viewportPointer.setX(actions[0][1]);
                     viewportPointer.setY(actions[0][2]);
+                    recorder.showClick(this, actions[0][1], actions[0][2]);
 
-                    //console.log("show click on " + targetScene)
-                    switch (targetScene) {
-                        case "PlayerUI":
-                            recorder.showClick(sceneUI, actions[0][1], actions[0][2]);
-                            break;
-
-                        /***** all clicks are on UI layer now! */
-                        case "PlayGame":
-                            recorder.showClick(scenePlayGame, actions[0][1], actions[0][2]);
-                            break;
-                        case "ZotTable":
-                            recorder.showClick(sceneZotTable, actions[0][1], actions[0][2]);
-                            break;
-                        case "Four":
-                            recorder.showClick(sceneFour, actions[0][1], actions[0][2]);
-                            break;
-                        case "Five":
-                            recorder.showClick(sceneFive, actions[0][1], actions[0][2]);
-                            break;
-                        default:
-                            console.log("ERROR Unregistered scene " + targetScene);
-                    }
                 } else if (replayAction == "mousemove") {
                     viewportPointer.setX(actions[0][1]);
                     viewportPointer.setY(actions[0][2]);
@@ -984,15 +1001,17 @@ export default class PlayerUI extends Phaser.Scene {
                         //console.log("recorder replay object " + object)
 
                         if (object?.scene === this) {
-                            //console.log("simulating UI " + targetObject)
+                            //console.log(">> simulating UI " + targetObject)
                             object?.emit('pointerdown')
                         } else {
-                            //console.log(`simulate sprite ${ targetObject } on scene ${ targetScene }`)
+                            //console.log(`>> simulate sprite ${ targetObject } on scene ${ targetScene }`)
                             this.registry.set('replayObject', targetObject + ":" + targetScene);
                         }
                     } else if (targetType == "icon") {
                         //console.log("simulate icon " + targetObject);
                         slots.recordedClickIt(targetObject);   // here's how we click an icon!
+                    } else {
+                        //console.log(`skipped replay, targetType= ${targetType}`);  // EOF only unless there is a bug
                     }
                 }
                 // get next action
@@ -1253,7 +1272,6 @@ export default class PlayerUI extends Phaser.Scene {
 
         slots.combining = ""; // cancel any combine action
         eyeButton.setTexture('atlas2', 'eyeOff.png');
-        eyeButton.setName("eyeButton");
 
         UIbackButton.setVisible(false);
         objectMask.setVisible(false);

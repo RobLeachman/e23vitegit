@@ -40,7 +40,6 @@ let rightButton: Phaser.GameObjects.Sprite;
 let backButton: Phaser.GameObjects.Sprite;
 
 let mobile: boolean;
-let zoomed = false;
 
 let takeMask: Phaser.GameObjects.Sprite;
 let tableMask: Phaser.GameObjects.Sprite;
@@ -76,7 +75,7 @@ var viewportText: Phaser.GameObjects.Text;
 
 let initMain = true;
 
-let zoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
+let zoomSpeed = { zoomSlow: 500, zoomMedium: 750, zoomFast: 1200 };
 
 export class PlayGame extends Phaser.Scene {
     constructor() {
@@ -365,7 +364,7 @@ export class PlayGame extends Phaser.Scene {
             //console.log(`--> main replay ${spriteScene} ${spriteName}`)
             if (spriteScene == "PlayGame") {
                 zoomSpeed = recorder.getPanZoomSpeeds();
-                
+
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
@@ -466,7 +465,7 @@ export class PlayGame extends Phaser.Scene {
         //console.log("Main create recorder mode: " + recorder.getMode());
         if (recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")
             debugPanel = true;
-        
+
         zoomSpeed = recorder.getPanZoomSpeeds();
 
         if (recorder.getPlayerName() != "qqq" && recorder.getPlayerName() != "Quazar")
@@ -500,6 +499,8 @@ export class PlayGame extends Phaser.Scene {
             } else
                 viewWall = previousWall;
         });
+
+
 
         // Add item to inventory list when picked up. In this test it's easy, just 3 stacked items.
         // Add it and then remove from view and flag for an update.
@@ -537,79 +538,19 @@ export class PlayGame extends Phaser.Scene {
         rangerMask = this.add.sprite(34, 433, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("rangerMask");
         recorder.addMaskSprite('rangerMask', rangerMask);
         rangerMask.on('pointerdown', () => {
-            const cam = this.cameras.main;
-            if (zoomed) {
-                zoomed = false;
-                cam.pan(360, 640, zoomSpeed.zoomMedium);
-                cam.zoomTo(1, zoomSpeed.zoomMedium);
-                rangerMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    myUI.restoreUILayer();
-                    myUI.showSettingsButton();
-                    rangerMask.setVisible(true);
-                });
-            } else {
-                myUI.hideUILayer(); // includes hiding settings
-                zoomed = true;
-                cam.pan(120, 500, zoomSpeed.zoomSlow);
-                cam.zoomTo(3.5, zoomSpeed.zoomSlow);
-                rangerMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    rangerMask.setVisible(true);
-                });                
-            }
+            myUI.cameraZoom(this, 120, 500, 3.5, zoomSpeed.zoomMedium, zoomSpeed.zoomSlow);
         });
 
         rylandMask = this.add.sprite(220, 379, 'atlas2', 'rylandMask.png').setOrigin(0, 0).setName("rylandMask");
         recorder.addMaskSprite('rylandMask', rylandMask);
         rylandMask.on('pointerdown', () => {
-            const cam = this.cameras.main;
-            if (zoomed) {
-                zoomed = false;
-                cam.pan(360, 640, zoomSpeed.zoomSlow);
-                cam.zoomTo(1, zoomSpeed.zoomSlow);
-                rylandMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    myUI.restoreUILayer();
-                    myUI.showSettingsButton();
-                    rylandMask.setVisible(true);
-                });
-            } else {
-                myUI.hideUILayer();
-                zoomed = true;
-                cam.pan(314, 475, zoomSpeed.zoomSlow);
-                cam.zoomTo(3.5, zoomSpeed.zoomSlow);
-                rylandMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    rylandMask.setVisible(true);
-                });
-            }
+            myUI.cameraZoom(this, 314, 475, 3.5, zoomSpeed.zoomSlow, zoomSpeed.zoomSlow);
         });
 
         funzMask = this.add.sprite(600, 690, 'atlas2', 'rangerMask.png').setOrigin(0, 0).setName("funzMask");
         recorder.addMaskSprite('funzMask', funzMask);
         funzMask.on('pointerdown', () => {
-            const cam = this.cameras.main;
-            if (zoomed) {
-                zoomed = false;
-                cam.pan(360, 640, zoomSpeed.zoomMedium);
-                cam.zoomTo(1, zoomSpeed.zoomMedium);
-                funzMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    myUI.restoreUILayer();
-                    myUI.showSettingsButton();
-                    funzMask.setVisible(true);
-                });
-            } else {
-                myUI.hideUILayer();
-                zoomed = true;
-                cam.pan(674, 773, zoomSpeed.zoomFast);
-                cam.zoomTo(28, zoomSpeed.zoomFast);
-                funzMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    funzMask.setVisible(true);
-                });
-            }
+            myUI.cameraZoom(this, 674, 773, 28, zoomSpeed.zoomMedium, zoomSpeed.zoomFast);
         });
 
         clue2Mask = this.add.sprite(340, 634, 'atlas', 'zotTableMask.png').setOrigin(0, 0).setName("clue2Mask");
@@ -721,7 +662,7 @@ export class PlayGame extends Phaser.Scene {
         slots.addIcon(icons[7], "fake", "fake", false, 10); // TODO: get name from sprite?!
 
         this.events.on('wake', () => {
-            console.log(`Main awakes! return to ${roomReturnWall}`)
+            //console.log(`Main awakes! return to ${roomReturnWall}`)
             this.scene.bringToTop();
             this.scene.bringToTop("PlayerUI")
             myUI.setActiveScene("PlayGame");

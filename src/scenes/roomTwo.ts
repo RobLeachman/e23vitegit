@@ -27,7 +27,6 @@ let crossMask: Phaser.GameObjects.Sprite;
 let plantMask: Phaser.GameObjects.Sprite;
 
 let fourInit = true;
-let zoomed = false;
 
 let zotTableInit = true;
 let zotTableMask: Phaser.GameObjects.Sprite;
@@ -47,7 +46,7 @@ let farZotPostit: Phaser.GameObjects.Sprite;
 
 const walls = new Array();
 
-let zoomSpeed = {zoomSlow: 500, zoomMedium: 750, zoomFast: 1200};
+let zoomSpeed = { zoomSlow: 500, zoomMedium: 750, zoomFast: 1200 };
 
 export class RoomTwo extends Phaser.Scene {
     constructor() {
@@ -139,57 +138,14 @@ export class RoomTwo extends Phaser.Scene {
         crossMask = this.add.sprite(32, 351, 'atlas2', 'crossMask.png').setOrigin(0, 0).setName("crossMask");
         recorder.addMaskSprite('crossMask', crossMask);
         crossMask.on('pointerdown', () => {
-            const cam = this.cameras.main;
-            if (zoomed) {
-                zoomed = false;
-                cam.pan(360, 640, zoomSpeed.zoomSlow);
-                cam.zoomTo(1, zoomSpeed.zoomSlow);
-                crossMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    myUI.restoreUILayer();
-                    myUI.showSettingsButton();
-                    crossMask.setVisible(true);
-                });
-            } else {
-                myUI.hideUILayer();
-                zoomed = true;
-                cam.pan(145, 380, zoomSpeed.zoomSlow);
-                cam.zoomTo(3.2, zoomSpeed.zoomSlow);
-                crossMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    crossMask.setVisible(true);
-                });
-            }
+            myUI.cameraZoom(this, 145, 380, 3.2, zoomSpeed.zoomSlow, zoomSpeed.zoomSlow)
         });
 
         plantMask = this.add.sprite(123, 678, 'atlas2', 'planterMask.png').setOrigin(0, 0).setName("plantMask");
         recorder.addMaskSprite('plantMask', plantMask);
         plantMask.on('pointerdown', () => {
-            const cam = this.cameras.main;
-            if (zoomed) {
-                zoomed = false;
-                cam.pan(360, 640, zoomSpeed.zoomMedium);
-                cam.zoomTo(1, zoomSpeed.zoomMedium);
-                plantMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    myUI.restoreUILayer();
-                    myUI.showSettingsButton();
-                    plantMask.setVisible(true);
-                    leftButton2.setVisible(true);
-                });
-            } else {
-                myUI.hideUILayer();
-                zoomed = true;
-                cam.pan(194, 786, zoomSpeed.zoomSlow);
-                cam.zoomTo(4, zoomSpeed.zoomSlow);
-                leftButton2.setVisible(false);
-                plantMask.setVisible(false);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, () => {
-                    plantMask.setVisible(true);
-                });                
-            }
+            myUI.cameraZoom(this, 194, 786, 4, zoomSpeed.zoomMedium, zoomSpeed.zoomSlow, leftButton2);
         });
-
 
         leftButton2 = this.add.sprite(80, 950, 'atlas', 'arrowLeft.png').setName("leftButton2").setDepth(1);
         recorder.addMaskSprite('leftButton2', leftButton2);
@@ -241,6 +197,8 @@ export class RoomTwo extends Phaser.Scene {
             updateWall = true;
         });
     }
+
+
 
     update() {
         if ((viewWall != currentWall || updateWall)) {
@@ -301,7 +259,6 @@ export class RoomTwo extends Phaser.Scene {
                 if (zotBoxColor == 6 && !boxPostitTaken)
                     farZotPostit.setVisible(true);
                 twoWayMask.setVisible(true); twoWayMask.setDepth(100); twoWayMask.setInteractive({ cursor: 'pointer' });
-
             }
 
             twoDoorMask2.setVisible(false);
@@ -351,7 +308,7 @@ export class RoomTwo extends Phaser.Scene {
             const spriteScene = data.split(':')[1];
             if (spriteScene == _SCENENAME) {
                 zoomSpeed = recorder.getPanZoomSpeeds();
-                
+
                 let object = recorder.getMaskSprite(spriteName);
                 object?.emit('pointerdown')
             }
