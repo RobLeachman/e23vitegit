@@ -119,8 +119,6 @@ export class Four extends Phaser.Scene {
         if (recordedName != undefined)
             this.thePlayerName = recordedName;
 
-
-
         seededRNG = myUI.getSeededRNG();
 
         this.registry.events.on('changedata', this.registryUpdate, this);
@@ -187,9 +185,6 @@ export class Four extends Phaser.Scene {
                 this.youtubes.destroy();
                 this.videoBackground.setVisible(false);
             }
-
-            //recorder.recordObjectDown(zotfourBackButton.name, thisscene);
-            //console.log("exit four")
 
             this.fourBackButton.setVisible(false);
             this.fourBackButton.removeInteractive(); // fix up the cursor displayed on main scene
@@ -278,12 +273,13 @@ export class Four extends Phaser.Scene {
     }
 
     update() {
-        if (bugz) {
+        if (bugz) { // workaround since this only works in update
             this.fourBackButton.setInteractive({ cursor: 'pointer' });
             bugz = false;
         }
-        if (recorder.getMode() == "record")
+        if (recorder.getMode() == "record") {
             recorder.checkPointer(this);
+        }
     }
 
     // @ts-ignore

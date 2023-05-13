@@ -1,5 +1,4 @@
 /* global Phaser */
-//import { assetsDPR } from '../index';
 
 import Recorder from "../objects/recorder"
 import PlayerUI from './playerUI';
@@ -7,9 +6,8 @@ import PlayerUI from './playerUI';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { setCookie, getCookie } from "../utils/cookie";
 
-//const skipClickToStart = true; const skipCloud = true;
-let skipClickToStart = false;
-let skipCloud = false;
+let skipClickToStart = false; // great for debugging
+let skipCloud = false; // TOOD this needs more work?
 
 let testingSingleRoom = import.meta.env.VITE_TESTING_SINGLE_ROOM;
 if (location.hostname != "localhost") {
@@ -68,8 +66,6 @@ export class BootGame extends Phaser.Scene {
     }
 
     preload() {
-        //console.log("BOOT preload")
-
         if (getCookie("skipStart") == "skip") {
             skipClickToStart = true;
             skipCloud = true;
@@ -79,8 +75,6 @@ export class BootGame extends Phaser.Scene {
         }
 
         splashScreen = this.add.image(0, 0, 'frontSplash').setOrigin(0, 0);
-
-        //this.load.on('loaderror', this.fileLoadError)
 
         this.load.on('loaderror', (file: Phaser.Loader.File) => {
             if (!fileError) {
@@ -177,9 +171,6 @@ export class BootGame extends Phaser.Scene {
 
             this.load.image('vid1', 'assets/backgrounds/watchTheYoutube.webp');
 
-            //this.load.image('eyeButton', 'assets/sprites/eyeOff.png');
-            //this.load.image('eyeButtonOn', 'assets/sprites/eyeOn.png');
-
             this.load.image('registrationScreen', 'assets/backgrounds/splash1.webp');
             this.load.image('intro1', 'assets/backgrounds/intro1.webp');
             this.load.image('intro2', 'assets/backgrounds/intro2.webp');
@@ -257,6 +248,7 @@ export class BootGame extends Phaser.Scene {
             this.load.image('fourArtWhole-BigTime', 'assets/backgrounds/four_pg2.webp'); // Big Time
             this.load.image('room2 west-BigTime', 'assets/backgrounds/room2 - west_Big Time.webp');
 
+            // The plan was to have multiple puzzles but in the end (for Banal) just one...
             /*
             //this.load.image('fourArtWhole-Shock', 'assets/backgrounds/four_pg3a.webp'); // Shock the Monkey
             //this.load.image('room2 west-Shock', 'assets/backgrounds/room2 - west_Shock.webp');
@@ -277,12 +269,6 @@ export class BootGame extends Phaser.Scene {
 
             this.load.image('fourBackground', 'assets/backgrounds/four wall.webp');
             this.load.image('fourFrame', 'assets/backgrounds/4x4 frame1a.webp');
-
-
-            //let windowHeight = window.innerHeight;
-            //let windowWidth = window.innerWidth;
-            //const dims = this.add.text(640, 280, windowWidth + "x" + windowHeight, { fontSize:'24px' })
-            //dims.setOrigin(0.5, 0.5)            
 
             // preload pacifier https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
             var width = this.cameras.main.width;
@@ -341,20 +327,14 @@ export class BootGame extends Phaser.Scene {
                 //console.log(file.src);
                 assetText.setText('Loading ' + file.key);
             });
-            //var cache = this.textures;
-            //var data = cache.get('frontSplash');               
-            //data.destroy();
             this.load.on('complete', function () {
                 //console.log('complete');
-
-                // ???? if (!skipBackgroundsLoad) { 
                 progressBar.destroy();
                 progressBox.destroy();
                 loadingText.destroy();
                 percentText.destroy();
                 assetText.destroy();
             });
-            //console.log("boot preload finishes")
         }
     }
 
@@ -499,9 +479,6 @@ export class BootGame extends Phaser.Scene {
     startGame() {
         myUI.displayInventoryBar(true); myUI.showEye()
 
-        // not sure what I want... force cookies if qqq?
-        //recorder.setMode("record");
-
         if (playerName == "qqq" || playerName == "Qqq") {
             console.log("do not record by default, Quazar")
             // this messes with roach replay... hmm
@@ -531,8 +508,6 @@ export class BootGame extends Phaser.Scene {
         if (welcomeBack)
             greets = "Welcome back! Change your nick?"
         greets1 = this.add.text(50, 350 + greetsFudge, greets, {
-            //fontFamily: 'Quicksand',
-            //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '30px',
             color: '#ff0',
@@ -540,30 +515,21 @@ export class BootGame extends Phaser.Scene {
         if (welcomeBack)
             greets1.setColor('#fff');
         greets2 = this.add.text(50, 390 + greetsFudge, 'Nicknames can be letters and numbers only', {
-            //fontFamily: 'Quicksand',
-            //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#fff',
         })
         greets3 = this.add.text(50, 875, 'By clicking play you consent to debug telemetry.', {
-            //fontFamily: 'Quicksand',
-            //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#aaa',
         })
         greets4 = this.add.text(50, 900, 'Your play will be recorded to improve the quality of my buggy game.', {
-            //fontFamily: 'Quicksand',
-            //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#aaa',
         })
-        //greets5 = this.add.text(50, 1110, 'I would love to hear from you! Email escape@bitblaster.com', {
         greets5 = this.add.text(50, 925, 'I would love to hear from you! Email escape@bitblaster.com', {
-            //fontFamily: 'Quicksand',
-            //font: '40px Verdana italic',
             fontFamily: 'Helvetica',
             fontSize: '20px',
             color: '#fff',
@@ -577,7 +543,6 @@ export class BootGame extends Phaser.Scene {
                 fontFamily: 'Helvetica',
                 fontSize: '40px',
                 fontStyle: 'italic'
-                //fill: '#ffffff'
             },
 
         });
@@ -585,7 +550,8 @@ export class BootGame extends Phaser.Scene {
         greetings.setText("Thanks for testing, " + playerName + "!");
     }
 
-    // BootGame create must be async for cloud data retrieval so latch here and wait for load to finish before offering play button
+    // BootGame create must be async for cloud data retrieval so latch here and 
+    // wait for load to finish before offering play button
     update() {
         if (fileError)
             return;
@@ -616,8 +582,6 @@ export class BootGame extends Phaser.Scene {
             this.cameras.main.once('camerafadeincomplete', function () {
                 scene.input.on("pointerup", doIntroClick, scene);
             });
-
-            //this.startGame();
         }
         if (introClicked && !displayedIntro2) {
             displayedIntro2 = true;

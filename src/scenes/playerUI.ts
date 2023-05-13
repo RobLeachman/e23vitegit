@@ -5,8 +5,8 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 
-let useCookieRecordings = true; // use cookies not the cloud
-let debugShowReplayActionCount = true;
+let useCookieRecordings = false; // use cookies not the cloud, local debugging
+let debugShowReplayActionCount = false;
 const debugRecorderPlayPerfectSkip = 0; // how many steps to skip before fast stops and perfect begins
 
 const debugZoomEnabled = false;
@@ -640,13 +640,10 @@ export default class PlayerUI extends Phaser.Scene {
 
         eyeButton.on('pointerdown', () => {
             //console.log(`EYE CLICK recorder mode = ${ recorder.getMode() }`);
-            if (recorder.getMode() == "record")
-                recorder.recordObjectDown("eyeButton", this);
 
             if (!uiObjectView) {
-                //console.log("view selected eyeball")
                 let selectedThing = slots.getSelected();
-                //console.log("**** selected thing=" + selectedThing.thing)
+                //console.log("**** view selected thing=" + selectedThing.thing)
                 if (selectedThing.thing.length == 0 || selectedThing.thing == "empty")
                     return;
                 eyeButton.setTexture('atlas2', 'eyeOn.png');
@@ -664,11 +661,9 @@ export default class PlayerUI extends Phaser.Scene {
                 flipIt = false;
                 uiObjectView = true;
                 uiObjectViewDirty = true;
-
             } else {
-                //console.log("eye closed")
+                //console.log("eye closed");
                 this.closeObjectUI();
-
             }
         });
 
@@ -969,7 +964,7 @@ export default class PlayerUI extends Phaser.Scene {
             if (this.time.now >= nextActionTime) {
                 if (debugShowReplayActionCount) {
                     if (actions[0][0] != "mousemove") {
-                        //console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`)
+                        console.log(`>${debugReplayActionCounter++} ${actions[0][0]}`);
                     } else {
                         debugReplayActionCounter++
                     }
@@ -995,11 +990,8 @@ export default class PlayerUI extends Phaser.Scene {
                     // or click the icon just that same way.
                     //////////////
                     if (targetType == "object") {
-
-                        // TODO Need to check unmapped objects
+                        // TODO Need to check unmapped objects? maybe this is already done...
                         let object = recorder.getMaskSprite(targetObject);
-                        //console.log("recorder replay object " + object)
-
                         if (object?.scene === this) {
                             //console.log(">> simulating UI " + targetObject)
                             object?.emit('pointerdown')

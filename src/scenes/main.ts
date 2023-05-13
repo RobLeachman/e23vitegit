@@ -86,10 +86,13 @@ export class PlayGame extends Phaser.Scene {
         // did we just hit the keyboard to start replaying?
         if (this.input.activePointer.rightButtonDown() && location.hostname == "localhost") {
             console.log("right mouse button action! bounce bounce");
+            slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
         }
 
         if (initMain) {
-            if (location.hostname == "localhost") {
+
+            /* released it baby!
+            if (location.hostname == "localhost" && !(recorder.getMode() == "replay" || recorder.getMode() == "replayOnce")) {
                 //console.log("BONUS TEST ZOTS")
                 slots.addIcon("icon - red key.png", "objRedKey", "altobjRedKey");
                 slots.addIcon("icon - keyWhole.png", "objKeyWhole", "altobjKeyWhole");
@@ -100,6 +103,8 @@ export class PlayGame extends Phaser.Scene {
                 //slots.addIcon("icon - keyB.png", "objKeyB", "altobjKeyB");
                 slots.addIcon(icons[6], obj[6], altObj[6], false, 11); // roach
             }
+            */
+            
             initMain = false;
         }
 
@@ -391,7 +396,7 @@ export class PlayGame extends Phaser.Scene {
                 // @ts-ignore
             }).then((response) => {
                 //console.log('Successfully sent webhook. ' + response)
-                console.log('Successfully sent webhook')
+                //console.log('Successfully sent webhook')
             })
         } else {
             discordClient.execute({
@@ -404,33 +409,11 @@ export class PlayGame extends Phaser.Scene {
                 // @ts-ignore
             }).then((response) => {
                 //console.log('Successfully sent webhook. ' + response)
-                console.log('Successfully sent webhook')
+                //console.log('Successfully sent webhook')
             })
 
         }
     }
-
-    /*
-    discordClient.execute({
-        embeds: [
-            {
-                title: 'Test1',
-                description: 'it is alive',
-            },
-            {
-                fields: [
-                    {
-                        name: 'Data',
-                        value: 'field data here',
-                    }
-                ]
-            }
-        ]
-    }).then((response) => {
-        console.log('Successfully sent webhook. ' + response)
-    })   
-    */
-
 
     create(data: {
         mobile: boolean;

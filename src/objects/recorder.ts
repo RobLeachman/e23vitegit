@@ -5,17 +5,12 @@ import { setCookie, getCookie } from "../utils/cookie";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadString, getBytes, StorageReference } from "firebase/storage";
-//import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-
-//import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-//import { getStorage, ref, uploadString } from "firebase/storage";
-// "Just to add more options to the puzzle: you can use a serverless realtime database (serverless, gun.js, channable/icepeak, brynbellomy/redwood, rethinkdb, sapphire-db, emitter.io,kuzzle.io, feathersjs, deepstream.io, firebase, supabase.io, etc.)""
 
 const minDelayFastMode = 10;
-const debuggingDumpRecordingOut = false;
-const debugDisplayFastSteps = false; // display all the actions as delays are rewritten
-const debugDisplayRecordedActions = false;
-const debugDisplayRecordedSteps = false; // display each recorded mask click when replaying
+const debuggingDumpRecordingOut = true; // dump steps while recording
+const debugDisplayFastSteps = true; // display all the actions as delays are rewritten
+const debugDisplayRecordedActions = true; // display actions as they are recorded
+const debugDisplayRecordedSteps = false; // dump recording steps on load
 
 let stealthRecord = true; // don't show pointer while recording
 let usingRecordingCookies = false; // relies on setter
@@ -28,6 +23,8 @@ let storageFolder = "v1Prod/";
 let musicPlayTime = 0;
 
 let panZoomSpeed = { zoomSlow: 500, zoomMedium: 750, zoomFast: 1200 };
+
+let watchingFourFaster = false;
 
 export default class Recorder {
     pointer: Phaser.Input.Pointer;
@@ -73,98 +70,6 @@ export default class Recorder {
         this.totalClicks = 0;
         this.RNGSeed = RNGSeed;
 
-        /************
-         // TODO: Add SDKs for Firebase products that you want to use
-                // https://firebase.google.com/docs/web/setup#available-libraries
-        
-                // Your web app's Firebase configuration
-                const firebaseConfig = {
-                    apiKey: "AIzaSyCXKLmBPEdmc-7J0M9BWuFN2e9RqGMUf-0",
-                    authDomain: "escape23-9c153.firebaseapp.com",
-                    projectId: "escape23-9c153",
-                    storageBucket: "escape23-9c153.appspot.com",
-                    messagingSenderId: "575545476353",
-                    appId: "1:575545476353:web:20671a688f62d9bb388700",
-                    measurementId: "G-G9X9NTNH1M"
-                };
-        
-                // Initialize Firebase
-                // @ts-ignore not sure what I'll do with app
-                const app = initializeApp(firebaseConfig);
-                //const analytics = getAnalytics(app);
-        
-                // FIREBASE database action...                
-                        const db = getFirestore(app);
-                        // Get a list of cities from your database
-                
-                        async function getCities(db) {
-                            const citiesCol = collection(db, 'cities');
-                            const citySnapshot = await getDocs(citiesCol);
-                            const cityList = citySnapshot.docs.map(doc => doc.data());
-                            return cityList;
-                        }
-                
-        
-                
-                        // https://firebase.google.com/docs/storage/web/start -- quickstart steps, after shit works
-                        Prepare to launch your app:
-                           Enable App Check to help ensure that only your apps can access your storage buckets.
-                
-                           Set up budget alerts for your project in the Google Cloud Console.
-                
-                           Monitor the Usage and billing dashboard in the Firebase console to get an overall picture of your project's usage across multiple Firebase services. You can also visit the Cloud Storage Usage dashboard for more detailed usage information.
-                
-                           Review the Firebase launch checklist.
-                
-        
-        
-        
-        
-                // WORKS!
-                const myUUID = Date.now().toString();
-                console.log("UUID " + myUUID)
-        
-                // Initialize Cloud Storage and get a reference to the service
-                // Get a reference to the storage service, which is used to create references in your storage bucket
-                const storage = getStorage();
-        
-                // Create a storage reference from our storage service
-        
-                // https://firebase.google.com/docs/storage/web/create-reference        
-                //   You can create a reference to a location lower in the tree, say 'images/space.jpg' 
-                //   by passing in this path as a second argument when calling ref(). 
-                
-                
-                const storageRef = ref(storage, 'v1/' + myUUID + ".txt");
-        
-        
-                let message = 'DATA GOES HERE';
-                uploadString(storageRef, message).then((snapshot) => {
-                    console.log(snapshot)
-                    console.log('Uploaded a raw string!');
-                });
-                
-        
-                //update
-                        message = "OH WAIT IT CHANGED"
-                        
-                        uploadString(storageRef, message).then((snapshot) => {
-                            console.log(snapshot)
-                            console.log('Uploaded new string!');
-                        });
-                
-                // https://firebase.google.com/docs/storage/web/upload-files#monitor_upload_progress
-        
-                
-                "Start in test mode"
-                Your data is open by default to enable quick setup. However, 
-                you must update your security rules within 30 days to enable long-term client read/write access. 
-        
-                https://firebase.google.com/docs/storage/security/rules-conditions#public
-        
-                https://firebase.google.com/docs/firestore/security/get-started?authuser=0&hl=en
-        */
-
         const firebaseConfig = {
             apiKey: "AIzaSyCXKLmBPEdmc-7J0M9BWuFN2e9RqGMUf-0",
             authDomain: "escape23-9c153.firebaseapp.com",
@@ -174,31 +79,6 @@ export default class Recorder {
             appId: "1:575545476353:web:20671a688f62d9bb388700",
             measurementId: "G-G9X9NTNH1M"
         };
-        /*
-                // Authenticate to Firebase anonymously... I am not worried about the data there
-                const auth = getAuth();
-                signInAnonymously(auth)
-                    .then(() => {
-                        console.log("Firebase good authentication")
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        console.log(`Firebase auth error ${errorCode} ${errorMessage}`)
-                    });
-        
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        // User is signed in, see docs for a list of available properties
-                        // https://firebase.google.com/docs/reference/js/firebase.User
-                        const uid = user.uid;
-                        console.log("good login " + uid);
-                    } else {
-                        // User is signed out
-                        // ...
-                    }
-                });
-        */
 
         // Initialize Firebase
         initializeApp(firebaseConfig);
@@ -406,7 +286,7 @@ export default class Recorder {
                 pointerClicked = true;
             }
         }
-        // RIGHT CLICK CHECK
+        // RIGHT MOUSE CLICK CHECK
         //if (pointerClicked && this.pointer.rightButtonDown()) {
         //    this.getRecording();
         //    return;
@@ -417,7 +297,6 @@ export default class Recorder {
 
             let distanceX = Math.abs(this.pointer.x - this.oldPointerX);
             let distanceY = Math.abs(this.pointer.y - this.oldPointerY);
-            // 500 resolution is sufficient?
             if ((distanceX + distanceY > 100) || (pointerTime > 1200) || pointerClicked) {
                 this.oldPointerX = this.pointer.x;
                 this.oldPointerY = this.pointer.y;
@@ -502,6 +381,7 @@ export default class Recorder {
         return this.spoilerCount;
     }
 
+    // record any movement or clicks
     recordPointerAction(action: string, time: number, sceneName: string) {
         const actionTime = time - this.timeStartGame;
 
@@ -512,6 +392,7 @@ export default class Recorder {
         //console.log("recording so far:");
         //console.log(this.recording)
     }
+    // record when something is clicked
     recordObjectDown(object: string, scene: Phaser.Scene) {
         const actionTime = scene.time.now - this.timeStartGame;
         if (debugDisplayRecordedActions)
@@ -588,13 +469,15 @@ export default class Recorder {
         re = /\%J\%/g; recIn = recIn.replace(re, "\%HintBot\%");
         re = /\%K\%/g; recIn = recIn.replace(re, "\%Settings\%");
 
+        let dbgRecCount = 0;
         if (recordingChecksum == this.checksum(recIn)) {
             //console.log("-->Good recording " + recIn);
             if (debugDisplayRecordedSteps) {
                 const debugRecording = recIn.split(':');
                 debugRecording.forEach((action) => {
+                    dbgRecCount++;
                     if (action.split(',')[0] != "mousemove" && action.split(',')[0] != "mouseclick")
-                        console.log(`DBGREC ${action}`)
+                        console.log(`DBGREC (${dbgRecCount}) ${action}`)
                 });
             }
 
@@ -632,15 +515,23 @@ export default class Recorder {
                 delay = minDelayFastMode.toString();
             else
                 delay = "100";
+                
+            if (thisAction[0] == "object=fourMask") { // no fun watching this part
+                watchingFourFaster = true;
+                console.log("********** ENTER FOUR *****************")
+            } else if (thisAction[0] == "object=fourBackButton") {
+                console.log("********** EXIT FOUR *****************")                
+                watchingFourFaster = false;
+            }
+            if (watchingFourFaster)
+                delay=minDelayFastMode.toString();
+
             fast = fast.concat(`${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}:`);
             if (debugDisplayFastSteps) {
-                //if (thisAction[0] != "mousemove" && thisAction[0] != "mouseclick") {
-                if (true) {
                     if (fastSteps > 0)
                         console.log(`MAKEFAST*(${stepCount++}) ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}: ${origDelay}`)
                     else
                         console.log(`MAKEFAST(${stepCount++})  ${thisAction[0]},${thisAction[1]},${thisAction[2]},${delay},${thisAction[4]}: ${origDelay}`)
-                }
             }
             fastSteps--;
         });
@@ -658,7 +549,7 @@ export default class Recorder {
 
         let recOut = "";
         //console.log("ACTION COUNT " + rec.length);
-        // struggling with TS arrays https://dpericich.medium.com/how-to-build-multi-type-multidimensional-arrays-in-typescript-a9550c9a688e
+        // struggled with TS arrays https://dpericich.medium.com/how-to-build-multi-type-multidimensional-arrays-in-typescript-a9550c9a688e
         let actions: [string, number, number, number, string][] = [["BOJ", 0, 0, 0, "scn"]];
 
         //console.log(rec);
@@ -703,45 +594,10 @@ export default class Recorder {
             }
         });
 
-        // BROKEN BY PLAYERUI 
-        // Must throw out redundant stuff. Find these and mark time as 0.
-        // Perhaps could clean up the input recorded actions but let's just fix them here
-        // It's a big mess that calls for a do-over on all of this but for now it is what it is
-        /*
-        actions.forEach((action, idx) => {
-            //console.log("RECORDER ACT " + action);
-            if (idx < actions.length - 1) {
-                const nextAction = actions[idx + 1];
-                //console.log(action[3] + " " + nextAction[3])
-                const complexAction = action[0].split('='); // icon or object mask
-                if (complexAction.length > 1) {
-                    if (action[3] == nextAction[3]) {
-                        nextAction[3] = 0;
-                        if (idx < actions.length - 2)
-                            actions[idx + 2][3] = 0;
-                    }
-                } else if (action[3] == nextAction[3]) {
-                    //console.log("move then click, skip the move");
-                    action[3] = 0;
-                }
-            }
-        });
-        */
-
         // calculate elapsed time for non-redundant events and we're done, build the output string
         let prevTime = 0;
         let elapsed = 0;
         actions.forEach((action) => {
-            //console.log(`ActionIn ${action}  time ${action[3]} scene ${action[4]}`);
-            /*
-            if (action[4] == "PlayGame") {
-                action[4] = "A"
-            } else if (action[4] == "ZotTable") {
-                action[4] = "B"
-            } else if (action[4] == "BootGame") {    
-                action[4] = "C"
-            }
-            */
             if (action[3] > 0) {
                 elapsed = action[3] - prevTime;
                 //console.log("elapsed=" + elapsed)
@@ -811,8 +667,6 @@ export default class Recorder {
             //console.log("COOKIEOUT " + cookieNameOut + ":" + chunk);
             setCookie(cookieNameOut, chunk, 7); // bake for a week
         });
-
-
     }
 
     chunkString(str: string, length: number) {
@@ -826,13 +680,11 @@ export default class Recorder {
         for (var i = 0; i < len; i++) {
             chk += (s.charCodeAt(i) * (i + 1));
         }
-
         return (chk & 0xffffffff).toString(16);
     }
 
     // When the recorder has a click to show this creates a sprite on the scene
     showClick(scene: Phaser.Scene, x: number, y: number) {
-
         const recordedClickSprite = scene.add.sprite(1000, 0, 'atlas', 'pointerClicked.png');
         var recordedClickSpriteScale = 2;
 
@@ -849,7 +701,6 @@ export default class Recorder {
         this.clickers.push(recordedClickSprite);
         //console.log("CLICKERCOUNT " + this.clickers.length)
         this.prevClickX = x; this.prevClickY = y;
-
     }
 
     fadeClick() {
